@@ -1,30 +1,44 @@
-# OpenClinica CRF Builder - Executive Summary & Quick Reference
+# CRF Design Studio - Executive Summary & Quick Reference
 
 ## What is This?
 
-This document collection provides comprehensive analysis and documentation of the OpenClinica CRF (Case Report Form) Builder, including a detailed migration plan to create a modern standalone application.
+This document collection provides comprehensive analysis and documentation for building a **standalone CRF Design Studio** - a modern visual design tool for creating Case Report Forms and configuring study visit schedules. 
+
+**Important:** This is a **design/configuration tool only** - NOT a data collection system.
 
 ## Document Structure
 
-1. **01-OVERVIEW.md** - High-level introduction to CRF Builder
-2. **02-ARCHITECTURE.md** - Detailed technical architecture
-3. **03-DATA-MODEL.md** - Database schema and relationships
-4. **04-VISIT-GRID-INTEGRATION.md** - How CRFs integrate with study visits
-5. **05-MIGRATION-PLAN.md** - Complete modernization roadmap
-6. **README.md** - This file (executive summary)
+**New Focus: Design Tool Only**
+0. **00-SCOPE-DEFINITION.md** - ⭐ Clear scope: What we ARE and ARE NOT building
+1. **01-OVERVIEW.md** - High-level introduction to CRF Builder (OpenClinica analysis)
+2. **02-ARCHITECTURE.md** - Technical architecture (OpenClinica analysis)
+3. **03-DATA-MODEL.md** - Database schema (OpenClinica analysis)
+4. **04-VISIT-GRID-INTEGRATION.md** - Visit grid integration (OpenClinica analysis)
+5. **05-MIGRATION-PLAN.md** - Original full-system plan (ARCHIVED - too broad)
+6. **06-FRAMEWORK-ANALYSIS-DESIGN-TOOL.md** - ⭐ Framework analysis for DESIGN tool
+7. **07-IMPLEMENTATION-ROADMAP-DESIGN-TOOL.md** - ⭐ 6-month plan for design studio
+8. **README.md** - This file (executive summary)
 
 ## Quick Reference
 
-### What Does the CRF Builder Do?
+### What Does the CRF Design Studio Do?
 
-The CRF Builder enables clinical researchers to:
-1. **Design forms** using Excel templates
-2. **Define data fields** with validation rules
+The CRF Design Studio enables study designers to:
+1. **Design forms visually** using drag-and-drop interface
+2. **Configure fields** with validation rules
 3. **Organize sections** and pages
 4. **Support repeating groups** for complex data
-5. **Export metadata** in CDISC ODM format
-6. **Collect data** through web forms
-7. **Track progress** via visit grid
+5. **Import/export Excel templates**
+6. **Export to ODM XML** (CDISC format)
+7. **Configure visit schedules** and associate CRFs with visits
+8. **Preview forms** before export
+
+**What it does NOT do:**
+- ❌ Collect actual patient data
+- ❌ Manage study subjects
+- ❌ Clinical workflows
+- ❌ Data monitoring
+- ❌ Query management
 
 ### Key Technologies (Current)
 - **Backend**: Java, Spring Framework, JDBC, Servlets
@@ -33,20 +47,21 @@ The CRF Builder enables clinical researchers to:
 - **Excel**: Apache POI
 - **Standards**: CDISC ODM 1.3, OpenRosa/XForm
 
-### Recommended Technologies (New System)
+### Recommended Technologies (Design Studio)
 
 | Component | Technology | Why |
 |-----------|-----------|-----|
-| **Backend** | Spring Boot 3.x + Java 17+ | Modern Spring, production-ready |
-| **Frontend** | React 18 + TypeScript | Industry standard, great ecosystem |
+| **Frontend** | React 18 + TypeScript | Best for visual design tools, React Flow |
+| **Visual Designer** | React Flow | Perfect for node-based form designer |
+| **Drag-Drop** | dnd-kit | Modern, performant drag-and-drop |
 | **UI Library** | Material-UI (MUI) | Professional, accessible components |
-| **Database** | PostgreSQL 15+ | Compatible, JSON support, performance |
-| **API** | REST + GraphQL | Standard REST, GraphQL for complex queries |
-| **Auth** | OAuth 2.0 / Keycloak | Industry standard security |
-| **State** | React Query + Zustand | Efficient data fetching and state |
-| **Forms** | React Hook Form + Yup | Best-in-class form management |
-| **Testing** | Jest + React Testing Library + Cypress | Comprehensive test coverage |
-| **DevOps** | Docker + Kubernetes + GitHub Actions | Modern deployment |
+| **Backend** | Node.js 20 + NestJS | TypeScript full-stack, lighter weight |
+| **Database** | PostgreSQL 15+ with JSONB | Flexible metadata storage |
+| **API** | REST | Simple, standard |
+| **State** | Zustand + TanStack Query | Lightweight state + server state |
+| **Forms** | React Hook Form + Zod | Best-in-class form management |
+| **Testing** | Vitest + Playwright | Fast unit tests + E2E |
+| **DevOps** | Docker + GitHub Actions | Modern deployment |
 
 ## Core Concepts
 
@@ -78,60 +93,57 @@ Design → Upload → Parse → Store → Associate → Collect → Export
 
 ## Migration Timeline
 
-**Total Duration**: 36 weeks (9 months)
-**Team Size**: 10 people
+**Focus: Design Studio Only (NOT full data collection system)**
+
+**Total Duration**: 24 weeks (6 months)
+**Team Size**: 5-6 people
 
 ### Phase Breakdown
 
 | Phase | Duration | Focus |
 |-------|----------|-------|
-| **0. Preparation** | 2 weeks | Analysis, setup |
-| **1. Foundation** | 4 weeks | Backend/frontend base |
-| **2. Core CRF** | 4 weeks | CRUD, upload, sections |
-| **3. Advanced** | 4 weeks | Groups, validation, logic |
-| **4. Forms** | 4 weeks | Rendering, data entry |
-| **5. Export/Import** | 3 weeks | Excel, ODM |
-| **6. Visit Grid** | 3 weeks | Study events, matrix |
-| **7. Security** | 3 weeks | Auth, audit |
-| **8. Testing** | 3 weeks | QA, UAT |
-| **9. Deployment** | 3 weeks | Production, migration |
-| **10. Post-Deploy** | 3 weeks | Support, docs |
+| **1. Foundation** | 4 weeks | React + NestJS + PostgreSQL setup |
+| **2. Visual Designer** | 6 weeks | React Flow integration, drag-drop |
+| **3. Advanced Designer** | 4 weeks | Validation, logic, repeating groups |
+| **4. Preview & Import** | 4 weeks | Form preview, Excel import/export |
+| **5. Visit Grid & ODM** | 4 weeks | Visit configuration, ODM export |
+| **6. Polish & Deploy** | 2 weeks | Testing, documentation, deployment |
 
 ## Key Features to Build
 
-### Essential (MVP)
-- ✅ CRF CRUD operations
-- ✅ Excel template upload/parsing
-- ✅ Section and item management
-- ✅ Version control
-- ✅ Basic validation rules
-- ✅ Form rendering for data entry
-- ✅ Data storage
+### Essential (Design Studio)
+- ✅ Visual form designer with drag-and-drop
+- ✅ Field configuration (properties, validation)
+- ✅ Section organization
+- ✅ Excel template import/parsing
 - ✅ Excel template export
-- ✅ ODM metadata export
-- ✅ User authentication
-- ✅ Role-based access control
-
-### Important (Phase 2)
-- ✅ Visual form designer (web-based)
-- ✅ Item groups (repeating data)
-- ✅ Conditional display logic
-- ✅ Calculation engine
-- ✅ Visit grid integration
-- ✅ Real-time status updates
-- ✅ Audit trail
-- ✅ Advanced filtering/search
-- ✅ Offline support (PWA)
+- ✅ ODM XML export (CDISC compliant)
+- ✅ Form preview mode
+- ✅ Visit grid configuration
+- ✅ CRF-visit associations
+- ✅ Version control
+- ✅ Template library
+- ✅ User authentication (simple)
 
 ### Nice-to-Have (Future)
-- ⭕ Template library with pre-built CRFs
-- ⭕ Collaborative form design
-- ⭕ Version comparison/diff tool
+- ⭕ Real-time collaboration (multiple designers)
 - ⭕ AI-powered validation suggestions
 - ⭕ Natural language rule builder
-- ⭕ Mobile apps (iOS/Android)
 - ⭕ REDCap import
-- ⭕ HL7 FHIR integration
+- ⭕ More export formats (JSON Schema, OpenAPI)
+- ⭕ Desktop app version (Electron)
+
+### Explicitly NOT Building
+- ❌ Data entry forms (actual collection)
+- ❌ Subject enrollment
+- ❌ Study participant management
+- ❌ Clinical workflows
+- ❌ Data monitoring dashboards
+- ❌ Query/discrepancy management
+- ❌ Progress tracking for subjects
+- ❌ Audit trails for patient data
+- ❌ Electronic signatures for data
+- ❌ Real-time data validation
 
 ## UI/UX Improvements
 
@@ -232,40 +244,61 @@ Design → Upload → Parse → Store → Associate → Collect → Export
 - Can revert to old system if issues
 - Gradual migration (study-by-study)
 
-## Cost Estimation
+## Cost Estimation (Design Studio Only)
 
-### Development Team (9 months)
-- 2 Backend Developers @ $120k/yr = $180k
-- 2 Frontend Developers @ $120k/yr = $180k
-- 1 Full-Stack Developer @ $130k/yr = $98k
-- 1 DevOps Engineer @ $140k/yr = $105k
-- 1 QA Engineer @ $100k/yr = $75k
-- 1 UX Designer @ $110k/yr = $83k
-- 1 Product Manager @ $150k/yr = $113k
-- 1 Project Manager @ $130k/yr = $98k
+### Development Team (6 months)
+- 2 Full-Stack Developers @ $130k/yr = $130k
+- 1 UI/UX Designer @ $110k/yr = $55k
+- 0.5 DevOps Engineer @ $140k/yr = $35k
+- 1 Product Manager @ $150k/yr = $75k
+- 0.5 QA Engineer @ $100k/yr = $25k
 
-**Total Personnel**: ~$932k
+**Total Personnel**: ~$320k
 
-### Infrastructure (annual)
-- Cloud hosting (AWS/Azure): $20k
-- Development tools (licenses): $10k
-- Testing tools: $5k
-- Third-party services: $5k
+### Infrastructure (6 months)
+- Cloud hosting (dev/staging): $3k
+- Development tools & licenses: $5k
+- Testing tools: $2k
 
-**Total Infrastructure**: ~$40k
+**Total Infrastructure**: ~$10k
 
 ### Other Costs
-- Training: $10k
-- Contingency (10%): $98k
+- Contingency (10%): $33k
 
-**Grand Total**: ~$1,080k
+**Grand Total**: ~$363k
+**Cost per month**: ~$61k
 
-**Cost per month**: ~$120k
+### Comparison to Full System
+| System Type | Duration | Team | Cost |
+|-------------|----------|------|------|
+| **Design Studio** (This) | 6 months | 5-6 | ~$363k |
+| Full EDC System (Original) | 9 months | 10 | ~$1.08M |
 
-## Return on Investment
+**Savings**: ~$720k (67% less) by focusing on design tool only
+
+## Return on Investment (Design Studio)
 
 ### Benefits (annual)
-- Reduced Excel dependency: $50k (less support)
+- Faster form design: $100k (time savings vs Excel)
+- Reduced errors: $50k (better validation)
+- Standardization: $30k (template library)
+- Easier collaboration: $40k (web-based)
+
+**Total Annual Benefits**: ~$220k
+
+**ROI**: Break even in ~20 months, continuous benefits thereafter
+
+### Compared to Manual Process
+Without design studio, typical organization spends:
+- Excel template creation and debugging: $80k/yr
+- Manual validation checks: $40k/yr
+- Version control confusion: $30k/yr
+- Training on Excel templates: $20k/yr
+- ODM export preparation: $50k/yr
+
+**Total Manual Cost**: ~$220k/yr
+
+Design Studio eliminates most of these costs.
 - Faster form design: $100k (time savings)
 - Better data quality: $150k (fewer errors)
 - Reduced training time: $30k
