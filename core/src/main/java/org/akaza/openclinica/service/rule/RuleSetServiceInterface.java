@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -72,7 +72,7 @@ public interface RuleSetServiceInterface {
     public abstract List<RuleSetBasedViewContainer> runRulesInBulk(List<RuleSetBean> ruleSets, Boolean dryRun, StudyBean currentStudy, UserAccountBean ub, boolean jobTrigger);
 
     public abstract MessageContainer runRulesInDataEntry(List<RuleSetBean> ruleSets, Boolean dryRun, StudyBean currentStudy, UserAccountBean ub,
-            HashMap<String, String> variableAndValue, Phase phase,EventCRFBean ecb, HttpServletRequest request);
+            HashMap<String, String> variableAndValue, Phase phase,EventCRFBean ecb, Map<String, Object> request);
 
     /**
      * @param containers

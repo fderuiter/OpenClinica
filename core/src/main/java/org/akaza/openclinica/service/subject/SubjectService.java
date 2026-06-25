@@ -92,6 +92,19 @@ public class SubjectService implements SubjectServiceInterface {
 
     }
 
+
+    public String generateSubjectId(StudyBean studyBean) {
+        int handleStudyId = studyBean.getParentStudyId() > 0 ? studyBean.getParentStudyId() : studyBean.getId();
+        StudyParameterValueBean subjectIdGenerationParameter = getStudyParameterValueDAO().findByHandleAndStudy(handleStudyId, "subjectIdGeneration");
+        String idSetting = subjectIdGenerationParameter.getValue();
+        if (idSetting.equals("auto editable") || idSetting.equals("auto non-editable")) {
+            int nextLabel = getStudySubjectDao().findTheGreatestLabel() + 1;
+            return Integer.toString(nextLabel);
+        } else {
+            return null;
+        }
+    }
+
     public void validateSubjectTransfer(SubjectTransferBean subjectTransferBean) {
         // TODO: Validate here
     }

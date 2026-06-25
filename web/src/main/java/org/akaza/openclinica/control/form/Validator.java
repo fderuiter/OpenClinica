@@ -471,10 +471,26 @@ public class Validator {
     protected HashMap errors;
 
     protected HttpServletRequest request;
+    protected java.util.Map<String, Object> attributes = new java.util.HashMap<String, Object>();
+
+    public void setAttribute(String key, Object value) {
+        attributes.put(key, value);
+    }
 
     protected ResourceBundle resformat;
 
     //protected Locale format_locale;
+
+    public Validator(java.util.Locale locale) {
+        validations = new java.util.HashMap();
+        errors = new java.util.HashMap();
+        this.locale = locale;
+        resformat = org.akaza.openclinica.i18n.util.ResourceBundleProvider.getFormatBundle(locale);
+        restext = org.akaza.openclinica.i18n.util.ResourceBundleProvider.getTextsBundle(locale);
+        resexception = org.akaza.openclinica.i18n.util.ResourceBundleProvider.getExceptionsBundle(locale);
+        resword = org.akaza.openclinica.i18n.util.ResourceBundleProvider.getWordsBundle(locale);
+        lastField = "";
+    }
 
     public Validator(HttpServletRequest request) {
         validations = new HashMap();
@@ -1171,8 +1187,10 @@ public class Validator {
      * Instead of rewriting the whole Validation do this.
      */
     protected String getFieldValue(String fieldName) {
-        return request.getParameter(fieldName) == null ? request.getAttribute(fieldName) == null ? null : request.getAttribute(fieldName).toString() : request
-                .getParameter(fieldName);
+        if (request != null) {
+            return request.getParameter(fieldName) == null ? request.getAttribute(fieldName) == null ? null : request.getAttribute(fieldName).toString() : request.getParameter(fieldName);
+        }
+        return attributes.get(fieldName) == null ? null : attributes.get(fieldName).toString();
     }
 
     // validation functions that determine whether a field passes validation
@@ -1286,7 +1304,8 @@ public class Validator {
      *         not date formatted or null or empty .
      */
     protected boolean isDateWithoutRequiredCheck(String fieldName) {
-        String fieldValue = request.getParameter(fieldName);
+        String fieldValue = getFieldValue(fieldName);
+        if (fieldValue == null && request == null) return true;
         if (StringUtil.isBlank(fieldValue)) {
             return true;
         }
@@ -1687,7 +1706,13 @@ public class Validator {
     }
 
     protected boolean isSetBlank(String fieldName) {
-        String fieldValues[] = request.getParameterValues(fieldName);
+        String fieldValues[] = null;
+        if (request != null) {
+            fieldValues = request.getParameterValues(fieldName);
+        } else {
+            Object val = attributes.get(fieldName);
+            if (val != null) fieldValues = new String[] { val.toString() };
+        }
 
         if (fieldValues == null || fieldValues.length == 0) {
             return true;
@@ -1706,9 +1731,14 @@ public class Validator {
             values.put(rob.getValue(), Boolean.TRUE);
         }
 
-        String fieldValues[];
+        String fieldValues[] = null;
         if (multValues) {
-            fieldValues = request.getParameterValues(fieldName);
+            if (request != null) {
+                fieldValues = request.getParameterValues(fieldName);
+            } else {
+                Object val = attributes.get(fieldName);
+                if (val != null) fieldValues = new String[] { val.toString() };
+            }
         } else {
             fieldValues = new String[1];
             String fieldValue = getFieldValue(fieldName);
@@ -1749,10 +1779,13 @@ public class Validator {
             values.put(rob.getValue(), Boolean.TRUE);
         }
 
-        String fieldValues[];
+        String fieldValues[] = null;
         if (multValues) {
-            //fieldValues = request.getParameterValues(fieldName);
-            fieldValues = request.getParameter(fieldName).split(",");
+            if (request != null && request.getParameter(fieldName) != null) {
+                fieldValues = request.getParameter(fieldName).split(",");
+            } else if (request == null && attributes.get(fieldName) != null) {
+                fieldValues = attributes.get(fieldName).toString().split(",");
+            }
         } else {
             fieldValues = new String[1];
             String fieldValue = getFieldValue(fieldName);
@@ -1823,7 +1856,10 @@ public class Validator {
         String glue = "";
 
         if (isMultiple) {
-            String[] fieldValues = request.getParameterValues(fieldName);
+            String[] fieldValues = null;
+            if (request != null) {
+                fieldValues = request.getParameterValues(fieldName);
+            }
 
             if (fieldValues != null) {
                 for (String element : fieldValues) {

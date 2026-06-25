@@ -3,7 +3,7 @@ package org.akaza.openclinica.service.pmanage;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.servlet.http.HttpSession;
+
 
 import org.akaza.openclinica.bean.login.ParticipantDTO;
 import org.akaza.openclinica.dao.core.CoreResources;
@@ -38,15 +38,6 @@ public class ParticipantPortalRegistrar {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
-    }
-
-    public String getCachedRegistrationStatus(String studyOid, HttpSession session) throws Exception {
-        String regStatus = (String) session.getAttribute("pManageRegistrationStatus");
-        if (regStatus == null) {
-            regStatus = getRegistrationStatus(studyOid);
-            session.setAttribute("pManageRegistrationStatus", regStatus);
-        }
-        return regStatus;
     }
 
     public String getRegistrationStatus(String studyOid) throws Exception {

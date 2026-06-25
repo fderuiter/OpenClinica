@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface SubjectServiceInterface {
 
+    public String generateSubjectId(StudyBean studyBean);
+
     public abstract String createSubject(SubjectBean subjectBean, StudyBean studyBean, Date enrollmentDate, String secondaryId);
 
     public List<StudySubjectBean> getStudySubject(StudyBean study);

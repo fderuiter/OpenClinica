@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.zip.ZipOutputStream;
 
-import javax.servlet.http.HttpServletRequest;
+
 import javax.sql.DataSource;
 
 import org.akaza.openclinica.bean.extract.ArchivedDatasetFileBean;
@@ -45,7 +45,7 @@ public class GenerateExtractFileService {
 
     private static final Logger logger = LoggerFactory.getLogger(GenerateExtractFileService.class);
     private final DataSource ds;
-    private HttpServletRequest request;
+    private java.util.Locale requestLocale;
     public static ResourceBundle resword;
     private final CoreResources coreResources;
 
@@ -53,10 +53,10 @@ public class GenerateExtractFileService {
     private static List<File> oldFiles = new LinkedList<File>();
     private final RuleSetRuleDao ruleSetRuleDao;
 
-    public GenerateExtractFileService(DataSource ds, HttpServletRequest request, CoreResources coreResources,
+    public GenerateExtractFileService(DataSource ds, java.util.Locale requestLocale, CoreResources coreResources,
             RuleSetRuleDao ruleSetRuleDao) {
         this.ds = ds;
-        this.request = request;
+        this.requestLocale = requestLocale;
         this.coreResources = coreResources;
         this.ruleSetRuleDao = ruleSetRuleDao;
     }
@@ -70,7 +70,7 @@ public class GenerateExtractFileService {
     public void setUpResourceBundles() {
         Locale locale;
         try {
-            locale = request.getLocale();
+            locale = requestLocale;
         } catch (NullPointerException ne) {
             locale = new Locale("en-US");
         }

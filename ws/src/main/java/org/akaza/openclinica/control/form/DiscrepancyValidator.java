@@ -34,6 +34,11 @@ import javax.servlet.http.HttpServletRequest;
 public class DiscrepancyValidator extends Validator {
     private final FormDiscrepancyNotes notes;
 
+    public DiscrepancyValidator(java.util.Locale locale, FormDiscrepancyNotes notes) {
+        super(locale);
+        this.notes = notes;
+    }
+
     public DiscrepancyValidator(HttpServletRequest request, FormDiscrepancyNotes notes) {
         super(request);
         this.notes = notes;

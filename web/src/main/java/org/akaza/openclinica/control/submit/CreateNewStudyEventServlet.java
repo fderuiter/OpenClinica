@@ -513,9 +513,9 @@ public class CreateNewStudyEventServlet extends SecureController {
                 // ArrayList subjectsExistingEvents =
                 // sed.findAllByStudyAndStudySubjectId(currentStudy,
                 // studySubject.getId());
-                studyEvent.setSampleOrdinal(sed.getMaxSampleOrdinal(definition, studySubject) + 1);
+                studyEvent.setSampleOrdinal(getEventService().calculateSampleOrdinal(definition, studySubject));
 
-                studyEvent = (StudyEventBean) sed.create(studyEvent);
+                studyEvent = getEventService().createStudyEvent(studyEvent);
                // getRuleSetService().runRulesInBeanProperty(createRuleSet(studySubject,definition),currentStudy,ub,request,studySubject);
 
                 
@@ -579,9 +579,9 @@ public class CreateNewStudyEventServlet extends SecureController {
                                 // sed.findAllByStudyAndStudySubjectId(
                                 // currentStudy,
                                 // studySubject.getId());
-                                studyEventScheduled.setSampleOrdinal(sed.getMaxSampleOrdinal(definitionScheduleds.get(i), studySubject) + 1);
+                                studyEventScheduled.setSampleOrdinal(getEventService().calculateSampleOrdinal(definitionScheduleds.get(i), studySubject));
                                 //System.out.println("create scheduled events");
-                                studyEventScheduled = (StudyEventBean) sed.create(studyEventScheduled);
+                                studyEventScheduled = getEventService().createStudyEvent(studyEventScheduled);
                                 if (!studyEventScheduled.isActive()) {
                                     throw new OpenClinicaException(restext.getString("scheduled_event_not_created_in_database"), "2");
                                 }
@@ -750,4 +750,4 @@ public class CreateNewStudyEventServlet extends SecureController {
     }
 
 
-}
+    private org.akaza.openclinica.service.EventService getEventService() { return (org.akaza.openclinica.service.EventService) org.akaza.openclinica.control.SpringServletAccess.getApplicationContext(getServletContext()).getBean("eventService"); } }

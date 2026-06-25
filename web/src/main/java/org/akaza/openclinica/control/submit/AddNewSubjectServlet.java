@@ -899,8 +899,9 @@ public class AddNewSubjectServlet extends SecureController {
                 StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(studyEventDefinitionId);
 
 
-                se.setSampleOrdinal(sedao.getMaxSampleOrdinal(sed, s) + 1);
-                sedao.create(se);
+                org.akaza.openclinica.service.EventService eventService = getEventService();
+                se.setSampleOrdinal(eventService.calculateSampleOrdinal(sed, s));
+                eventService.createStudyEvent(se);
             //    getRuleSetService().runRulesInBeanProperty(createRuleSet(s,sed),currentStudy,ub,request,s);
 
  
@@ -1062,4 +1063,5 @@ public class AddNewSubjectServlet extends SecureController {
         }
 
     }
-}
+    private org.akaza.openclinica.service.EventService getEventService() { return (org.akaza.openclinica.service.EventService) org.akaza.openclinica.control.SpringServletAccess.getApplicationContext(getServletContext()).getBean("eventService"); }
+    private org.akaza.openclinica.service.subject.SubjectService getSubjectService() { return (org.akaza.openclinica.service.subject.SubjectService) org.akaza.openclinica.control.SpringServletAccess.getApplicationContext(getServletContext()).getBean("subjectService"); } }

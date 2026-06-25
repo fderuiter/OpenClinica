@@ -68,7 +68,7 @@ import org.quartz.SimpleTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.mock.web.MockHttpServletRequest;
+
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -490,12 +490,10 @@ public class ImportSpringJob extends QuartzJobBean {
                 // create a 'fake' request to generate the validation errors
                 // here, tbh 05/2009
 
-                MockHttpServletRequest request = new MockHttpServletRequest();
-                // Locale locale = new Locale("en-US");
-                request.addPreferredLocale(locale);
+                
                 try {
                     List<DisplayItemBeanWrapper> tempDisplayItemBeanWrappers = new ArrayList<DisplayItemBeanWrapper>();
-                    tempDisplayItemBeanWrappers = getImportCRFDataService(dataSource).lookupValidationErrors(request, odmContainer, ub, totalValidationErrors,
+                    tempDisplayItemBeanWrappers = getImportCRFDataService(dataSource).lookupValidationErrors(locale, odmContainer, ub, totalValidationErrors,
                             hardValidationErrors, permittedEventCRFIds);
                     logger.debug("size of total validation errors: " + totalValidationErrors.size());
                     displayItemBeanWrappers.addAll(tempDisplayItemBeanWrappers);
