@@ -228,20 +228,6 @@
 			<version>2.6.10</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- Struts web framework -->
-		<dependency>
-			<groupId>struts</groupId>
-			<artifactId>struts</artifactId>
-			<version>1.2.4</version>
-			<scope>test</scope>
-			<!-- @pgawade 16-NOV-2010 Excluded the antlr library from struts as we need to use that from hibernate -->
-			<exclusions>
-				<exclusion>
-					<artifactId>antlr</artifactId>
-					<groupId>antlr</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 		<!-- Postgres JDBC driver -->
 		<dependency>
 			<groupId>postgresql</groupId>
