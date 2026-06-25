@@ -49,6 +49,10 @@ import org.akaza.openclinica.view.Page;
 import org.akaza.openclinica.web.InsufficientPermissionException;
 import org.akaza.openclinica.web.job.CrfBusinessLogicHelper;
 import org.akaza.openclinica.web.job.ImportSpringJob;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * View the uploaded data and verify what is going to be saved into the system and what is not.
@@ -156,9 +160,16 @@ public class VerifyImportedCRFDataServlet extends SecureController {
 
         if ("save".equalsIgnoreCase(action)) {
 
+            TransactionTemplate transactionTemplate = (TransactionTemplate) SpringServletAccess.getApplicationContext(context).getBean("sharedTransactionTemplate");
+
+            transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+                @Override
+                protected void doInTransactionWithoutResult(TransactionStatus status) {
+                    try {
+
             // setup ruleSets to run if applicable
             RuleSetServiceInterface ruleSetService = (RuleSetServiceInterface) SpringServletAccess.getApplicationContext(context).getBean("ruleSetService");
-            List<ImportDataRuleRunnerContainer> containers = this.ruleRunSetup(sm.getDataSource(), currentStudy, ub, ruleSetService);
+            List<ImportDataRuleRunnerContainer> containers = VerifyImportedCRFDataServlet.this.ruleRunSetup(sm.getDataSource(), currentStudy, ub, ruleSetService);
 
             List<DisplayItemBeanWrapper> displayItemBeanWrappers = (List<DisplayItemBeanWrapper>) session.getAttribute("importedData");
             // System.out.println("Size of displayItemBeanWrappers : " +
@@ -330,7 +341,15 @@ public class VerifyImportedCRFDataServlet extends SecureController {
 
             addPageMessage(respage.getString("data_has_been_successfully_import"));
 
-            addPageMessage(this.ruleActionWarnings(this.runRules(currentStudy, ub, containers, ruleSetService, ExecutionMode.SAVE)));
+            addPageMessage(VerifyImportedCRFDataServlet.this.ruleActionWarnings(VerifyImportedCRFDataServlet.this.runRules(currentStudy, ub, containers, ruleSetService, ExecutionMode.SAVE)));
+
+                    } catch (Exception e) {
+                        status.setRollbackOnly();
+                        logger.error("Error saving imported CRF data", e);
+                        throw new RuntimeException("Error saving imported CRF data", e);
+                    }
+                }
+            });
 
             // forwardPage(Page.SUBMIT_DATA_SERVLET);
             forwardPage(Page.LIST_STUDY_SUBJECTS_SERVLET);
