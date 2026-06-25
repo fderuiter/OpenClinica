@@ -48,11 +48,8 @@
     <script type="text/javascript" src="includes/new_cal/calendar-setup.js"></script>
     <!-- End -->
     <script type="text/javascript"  language="JavaScript" src=   "includes/repetition-model/repetition-model.js"></script>
-    <script type="text/JavaScript" language="JavaScript" src="includes/prototype.js"></script>
-    <script type="text/JavaScript" language="JavaScript" src="includes/scriptaculous.js?load=effects"></script>
-    <script type="text/JavaScript" language="JavaScript" src="includes/effects.js"></script>
-
-</head>
+    <script type="text/JavaScript" language="JavaScript" src="dist/assets/main-vAm2N4M6.js"></script>
+    </head>
 <body class="aka_bodywidth" onload="document.getElementById('CRF_infobox_closed').style.display='block';document.getElementById('CRF_infobox_open').style.display='none';"  onunload="javascript:clsWin();">
 <div id="centralContainer" style=
   "padding-left:3em; margin-top:1em;background-color: white; color:black;">

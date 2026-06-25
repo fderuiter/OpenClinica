@@ -45,9 +45,8 @@
 
 <%--<script type="text/javascript"  language="JavaScript" src=
     "includes/repetition-model/repetition-model.js"></script>--%>
-<script type="text/JavaScript" language="JavaScript" src="includes/prototype.js"></script>
-<%--<script type="text/JavaScript" language="JavaScript" src="includes/scriptaculous.js"></script>
-<script type="text/JavaScript" language="JavaScript" src="includes/effects.js"></script>--%></head>
+<script type="text/JavaScript" language="JavaScript" src="dist/assets/main-vAm2N4M6.js"></script>
+<%----%></head>
 
 
 <body style="width:1024px;" class="main_BG"

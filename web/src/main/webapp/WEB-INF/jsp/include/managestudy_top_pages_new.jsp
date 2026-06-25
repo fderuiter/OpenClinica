@@ -41,7 +41,7 @@
 
 <!-- End -->
 
-<script type="text/JavaScript" language="JavaScript" src="../../includes/prototype.js"></script>
+<script type="text/JavaScript" language="JavaScript" src="../../dist/assets/main-vAm2N4M6.js"></script>
 
 
 <body style="width:1024px;" class="main_BG"
