@@ -224,12 +224,12 @@ Calendar.createElement = function(type, parent) {
 
 /** Internal -- adds a set of events to make some element behave like a button. */
 Calendar._add_evs = function(el) {
-	with (Calendar) {
-		addEvent(el, "mouseover", dayMouseOver);
-		addEvent(el, "mousedown", dayMouseDown);
-		addEvent(el, "mouseout", dayMouseOut);
-		if (is_ie) {
-			addEvent(el, "dblclick", dayMouseDblClick);
+	{
+		Calendar.addEvent(el, "mouseover", Calendar.dayMouseOver);
+		Calendar.addEvent(el, "mousedown", Calendar.dayMouseDown);
+		Calendar.addEvent(el, "mouseout", Calendar.dayMouseOut);
+		if (Calendar.is_ie) {
+			Calendar.addEvent(el, "dblclick", Calendar.dayMouseDblClick);
 			el.setAttribute("unselectable", true);
 		}
 	}
@@ -372,13 +372,13 @@ Calendar.tableMouseUp = function(ev) {
 			}
 		}
 	}
-	with (Calendar) {
-		removeEvent(document, "mouseup", tableMouseUp);
-		removeEvent(document, "mouseover", tableMouseOver);
-		removeEvent(document, "mousemove", tableMouseOver);
+	{
+		Calendar.removeEvent(document, "mouseup", Calendar.tableMouseUp);
+		Calendar.removeEvent(document, "mouseover", Calendar.tableMouseOver);
+		Calendar.removeEvent(document, "mousemove", Calendar.tableMouseOver);
 		cal._hideCombos();
-		_C = null;
-		return stopEvent(ev);
+		Calendar._C = null;
+		return Calendar.stopEvent(ev);
 	}
 };
 
@@ -495,10 +495,10 @@ Calendar.calDragEnd = function (ev) {
 		return false;
 	}
 	cal.dragging = false;
-	with (Calendar) {
-		removeEvent(document, "mousemove", calDragIt);
-		removeEvent(document, "mouseup", calDragEnd);
-		tableMouseUp(ev);
+	{
+		Calendar.removeEvent(document, "mousemove", Calendar.calDragIt);
+		Calendar.removeEvent(document, "mouseup", Calendar.calDragEnd);
+		Calendar.tableMouseUp(ev);
 	}
 	cal.hideShowCovered();
 };
@@ -511,14 +511,14 @@ Calendar.dayMouseDown = function(ev) {
 	var cal = el.calendar;
 	cal.activeDiv = el;
 	Calendar._C = cal;
-	if (el.navtype != 300) with (Calendar) {
+	if (el.navtype != 300) {
 		if (el.navtype == 50) {
 			el._current = el.innerHTML;
-			addEvent(document, "mousemove", tableMouseOver);
+			Calendar.addEvent(document, "mousemove", Calendar.tableMouseOver);
 		} else
-			addEvent(document, Calendar.is_ie5 ? "mousemove" : "mouseover", tableMouseOver);
-		addClass(el, "hilite active");
-		addEvent(document, "mouseup", tableMouseUp);
+			Calendar.addEvent(document, Calendar.is_ie5 ? "mousemove" : "mouseover", Calendar.tableMouseOver);
+		Calendar.addClass(el, "hilite active");
+		Calendar.addEvent(document, "mouseup", Calendar.tableMouseUp);
 	} else if (cal.isPopup) {
 		cal._dragStart(ev);
 	}
@@ -562,16 +562,16 @@ Calendar.dayMouseOver = function(ev) {
 };
 
 Calendar.dayMouseOut = function(ev) {
-	with (Calendar) {
-		var el = getElement(ev);
-		if (isRelated(el, ev) || _C || el.disabled)
+	{
+		var el = Calendar.getElement(ev);
+		if (Calendar.isRelated(el, ev) || Calendar._C || el.disabled)
 			return false;
-		removeClass(el, "hilite");
+		Calendar.removeClass(el, "hilite");
 		if (el.caldate)
-			removeClass(el.parentNode, "rowhilite");
+			Calendar.removeClass(el.parentNode, "rowhilite");
 		if (el.calendar)
-			el.calendar.tooltips.innerHTML = _TT["SEL_DATE"];
-		return stopEvent(ev);
+			el.calendar.tooltips.innerHTML = Calendar._TT["SEL_DATE"];
+		return Calendar.stopEvent(ev);
 	}
 };
 
@@ -1575,9 +1575,9 @@ Calendar.prototype._dragStart = function (ev) {
 	var st = this.element.style;
 	this.xOffs = posX - parseInt(st.left);
 	this.yOffs = posY - parseInt(st.top);
-	with (Calendar) {
-		addEvent(document, "mousemove", calDragIt);
-		addEvent(document, "mouseup", calDragEnd);
+	{
+		Calendar.addEvent(document, "mousemove", Calendar.calDragIt);
+		Calendar.addEvent(document, "mouseup", Calendar.calDragEnd);
 	}
 };
 

@@ -17,3 +17,7 @@ window.Backbone = Backbone;
 window.dateFormat = dateFormat;
 window.UAParser = UAParser;
 import 'json3';
+import 'jmesa';
+import 'new_cal';
+import 'wz_tooltip';
+import 'calendarpopup';

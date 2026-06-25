@@ -14,16 +14,20 @@
   "dependencies": {
     "@phagento/jquery-tmpl": "^1.0.0",
     "backbone": "^1.6.1",
+    "calendarpopup": "file:local-pkgs/calendarpopup/calendarpopup-1.0.0.tgz",
     "dateformat": "^5.0.3",
     "headjs": "^1.0.3",
+    "jmesa": "file:local-pkgs/jmesa/jmesa-2.4.2.tgz",
     "jquery": "^4.0.0",
     "jquery-blockui": "^2.7.0",
     "jquery-migrate": "^4.0.2",
     "json3": "^3.3.3",
+    "new_cal": "file:local-pkgs/new_cal/new_cal-1.0.0.tgz",
     "prototype-js-core": "^1.7.3",
     "scriptaculous-js": "^1.9.0",
     "ua-parser-js": "^2.0.10",
-    "underscore": "^1.13.8"
+    "underscore": "^1.13.8",
+    "wz_tooltip": "file:local-pkgs/wz_tooltip/wz_tooltip-1.0.0.tgz"
   },
   "devDependencies": {
     "vite": "^8.1.0"
