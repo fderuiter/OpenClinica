@@ -38,7 +38,7 @@
     <script type="text/javascript" src="includes/new_cal/lang/<fmt:message key="jscalendar_language_file" bundle="${resformat}"/>"></script>
     <script type="text/javascript" src="includes/new_cal/calendar-setup.js"></script>
     <!-- End new Calender -->
-    <script type="text/JavaScript" language="JavaScript" src="includes/prototype.js"></script>
+    <script type="text/JavaScript" language="JavaScript" src="dist/assets/main-vAm2N4M6.js"></script>
 </head>
 <body>
 <h1><span class="title_manage"><fmt:message key="manage_study" bundle="${resworkflow}"/> <a href="javascript:openDocWindow('https://docs.openclinica.com/3.1/study-setup')"><img src="images/bt_Help_Manage.gif" border="0" alt="<fmt:message key="help" bundle="${resword}"/>" title="<fmt:message key="help" bundle="${resword}"/>"></a></span></h1>
