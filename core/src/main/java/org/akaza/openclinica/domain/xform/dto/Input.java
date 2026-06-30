@@ -1,5 +1,9 @@
 package org.akaza.openclinica.domain.xform.dto;
 
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name="input")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Input implements UserControl {
     private String ref;
     private String appearance;

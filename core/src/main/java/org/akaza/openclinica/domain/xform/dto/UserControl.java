@@ -1,5 +1,7 @@
 package org.akaza.openclinica.domain.xform.dto;
 
+import javax.xml.bind.annotation.*;
+
 public interface UserControl {
 
     public String getRef();

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.domain.rule;
 
+import javax.xml.bind.annotation.*;
+
 import org.akaza.openclinica.domain.rule.action.RuleActionComparator;
 
 import java.util.ArrayList;
@@ -16,9 +18,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+@XmlRootElement(name="Rules")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RulesPostImportContainer {
 
+    @XmlElement(name="RuleAssignment")
     private ArrayList<RuleSetBean> ruleSets;
+    @XmlElement(name="RuleDef")
     private ArrayList<RuleBean> ruleDefs;
 
     private ArrayList<AuditableBeanWrapper<RuleBean>> validRuleDefs = new ArrayList<AuditableBeanWrapper<RuleBean>>();

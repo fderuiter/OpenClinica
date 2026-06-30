@@ -1,5 +1,9 @@
 package org.akaza.openclinica.web.pform.dto;
 
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name="label")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Label{
 	private String ref;
 	private String label;

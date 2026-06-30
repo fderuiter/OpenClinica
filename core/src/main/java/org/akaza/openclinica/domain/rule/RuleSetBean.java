@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.domain.rule;
 
+import javax.xml.bind.annotation.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,8 @@ import org.hibernate.annotations.Parameter;
 @Table(name = "rule_set")
 @GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_set_id_seq") })
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@XmlRootElement(name="RuleAssignment")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RuleSetBean extends AbstractAuditableMutableDomainObject implements Serializable{
 
     private StudyEventDefinitionBean studyEventDefinition;
@@ -54,8 +58,11 @@ public class RuleSetBean extends AbstractAuditableMutableDomainObject implements
     private String runTime;
 
     
-	private RunOnSchedule runOnSchedule;
+	@XmlElement(name="RunOnSchedule")
+    private RunOnSchedule runOnSchedule;
+    @XmlElement(name="RuleRef")
     private List<RuleSetRuleBean> ruleSetRules;
+    @XmlElement(name="Target")
     private ExpressionBean target;
     private ExpressionBean originalTarget;
 

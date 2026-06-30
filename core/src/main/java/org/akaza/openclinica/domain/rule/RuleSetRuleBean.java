@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.domain.rule;
 
+import javax.xml.bind.annotation.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +47,8 @@ import org.hibernate.annotations.Parameter;
 @Table(name = "rule_set_rule")
 @GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_set_rule_id_seq") })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@XmlRootElement(name="RuleRef")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RuleSetRuleBean extends AbstractAuditableMutableDomainObject implements Serializable {
 
     RuleSetBean ruleSetBean;

@@ -8,6 +8,10 @@
 package org.akaza.openclinica.control.submit;
 
 import org.akaza.openclinica.bean.core.DataEntryStage;
+import org.springframework.context.ApplicationContext;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import javax.xml.transform.stream.StreamSource;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.rule.FileUploadHelper;
@@ -30,8 +34,6 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
 import org.akaza.openclinica.web.SQLInitServlet;
 import org.akaza.openclinica.web.crfdata.ImportCRFDataService;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.xml.Unmarshaller;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -149,25 +151,15 @@ public class ImportCRFDataServlet extends SecureController {
             // http://apache.org/xml/features/validation/schema-full-checking");
             // // above sets to validate against namespace
 
-            Mapping myMap = new Mapping();
-            // @pgawade 18-April-2011 Fix for issue 8394
-            String ODM_MAPPING_DIRPath = CoreResources.ODM_MAPPING_DIR;
-            myMap.loadMapping(ODM_MAPPING_DIRPath + File.separator + "cd_odm_mapping.xml");
+            ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+            Jaxb2Marshaller jaxb2Marshaller = (Jaxb2Marshaller) context.getBean("jaxb2Marshaller");
 
-            Unmarshaller um1 = new Unmarshaller(myMap);
-            // um1.addNamespaceToPackageMapping("http://www.openclinica.org/ns/odm_ext_v130/v3.1", "OpenClinica");
-            // um1.addNamespaceToPackageMapping("http://www.cdisc.org/ns/odm/v1.3"
-            // ,
-            // "ODMContainer");
             boolean fail = false;
             ODMContainer odmContainer = new ODMContainer();
             session.removeAttribute("odmContainer");
             try {
-
-                // schemaValidator.validateAgainstSchema(f, xsdFile);
-                // utf-8 compliance, tbh 06/2009
                 InputStreamReader isr = new InputStreamReader(new FileInputStream(f), "UTF-8");
-                odmContainer = (ODMContainer) um1.unmarshal(isr);
+                odmContainer = (ODMContainer) jaxb2Marshaller.unmarshal(new StreamSource(isr));
 
                 logger.debug("Found crf data container for study oid: " + odmContainer.getCrfDataPostImportContainer().getStudyOID());
                 logger.debug("found length of subject list: " + odmContainer.getCrfDataPostImportContainer().getSubjectData().size());
@@ -212,7 +204,7 @@ public class ImportCRFDataServlet extends SecureController {
                     // for backwards compatibility, we also try to validate vs
                     // 1.2.1 ODM 06/2008
                     InputStreamReader isr = new InputStreamReader(new FileInputStream(f), "UTF-8");
-                    odmContainer = (ODMContainer) um1.unmarshal(isr);
+                    odmContainer = (ODMContainer) jaxb2Marshaller.unmarshal(new StreamSource(isr));
                 } catch (Exception me2) {
                     // not sure if we want to report me2
                     MessageFormat mf = new MessageFormat("");

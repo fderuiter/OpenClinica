@@ -1,7 +1,11 @@
 package org.akaza.openclinica.web.pform.dto;
 
+import javax.xml.bind.annotation.*;
+
 import java.util.List;
 
+@XmlRootElement(name="body")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Body {
 	private String cssClass = null;
 	private String appearance = null;

@@ -1,5 +1,7 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import javax.xml.bind.annotation.*;
+
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -18,8 +20,11 @@ import javax.persistence.Transient;
 
 @Entity
 @DiscriminatorValue("4")
+@XmlRootElement(name="InsertAction")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class InsertActionBean extends RuleActionBean {
 
+    @XmlElement(name="DestinationProperty")
     private List<PropertyBean> properties;
 
     public InsertActionBean() {

@@ -1,8 +1,12 @@
 
 package org.akaza.openclinica.web.pform.dto;
 
+import javax.xml.bind.annotation.*;
+
 import java.util.List;
 
+@XmlRootElement(name="model")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Model {
 	private List<Bind> bind;
 	private String instance = "initialvalueinmodeldto";

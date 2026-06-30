@@ -1,6 +1,11 @@
 package org.akaza.openclinica.ws;
 
 import java.io.InputStream;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.MessageFormat;
@@ -39,8 +44,6 @@ import org.akaza.openclinica.web.crfdata.ImportCRFInfo;
 import org.akaza.openclinica.web.crfdata.ImportCRFInfoContainer;
 import org.akaza.openclinica.ws.bean.BaseStudyDefinitionBean;
 import org.akaza.openclinica.ws.validator.CRFDataImportValidator;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.xml.Unmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -76,6 +79,8 @@ public class DataEndpoint {
     private RuleSetServiceInterface ruleSetService;
 
     private TransactionTemplate transactionTemplate;
+    
+    private org.springframework.oxm.jaxb.Jaxb2Marshaller jaxb2Marshaller;
 
     public DataEndpoint(DataSource dataSource, MessageSource messages, CoreResources coreResources) {
         this.dataSource = dataSource;
@@ -228,16 +233,6 @@ public class DataEndpoint {
         if (xml == null)
             throw new Exception(respage.getString("unreadable_file"));
 
-        Mapping myMap = new Mapping();
-
-        // InputStream xsdFile = coreResources.getInputStream("ODM1-3-0.xsd");//new File(propertiesPath + File.separator
-        // + "ODM1-3-0.xsd");
-        // InputStream xsdFile2 = coreResources.getInputStream("ODM1-2-1.xsd");//new File(propertiesPath +
-        // File.separator + "ODM1-2-1.xsd");
-        InputStream mapInputStream = coreResources.getInputStream("cd_odm_mapping.xml");
-
-        myMap.loadMapping(new InputSource(mapInputStream));
-        Unmarshaller um1 = new Unmarshaller(myMap);
         ODMContainer odmContainer = new ODMContainer();
 
         try {
@@ -245,7 +240,7 @@ public class DataEndpoint {
             // File xsdFileFinal = new File(xsdFile);
             // schemaValidator.validateAgainstSchema(xml, xsdFile);
             // removing schema validation since we are presented with the chicken v egg error problem
-            odmContainer = (ODMContainer) um1.unmarshal(new StringReader(xml));
+            odmContainer = (ODMContainer) jaxb2Marshaller.unmarshal(new StreamSource(new StringReader(xml)));
             LOG.debug("Found crf data container for study oid: " + odmContainer.getCrfDataPostImportContainer().getStudyOID());
             LOG.debug("found length of subject list: " + odmContainer.getCrfDataPostImportContainer().getSubjectData().size());
             return odmContainer;
@@ -451,6 +446,10 @@ public class DataEndpoint {
 
     public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
         this.transactionTemplate = transactionTemplate;
+    }
+
+    public void setJaxb2Marshaller(org.springframework.oxm.jaxb.Jaxb2Marshaller jaxb2Marshaller) {
+        this.jaxb2Marshaller = jaxb2Marshaller;
     }
 
 }

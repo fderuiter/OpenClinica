@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.domain.rule.expression;
 
+import javax.xml.bind.annotation.*;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -30,10 +32,13 @@ import org.hibernate.annotations.Type;
 @Table(name = "rule_expression")
 @GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_expression_id_seq") })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@XmlRootElement(name="None")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ExpressionBean extends AbstractAuditableMutableDomainObject implements Serializable {
 
     private Context context;
     private String value;
+    @XmlAttribute(name="Context")
     private String contextName;
 
     public ExpressionBean() {

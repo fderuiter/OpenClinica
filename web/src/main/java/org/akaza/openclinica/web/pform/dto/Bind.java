@@ -1,5 +1,9 @@
 package org.akaza.openclinica.web.pform.dto;
 
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name="bind")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Bind {
 	private String nodeSet;
 	private String type;

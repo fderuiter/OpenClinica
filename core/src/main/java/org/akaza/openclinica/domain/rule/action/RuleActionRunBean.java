@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.domain.rule.action;
 
+import javax.xml.bind.annotation.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -25,6 +27,8 @@ import org.hibernate.annotations.Parameter;
 @Entity
 @Table(name = "rule_action_run")
 @GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_action_run_id_seq") })
+@XmlRootElement(name="None")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RuleActionRunBean extends AbstractMutableDomainObject implements Serializable{
 
     Boolean administrativeDataEntry;

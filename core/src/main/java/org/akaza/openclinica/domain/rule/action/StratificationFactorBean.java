@@ -1,5 +1,7 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import javax.xml.bind.annotation.*;
+
 import org.akaza.openclinica.domain.AbstractMutableDomainObject;
 import org.akaza.openclinica.domain.rule.expression.Context;
 import org.akaza.openclinica.domain.rule.expression.ExpressionBean;
@@ -21,6 +23,8 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "rule_action_stratification_factor")
 @GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_action_stratification_factor_id_seq") })
+@XmlRootElement(name="StratificationFactor")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class StratificationFactorBean extends AbstractMutableDomainObject {
     
     private ExpressionBean stratificationFactor;

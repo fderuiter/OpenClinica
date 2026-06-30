@@ -1,6 +1,11 @@
 package org.akaza.openclinica.web.pform;
 
 import java.io.ByteArrayInputStream;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -74,9 +79,6 @@ import org.akaza.openclinica.web.pform.manifest.MediaFile;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.XMLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -204,16 +206,12 @@ public class OpenRosaServices {
                 }
             }
 
-            // Create the XML formList using a Castor mapping file.
-            XMLContext xmlContext = new XMLContext();
-            Mapping mapping = xmlContext.createMapping();
-            mapping.loadMapping(getCoreResources().getURL("openRosaFormListMapping.xml"));
-            xmlContext.addMapping(mapping);
-
-            Marshaller marshaller = xmlContext.createMarshaller();
+            // Create the XML formList using JAXB.
+            JAXBContext contextJaxb = JAXBContext.newInstance(XFormList.class);
+            Marshaller marshaller = contextJaxb.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             StringWriter writer = new StringWriter();
-            marshaller.setWriter(writer);
-            marshaller.marshal(formList);
+            marshaller.marshal(formList, writer);
 
             // Set response headers
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
@@ -271,16 +269,12 @@ public class OpenRosaServices {
             }
         }
         try {
-            // Create the XML manifest using a Castor mapping file.
-            XMLContext xmlContext = new XMLContext();
-            Mapping mapping = xmlContext.createMapping();
-            mapping.loadMapping(getCoreResources().getURL("openRosaManifestMapping.xml"));
-            xmlContext.addMapping(mapping);
-
-            Marshaller marshaller = xmlContext.createMarshaller();
+            // Create the XML manifest using JAXB.
+            JAXBContext contextJaxb = JAXBContext.newInstance(Manifest.class);
+            Marshaller marshaller = contextJaxb.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             StringWriter writer = new StringWriter();
-            marshaller.setWriter(writer);
-            marshaller.marshal(manifest);
+            marshaller.marshal(manifest, writer);
 
             // Set response headers
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));

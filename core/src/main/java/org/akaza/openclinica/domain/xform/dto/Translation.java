@@ -1,7 +1,11 @@
 package org.akaza.openclinica.domain.xform.dto;
 
+import javax.xml.bind.annotation.*;
+
 import java.util.List;
 
+@XmlRootElement(name="translation")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Translation {
     private String defaultLang;
     private String lang;

@@ -1,11 +1,15 @@
 package org.akaza.openclinica.domain.xform.dto;
 
+import javax.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.akaza.openclinica.bean.submit.SectionBean;
 
+@XmlRootElement(name="repeat")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Repeat {
 
     private String nodeset;

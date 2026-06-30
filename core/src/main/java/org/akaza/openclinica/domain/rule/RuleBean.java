@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.domain.rule;
 
+import javax.xml.bind.annotation.*;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -37,15 +39,22 @@ import org.hibernate.annotations.Parameter;
 @Entity
 @Table(name = "rule")
 @GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_id_seq") })
+@XmlRootElement(name="None")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RuleBean extends AbstractAuditableMutableDomainObject implements Serializable{
 
+    @XmlAttribute(name="OID")
     private String oid;
+    @XmlAttribute(name="Name")
     private String name;
+    @XmlAttribute(name="Type")
     private String type;
+    @XmlElement(name="Description")
     private String description;
     private boolean enabled;
     private StudyBean study;
 
+    @XmlElement(name="Expression")
     private ExpressionBean expression;
     private List<RuleSetRuleBean> ruleSetRules;
     private OidGenerator oidGenerator;

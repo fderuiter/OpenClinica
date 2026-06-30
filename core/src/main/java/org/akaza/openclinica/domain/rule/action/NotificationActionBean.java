@@ -1,5 +1,7 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import javax.xml.bind.annotation.*;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -11,10 +13,15 @@ import javax.persistence.Transient;
 
 @Entity
 @DiscriminatorValue("7")
+@XmlRootElement(name="NotificationAction")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class NotificationActionBean extends RuleActionBean implements Serializable {
 
+    @XmlElement(name="To")
     private String to;
+    @XmlElement(name="Subject")
     private String subject="";
+    @XmlElement(name="Message")
     private String message;
 
     public NotificationActionBean() {

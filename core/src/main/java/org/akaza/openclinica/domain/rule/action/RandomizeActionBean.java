@@ -1,5 +1,7 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import javax.xml.bind.annotation.*;
+
 
 import org.akaza.openclinica.bean.rule.expression.ExpressionBean;
 import org.hibernate.annotations.Fetch;
@@ -21,9 +23,13 @@ import javax.persistence.Transient;
 
 @Entity
 @DiscriminatorValue("8")
+@XmlRootElement(name="RandomizeAction")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RandomizeActionBean extends RuleActionBean {
 
+    @XmlElement(name="DestinationProperty")
     private List<PropertyBean> properties;
+    @XmlElement(name="StratificationFactors")
     private List<StratificationFactorBean> stratificationFactors;
       
     

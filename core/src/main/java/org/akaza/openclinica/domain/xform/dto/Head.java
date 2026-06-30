@@ -1,5 +1,9 @@
 package org.akaza.openclinica.domain.xform.dto;
 
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name="head")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Head {
 
     private String title;

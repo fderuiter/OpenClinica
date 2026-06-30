@@ -1,6 +1,10 @@
 package org.akaza.openclinica.web.pform.dto;
 
+import javax.xml.bind.annotation.*;
 
+
+@XmlRootElement(name="hint")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Hint {
 	private String ref;
 	private String hint;

@@ -1,5 +1,8 @@
 package org.akaza.openclinica.bean.submit.crfdata;
 
+import javax.xml.bind.annotation.*;
+
+
 import java.util.ArrayList;
 
 /**
@@ -10,10 +13,15 @@ import java.util.ArrayList;
  * @author thickerson, 04/2008
  * 
  */
+@XmlRootElement(name="ClinicalData")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CRFDataPostImportContainer {
 
+    @XmlElement(name="SubjectData")
     private ArrayList<SubjectDataBean> subjectData;
+    @XmlAttribute(name="StudyOID")
     private String studyOID;
+    @XmlElement(name="UpsertOn")
     private UpsertOnBean upsertOn;
 
     public String getStudyOID() {

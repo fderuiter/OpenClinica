@@ -142,14 +142,6 @@
 
     <bean id="dateAdapter" class="org.akaza.openclinica.ws.DateAdapter" />
 
-    <bean id="jaxb2Marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPaths">
-            <list>
-                <value>org.openclinica.ws.beans</value>
-                <value>org.openclinica.ws.crf.v1</value>
-                <value>org.openclinica.ws.studysubject.v1</value>
-            </list>
-        </property>
         <property name="mtomEnabled" value="true"/>
         <property name="adapters">
             <list><ref bean="dateAdapter"/></list>
@@ -164,6 +156,7 @@
         <constructor-arg ref="coreResources"/>
         <property name="ruleSetService" ref="ruleSetService"/>
         <property name="transactionTemplate" ref="sharedTransactionTemplate"/>
+        <property name="jaxb2Marshaller" ref="jaxb2Marshaller"/>
     </bean>
 
      <bean id="studyEventDefinitionEndpoint" class="org.akaza.openclinica.ws.StudyEventDefinitionEndpoint">
