@@ -7,23 +7,90 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResponseExtractor;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.net.URI;
+import java.util.Enumeration;
 
 @Component
 public class LegacyProxyFilter implements Filter {
+
+    private RestTemplate restTemplate;
+
+    public LegacyProxyFilter() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setBufferRequestBody(false);
+        this.restTemplate = new RestTemplate(factory);
+    }
+
+    public LegacyProxyFilter(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
         String uri = req.getRequestURI();
-        
-        // If not a modern route, you would forward this to the legacy app (e.g. via RestTemplate or Apache HttpClient)
-        // For demonstration, we simply log and continue the chain.
-        // A full implementation would pipe the request to http://localhost:8080/OpenClinica/
-        
-        chain.doFilter(request, response);
+
+        if (uri.startsWith("/DataEntry")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        String targetUrl = "http://localhost:8080" + uri;
+        if (req.getQueryString() != null) {
+            targetUrl += "?" + req.getQueryString();
+        }
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            Enumeration<String> headerNames = req.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                if (headerName.equalsIgnoreCase("host") || headerName.equalsIgnoreCase("content-length")) {
+                    continue;
+                }
+                Enumeration<String> values = req.getHeaders(headerName);
+                while (values.hasMoreElements()) {
+                    headers.add(headerName, values.nextElement());
+                }
+            }
+            
+            if (req.getRemoteUser() != null) {
+                headers.add("REMOTE_USER", req.getRemoteUser());
+            }
+
+            RequestCallback requestCallback = requestMessage -> {
+                requestMessage.getHeaders().putAll(headers);
+                StreamUtils.copy(req.getInputStream(), requestMessage.getBody());
+            };
+
+            ResponseExtractor<Void> responseExtractor = responseMessage -> {
+                res.setStatus(responseMessage.getStatusCode().value());
+                responseMessage.getHeaders().forEach((headerName, headerValues) -> {
+                    if (headerName.equalsIgnoreCase("Transfer-Encoding")) return;
+                    for (String headerValue : headerValues) {
+                        res.addHeader(headerName, headerValue);
+                    }
+                });
+                StreamUtils.copy(responseMessage.getBody(), res.getOutputStream());
+                return null;
+            };
+
+            restTemplate.execute(URI.create(targetUrl), HttpMethod.valueOf(req.getMethod()), requestCallback, responseExtractor);
+        } catch (Exception e) {
+            e.printStackTrace();
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Proxy error");
+        }
     }
 }
