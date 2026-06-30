@@ -1,7 +1,11 @@
 package org.akaza.openclinica.domain.xform.dto;
 
+import javax.xml.bind.annotation.*;
+
 import java.util.List;
 
+@XmlRootElement(name="model")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Model {
     private Itext itext;
     private List<Bind> bind;

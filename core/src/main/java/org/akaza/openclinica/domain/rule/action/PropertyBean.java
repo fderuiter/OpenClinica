@@ -1,5 +1,7 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import javax.xml.bind.annotation.*;
+
 import java.io.Serializable;
 
 import javax.persistence.CascadeType;
@@ -17,12 +19,18 @@ import org.hibernate.annotations.Parameter;
 @Entity
 @Table(name = "rule_action_property")
 @GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_action_property_id_seq") })
+@XmlRootElement(name="None")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class PropertyBean extends AbstractMutableDomainObject implements Serializable {
 
+    @XmlAttribute(name="OID")
     private String oid;
+    @XmlAttribute(name="Value")
     private String value;
+    @XmlElement(name="ValueExpression")
     private ExpressionBean valueExpression;
     private RuleActionBean ruleActionBean;
+    @XmlAttribute(name="Property")
     private String property;
     
 

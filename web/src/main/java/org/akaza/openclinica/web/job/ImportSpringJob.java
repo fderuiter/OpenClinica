@@ -1,6 +1,9 @@
 package org.akaza.openclinica.web.job;
 
 import java.io.BufferedWriter;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import javax.xml.transform.stream.StreamSource;
+import java.io.FileReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -58,8 +61,6 @@ import org.akaza.openclinica.service.rule.RuleSetServiceInterface;
 import org.akaza.openclinica.web.SQLInitServlet;
 import org.akaza.openclinica.web.crfdata.ImportCRFDataService;
 import org.apache.commons.lang.StringUtils;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.xml.Unmarshaller;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -236,7 +237,7 @@ public class ImportSpringJob extends QuartzJobBean {
                 destination = removeNullElements(destination);
                 // do everything else here with 'destination'
                 ArrayList<String> auditMessages = processData(destination, dataSource, respage, resword, ub, studyBean, destDirectory, triggerBean,
-                        ruleSetService);
+                        ruleSetService, context);
 
                 auditEventDAO.createRowForExtractDataJobSuccess(triggerBean, auditMessages.get(1));
                 try {
@@ -301,23 +302,16 @@ public class ImportSpringJob extends QuartzJobBean {
      * them into the database if not, and return a message which will go to audit and to the end user.
      */
     private ArrayList<String> processData(File[] dest, DataSource dataSource, ResourceBundle respage, ResourceBundle resword, UserAccountBean ub,
-            StudyBean studyBean, File destDirectory, TriggerBean triggerBean, RuleSetServiceInterface ruleSetService) throws Exception {
+            StudyBean studyBean, File destDirectory, TriggerBean triggerBean, RuleSetServiceInterface ruleSetService, JobExecutionContext context) throws Exception {
         StringBuffer msg = new StringBuffer();
         StringBuffer auditMsg = new StringBuffer();
-        Mapping myMap = new Mapping();
+        ApplicationContext appContext = (ApplicationContext) context.getScheduler().getContext().get("applicationContext");
+        Jaxb2Marshaller jaxb2Marshaller = (Jaxb2Marshaller) appContext.getBean("jaxb2Marshaller");
 
         String propertiesPath = CoreResources.PROPERTIES_DIR;
-
-        new File(propertiesPath + File.separator + "ODM1-3-0.xsd");
         File xsdFile2 = new File(propertiesPath + File.separator + "ODM1-2-1.xsd");
-        // @pgawade 18-April-2011 Fix for issue 8394
-        String ODM_MAPPING_DIR_path = CoreResources.ODM_MAPPING_DIR;
-        myMap.loadMapping(ODM_MAPPING_DIR_path + File.separator + "cd_odm_mapping.xml");
 
-        Unmarshaller um1 = new Unmarshaller(myMap);
         ODMContainer odmContainer = new ODMContainer();
-        // BufferedWriter out = new BufferedWriter(new FileWriter(new
-        // File("log.txt")));
         for (File f : dest) {
             // >> tbh
             boolean fail = false;
@@ -356,7 +350,7 @@ public class ImportSpringJob extends QuartzJobBean {
             try {
 
                 // schemaValidator.validateAgainstSchema(f, xsdFile);
-                odmContainer = (ODMContainer) um1.unmarshal(new FileReader(f));
+                odmContainer = (ODMContainer) jaxb2Marshaller.unmarshal(new StreamSource(new FileReader(f)));
 
                 logger.debug("Found crf data container for study oid: " + odmContainer.getCrfDataPostImportContainer().getStudyOID());
                 logger.debug("found length of subject list: " + odmContainer.getCrfDataPostImportContainer().getSubjectData().size());
@@ -366,7 +360,7 @@ public class ImportSpringJob extends QuartzJobBean {
                     schemaValidator.validateAgainstSchema(f, xsdFile2);
                     // for backwards compatibility, we also try to validate vs
                     // 1.2.1 ODM 06/2008
-                    odmContainer = (ODMContainer) um1.unmarshal(new FileReader(f));
+                    odmContainer = (ODMContainer) jaxb2Marshaller.unmarshal(new StreamSource(new FileReader(f)));
                 } catch (Exception me2) {
                     // not sure if we want to report me2
 

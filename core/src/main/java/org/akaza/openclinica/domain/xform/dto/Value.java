@@ -1,5 +1,9 @@
 package org.akaza.openclinica.domain.xform.dto;
 
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name="value")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Value {
     private String form;
     private String value;

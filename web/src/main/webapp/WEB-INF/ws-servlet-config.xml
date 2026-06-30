@@ -72,10 +72,6 @@
         <constructor-arg ref="jaxb2Marshaller"/>
     </bean>
 
-    <bean id="jaxb2Marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="org.akaza.openclinica.ws.generated"/>
-        <property name="mtomEnabled" value="true"/>
-    </bean>
     
     <!--  Endpoints 
     <bean id="subjectEndpoint" class="org.akaza.openclinica.ws.SubjectEndpoint">

@@ -1,5 +1,9 @@
 package org.akaza.openclinica.domain.xform.dto;
 
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name="upload")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Upload implements UserControl {
     private String ref;
     private String appearance;

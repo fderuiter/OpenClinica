@@ -1,15 +1,23 @@
 package org.akaza.openclinica.bean.submit.crfdata;
 
+import javax.xml.bind.annotation.*;
+
+
 import java.util.ArrayList;
 
 import org.akaza.openclinica.bean.odmbeans.AuditLogsBean;
 import org.akaza.openclinica.bean.odmbeans.DiscrepancyNotesBean;
 
+@XmlRootElement(name="FormData")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class FormDataBean {
+    @XmlElement(name="ItemGroupData")
     private ArrayList<ImportItemGroupDataBean> itemGroupData;
     private AuditLogsBean auditLogs;
     private DiscrepancyNotesBean discrepancyNotes;
+    @XmlAttribute(name="FormOID")
     private String formOID;
+    @XmlAttribute(name="Status", namespace="http://www.openclinica.org/ns/odm_ext_v130/v3.1")
     private String EventCRFStatus;
 
     public FormDataBean() {

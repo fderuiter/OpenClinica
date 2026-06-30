@@ -1,5 +1,9 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name="None")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RuleActionRunEventBean {
    
    Boolean not_started;

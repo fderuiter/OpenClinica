@@ -1,7 +1,11 @@
 package org.akaza.openclinica.web.pform.dto;
 
+import javax.xml.bind.annotation.*;
+
 import java.util.List;
 
+@XmlRootElement(name="section")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Section {
 	private Label label;
 	private List<Group> group;

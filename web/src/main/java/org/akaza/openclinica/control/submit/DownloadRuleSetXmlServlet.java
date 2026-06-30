@@ -7,6 +7,11 @@
 package org.akaza.openclinica.control.submit;
 
 import org.akaza.openclinica.bean.core.Role;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import javax.xml.transform.stream.StreamSource;
 import org.akaza.openclinica.control.SpringServletAccess;
 import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.dao.core.CoreResources;
@@ -17,12 +22,6 @@ import org.akaza.openclinica.service.rule.RuleSetServiceInterface;
 import org.akaza.openclinica.view.Page;
 import org.akaza.openclinica.web.InsufficientPermissionException;
 import org.akaza.openclinica.web.SQLInitServlet;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.exolab.castor.xml.XMLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,26 +64,13 @@ public class DownloadRuleSetXmlServlet extends SecureController {
 
         try {
             // Create Mapping
-            Mapping mapping = new Mapping();
-            mapping.loadMapping(getCoreResources().getURL("mappingMarshaller.xml"));
-            // Create XMLContext
-            XMLContext xmlContext = new XMLContext();
-            xmlContext.addMapping(mapping);
-
-            Marshaller marshaller = xmlContext.createMarshaller();
-            marshaller.setWriter(writer);
-            marshaller.marshal(rpic);
+            JAXBContext jc = JAXBContext.newInstance(RulesPostImportContainer.class);
+            Marshaller marshaller = jc.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(rpic, writer);
             return writer;
 
-        } catch (FileNotFoundException ex) {
-            throw new OpenClinicaSystemException(ex.getMessage(), ex.getCause());
-        } catch (IOException ex) {
-            throw new OpenClinicaSystemException(ex.getMessage(), ex.getCause());
-        } catch (MarshalException e) {
-            throw new OpenClinicaSystemException(e.getMessage(), e.getCause());
-        } catch (ValidationException e) {
-            throw new OpenClinicaSystemException(e.getMessage(), e.getCause());
-        } catch (MappingException e) {
+        } catch (javax.xml.bind.JAXBException e) {
             throw new OpenClinicaSystemException(e.getMessage(), e.getCause());
         } catch (Exception e) {
             throw new OpenClinicaSystemException(e.getMessage(), e.getCause());

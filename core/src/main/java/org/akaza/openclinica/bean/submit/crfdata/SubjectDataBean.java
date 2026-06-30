@@ -1,12 +1,19 @@
 package org.akaza.openclinica.bean.submit.crfdata;
 
+import javax.xml.bind.annotation.*;
+
+
 import java.util.ArrayList;
 
 import org.akaza.openclinica.bean.odmbeans.AuditLogsBean;
 import org.akaza.openclinica.bean.odmbeans.DiscrepancyNotesBean;
 
+@XmlRootElement(name="SubjectData")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SubjectDataBean {
+    @XmlElement(name="StudyEventData")
     private ArrayList<StudyEventDataBean> studyEventData;
+    @XmlAttribute(name="SubjectKey")
     private String subjectOID;
     private AuditLogsBean auditLogs;
     private DiscrepancyNotesBean discrepancyNotes;

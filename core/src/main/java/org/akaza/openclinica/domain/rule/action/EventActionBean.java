@@ -1,5 +1,7 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import javax.xml.bind.annotation.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,12 +26,17 @@ import org.hibernate.annotations.FetchMode;
  */
 @Entity
 @DiscriminatorValue("6")
+@XmlRootElement(name="EventAction")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class EventActionBean extends RuleActionBean implements Serializable {
 
 	
 
-	private String oc_oid_reference;
+	@XmlAttribute(name="OID")
+    private String oc_oid_reference;
+    @XmlElement(name="EventDestination")
     private List<PropertyBean> properties;
+    @XmlElement(name="RunOnStatus")
     private RuleActionRunEventBean ruleActionRunEvent;
     
     @Transient

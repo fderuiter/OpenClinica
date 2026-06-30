@@ -1,13 +1,19 @@
 package org.akaza.openclinica.bean.submit.crfdata;
 
+import javax.xml.bind.annotation.*;
+
+
 /**
  * ODM Container, the surrounding tag for Clinical Data together with meta data
  * 
  * @author thickerson, 04/2008
  * 
  */
+@XmlRootElement(name="ODM")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ODMContainer {
 
+    @XmlElement(name="ClinicalData")
     private CRFDataPostImportContainer crfDataPostImportContainer;
     private String subjectUniqueIdentifier;
     private String studyUniqueIdentifier;

@@ -1,11 +1,15 @@
 package org.akaza.openclinica.web.pform.formlist;
 
+import javax.xml.bind.annotation.*;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.submit.CRFVersionBean;
 
+@XmlRootElement(name="xform")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class XForm {
     private String formID = null;
     private String name = null;

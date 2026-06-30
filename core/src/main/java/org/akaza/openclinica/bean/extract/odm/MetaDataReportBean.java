@@ -8,6 +8,11 @@
 package org.akaza.openclinica.bean.extract.odm;
 
 import org.akaza.openclinica.bean.managestudy.StudyBean;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import javax.xml.transform.stream.StreamSource;
 import org.akaza.openclinica.bean.odmbeans.BasicDefinitionsBean;
 import org.akaza.openclinica.bean.odmbeans.CodeListBean;
 import org.akaza.openclinica.bean.odmbeans.CodeListItemBean;
@@ -44,13 +49,6 @@ import org.akaza.openclinica.domain.rule.RulesPostImportContainer;
 import org.akaza.openclinica.exception.OpenClinicaSystemException;
 import org.akaza.openclinica.logic.odmExport.MetadataUnit;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.castor.xml.XMLConfiguration;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.exolab.castor.xml.XMLContext;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -132,31 +130,17 @@ public class MetaDataReportBean extends OdmXmlReportBean {
 
         try {
             // Create Mapping
-            Mapping mapping = new Mapping();
-            mapping.loadMapping(getCoreResources().getURL("mappingMarshallerMetadata.xml"));
-            // Create XMLContext
-            XMLContext xmlContext = new XMLContext();
-            xmlContext.setProperty(XMLConfiguration.NAMESPACES, "true");
-            xmlContext.addMapping(mapping);
-
+            JAXBContext jc = JAXBContext.newInstance(RulesPostImportContainer.class);
+            Marshaller marshaller = jc.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
             StringWriter writer = new StringWriter();
-            Marshaller marshaller = xmlContext.createMarshaller();
-            // marshaller.setNamespaceMapping("castor", "http://castor.org/sample/mapping/");
-            marshaller.setWriter(writer);
-            marshaller.marshal(rpic);
+            marshaller.marshal(rpic, writer);
             String result = writer.toString();
-            String newResult = result.replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
+            String newResult = result;
             return newResult;
 
-        } catch (FileNotFoundException ex) {
-            throw new OpenClinicaSystemException(ex.getMessage(), ex.getCause());
-        } catch (IOException ex) {
-            throw new OpenClinicaSystemException(ex.getMessage(), ex.getCause());
-        } catch (MarshalException e) {
-            throw new OpenClinicaSystemException(e.getMessage(), e.getCause());
-        } catch (ValidationException e) {
-            throw new OpenClinicaSystemException(e.getMessage(), e.getCause());
-        } catch (MappingException e) {
+        } catch (javax.xml.bind.JAXBException e) {
             throw new OpenClinicaSystemException(e.getMessage(), e.getCause());
         } catch (Exception e) {
             throw new OpenClinicaSystemException(e.getMessage(), e.getCause());

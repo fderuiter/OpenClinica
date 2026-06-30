@@ -1,5 +1,7 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import javax.xml.bind.annotation.*;
+
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
 import org.hibernate.annotations.Fetch;
@@ -20,9 +22,13 @@ import javax.persistence.Transient;
 
 @Entity
 @DiscriminatorValue("3")
+@XmlRootElement(name="ShowAction")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ShowActionBean extends RuleActionBean {
 
+    @XmlElement(name="Message")
     private String message;
+    @XmlElement(name="DestinationProperty")
     private List<PropertyBean> properties;
     private List<PropertyBean> lazyProperties = LazyList.decorate(new ArrayList<PropertyBean>(), FactoryUtils.instantiateFactory(PropertyBean.class));
 

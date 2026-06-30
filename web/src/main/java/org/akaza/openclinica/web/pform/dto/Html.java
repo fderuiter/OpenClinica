@@ -1,5 +1,9 @@
 package org.akaza.openclinica.web.pform.dto;
 
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name="html")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Html {
 	
 	private Head head;

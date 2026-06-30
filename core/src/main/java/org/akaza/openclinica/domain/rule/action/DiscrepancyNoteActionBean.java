@@ -1,5 +1,7 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import javax.xml.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -9,8 +11,11 @@ import javax.persistence.Transient;
 
 @Entity
 @DiscriminatorValue("1")
+@XmlRootElement(name="DiscrepancyNoteAction")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class DiscrepancyNoteActionBean extends RuleActionBean {
 
+    @XmlElement(name="Message")
     private String message;
 
     public DiscrepancyNoteActionBean() {

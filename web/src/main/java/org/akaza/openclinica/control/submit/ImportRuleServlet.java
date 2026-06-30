@@ -8,6 +8,11 @@
 package org.akaza.openclinica.control.submit;
 
 import org.akaza.openclinica.bean.core.Role;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import javax.xml.transform.stream.StreamSource;
 import org.akaza.openclinica.bean.rule.FileProperties;
 import org.akaza.openclinica.bean.rule.FileUploadHelper;
 import org.akaza.openclinica.bean.rule.XmlSchemaValidationHelper;
@@ -22,12 +27,6 @@ import org.akaza.openclinica.service.rule.RulesPostImportContainerService;
 import org.akaza.openclinica.view.Page;
 import org.akaza.openclinica.web.InsufficientPermissionException;
 import org.akaza.openclinica.web.SQLInitServlet;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.exolab.castor.xml.XMLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,33 +151,16 @@ public class ImportRuleServlet extends SecureController {
 
         RulesPostImportContainer ruleImport = null;
         try {
-            // create an XMLContext instance
-            XMLContext xmlContext = new XMLContext();
-            // create and set a Mapping instance
-            Mapping mapping = xmlContext.createMapping();
-            // mapping.loadMapping(SpringServletAccess.getPropertiesDir(context) + "mapping.xml");
-            mapping.loadMapping(getCoreResources().getURL("mapping.xml"));
-
-            xmlContext.addMapping(mapping);
-            // create a new Unmarshaller
-            Unmarshaller unmarshaller = xmlContext.createUnmarshaller();
-            unmarshaller.setWhitespacePreserve(false);
-            unmarshaller.setClass(RulesPostImportContainer.class);
-            // Create a Reader to the file to unmarshal from
-            FileReader reader = new FileReader(xmlFile);
-            ruleImport = (RulesPostImportContainer) unmarshaller.unmarshal(reader);
+            org.springframework.context.ApplicationContext context = org.springframework.web.context.support.WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+            org.springframework.oxm.jaxb.Jaxb2Marshaller jaxb2Marshaller = (org.springframework.oxm.jaxb.Jaxb2Marshaller) context.getBean("jaxb2Marshaller");
+            java.io.FileReader reader = new java.io.FileReader(xmlFile);
+            ruleImport = (RulesPostImportContainer) jaxb2Marshaller.unmarshal(new javax.xml.transform.stream.StreamSource(reader));
             ruleImport.initializeRuleDef();
             logRuleImport(ruleImport);
             return ruleImport;
-        } catch (FileNotFoundException ex) {
+        } catch (java.io.FileNotFoundException ex) {
             throw new OpenClinicaSystemException(ex.getMessage(), ex.getCause());
-        } catch (IOException ex) {
-            throw new OpenClinicaSystemException(ex.getMessage(), ex.getCause());
-        } catch (MarshalException e) {
-            throw new OpenClinicaSystemException(e.getMessage(), e.getCause());
-        } catch (ValidationException e) {
-            throw new OpenClinicaSystemException(e.getMessage(), e.getCause());
-        } catch (MappingException e) {
+        } catch (Exception e) {
             throw new OpenClinicaSystemException(e.getMessage(), e.getCause());
         }
     }

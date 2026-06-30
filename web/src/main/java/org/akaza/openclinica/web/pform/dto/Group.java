@@ -1,8 +1,12 @@
 package org.akaza.openclinica.web.pform.dto;
 
+import javax.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlRootElement(name="group")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Group {
 	private Label label;
 	private Repeat repeat;

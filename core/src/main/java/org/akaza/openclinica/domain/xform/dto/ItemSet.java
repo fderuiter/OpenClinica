@@ -1,5 +1,9 @@
 package org.akaza.openclinica.domain.xform.dto;
 
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name="itemset")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ItemSet {
     private String nodeSet;
     private Value value;

@@ -68,4 +68,25 @@
      
      
      
+
+    <bean id="jaxb2Marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="packagesToScan">
+            <list>
+                <value>org.akaza.openclinica.bean.submit.crfdata</value>
+                <value>org.akaza.openclinica.bean.odmbeans</value>
+                <value>org.akaza.openclinica.domain.rule</value>
+                <value>org.akaza.openclinica.domain.rule.action</value>
+                <value>org.akaza.openclinica.domain.rule.expression</value>
+            </list>
+        </property>
+        <property name="contextPaths">
+            <list>
+                <value>org.openclinica.ws.beans</value>
+                <value>org.akaza.openclinica.ws.generated</value>
+                <value>org.cdisc.ns.odm.v130:org.cdisc.ns.odm.v130_api:org.openclinica.ns.odm_ext_v130.v31_api:org.openclinica.ns.odm_ext_v130.v31:org.openclinica.ns.rules.v31:org.openclinica.ns.response.v31:org.openclinica.ns.rules_test.v31</value>
+            </list>
+        </property>
+        <property name="supportDtd" value="false" />
+        <property name="processExternalEntities" value="false" />
+    </bean>
 </beans>

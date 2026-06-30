@@ -1,9 +1,17 @@
 package org.akaza.openclinica.bean.submit.crfdata;
 
+import javax.xml.bind.annotation.*;
+
+
+@XmlRootElement(name="UpsertOn")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UpsertOnBean {
 
+    @XmlAttribute(name="NotStarted")
     private boolean notStarted = true;
+    @XmlAttribute(name="DataEntryStarted")
     private boolean dataEntryStarted = true;
+    @XmlAttribute(name="DataEntryComplete")
     private boolean dataEntryComplete = true;
 
     public boolean isNotStarted() {

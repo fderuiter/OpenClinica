@@ -1,11 +1,20 @@
 package org.akaza.openclinica.web.pform;
 
 import java.io.Reader;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
+import javax.xml.transform.stream.StreamSource;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import javax.xml.transform.sax.SAXSource;
 
 import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilder;
@@ -49,10 +58,6 @@ import org.akaza.openclinica.web.pform.widget.Widget;
 import org.akaza.openclinica.web.pform.widget.WidgetFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.XMLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -64,7 +69,6 @@ import org.w3c.dom.Element;
  */
 public class OpenRosaXmlGenerator {
 
-    private XMLContext xmlContext = null;
     private DataSource dataSource = null;
     protected final Logger log = LoggerFactory.getLogger(OpenRosaXmlGenerator.class);
     CoreResources coreResources;
@@ -81,17 +85,6 @@ public class OpenRosaXmlGenerator {
         this.dataSource = dataSource;
         this.coreResources = core;
         this.ruleActionPropertyDao = ruleActionPropertyDao;
-
-        try {
-            xmlContext = new XMLContext();
-            Mapping mapping = xmlContext.createMapping();
-            mapping.loadMapping(core.getURL("openRosaXFormMapping.xml"));
-            xmlContext.addMapping(mapping);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            log.error(ExceptionUtils.getStackTrace(e));
-            throw new Exception(e);
-        }
     }
 
     /**
@@ -548,11 +541,19 @@ public class OpenRosaXmlGenerator {
 
     private Html buildJavaXForm(String content) throws Exception {
         // XML to Object
+        JAXBContext context = JAXBContext.newInstance(Html.class);
         Reader reader = new StringReader(content);
-        Unmarshaller unmarshaller = xmlContext.createUnmarshaller();
-        unmarshaller.setClass(Html.class);
-        unmarshaller.setWhitespacePreserve(false);
-        Html html = (Html) unmarshaller.unmarshal(reader);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        
+        SAXParserFactory spf = SAXParserFactory.newInstance();
+        spf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        spf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        spf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        XMLReader xmlReader = spf.newSAXParser().getXMLReader();
+        InputSource inputSource = new InputSource(reader);
+        SAXSource saxSource = new SAXSource(xmlReader, inputSource);
+        
+        Html html = (Html) unmarshaller.unmarshal(saxSource);
         reader.close();
         return html;
     }
@@ -560,15 +561,10 @@ public class OpenRosaXmlGenerator {
     private String buildStringXForm(Html html) throws Exception {
         StringWriter writer = new StringWriter();
 
-        Marshaller marshaller = xmlContext.createMarshaller();
-        marshaller.setNamespaceMapping("h", "http://www.w3.org/1999/xhtml");
-        marshaller.setNamespaceMapping("jr", "http://openrosa.org/javarosa");
-        marshaller.setNamespaceMapping("xsd", "http://www.w3.org/2001/XMLSchema");
-        marshaller.setNamespaceMapping("ev", "http://www.w3.org/2001/xml-events");
-        marshaller.setNamespaceMapping("", "http://www.w3.org/2002/xforms");
-        marshaller.setProperty("org.exolab.castor.indent", "false");
-        marshaller.setWriter(writer);
-        marshaller.marshal(html);
+        JAXBContext context = JAXBContext.newInstance(Html.class);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        marshaller.marshal(html, writer);
         String xform = writer.toString();
         return xform;
     }

@@ -1,7 +1,11 @@
 package org.akaza.openclinica.domain.xform.dto;
 
+import javax.xml.bind.annotation.*;
+
 import java.util.List;
 
+@XmlRootElement(name="select")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Select implements UserControl {
     private String ref;
     private String appearance;

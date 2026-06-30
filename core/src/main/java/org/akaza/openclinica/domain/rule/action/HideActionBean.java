@@ -1,5 +1,7 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import javax.xml.bind.annotation.*;
+
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -18,9 +20,13 @@ import javax.persistence.Transient;
 
 @Entity
 @DiscriminatorValue("5")
+@XmlRootElement(name="HideAction")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class HideActionBean extends RuleActionBean {
 
+    @XmlElement(name="Message")
     private String message;
+    @XmlElement(name="DestinationProperty")
     private List<PropertyBean> properties;
 
     public HideActionBean() {

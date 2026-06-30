@@ -164,11 +164,11 @@ public class CoreResources implements ResourceLoaderAware {
             DB_NAME = dbName;
             SQLFactory factory = SQLFactory.getInstance();
             factory.run(dbName, resourceLoader);
-            setODM_MAPPING_DIR();
+            // setODM_MAPPING_DIR();
             if (extractInfo != null) {
                 copyBaseToDest(resourceLoader);
                 // @pgawade 18-April-2011 Fix for issue 8394
-                copyODMMappingXMLtoResources(resourceLoader);
+                // copyODMMappingXMLtoResources(resourceLoader);
                 extractProperties = findExtractProperties();
                 // JN: this is in for junits to run without extract props
                 copyImportRulesFiles();

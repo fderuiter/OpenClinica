@@ -1,5 +1,8 @@
 package org.akaza.openclinica.bean.submit.crfdata;
 
+import javax.xml.bind.annotation.*;
+
+
 import java.util.ArrayList;
 
 import org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean;
@@ -7,9 +10,14 @@ import org.akaza.openclinica.bean.odmbeans.AuditLogsBean;
 import org.akaza.openclinica.bean.odmbeans.DiscrepancyNotesBean;
 import org.akaza.openclinica.domain.datamap.StudyEventDefinition;
 
+@XmlRootElement(name="StudyEventData")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class StudyEventDataBean {
+    @XmlElement(name="FormData")
     private ArrayList<FormDataBean> formData;
+    @XmlAttribute(name="StudyEventOID")
     private String studyEventOID;
+    @XmlAttribute(name="StudyEventRepeatKey")
     private String studyEventRepeatKey;
     private AuditLogsBean auditLogs;
     private DiscrepancyNotesBean discrepancyNotes;
