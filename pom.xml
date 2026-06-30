@@ -31,8 +31,88 @@
 		<!-- Library Versions -->
 		<spring.version>3.2.18.RELEASE</spring.version>
 		<db.test>localhost</db.test>
+		
+		<!-- Core Sane Defaults for All Environments -->
+		<filePath>${catalina.home}/${WEBAPP.lower}.data/</filePath>
+		<userAccountNotification>email</userAccountNotification>
+		<adminEmail>admin@example.com</adminEmail>
+		<mailHost>mail.smtp.com</mailHost>
+		<mailPort>25</mailPort>
+		<mailProtocol>smtp</mailProtocol>
+		<mailUsername></mailUsername>
+		<mailPassword></mailPassword>
+		<mailSmtpAuth>false</mailSmtpAuth>
+		<mailSmtpStarttls.enable>false</mailSmtpStarttls.enable>
+		<mailSmtpsAuth>false</mailSmtpsAuth>
+		<mailSmtpsStarttls.enable>false</mailSmtpsStarttls.enable>
+		<mailSmtpConnectionTimeout>100</mailSmtpConnectionTimeout>
+		<mailErrorMsg>developers@openclinica.org</mailErrorMsg>
+		<passwordEncryptionSalt></passwordEncryptionSalt>
+		<sysURL>http://localhost:8080/${WEBAPP}/MainMenu</sysURL>
+		<maxInactiveInterval>3600</maxInactiveInterval>
+		<log.dir>${catalina.home}/logs/openclinica</log.dir>
+		<logLocation>local</logLocation>
+		<logLevel>info</logLevel>
+		<syslog.host>localhost</syslog.host>
+		<syslog.port>514</syslog.port>
+		<org.quartz.jobStore.misfireThreshold>18000000</org.quartz.jobStore.misfireThreshold>
+		<org.quartz.threadPool.threadCount>1</org.quartz.threadPool.threadCount>
+		<org.quartz.threadPool.threadPriority>5</org.quartz.threadPool.threadPriority>
+		<ccts.waitBeforeCommit>6000</ccts.waitBeforeCommit>
+		<collectStats>true</collectStats>
+		<usage.stats.host>usage.openclinica.com</usage.stats.host>
+		<usage.stats.port>514</usage.stats.port>
+		<OpenClinica.version>${project.version}</OpenClinica.version>
+		<designerURL>https://designer13.openclinica.com/</designerURL>
 	</properties>
 	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<dbType>postgres</dbType>
+				<dbUser>clinica</dbUser>
+				<dbPass>clinica</dbPass>
+				<db>openclinica</db>
+				<dbPort>5432</dbPort>
+				<dbHost>localhost</dbHost>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<dbType>postgres</dbType>
+				<dbUser>clinica</dbUser>
+				<dbPass>clinica</dbPass>
+				<db>openclinica</db>
+				<dbPort>5432</dbPort>
+				<dbHost>dev-db-host</dbHost>
+			</properties>
+		</profile>
+		<profile>
+			<id>qa</id>
+			<properties>
+				<dbType>postgres</dbType>
+				<dbUser>clinica</dbUser>
+				<dbPass>clinica</dbPass>
+				<db>openclinica</db>
+				<dbPort>5432</dbPort>
+				<dbHost>qa-db-host</dbHost>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<dbType>postgres</dbType>
+				<dbUser>clinica</dbUser>
+				<dbPass>${env.DB_PASS}</dbPass>
+				<db>openclinica</db>
+				<dbPort>5432</dbPort>
+				<dbHost>${env.DB_HOST}</dbHost>
+			</properties>
+		</profile>
 		<profile>
 			<id>codeship</id>
 			<properties>
@@ -379,6 +459,12 @@
 
 	</dependencies>
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+			</plugin>
+		</plugins>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -521,6 +607,36 @@
 						<schemaDirectory>src/main/webapp/WEB-INF/schemas</schemaDirectory>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>3.1.0</version>
+					<executions>
+						<execution>
+							<id>check-unresolved-tokens</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<target>
+									<echo message="Checking for unresolved Maven properties..."/>
+									<fileset id="unresolved" dir="${project.build.outputDirectory}" erroronmissingdir="false">
+										<include name="**/*.properties"/>
+										<include name="**/*.xml"/>
+										<!-- We match explicit DB and Mail placeholders that should have been replaced -->
+										<containsregexp expression="\$\{dbHost\}|\$\{dbType\}|\$\{dbUser\}|\$\{dbPass\}|\$\{db\}|\$\{dbPort\}|\$\{sysURL\}"/>
+									</fileset>
+									<fail message="Found unresolved Maven properties in processed resources!">
+										<condition>
+											<resourcecount count="0" when="greater" refid="unresolved"/>
+										</condition>
+									</fail>
+								</target>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -554,13 +670,6 @@
 				</includes>
 			</testResource>
 		</testResources>
-
-		<!--
-		<filters>
-			<filter>src/main/filters/default.properties</filter>
-			<filter>src/main/filters/${config.id}.properties</filter>
-		</filters>
-		-->
 
 	</build>
 	<scm>
