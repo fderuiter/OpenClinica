@@ -83,6 +83,7 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 	
 	private boolean collectDns=true;
 	private boolean collectAudits=true;
+	private java.util.Date modifiedSince;
 	private AuditLogEventDao auditEventDAO;
 	private Locale locale;
 	
@@ -110,6 +111,14 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 
 	public void setCollectAudits(boolean collectAudits) {
 		this.collectAudits = collectAudits;
+	}
+
+	public java.util.Date getModifiedSince() {
+		return modifiedSince;
+	}
+
+	public void setModifiedSince(java.util.Date modifiedSince) {
+		this.modifiedSince = modifiedSince;
 	}
 
 	public StudyEventDefinitionDao getStudyEventDefDao() {
@@ -189,6 +198,39 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 		return constructClinicalDataStudy(studySubjs, study,null, null);
 	}
 
+	private boolean isModifiedSince(java.util.Date date, java.util.Date modifiedSince) {
+		if (date == null || modifiedSince == null) return false;
+		return date.after(modifiedSince);
+	}
+
+	private boolean isSubjectModifiedSince(StudySubject studySubject, List<StudyEvent> studyEvents, java.util.Date modifiedSince) {
+		if (isModifiedSince(studySubject.getDateUpdated(), modifiedSince) || isModifiedSince(studySubject.getDateCreated(), modifiedSince)) {
+			return true;
+		}
+		if (studyEvents != null) {
+			for (StudyEvent se : studyEvents) {
+				if (isModifiedSince(se.getDateUpdated(), modifiedSince) || isModifiedSince(se.getDateCreated(), modifiedSince)) {
+					return true;
+				}
+				if (se.getEventCrfs() != null) {
+					for (EventCrf ecrf : se.getEventCrfs()) {
+						if (isModifiedSince(ecrf.getDateUpdated(), modifiedSince) || isModifiedSince(ecrf.getDateCreated(), modifiedSince)) {
+							return true;
+						}
+						if (ecrf.getItemDatas() != null) {
+							for (ItemData id : ecrf.getItemDatas()) {
+								if (isModifiedSince(id.getDateUpdated(), modifiedSince) || isModifiedSince(id.getDateCreated(), modifiedSince)) {
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	private OdmClinicalDataBean constructClinicalDataStudy(List<StudySubject> studySubjs, Study study,List<StudyEvent>studyEvents,String formVersionOID) {
 		OdmClinicalDataBean odmClinicalDataBean = new OdmClinicalDataBean();
 		ExportSubjectDataBean expSubjectBean;
@@ -196,6 +238,10 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 		for(StudySubject studySubj:studySubjs)
 		{
 			studyEvents = (ArrayList<StudyEvent>)getStudySubjectDao().fetchListSEs(studySubj.getOcOid());
+			
+			if (getModifiedSince() != null && !isSubjectModifiedSince(studySubj, studyEvents, getModifiedSince())) {
+				continue;
+			}
 			
 			if(studyEvents!=null)
 			{
@@ -851,10 +897,11 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 	 */
 	@Override
 	public LinkedHashMap<String, OdmClinicalDataBean> getClinicalData(String studyOID, String studySubjectOID,
-			String studyEventOID, String formVersionOID,Boolean collectDNs,Boolean collectAudit, Locale locale, int userId) {
+			String studyEventOID, String formVersionOID,Boolean collectDNs,Boolean collectAudit, Locale locale, int userId, java.util.Date modifiedSince) {
 		setLocale(locale);
 		setCollectDns(collectDNs);
 		setCollectAudits(collectAudit);
+		setModifiedSince(modifiedSince);
 		LinkedHashMap<String,OdmClinicalDataBean> clinicalDataHash = new LinkedHashMap<String, OdmClinicalDataBean>();
 		UserAccount userAccount = getUserAccountDao().findByColumnName(userId,"userId");
 		LOGGER.debug("Entering the URL with "+studyOID+":"+studySubjectOID+":"+studyEventOID+":"+formVersionOID+":DNS:"+collectDNs+":Audits:"+collectAudit);

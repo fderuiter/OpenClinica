@@ -106,8 +106,18 @@ public class ODMClinicaDataResource {
 			@PathParam("studyEventOID") String studyEventOID,
 			@PathParam("studySubjectIdentifier") String studySubjectIdentifier,
 			@DefaultValue("n") @QueryParam("includeDNs") String includeDns,
-			@DefaultValue("n") @QueryParam("includeAudits") String includeAudits,@Context HttpServletRequest request) {
+			@DefaultValue("n") @QueryParam("includeAudits") String includeAudits,
+			@QueryParam("modifiedSince") String modifiedSince,
+			@Context HttpServletRequest request) {
 		LOGGER.debug("Requesting clinical data resource");
+		java.util.Date modifiedSinceDate = null;
+		if (modifiedSince != null && !modifiedSince.trim().isEmpty()) {
+			try {
+				modifiedSinceDate = java.util.Date.from(java.time.Instant.parse(modifiedSince));
+			} catch (Exception e) {
+				throw new javax.ws.rs.WebApplicationException(javax.ws.rs.core.Response.status(400).entity("Invalid date format").build());
+			}
+		}
 		boolean includeDN=false;
 		boolean includeAudit= false;
 		if(includeDns.equalsIgnoreCase("no")||includeDns.equalsIgnoreCase("n")) includeDN=false;
@@ -120,9 +130,12 @@ public class ODMClinicaDataResource {
 						formVersionOID,
 						getClinicalDataCollectorResource()
 								.generateClinicalData(studyOID, getStudySubjectOID(studySubjectIdentifier,studyOID),
-										studyEventOID, formVersionOID,includeDN,includeAudit,request.getLocale(), userId));
+										studyEventOID, formVersionOID,includeDN,includeAudit,request.getLocale(), userId, modifiedSinceDate));
 		if(report.getClinicalDataMap()==null)
 		    return null;
+		if (modifiedSinceDate != null) {
+			report.getOdmBean().setFileType("Transactional");
+		}
 		report.createOdmXml(true);
 		//xmlSerializer.setForceTopLevelObject(true);
 		xmlSerializer.setTypeHintsEnabled(true);
@@ -214,8 +227,18 @@ public class ODMClinicaDataResource {
 			@PathParam("studySubjectIdentifier") String studySubjectIdentifier,
 			@PathParam("studyEventOID") String studyEventOID,
 			@DefaultValue("n") @QueryParam("includeDNs") String includeDns,
-			@DefaultValue("n") @QueryParam("includeAudits") String includeAudits,@Context HttpServletRequest request) {
+			@DefaultValue("n") @QueryParam("includeAudits") String includeAudits,
+			@QueryParam("modifiedSince") String modifiedSince,
+			@Context HttpServletRequest request) {
 		LOGGER.debug("Requesting clinical data resource");
+		java.util.Date modifiedSinceDate = null;
+		if (modifiedSince != null && !modifiedSince.trim().isEmpty()) {
+			try {
+				modifiedSinceDate = java.util.Date.from(java.time.Instant.parse(modifiedSince));
+			} catch (Exception e) {
+				throw new javax.ws.rs.WebApplicationException(javax.ws.rs.core.Response.status(400).entity("Invalid date format").build());
+			}
+		}
 		boolean includeDN=false;
 		boolean includeAudit= false;
 		int userId = ((UserAccountBean)request.getSession().getAttribute("userBean")).getId();
@@ -230,8 +253,11 @@ public class ODMClinicaDataResource {
 						formVersionOID,
 						getClinicalDataCollectorResource()
 								.generateClinicalData(studyOID, getStudySubjectOID(studySubjectIdentifier,studyOID),
-										studyEventOID, formVersionOID,includeDN,includeAudit,request.getLocale(), userId));
+										studyEventOID, formVersionOID,includeDN,includeAudit,request.getLocale(), userId, modifiedSinceDate));
 
+		if (modifiedSinceDate != null) {
+			report.getOdmBean().setFileType("Transactional");
+		}
 		report.createOdmXml(true);
 		LOGGER.debug(report.getXmlOutput().toString().trim());
 
