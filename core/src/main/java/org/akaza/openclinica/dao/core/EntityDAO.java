@@ -159,20 +159,17 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
         clearSignals();
 
         ArrayList results = new ArrayList();
-        ResultSet rs = null;
-        Connection con = null;
-        PreparedStatement ps = null;
 
         logger.debug("query???" + query);
-        try {
-            con = ds.getConnection();
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+             
             if (con.isClosed()) {
                 if (logger.isWarnEnabled())
                     logger.warn("Connection is closed: GenericDAO.select!");
                 throw new SQLException();
             }
-            ps = con.prepareStatement(query);
-            rs = ps.executeQuery();
             // if (logger.isInfoEnabled()) {
             logger.debug("Executing static query, GenericDAO.select: " + query);
             // logger.info("fond information about result set: was null: "+
@@ -189,8 +186,6 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
                 logger.warn("Exeception while executing static query, GenericDAO.select: " + query + ": " + sqle.getMessage());
                 logger.error(sqle.getMessage(), sqle);
             }
-        } finally {
-            this.closeIfNecessary(con, rs, ps);
         }
         // return rs;
         return results;
@@ -202,27 +197,21 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
 
         ArrayList results = new ArrayList();
 
-        ResultSet rs = null;
-        Connection con = null;
         PreparedStatementFactory psf = new PreparedStatementFactory(variables);
-        PreparedStatement ps = null;
 
-        try {
-            con = ds.getConnection();
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            
             if (con.isClosed()) {
                 if (logger.isWarnEnabled())
                     logger.warn("Connection is closed: GenericDAO.select!");
                 throw new SQLException();
             }
 
-            ps = con.prepareStatement(query);
+            psf.generate(ps);// enter variables here!
 
-            ps = psf.generate(ps);// enter variables here!
-
-            {
-                rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
                 results = this.processResultRows(rs);
-
             }
 
             // if (logger.isInfoEnabled()) {
@@ -237,8 +226,11 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
                 logger.warn("Exception while executing dynamic query, GenericDAO.select: " + query + ":message: " + sqle.getMessage());
                 logger.error(sqle.getMessage(), sqle);
             }
-        } finally {
-            this.closeIfNecessary(con, rs, ps);
+        } catch (NullPointerException npe) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("NullPointerException while executing dynamic query, GenericDAO.select: " + query + ":message: " + npe.getMessage());
+                logger.error(npe.getMessage(), npe);
+            }
         }
         return results;
 
@@ -249,17 +241,15 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
         clearSignals();
 
         ArrayList results = new ArrayList();
-        ResultSet rs = null;
-        PreparedStatement ps = null;
-        try {
+        try (PreparedStatement ps = con.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+             
             if (con.isClosed()) {
                 if (logger.isWarnEnabled())
                     logger.warn("Connection is closed: GenericDAO.select!");
                 throw new SQLException();
             }
 
-            ps = con.prepareStatement(query);
-            rs = ps.executeQuery();
             // if (logger.isInfoEnabled()) {
             logger.debug("Executing dynamic query, EntityDAO.select:query " + query);
             // }
@@ -272,8 +262,6 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
                 logger.warn("Exeception while executing dynamic query, GenericDAO.select: " + query + ":message: " + sqle.getMessage());
                 logger.error(sqle.getMessage(), sqle);
             }
-        } finally {
-            this.closeIfNecessary(rs, ps);
         }
         return results;
 
@@ -287,28 +275,26 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
         ArrayList results = new ArrayList();
         V value;
         K key;
-        ResultSet rs = null;
-        Connection con = null;
-        PreparedStatementFactory psf = new PreparedStatementFactory(variables);
-        PreparedStatement ps = null;
 
-        try {
-            con = ds.getConnection();
+        PreparedStatementFactory psf = new PreparedStatementFactory(variables);
+
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            
             if (con.isClosed()) {
                 if (logger.isWarnEnabled())
                     logger.warn("Connection is closed: GenericDAO.select!");
                 throw new SQLException();
             }
 
-            ps = con.prepareStatement(query);
-
-            ps = psf.generate(ps);// enter variables here!
+            psf.generate(ps);// enter variables here!
             key = (K) ps.toString();
             if ((results = (V) cache.get(key)) == null) {
-                rs = ps.executeQuery();
-                results = this.processResultRows(rs);
-                if (results != null) {
-                    cache.put(key, results);
+                try (ResultSet rs = ps.executeQuery()) {
+                    results = this.processResultRows(rs);
+                    if (results != null) {
+                        cache.put(key, results);
+                    }
                 }
             }
 
@@ -323,8 +309,11 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
                 logger.warn("Exception while executing dynamic query, GenericDAO.select: " + query + ":message: " + sqle.getMessage());
                 logger.error(sqle.getMessage(), sqle);
             }
-        } finally {
-            this.closeIfNecessary(con, rs, ps);
+        } catch (NullPointerException npe) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("NullPointerException while executing dynamic query, GenericDAO.select: " + query + ":message: " + npe.getMessage());
+                logger.error(npe.getMessage(), npe);
+            }
         }
         return results;
 
@@ -340,32 +329,15 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
      */
 
     public void execute(String query) {
-        Connection con = null;
-        execute(query, con);
-    }
-
-    /*
-     * this function is used for transactional updates to allow all updates in
-     * one actions to run as one transaction
-     */
-    public void execute(String query, Connection con) {
         clearSignals();
-
-        boolean isTrasactional = false;
-        if (con != null) {
-            isTrasactional = true;
-        }
-        PreparedStatement ps = null;
-        try {
-            if (!isTrasactional) {
-                con = ds.getConnection();
-            }
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            
             if (con.isClosed()) {
                 if (logger.isWarnEnabled())
                     logger.warn("Connection is closed: EntityDAO.execute!");
                 throw new SQLException();
             }
-            ps = con.prepareStatement(query);
 
             if (ps.executeUpdate() != 1) {
                 logger.warn("Problem with executing static query, EntityDAO: " + query);
@@ -380,41 +352,57 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
                 logger.warn("Exeception while executing static statement, GenericDAO.execute: " + query + ":message: " + sqle.getMessage());
                 logger.error(sqle.getMessage(), sqle);
             }
-        } finally {
-            if (!isTrasactional) {
-                this.closeIfNecessary(con, ps);
-            } else {
-                closePreparedStatement(ps);
-            }
         }
     }
 
-    public void execute(String query, HashMap variables) {
-        Connection con = null;
-        execute(query, variables, con);
-    }
-
-    public void execute(String query, HashMap variables, Connection con) {
+    /*
+     * this function is used for transactional updates to allow all updates in
+     * one actions to run as one transaction
+     */
+    public void execute(String query, Connection con) {
+        if (con == null) {
+            execute(query);
+            return;
+        }
         clearSignals();
 
-        boolean isTrasactional = false;
-        if (con != null) {
-            isTrasactional = true;
-        }
-
-        PreparedStatement ps = null;
-        PreparedStatementFactory psf = new PreparedStatementFactory(variables);
-        try {
-            if (!isTrasactional) {
-                con = ds.getConnection();
-            }
+        try (PreparedStatement ps = con.prepareStatement(query)) {
             if (con.isClosed()) {
                 if (logger.isWarnEnabled())
                     logger.warn("Connection is closed: EntityDAO.execute!");
                 throw new SQLException();
             }
-            ps = con.prepareStatement(query);
-            ps = psf.generate(ps);// enter variables here!
+
+            if (ps.executeUpdate() != 1) {
+                logger.warn("Problem with executing static query, EntityDAO: " + query);
+                throw new SQLException();
+            } else {
+                signalSuccess();
+                logger.debug("Executing static query, EntityDAO: " + query);
+            }
+        } catch (SQLException sqle) {
+            signalFailure(sqle);
+            if (logger.isWarnEnabled()) {
+                logger.warn("Exeception while executing static statement, GenericDAO.execute: " + query + ":message: " + sqle.getMessage());
+                logger.error(sqle.getMessage(), sqle);
+            }
+        }
+    }
+
+    public void execute(String query, HashMap variables) {
+        clearSignals();
+
+        PreparedStatementFactory psf = new PreparedStatementFactory(variables);
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+             
+            if (con.isClosed()) {
+                if (logger.isWarnEnabled())
+                    logger.warn("Connection is closed: EntityDAO.execute!");
+                throw new SQLException();
+            }
+
+            psf.generate(ps);// enter variables here!
             if (ps.executeUpdate() < 0) {// change by jxu, delete can affect
                 // more than one row
                 logger.warn("Problem with executing dynamic query, EntityDAO: " + query);
@@ -430,41 +418,66 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
                 logger.warn("Exeception while executing dynamic statement, EntityDAO.execute: " + query + ": " + sqle.getMessage());
                 logger.error(sqle.getMessage(), sqle);
             }
-        } finally {
-            if (!isTrasactional) {
-                this.closeIfNecessary(con, ps);
-            } else {
-                closePreparedStatement(ps);
+        } catch (NullPointerException npe) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("NullPointerException while executing dynamic statement, EntityDAO.execute: " + query + ": " + npe.getMessage());
+                logger.error(npe.getMessage(), npe);
             }
         }
     }
 
-    public void execute(String query, HashMap variables, HashMap nullVars) {
-        Connection con = null;
-        execute(query, variables, nullVars, con);
-    }
-
-    public void execute(String query, HashMap variables, HashMap nullVars, Connection con) {
+    public void execute(String query, HashMap variables, Connection con) {
+        if (con == null) {
+            execute(query, variables);
+            return;
+        }
         clearSignals();
 
-        boolean isTrasactional = false;
-        if (con != null) {
-            isTrasactional = true;
-        }
-
-        PreparedStatement ps = null;
-        PreparedStatementFactory psf = new PreparedStatementFactory(variables, nullVars);
-        try {
-            if (!isTrasactional) {
-                con = ds.getConnection();
-            }
+        PreparedStatementFactory psf = new PreparedStatementFactory(variables);
+        try (PreparedStatement ps = con.prepareStatement(query)) {
             if (con.isClosed()) {
                 if (logger.isWarnEnabled())
                     logger.warn("Connection is closed: EntityDAO.execute!");
                 throw new SQLException();
             }
-            ps = con.prepareStatement(query);
-            ps = psf.generate(ps);// enter variables here!
+            psf.generate(ps);// enter variables here!
+            if (ps.executeUpdate() < 0) {// change by jxu, delete can affect
+                // more than one row
+                logger.warn("Problem with executing dynamic query, EntityDAO: " + query);
+                throw new SQLException();
+
+            } else {
+                signalSuccess();
+                logger.debug("Executing dynamic query, EntityDAO: " + query);
+            }
+        } catch (SQLException sqle) {
+            signalFailure(sqle);
+            if (logger.isWarnEnabled()) {
+                logger.warn("Exeception while executing dynamic statement, EntityDAO.execute: " + query + ": " + sqle.getMessage());
+                logger.error(sqle.getMessage(), sqle);
+            }
+        } catch (NullPointerException npe) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("NullPointerException while executing dynamic statement, EntityDAO.execute: " + query + ": " + npe.getMessage());
+                logger.error(npe.getMessage(), npe);
+            }
+        }
+    }
+
+    public void execute(String query, HashMap variables, HashMap nullVars) {
+        clearSignals();
+
+        PreparedStatementFactory psf = new PreparedStatementFactory(variables, nullVars);
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+             
+            if (con.isClosed()) {
+                if (logger.isWarnEnabled())
+                    logger.warn("Connection is closed: EntityDAO.execute!");
+                throw new SQLException();
+            }
+            
+            psf.generate(ps);// enter variables here!
             if (ps.executeUpdate() != 1) {
                 logger.warn("Problem with executing dynamic query, EntityDAO: " + query);
                 throw new SQLException();
@@ -479,11 +492,47 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
                 logger.warn("Exeception while executing dynamic statement, EntityDAO.execute: " + query + ": " + sqle.getMessage());
                 logger.error(sqle.getMessage(), sqle);
             }
-        } finally {
-            if (!isTrasactional) {
-                this.closeIfNecessary(con, ps);
+        } catch (NullPointerException npe) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("NullPointerException while executing dynamic statement, EntityDAO.execute: " + query + ": " + npe.getMessage());
+                logger.error(npe.getMessage(), npe);
+            }
+        }
+    }
+
+    public void execute(String query, HashMap variables, HashMap nullVars, Connection con) {
+        if (con == null) {
+            execute(query, variables, nullVars);
+            return;
+        }
+        clearSignals();
+
+        PreparedStatementFactory psf = new PreparedStatementFactory(variables, nullVars);
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            if (con.isClosed()) {
+                if (logger.isWarnEnabled())
+                    logger.warn("Connection is closed: EntityDAO.execute!");
+                throw new SQLException();
+            }
+            psf.generate(ps);// enter variables here!
+            if (ps.executeUpdate() != 1) {
+                logger.warn("Problem with executing dynamic query, EntityDAO: " + query);
+                throw new SQLException();
+
             } else {
-                closePreparedStatement(ps);
+                signalSuccess();
+                logger.debug("Executing dynamic query, EntityDAO: " + query);
+            }
+        } catch (SQLException sqle) {
+            signalFailure(sqle);
+            if (logger.isWarnEnabled()) {
+                logger.warn("Exeception while executing dynamic statement, EntityDAO.execute: " + query + ": " + sqle.getMessage());
+                logger.error(sqle.getMessage(), sqle);
+            }
+        } catch (NullPointerException npe) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("NullPointerException while executing dynamic statement, EntityDAO.execute: " + query + ": " + npe.getMessage());
+                logger.error(npe.getMessage(), npe);
             }
         }
     }
@@ -500,18 +549,17 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
     public void executeWithPK(String query, HashMap variables, HashMap nullVars) {
         clearSignals();
 
-        Connection con = null;
-        PreparedStatement ps = null;
         PreparedStatementFactory psf = new PreparedStatementFactory(variables, nullVars);
-        try {
-            con = ds.getConnection();
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            
             if (con.isClosed()) {
                 if (logger.isWarnEnabled())
                     logger.warn("Connection is closed: EntityDAO.execute!");
                 throw new SQLException();
             }
-            ps = con.prepareStatement(query);
-            ps = psf.generate(ps);// enter variables here!
+
+            psf.generate(ps);// enter variables here!
             if (ps.executeUpdate() != 1) {
                 logger.warn("Problem with executing dynamic query, EntityDAO: " + query);
                 throw new SQLException();
@@ -541,8 +589,11 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
                 logger.warn("Exception while executing dynamic statement, EntityDAO.execute: " + query + ": " + sqle.getMessage());
                 logger.error(sqle.getMessage(), sqle);
             }
-        } finally {
-            this.closeIfNecessary(con, ps);
+        } catch (NullPointerException npe) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("NullPointerException while executing dynamic statement, EntityDAO.execute: " + query + ": " + npe.getMessage());
+                logger.error(npe.getMessage(), npe);
+            }
         }
     }
 
