@@ -33,6 +33,8 @@ import org.xml.sax.InputSource;
 @Component
 public class StudySubjectProcessor implements Processor, Ordered {
 
+        @Autowired
+    org.akaza.openclinica.service.subject.SubjectServiceInterface subjectService;
     @Autowired
     StudySubjectDao studySubjectDao;
     @Autowired
@@ -93,7 +95,14 @@ public class StudySubjectProcessor implements Processor, Ordered {
             Study study = studyDao.findByOcOID(container.getSubjectContext().get("studyOID"));
             // Need to pass parent study Id if this is a site
             Integer studyId = study.getStudy() != null ? study.getStudy().getStudyId() : study.getStudyId();
-            int nextLabel = studySubjectDao.findTheGreatestLabelByStudy(studyId) + 1;
+            org.akaza.openclinica.bean.managestudy.StudyBean studyBean = new org.akaza.openclinica.bean.managestudy.StudyBean();
+            studyBean.setId(study.getStudyId());
+            if (study.getStudy() != null) {
+                studyBean.setParentStudyId(study.getStudy().getStudyId());
+            }
+            String nextLabelStr = subjectService.generateSubjectId(studyBean);
+            if (nextLabelStr == null) nextLabelStr = String.valueOf(studySubjectDao.findTheGreatestLabelByStudy(studyId) + 1);
+            int nextLabel = Integer.parseInt(nextLabelStr);
             Subject subject = createSubject(currentDate, rootUser);
             StudySubject studySubject = createStudySubject(Integer.toString(nextLabel), subject, study,rootUser,currentDate, null);
             container.setSubject(studySubject);

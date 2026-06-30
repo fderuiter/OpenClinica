@@ -23,6 +23,8 @@ public class SoapCreateSubject extends WebServiceGatewaySupport implements Subje
 
     private static final String NAMESPACE_URI = "http://openclinica.org/create-subject";
 
+    public String generateSubjectId(StudyBean studyBean) { return null; }
+
     public String createSubject(SubjectBean subjectBean, StudyBean studyBean, Date enrollmentDate, String secondaryId) {
         Element requestElement = prepareRequest(subjectBean, studyBean);
         DOMSource source = new DOMSource(requestElement);

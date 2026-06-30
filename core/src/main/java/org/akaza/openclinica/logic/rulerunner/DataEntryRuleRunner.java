@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 import javax.sql.DataSource;
 
 public class DataEntryRuleRunner extends RuleRunner {
@@ -42,7 +42,7 @@ public class DataEntryRuleRunner extends RuleRunner {
     }
 
     public MessageContainer runRules(List<RuleSetBean> ruleSets, ExecutionMode executionMode, StudyBean currentStudy, HashMap<String, String> variableAndValue,
-            UserAccountBean ub, Phase phase, HttpServletRequest request) {
+            UserAccountBean ub, Phase phase, Map<String, Object> request) {
 
         if (variableAndValue == null || variableAndValue.isEmpty()) {
             logger.warn("You must be executing Rules in Batch");
@@ -54,9 +54,9 @@ public class DataEntryRuleRunner extends RuleRunner {
         HashMap<String, ArrayList<RuleActionContainer>> toBeExecuted = new HashMap<String, ArrayList<RuleActionContainer>>();
         switch (executionMode) {
         case SAVE:        {
-            toBeExecuted = (HashMap<String, ArrayList<RuleActionContainer>>)request.getAttribute("toBeExecuted");
+            toBeExecuted = (HashMap<String, ArrayList<RuleActionContainer>>)request.get("toBeExecuted");
             
-            if(request.getAttribute("insertAction")==null) //Break only if the action is insertAction;
+            if(request.get("insertAction")==null) //Break only if the action is insertAction;
             { break;
             }else {
                 toBeExecuted = new HashMap<String, ArrayList<RuleActionContainer>>();
@@ -79,7 +79,7 @@ public class DataEntryRuleRunner extends RuleRunner {
              */
             String itemOid = key;
             String itemGroupOid = getExpressionService().getItemGroupOid(ruleSet.getExpressions().get(0).getValue());
-            int studySubjectId = ((StudySubjectBean) request.getAttribute("studySubject")).getSubjectId();
+            int studySubjectId = ((StudySubjectBean) request.get("studySubject")).getSubjectId();
             HashMap itemDatasHm = getItemDataDao().findByStudySubjectAndOids(ruleSet.getStudyId(), itemOid, itemGroupOid,studySubjectId);
             allItemDatasHm.putAll(itemDatasHm);
             ItemDataBean itemData = null;
@@ -110,13 +110,13 @@ public class DataEntryRuleRunner extends RuleRunner {
                             while (itr.hasNext()) {
                                 RuleActionBean ruleActionBean = itr.next();
                                 if(ruleActionBean.getActionType()==ActionType.INSERT) {
-                                    request.setAttribute("insertAction", true);
+                                    request.put("insertAction", true);
                                     if(phase==Phase.DOUBLE_DATA_ENTRY && itemData.getStatus().getId()==4 
-                                            && request.getAttribute(firstDDE)==null) {
-                                        request.setAttribute(firstDDE, true);
+                                            && request.get(firstDDE)==null) {
+                                        request.put(firstDDE, true);
                                     }
                                 }
-                                if(request.getAttribute(firstDDE)==Boolean.TRUE) {
+                                if(request.get(firstDDE)==Boolean.TRUE) {
                                 } else {
                                     String itemDataValueFromForm = "";
                                     if(variableAndValue.containsKey(key)) {
@@ -148,7 +148,7 @@ public class DataEntryRuleRunner extends RuleRunner {
                 }
             }
         }
-        request.setAttribute("toBeExecuted",toBeExecuted);
+        request.put("toBeExecuted",toBeExecuted);
         break;
         }
         

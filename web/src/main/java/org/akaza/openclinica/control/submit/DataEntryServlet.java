@@ -5182,7 +5182,17 @@ String tempKey = idb.getItemId()+","+idb.getOrdinal();
             // return getRuleSetService().runRules(ruleSets, dryRun,
             // currentStudy, c.variableAndValue, ub);
             LOGGER.debug("running rules ... rule sets size is " + ruleSets.size());
-            return getRuleSetService(request).runRulesInDataEntry(ruleSets, dryRun, currentStudy, ub, c.variableAndValue, phase,ecb, request).getByMessageType(mt);
+            java.util.Map<String, Object> stateMap = new java.util.HashMap<String, Object>();
+            java.util.Enumeration<String> attrNames = request.getAttributeNames();
+            while (attrNames.hasMoreElements()) {
+                String attrName = attrNames.nextElement();
+                stateMap.put(attrName, request.getAttribute(attrName));
+            }
+            java.util.HashMap<String, java.util.ArrayList<String>> result = getRuleSetService(request).runRulesInDataEntry(ruleSets, dryRun, currentStudy, ub, c.variableAndValue, phase,ecb, stateMap).getByMessageType(mt);
+            for (java.util.Map.Entry<String, Object> entry : stateMap.entrySet()) {
+                request.setAttribute(entry.getKey(), entry.getValue());
+            }
+            return result;
         } else {
             return new HashMap<String, ArrayList<String>>();
         }

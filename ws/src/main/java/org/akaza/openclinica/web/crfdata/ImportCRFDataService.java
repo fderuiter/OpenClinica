@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 import javax.sql.DataSource;
 
 import org.akaza.openclinica.bean.admin.CRFBean;
@@ -289,7 +289,7 @@ public class ImportCRFDataService {
         return ssBean;
     }
 
-    public List<DisplayItemBeanWrapper> lookupValidationErrors(HttpServletRequest request, ODMContainer odmContainer, UserAccountBean ub,
+    public List<DisplayItemBeanWrapper> lookupValidationErrors(Locale locale, ODMContainer odmContainer, UserAccountBean ub,
             HashMap<String, String> totalValidationErrors, HashMap<String, String> hardValidationErrors, ArrayList<Integer> permittedEventCRFIds)
             throws OpenClinicaException {
 
@@ -298,7 +298,7 @@ public class ImportCRFDataService {
         List<DisplayItemBeanWrapper> wrappers = new ArrayList<DisplayItemBeanWrapper>();
         ImportHelper importHelper = new ImportHelper();
         FormDiscrepancyNotes discNotes = new FormDiscrepancyNotes();
-        DiscrepancyValidator discValidator = new DiscrepancyValidator(request, discNotes);
+        DiscrepancyValidator discValidator = new DiscrepancyValidator(locale, discNotes);
         // create a second Validator, this one for hard edit checks
         HashMap<String, String> hardValidator = new HashMap<String, String>();
 
@@ -473,7 +473,7 @@ public class ImportCRFDataService {
                                             String eventCRFRepeatKey = studyEventDataBean.getStudyEventRepeatKey();
                                             // if you do indeed leave off this in the XML it will pass but return 'null'
                                             // tbh
-                                            attachValidator(displayItemBean, importHelper, discValidator, hardValidator, request, eventCRFRepeatKey,
+                                            attachValidator(displayItemBean, importHelper, discValidator, hardValidationErrors, locale, eventCRFRepeatKey,
                                                     studySubjectBean.getOid());
                                             displayItemBeans.add(displayItemBean);
 
@@ -604,12 +604,12 @@ public class ImportCRFDataService {
                         // older errors will be overriden. Moving it after the form.
                         // Removing the comments for now, since it seems to be creating duplicate Discrepancy Notes.
                         validationErrors = new HashMap();
-                        discValidator = new DiscrepancyValidator(request, discNotes);
+                        discValidator = new DiscrepancyValidator(locale, discNotes);
                         // reset to allow for new errors...
                     }
                 }// after forms
                  // validationErrors = new HashMap();
-                 // discValidator = new DiscrepancyValidator(request, discNotes);
+                 // discValidator = new DiscrepancyValidator(locale, discNotes);
                 if (displayItemBeanWrapper != null && displayItemBeans.size() > 0)
                     wrappers.add(displayItemBeanWrapper);
             }// after study events
@@ -728,7 +728,7 @@ public class ImportCRFDataService {
     }
 
     private void attachValidator(DisplayItemBean displayItemBean, ImportHelper importHelper, DiscrepancyValidator discValidator, HashMap<String, String> hardv,
-            javax.servlet.http.HttpServletRequest request, String eventCRFRepeatKey, String studySubjectOID) throws OpenClinicaException {
+            Locale locale, String eventCRFRepeatKey, String studySubjectOID) throws OpenClinicaException {
         org.akaza.openclinica.bean.core.ResponseType rt = displayItemBean.getMetadata().getResponseSet().getResponseType();
         String itemOid = displayItemBean.getItem().getOid() + "_" + eventCRFRepeatKey + "_" + displayItemBean.getData().getOrdinal() + "_" + studySubjectOID;
         // note the above, generating an ordinal on top of the OID to view
@@ -810,7 +810,7 @@ public class ImportCRFDataService {
             }
             // what if it's a phone number? how often does that happen?
 
-            request.setAttribute(itemOid, displayItemBean.getData().getValue());
+            discValidator.setAttribute(itemOid, displayItemBean.getData().getValue());
             displayItemBean = importHelper.validateDisplayItemBeanText(discValidator, displayItemBean, itemOid);
             // errors = v.validate();
 
@@ -842,7 +842,7 @@ public class ImportCRFDataService {
             // adding a new hard edit check here; response_option mismatch
             String theValue = matchValueWithOptions(displayItemBean, displayItemBean.getData().getValue(), displayItemBean.getMetadata().getResponseSet()
                     .getOptions());
-            request.setAttribute(itemOid, theValue);
+            discValidator.setAttribute(itemOid, theValue);
             logger.debug("        found the value for radio/single: " + theValue);
             if (theValue == null && displayItemBean.getData().getValue() != null && !displayItemBean.getData().getValue().isEmpty()) {
                 // fail it here
@@ -860,7 +860,7 @@ public class ImportCRFDataService {
             // or a SELECTMULTI ");
             String theValue = matchValueWithManyOptions(displayItemBean, displayItemBean.getData().getValue(), displayItemBean.getMetadata().getResponseSet()
                     .getOptions());
-            request.setAttribute(itemOid, theValue);
+            discValidator.setAttribute(itemOid, theValue);
             // logger.debug("        found the value for checkbx/multi: " + theValue);
             if (theValue == null && displayItemBean.getData().getValue() != null && !displayItemBean.getData().getValue().isEmpty()) {
                 // fail it here? found an 0,1 in the place of a NULL

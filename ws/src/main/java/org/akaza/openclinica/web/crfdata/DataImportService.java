@@ -41,7 +41,7 @@ import org.akaza.openclinica.web.job.CrfBusinessLogicHelper;
 import org.akaza.openclinica.web.job.TriggerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.mock.web.MockHttpServletRequest;
+
 
 /**
  * 
@@ -176,10 +176,9 @@ public class DataImportService {
         try {
             List<DisplayItemBeanWrapper> tempDisplayItemBeanWrappers = new ArrayList<DisplayItemBeanWrapper>();
             // htaycher: this should be rewritten with validator not to use request to store data
-            MockHttpServletRequest request = new MockHttpServletRequest();
-            request.addPreferredLocale(getLocale());
+            
 
-            tempDisplayItemBeanWrappers = getImportCRFDataService(dataSource).lookupValidationErrors(request, odmContainer, userBean, totalValidationErrors,
+            tempDisplayItemBeanWrappers = getImportCRFDataService(dataSource).lookupValidationErrors(getLocale(), odmContainer, userBean, totalValidationErrors,
                     hardValidationErrors, permittedEventCRFIds);
             displayItemBeanWrappers.addAll(tempDisplayItemBeanWrappers);
             logger.debug("size of total validation errors: " + (totalValidationErrors.size() + hardValidationErrors.size()));

@@ -817,7 +817,13 @@ public class ListStudySubjectTableFactory extends AbstractTableFactory {
         participantPortalRegistrar = new ParticipantPortalRegistrar();
         StudyBean study = (StudyBean) studyDAO.findByPK(studySubjectBean.getStudyId());
         StudyBean pStudy = getParentStudy(study.getOid());
-        String pManageStatus = participantPortalRegistrar.getCachedRegistrationStatus(pStudy.getOid(), session).toString(); // ACTIVE
+        String pManageStatus = (String) session.getAttribute("pManageRegistrationStatus");
+        if(pManageStatus == null) {
+            try { pManageStatus = participantPortalRegistrar.getRegistrationStatus(pStudy.getOid()); } catch (Exception e) {}
+            if (pManageStatus == null) pManageStatus = "";
+            session.setAttribute("pManageRegistrationStatus", pManageStatus);
+        }
+        pManageStatus = pManageStatus.toString(); // ACTIVE
         return pManageStatus;
     }
 

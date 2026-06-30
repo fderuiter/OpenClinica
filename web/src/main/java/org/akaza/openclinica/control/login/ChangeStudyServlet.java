@@ -183,8 +183,10 @@ public class ChangeStudyServlet extends SecureController {
         current.getStudyParameterConfig().setSubjectIdGeneration(parentSPV.getValue());
         String idSetting = current.getStudyParameterConfig().getSubjectIdGeneration();
         if (idSetting.equals("auto editable") || idSetting.equals("auto non-editable")) {
-            int nextLabel = this.getStudySubjectDAO().findTheGreatestLabel() + 1;
-            request.setAttribute("label", new Integer(nextLabel).toString());
+            org.akaza.openclinica.service.subject.SubjectService subjectService = (org.akaza.openclinica.service.subject.SubjectService) org.akaza.openclinica.control.SpringServletAccess.getApplicationContext(context).getBean("subjectService");
+            String generatedLabel = subjectService.generateSubjectId(currentStudy);
+            request.setAttribute("label", generatedLabel);
+            
         }
 
         StudyConfigService scs = new StudyConfigService(sm.getDataSource());

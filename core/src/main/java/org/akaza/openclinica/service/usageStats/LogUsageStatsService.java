@@ -6,7 +6,7 @@ package org.akaza.openclinica.service.usageStats;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
+
 import javax.sql.DataSource;
 
 import org.akaza.openclinica.dao.hibernate.UsageStatsServiceDAO;
@@ -23,7 +23,6 @@ public class LogUsageStatsService {
 
     DataSource dataSource;
     UsageStatsServiceDAO usageStatsServiceDAO;
-    ServletContext context;
 
     public LogUsageStatsService(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -108,16 +107,8 @@ public class LogUsageStatsService {
     /**
      * @return the context
      */
-    public ServletContext getContext() {
-        return context;
-    }
-
     /**
      * @param context
      *            the context to set
      */
-    public void setContext(ServletContext context) {
-        this.context = context;
-    }
-
 }

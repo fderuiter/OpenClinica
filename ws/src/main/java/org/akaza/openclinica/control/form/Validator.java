@@ -459,12 +459,29 @@ public class Validator {
     protected String lastField;
 
     protected HashMap validations;
+    protected java.util.Map<String, Object> attributes = new java.util.HashMap<String, Object>();
+
+    public void setAttribute(String key, Object value) {
+        attributes.put(key, value);
+    }
+
 
     protected HashMap errors;
 
     protected HttpServletRequest request;
 
     protected ResourceBundle resformat;
+
+    public Validator(java.util.Locale locale) {
+        validations = new java.util.HashMap();
+        errors = new java.util.HashMap();
+        this.locale = locale;
+        resformat = org.akaza.openclinica.i18n.util.ResourceBundleProvider.getFormatBundle(locale);
+        restext = org.akaza.openclinica.i18n.util.ResourceBundleProvider.getTextsBundle(locale);
+        resexception = org.akaza.openclinica.i18n.util.ResourceBundleProvider.getExceptionsBundle(locale);
+        resword = org.akaza.openclinica.i18n.util.ResourceBundleProvider.getWordsBundle(locale);
+        lastField = "";
+    }
 
     public Validator(HttpServletRequest request) {
         validations = new HashMap();
@@ -1127,8 +1144,10 @@ public class Validator {
      * Instead of rewriting the whole Validation do this.
      */
     protected String getFieldValue(String fieldName) {
-        return request.getParameter(fieldName) == null ? request.getAttribute(fieldName) == null ? null : request.getAttribute(fieldName).toString() : request
-                .getParameter(fieldName);
+        if (request != null) {
+            return request.getParameter(fieldName) == null ? request.getAttribute(fieldName) == null ? null : request.getAttribute(fieldName).toString() : request.getParameter(fieldName);
+        }
+        return attributes.get(fieldName) == null ? null : attributes.get(fieldName).toString();
     }
 
     // validation functions that determine whether a field passes validation
@@ -1608,7 +1627,13 @@ public class Validator {
     }
 
     protected boolean isSetBlank(String fieldName) {
-        String fieldValues[] = request.getParameterValues(fieldName);
+        String fieldValues[] = null;
+        if (request != null) {
+            fieldValues = request.getParameterValues(fieldName);
+        } else {
+            Object val = attributes.get(fieldName);
+            if (val != null) fieldValues = new String[] { val.toString() };
+        }
 
         if (fieldValues == null || fieldValues.length == 0) {
             return true;

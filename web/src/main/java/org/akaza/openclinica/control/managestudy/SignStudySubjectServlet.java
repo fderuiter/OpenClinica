@@ -115,7 +115,8 @@ public class SignStudySubjectServlet extends SecureController {
             de.setUncompletedCRFs(al);
 
             StudySubjectBean studySubject = (StudySubjectBean) ssdao.findByPK(event.getStudySubjectId());
-            de.setMaximumSampleOrdinal(sedao.getMaxSampleOrdinal(sed, studySubject));
+            org.akaza.openclinica.service.EventService eventService = new org.akaza.openclinica.service.EventService(ds);
+            de.setMaximumSampleOrdinal(eventService.getMaxSampleOrdinal(sed, studySubject));
 
             displayEvents.add(de);
             // event.setEventCRFs(createAllEventCRFs(eventCRFs,
@@ -628,4 +629,4 @@ public class SignStudySubjectServlet extends SecureController {
         }
     }
 
-}
+    private org.akaza.openclinica.service.EventService getEventService() { return (org.akaza.openclinica.service.EventService) org.akaza.openclinica.control.SpringServletAccess.getApplicationContext(getServletContext()).getBean("eventService"); } }

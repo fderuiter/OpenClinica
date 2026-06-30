@@ -358,7 +358,7 @@ public class ImportCRFDataServlet extends SecureController {
 
                     try {
                         List<DisplayItemBeanWrapper> tempDisplayItemBeanWrappers = new ArrayList<DisplayItemBeanWrapper>();
-                        tempDisplayItemBeanWrappers = getImportCRFDataService().lookupValidationErrors(request, odmContainer, ub, totalValidationErrors,
+                        tempDisplayItemBeanWrappers = getImportCRFDataService().lookupValidationErrors(org.akaza.openclinica.i18n.core.LocaleResolver.getLocale(request), odmContainer, ub, totalValidationErrors,
                                 hardValidationErrors, permittedEventCRFIds);
                         logger.debug("generated display item bean wrappers " + tempDisplayItemBeanWrappers.size());
                         logger.debug("size of total validation errors: " + totalValidationErrors.size());

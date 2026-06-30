@@ -90,7 +90,11 @@ public class ViewStudyServlet extends SecureController {
 
 
              ParticipantPortalRegistrar  participantPortalRegistrar = new ParticipantPortalRegistrar();
-             String pStatus = participantPortalRegistrar.getCachedRegistrationStatus(study.getOid(), session);
+             String pStatus = (String) session.getAttribute("pManageRegistrationStatus");
+             if(pStatus == null) {
+                 pStatus = participantPortalRegistrar.getRegistrationStatus(study.getOid());
+                 session.setAttribute("pManageRegistrationStatus", pStatus);
+             }
              if (participantPortalRegistrar!=null && pStatus.equalsIgnoreCase("ACTIVE") && participantStatusInOC.equalsIgnoreCase("enabled")){
                  study.getStudyParameterConfig().setParticipantPortal("enabled");
              }else{
