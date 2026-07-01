@@ -110,6 +110,9 @@ function getPrintableContent() {
     
      
     $('body').html(renderString);
+   }).fail(function(jqXHR, textStatus, errorThrown) {
+       $('.spinner').css({display: "none"});
+       alert("An error occurred during data retrieval. Please try again or contact support.");
    });
 
 
