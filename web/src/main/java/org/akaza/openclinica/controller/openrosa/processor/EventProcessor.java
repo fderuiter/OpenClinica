@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.akaza.openclinica.controller.openrosa.SubmissionContainer;
+import org.akaza.openclinica.controller.openrosa.UnifiedWorkflowEnforcementService;
 import org.akaza.openclinica.dao.hibernate.CompletionStatusDao;
 import org.akaza.openclinica.dao.hibernate.CrfVersionDao;
 import org.akaza.openclinica.dao.hibernate.EventCrfDao;
@@ -58,6 +59,9 @@ public class EventProcessor implements Processor, Ordered {
     @Autowired
     StudyDao studyDao;
     
+    @Autowired
+    UnifiedWorkflowEnforcementService unifiedWorkflowEnforcementService;
+
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     public void process(SubmissionContainer container) throws Exception {
@@ -80,6 +84,9 @@ public class EventProcessor implements Processor, Ordered {
         if (container.getSubjectContext().get("studyOID") != null)
             study = studyDao.findByOcOID(container.getSubjectContext().get("studyOID"));
         else study = container.getStudy();
+        unifiedWorkflowEnforcementService.validateLock(container.getEventCrf());
+        unifiedWorkflowEnforcementService.verifyDDEStatus(studyEventDefinition.getStudyEventDefinitionId(), container.getEventCrf().getCrfVersion().getCrf().getCrfId());
+
         container.setEventCrf(updateEventCrf(container.getEventCrf(), study, studySubject, container.getUser(), isAnonymous));
         container.setStudyEvent(updateStudyEvent(container.getStudyEvent(), studyEventDefinition, study, studySubject, container.getUser(), isAnonymous));
     }
@@ -194,7 +201,7 @@ public class EventProcessor implements Processor, Ordered {
         studyEvent.setLocation("");
         StudyEventChangeDetails changeDetails = new StudyEventChangeDetails(true,true);
         StudyEventContainer container = new StudyEventContainer(studyEvent,changeDetails);
-        studyEventDao.saveOrUpdateTransactional(container);
+        unifiedWorkflowEnforcementService.saveStudyEvent(container);
         studyEvent = studyEventDao.fetchByStudyEventDefOIDAndOrdinal(studyEventDefinition.getOc_oid(),ordinal,studySubject.getStudySubjectId());
         return studyEvent;
     }
@@ -219,7 +226,7 @@ public class EventProcessor implements Processor, Ordered {
         eventCrf.setValidatorId(0);
         eventCrf.setOldStatusId(0);
         eventCrf.setSdvUpdateId(0);
-        eventCrfDao.saveOrUpdate(eventCrf);
+        unifiedWorkflowEnforcementService.saveEventCrf(eventCrf);
         eventCrf = eventCrfDao.findByStudyEventIdStudySubjectIdCrfVersionId(studyEvent.getStudyEventId(), studySubject.getStudySubjectId(), crfVersion.getCrfVersionId());
         logger.debug("*********CREATED EVENT CRF");
         return eventCrf;
@@ -259,7 +266,7 @@ public class EventProcessor implements Processor, Ordered {
             studyEvent.setSubjectEventStatusId(newStatus.getCode());
             StudyEventChangeDetails changeDetails = new StudyEventChangeDetails(true,false);
             StudyEventContainer container = new StudyEventContainer(studyEvent,changeDetails);
-            studyEvent = studyEventDao.saveOrUpdateTransactional(container);
+            studyEvent = unifiedWorkflowEnforcementService.saveStudyEvent(container);
             logger.debug("*********UPDATED STUDY EVENT ");
         }
         return studyEvent;
@@ -279,7 +286,7 @@ public class EventProcessor implements Processor, Ordered {
         eventCrf.setDateUpdated(new Date());
         if (isAnonymous) eventCrf.setStatusId(Status.UNAVAILABLE.getCode());
         else eventCrf.setStatusId(Status.AVAILABLE.getCode());
-        eventCrf = eventCrfDao.saveOrUpdate(eventCrf);
+        eventCrf = unifiedWorkflowEnforcementService.saveEventCrf(eventCrf);
         logger.debug("*********UPDATED EVENT CRF");
         return eventCrf;
     }

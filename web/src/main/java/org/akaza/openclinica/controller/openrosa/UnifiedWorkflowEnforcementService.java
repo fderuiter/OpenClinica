@@ -1,0 +1,197 @@
+package org.akaza.openclinica.controller.openrosa;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
+import org.akaza.openclinica.bean.login.UserAccountBean;
+import org.akaza.openclinica.dao.login.UserAccountDAO;
+import org.akaza.openclinica.bean.managestudy.StudyBean;
+import org.akaza.openclinica.dao.managestudy.StudyDAO;
+import org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean;
+import org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO;
+import org.akaza.openclinica.bean.submit.CRFVersionBean;
+import org.akaza.openclinica.dao.submit.CRFVersionDAO;
+import org.akaza.openclinica.bean.submit.EventCRFBean;
+import org.akaza.openclinica.dao.submit.EventCRFDAO;
+import org.akaza.openclinica.controller.openrosa.exception.CRFLockedException;
+import org.akaza.openclinica.controller.openrosa.exception.ClinicalWorkflowException;
+import org.akaza.openclinica.core.CRFLocker;
+import org.akaza.openclinica.dao.hibernate.DiscrepancyNoteDao;
+import org.akaza.openclinica.dao.hibernate.DiscrepancyNoteTypeDao;
+import org.akaza.openclinica.dao.hibernate.DnItemDataMapDao;
+import org.akaza.openclinica.dao.hibernate.EventDefinitionCrfDao;
+import org.akaza.openclinica.dao.hibernate.ItemDataDao;
+import org.akaza.openclinica.dao.hibernate.ResolutionStatusDao;
+import org.akaza.openclinica.domain.Status;
+import org.akaza.openclinica.domain.datamap.DiscrepancyNote;
+import org.akaza.openclinica.domain.datamap.DnItemDataMap;
+import org.akaza.openclinica.domain.datamap.DnItemDataMapId;
+import org.akaza.openclinica.domain.datamap.EventCrf;
+import org.akaza.openclinica.domain.datamap.EventDefinitionCrf;
+import org.akaza.openclinica.domain.datamap.ItemData;
+import org.akaza.openclinica.domain.datamap.Study;
+import org.akaza.openclinica.domain.datamap.StudySubject;
+import org.akaza.openclinica.dao.hibernate.EventCrfDao;
+import org.akaza.openclinica.dao.hibernate.StudyEventDao;
+import org.akaza.openclinica.patterns.ocobserver.StudyEventContainer;
+import org.akaza.openclinica.domain.datamap.StudyEvent;
+import org.akaza.openclinica.domain.rule.RuleSetBean;
+import org.akaza.openclinica.domain.rule.action.RuleActionRunBean.Phase;
+import org.akaza.openclinica.domain.user.UserAccount;
+import org.akaza.openclinica.service.rule.RuleSetServiceInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class UnifiedWorkflowEnforcementService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UnifiedWorkflowEnforcementService.class);
+
+    @Autowired
+    @Qualifier("crfLocker")
+    private CRFLocker crfLocker;
+
+    @Autowired
+    private EventDefinitionCrfDao eventDefinitionCrfDao;
+
+    @Autowired
+    private RuleSetServiceInterface ruleSetService;
+
+    @Autowired
+    private ItemDataDao itemDataDao;
+
+    @Autowired
+    private DiscrepancyNoteDao discrepancyNoteDao;
+
+    @Autowired
+    private ResolutionStatusDao resolutionStatusDao;
+
+    @Autowired
+    private DiscrepancyNoteTypeDao discrepancyNoteTypeDao;
+
+    @Autowired
+    private DnItemDataMapDao dnItemDataMapDao;
+
+    @Autowired
+    private DataSource dataSource;
+    @Autowired
+    private EventCrfDao eventCrfDao;
+
+    @Autowired
+    private StudyEventDao studyEventDao;
+
+    public void validateLock(EventCrf eventCrf) {
+        if (eventCrf != null && eventCrf.getEventCrfId() != 0) {
+            if (crfLocker.isLocked(eventCrf.getEventCrfId())) {
+                throw new CRFLockedException("Record is locked by a web user.");
+            }
+        }
+    }
+
+    public void verifyDDEStatus(Integer studyEventDefinitionId, Integer crfId) {
+        List<EventDefinitionCrf> edcs = eventDefinitionCrfDao.findByStudyEventDefinitionId(studyEventDefinitionId);
+        for (EventDefinitionCrf edc : edcs) {
+            if (edc.getCrf().getCrfId() == crfId.intValue() && Boolean.TRUE.equals(edc.getDoubleEntry())) {
+                throw new ClinicalWorkflowException("Double Data Entry is required. Bypassing verification workflow is not permitted via API.");
+            }
+        }
+    }
+
+    @Transactional
+    public ItemData saveItemData(ItemData itemData, EventCrf eventCrf, Study study, UserAccount user, StudySubject studySubject) {
+        // Validation check for locked records
+        validateLock(eventCrf);
+
+        // Discrepancy Note Type 4 (Reason for Change) capture for completed records
+        boolean requiresRfc = (eventCrf.getStatusId() == Status.UNAVAILABLE.getCode() && itemData.getItemDataId() != 0);
+
+        ItemData savedData = itemDataDao.saveOrUpdate(itemData);
+
+        if (requiresRfc) {
+            createReasonForChangeNote(savedData, study, user, studySubject);
+        }
+
+        // Trigger dynamic metadata updates and rules execution
+        executeRulesAndMetadata(eventCrf, study, user);
+
+        return savedData;
+    }
+
+    private void createReasonForChangeNote(ItemData itemData, Study study, UserAccount user, StudySubject studySubject) {
+        DiscrepancyNote dn = new DiscrepancyNote();
+        dn.setStudy(study);
+        dn.setEntityType("itemData");
+        dn.setDescription("Reason for Change");
+        dn.setDetailedNotes("API submission updated a completed or verified record.");
+        dn.setDiscrepancyNoteType(discrepancyNoteTypeDao.findByDiscrepancyNoteTypeId(4)); // Type 4
+        dn.setResolutionStatus(resolutionStatusDao.findByResolutionStatusId(1));
+        dn.setUserAccount(user);
+        dn.setUserAccountByOwnerId(user);
+        dn.setDateCreated(new Date());
+        dn = discrepancyNoteDao.saveOrUpdate(dn);
+
+        DnItemDataMapId dnItemDataMapId = new DnItemDataMapId();
+        dnItemDataMapId.setDiscrepancyNoteId(dn.getDiscrepancyNoteId());
+        dnItemDataMapId.setItemDataId(itemData.getItemDataId());
+        dnItemDataMapId.setStudySubjectId(studySubject.getStudySubjectId());
+        dnItemDataMapId.setColumnName("value");
+
+        DnItemDataMap mapping = new DnItemDataMap();
+        mapping.setDnItemDataMapId(dnItemDataMapId);
+        mapping.setItemData(itemData);
+        mapping.setStudySubject(studySubject);
+        mapping.setActivated(false);
+        mapping.setDiscrepancyNote(dn);
+        dnItemDataMapDao.saveOrUpdate(mapping);
+    }
+
+    private void executeRulesAndMetadata(EventCrf eventCrf, Study study, UserAccount user) {
+        try {
+            EventCRFDAO ecdao = new EventCRFDAO(dataSource);
+            EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(eventCrf.getEventCrfId());
+
+            StudyDAO sdao = new StudyDAO(dataSource);
+            StudyBean studyBean = (StudyBean) sdao.findByPK(study.getStudyId());
+
+            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountBean ub = (UserAccountBean) udao.findByPK(user.getUserId());
+
+            StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(dataSource);
+            StudyEventDefinitionBean sed = (StudyEventDefinitionBean) sedDao.findByPK(eventCrf.getStudyEvent().getStudyEventDefinition().getStudyEventDefinitionId());
+
+            CRFVersionDAO cvDao = new CRFVersionDAO(dataSource);
+            CRFVersionBean crfVersion = (CRFVersionBean) cvDao.findByPK(eventCrf.getCrfVersion().getCrfVersionId());
+
+            List<RuleSetBean> ruleSets = ruleSetService.getRuleSetsByCrfStudyAndStudyEventDefinition(studyBean, sed, crfVersion);
+            ruleSets = ruleSetService.filterByStatusEqualsAvailable(ruleSets);
+
+            if (ruleSets != null && !ruleSets.isEmpty()) {
+                HashMap<String, String> variableAndValue = new HashMap<>();
+                Map<String, Object> request = new HashMap<>();
+                ruleSetService.runRulesInDataEntry(ruleSets, false, studyBean, ub, variableAndValue, Phase.IMPORT, ecb, request);
+                logger.info("Executed rules engine for API submission. Dynamic metadata updated.");
+            }
+        } catch (Exception e) {
+            logger.error("Failed to execute rules engine.", e);
+        }
+    }
+
+    @Transactional
+    public EventCrf saveEventCrf(EventCrf eventCrf) {
+        validateLock(eventCrf);
+        return eventCrfDao.saveOrUpdate(eventCrf);
+    }
+
+    @Transactional
+    public StudyEvent saveStudyEvent(StudyEventContainer container) {
+        return studyEventDao.saveOrUpdateTransactional(container);
+    }
+}
