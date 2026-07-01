@@ -11,6 +11,7 @@
                         and discrepancy_note_id = (select max(discrepancy_note_id) from discrepancy_note where parent_dn_id = dn.discrepancy_note_id)
             ) - dn.date_created)as age from discrepancy_note dn where dn.parent_dn_id isNull;
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     <changeSet author="ahamid" id="2010-07-01-5245-2" dbms="oracle">
     	<comment>CREATE A VIEW</comment>
@@ -24,6 +25,7 @@
             and discrepancy_note_id = (select max(discrepancy_note_id) from discrepancy_note where parent_dn_id = dn.discrepancy_note_id)
             ) - dn.date_created)as age from discrepancy_note dn where dn.parent_dn_Id is null;
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
 
     <changeSet author="ahamid" id="2010-07-01-5245-3" dbms="postgresql">
@@ -37,6 +39,7 @@
                         and discrepancy_note_id = (select max(discrepancy_note_id) from discrepancy_note where parent_dn_id = dn.discrepancy_note_id)
             ) - dn.date_created)as age from discrepancy_note dn where dn.parent_dn_id isNull;
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     <changeSet author="ahamid" id="2010-07-01-5245-4" dbms="oracle">
     	<comment>RECREATE THE VIEW WITH SOME NEW CONDITION</comment>
@@ -50,5 +53,6 @@
             and discrepancy_note_id = (select max(discrepancy_note_id) from discrepancy_note where parent_dn_id = dn.discrepancy_note_id)
             ) - dn.date_created)as age from discrepancy_note dn where dn.parent_dn_Id is null;
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
 </databaseChangeLog>

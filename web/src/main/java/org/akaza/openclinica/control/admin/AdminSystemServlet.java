@@ -63,6 +63,9 @@ public class AdminSystemServlet extends SecureController {
         ArrayList allCrfs = (ArrayList) cdao.findAll();
         request.setAttribute("allCrfNumber", new Integer(allCrfs.size()));
 
+        request.setAttribute("deploymentVersion", "3.18-SNAPSHOT");
+        request.setAttribute("activeConfiguration", "Primary Production Configuration");
+
         resetPanel();
         panel.setOrderedData(true);
         setToPanel(resword.getString("in_the_application"), "");

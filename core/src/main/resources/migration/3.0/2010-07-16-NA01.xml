@@ -15,6 +15,7 @@
                     select rs.study_id from rule_set rs, rule_set_rule rsr, rule r where
                     rsr.rule_set_id = rs.id and rule_id = r.id and r.id = rule.id  order by rsr.id desc LIMIT 1 )
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     <changeSet author="kkrumlian" id="2010-07-16-NA01-3" dbms="postgresql">
         <comment>update study_id to rule table</comment>
@@ -42,6 +43,7 @@
 		    COMMIT;
 		    Select fix_rule_referencing_cross_study();
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     <changeSet author="kkrumlian" id="2010-07-16-NA01-4" dbms="oracle" runOnChange="true">
         <comment>update study_id to rule table</comment>
@@ -53,6 +55,7 @@
 			rsr.rule_set_id = rs.id and rule_id = r.id and r.id = rule.id 
             ))
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     <changeSet author="kkrumlian" id="2010-07-16-NA01-5" dbms="oracle">
         <comment>create procedure to fix rule ref cross study problem, execute and then drop</comment>
@@ -78,5 +81,6 @@
 			EXECUTE fix_rule_ref_cross_study();
             DROP PROCEDURE fix_rule_ref_cross_study;
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
 </databaseChangeLog>

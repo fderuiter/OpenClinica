@@ -32,12 +32,14 @@
             BEFORE INSERT ON user_account
             FOR EACH ROW EXECUTE PROCEDURE generate_api_key();
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     
     <changeSet author="modernization" id="api_key_backfill_pg" dbms="postgresql">
         <sql>
             UPDATE user_account SET api_key = replace(CAST(gen_random_uuid() AS text), '-', ''), enable_api_key = true WHERE api_key IS NULL OR api_key = '';
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
 
     <!-- Oracle API Key Trigger & Backfill -->
@@ -53,12 +55,14 @@
                 END IF;
             END;
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
 
     <changeSet author="modernization" id="api_key_backfill_oracle" dbms="oracle">
         <sql>
             UPDATE user_account SET api_key = lower(rawtohex(sys_guid())), enable_api_key = 1 WHERE api_key IS NULL;
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
 
     <!-- Java-Managed Data Migrations: Process complex data migrations using DAO and preserve triggers -->

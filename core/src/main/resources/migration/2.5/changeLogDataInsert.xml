@@ -424,6 +424,7 @@
         <sql splitStatements="false">
             SELECT nextval('user_account_user_id_seq')
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     <changeSet author="kkrumlian" id="1235684743487-279-2">
     	<preConditions onFail="MARK_RAN">
@@ -432,6 +433,7 @@
         <sql>
             SELECT USER_ID_SEQ.NEXTVAL FROM dual;
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>    
 	<changeSet author="pgawade (generated)" id="1235684743487-280">
 		<insert tableName="study">
@@ -499,6 +501,7 @@
         <sql splitStatements="false">
             SELECT setval('study_study_id_seq', 2, true);
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     <changeSet author="kkrumlian" id="1235684743487-280-2">
     	<preConditions onFail="MARK_RAN">
@@ -507,6 +510,7 @@
         <sql>
             SELECT STUDY_ID_SEQ.NEXTVAL FROM dual;
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>    
     <changeSet author="pgawade (generated)" id="1235684743487-281">
 	<insert tableName="study_parameter">

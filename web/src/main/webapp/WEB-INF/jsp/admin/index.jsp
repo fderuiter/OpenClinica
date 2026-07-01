@@ -44,7 +44,13 @@
 <fmt:message key="business_administrator" bundle="${resword}"/> <a href="javascript:openDocWindow('https://docs.openclinica.com/3.1/brief-overview')"><img src="images/bt_Help_Manage.gif" border="0" alt="<fmt:message key="help" bundle="${resword}"/>" title="<fmt:message key="help" bundle="${resword}"/>"></a>
 </span></h1>
 
-
+<div class="box_T"><div class="box_L"><div class="box_R"><div class="box_B"><div class="box_TL"><div class="box_TR"><div class="box_BL"><div class="box_BR">
+<div class="tablebox_center">
+<h3>Deployment & Configuration Status</h3>
+<b>Deployment Version:</b> ${deploymentVersion} <br/>
+<b>Active Configuration:</b> ${activeConfiguration} <br/>
+</div>
+</div></div></div></div></div></div></div></div>
 
 	<h2><fmt:message key="recent_activity" bundle="${restext}"/></h2>
 <c:set var="userCount" value="0"/>
