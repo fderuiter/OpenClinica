@@ -977,7 +977,19 @@ public class CoreResources implements ResourceLoaderAware {
         return DATAINFO;
     }
 
+    private void applyEnvironmentOverrides(Properties props) {
+        if (props == null) return;
+        for (String key : props.stringPropertyNames()) {
+            String envKey = key.replaceAll("([a-z])([A-Z]+)", "$1_$2").replace(".", "_").toUpperCase();
+            String envVal = System.getenv(envKey);
+            if (envVal != null) {
+                props.setProperty(key, envVal);
+            }
+        }
+    }
+
     public void setDataInfo(Properties dataInfo) {
+        applyEnvironmentOverrides(dataInfo);
         this.dataInfo = dataInfo;
     }
 
@@ -986,6 +998,7 @@ public class CoreResources implements ResourceLoaderAware {
     }
 
     public void setExtractInfo(Properties extractInfo) {
+        applyEnvironmentOverrides(extractInfo);
         this.extractInfo = extractInfo;
     }
 
