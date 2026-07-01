@@ -24,6 +24,7 @@
         </property>
         <property name="annotatedClasses">
             <list>
+                <value>org.akaza.openclinica.domain.datamap.NotificationOutbox</value>
                 <value>org.akaza.openclinica.domain.rule.RuleSetBean</value>
                 <value>org.akaza.openclinica.domain.rule.RuleSetAuditBean</value>
                 <value>org.akaza.openclinica.domain.rule.expression.ExpressionBean</value>
@@ -190,6 +191,7 @@
   <bean id="usageStatsServiceDAO" class="org.akaza.openclinica.dao.hibernate.UsageStatsServiceDAO" parent="abstractDomainDao" autowire="byName" />
   <bean id="openClinicaVersionDAO" class="org.akaza.openclinica.dao.hibernate.OpenClinicaVersionDAO" parent="abstractDomainDao" autowire="byName" />
   <bean id="crfVersionDao" class="org.akaza.openclinica.dao.hibernate.CrfVersionDao" parent="abstractDomainDao" autowire="byName" />
+  <bean id="notificationOutboxDao" class="org.akaza.openclinica.dao.hibernate.NotificationOutboxDao" parent="abstractDomainDao" autowire="byName" />
   <bean id="eventCrfDao" class="org.akaza.openclinica.dao.hibernate.EventCrfDao" parent="abstractDomainDao" autowire="byName" />
   <bean id="eventDefinitionCrfDao" class="org.akaza.openclinica.dao.hibernate.EventDefinitionCrfDao" parent="abstractDomainDao" autowire="byName" />
   <bean id="crfVersionMediaDao" class="org.akaza.openclinica.dao.hibernate.CrfVersionMediaDao" parent="abstractDomainDao" autowire="byName" />
