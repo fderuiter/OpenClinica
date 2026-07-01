@@ -336,17 +336,24 @@ public abstract class DataEntryServlet extends CoreSecureController {
         int isFirstTimeOnSection =fp.getInt("isFirstTimeOnSection");
         request.setAttribute( "isFirstTimeOnSection",isFirstTimeOnSection+"");
 
-        if (getCrfLocker().isLocked(ecb.getId())) {
-            int userId = getCrfLocker().getLockOwner(ecb.getId());
-            UserAccountDAO udao = new UserAccountDAO(getDataSource());
-            UserAccountBean ubean = (UserAccountBean) udao.findByPK(userId);
-            if (ubean.getId() != ub.getId()) {
-                addPageMessage(resword.getString("CRF_unavailable") + " " + ubean.getName() + " " + resword.getString("Currently_entering_data") + " "
+        if (!getCrfLocker().lock(ecb.getId(), ub.getId())) {
+            Integer userId = getCrfLocker().getLockOwner(ecb.getId());
+            if (userId != null && userId.intValue() != ub.getId()) {
+                UserAccountDAO udao = new UserAccountDAO(getDataSource());
+                UserAccountBean ubean = (UserAccountBean) udao.findByPK(userId);
+                addPageMessage(resword.getString("CRF_unavailable") + " " + (ubean != null ? ubean.getName() : "Unknown User") + " " + resword.getString("Currently_entering_data") + " "
                     + resword.getString("Leave_the_CRF"), request);
                 forwardPage(Page.LIST_STUDY_SUBJECTS_SERVLET, request, response);
+                return;
+            } else if (userId == null) {
+                // Lock was released in the meantime, try to acquire again
+                if (!getCrfLocker().lock(ecb.getId(), ub.getId())) {
+                    addPageMessage(resword.getString("CRF_unavailable") + " " + resword.getString("Currently_entering_data") + " "
+                        + resword.getString("Leave_the_CRF"), request);
+                    forwardPage(Page.LIST_STUDY_SUBJECTS_SERVLET, request, response);
+                    return;
+                }
             }
-        } else {
-            getCrfLocker().lock(ecb.getId(), ub.getId());
         }
 
         if (!ecb.isActive()) {

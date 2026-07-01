@@ -17,6 +17,7 @@ import org.akaza.openclinica.bean.extract.ExtractPropertyBean;
 import org.akaza.openclinica.bean.service.PdfProcessingFunction;
 import org.akaza.openclinica.bean.service.SasProcessingFunction;
 import org.akaza.openclinica.bean.service.SqlProcessingFunction;
+import org.akaza.openclinica.bean.service.JsonProcessingFunction;
 import org.akaza.openclinica.exception.OpenClinicaSystemException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -752,6 +753,12 @@ public class CoreResources implements ResourceLoaderAware {
                     String postProcessorName = getExtractField(whichFunction + ".postProcessor");
                     if (postProcessorName.equals("pdf")) {
                         epbean.setPostProcessing(new PdfProcessingFunction());
+                        epbean.setPostProcDeleteOld(getExtractFieldBoolean(whichFunction + ".deleteOld"));
+                        epbean.setPostProcZip(getExtractFieldBoolean(whichFunction + ".zip"));
+                        epbean.setPostProcLocation(getExtractField(whichFunction + ".location"));
+                        epbean.setPostProcExportName(getExtractField(whichFunction + ".exportname"));
+                    } else if (postProcessorName.equals("json")) {
+                        epbean.setPostProcessing(new JsonProcessingFunction());
                         epbean.setPostProcDeleteOld(getExtractFieldBoolean(whichFunction + ".deleteOld"));
                         epbean.setPostProcZip(getExtractFieldBoolean(whichFunction + ".zip"));
                         epbean.setPostProcLocation(getExtractField(whichFunction + ".location"));

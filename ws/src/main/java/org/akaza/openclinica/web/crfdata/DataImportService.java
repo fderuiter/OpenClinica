@@ -237,6 +237,7 @@ public class DataImportService {
                 }
                 
                 int eventCrfBeanIdProcessed = 0;
+                
                 for (DisplayItemBean displayItemBean : wrapper.getDisplayItemBeans()) {
                     eventCrfBeanId = displayItemBean.getData().getEventCRFId();
                     eventCrfBean = (EventCRFBean) eventCrfDao.findByPK(eventCrfBeanId);
@@ -266,6 +267,11 @@ public class DataImportService {
                         itemDataHibernateDao.getCurrentSession().flush();
                         itemDataHibernateDao.getCurrentSession().clear();
                     }
+                }
+
+                for (DisplayItemBean displayItemBean : wrapper.getDisplayItemBeans()) {
+                    eventCrfBeanId = displayItemBean.getData().getEventCRFId();
+                    eventCrfBean = (EventCRFBean) eventCrfDao.findByPK(eventCrfBeanId);
                     ItemDAO idao = new ItemDAO(dataSource);
                     ItemBean ibean = (ItemBean) idao.findByPK(displayItemBean.getData().getItemId());
                     // logger.debug("*** checking for validation errors: " + ibean.getName());

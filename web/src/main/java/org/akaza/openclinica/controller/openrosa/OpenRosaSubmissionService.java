@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
+import java.util.Date;
+import org.akaza.openclinica.dao.hibernate.NotificationOutboxDao;
+import org.akaza.openclinica.domain.datamap.NotificationOutbox;
 import org.akaza.openclinica.dao.hibernate.CrfVersionDao;
 import org.akaza.openclinica.dao.hibernate.StudyDao;
 import org.akaza.openclinica.domain.datamap.CrfVersion;
@@ -24,6 +27,9 @@ public class OpenRosaSubmissionService {
     
     @Autowired
     CrfVersionDao crfVersionDao;
+
+    @Autowired
+    NotificationOutboxDao notificationOutboxDao;
     
     @Transactional
     public void processRequest(Study study, HashMap<String,String> subjectContext, String requestBody, Errors errors, Locale locale, ArrayList <HashMap> listOfUploadFilePaths) throws Exception {
@@ -31,6 +37,18 @@ public class OpenRosaSubmissionService {
         CrfVersion crfVersion = crfVersionDao.findByOcOID(subjectContext.get("crfVersionOID"));
         String requestPayload = parseSubmission(requestBody, crfVersion);
         runAsTransaction(study, requestPayload, subjectContext, errors, locale ,listOfUploadFilePaths);
+
+        if (!errors.hasErrors()) {
+            NotificationOutbox outbox = new NotificationOutbox();
+            outbox.setStudyOid(study.getOc_oid());
+            outbox.setStudyEventDefId(Integer.valueOf(subjectContext.get("studyEventDefinitionID")));
+            outbox.setStudyEventDefOrdinal(Integer.valueOf(subjectContext.get("studyEventOrdinal")));
+            outbox.setCrfVersionOid(subjectContext.get("crfVersionOID"));
+            outbox.setStatus("PENDING");
+            outbox.setAttemptCount(0);
+            outbox.setCreatedAt(new Date());
+            notificationOutboxDao.saveOrUpdate(outbox);
+        }
     }
     
     private void runAsTransaction(Study study, String requestBody, HashMap<String, String> subjectContext, Errors errors, Locale locale,ArrayList <HashMap> listOfUploadFilePaths) throws Exception{

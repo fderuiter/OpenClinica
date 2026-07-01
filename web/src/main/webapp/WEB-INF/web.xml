@@ -85,6 +85,16 @@
 
 
     <filter>
+        <filter-name>apiResponseWrapperFilter</filter-name>
+        <filter-class>org.akaza.openclinica.web.filter.ApiResponseWrapperFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>apiResponseWrapperFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
         <init-param>
@@ -640,6 +650,11 @@
         <servlet-name>ExportDatasetServlet</servlet-name>
         <display-name>ExportDataset</display-name>
         <servlet-class>org.akaza.openclinica.control.extract.ExportDatasetServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ExportStatusServlet</servlet-name>
+        <display-name>ExportStatus</display-name>
+        <servlet-class>org.akaza.openclinica.control.extract.ExportStatusServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>BatchCRFMigrationServlet</servlet-name>
@@ -1800,6 +1815,10 @@
     <servlet-mapping>
         <servlet-name>ExportDatasetServlet</servlet-name>
         <url-pattern>/ExportDataset</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExportStatusServlet</servlet-name>
+        <url-pattern>/ExportStatus</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CreateDatasetServlet</servlet-name>
