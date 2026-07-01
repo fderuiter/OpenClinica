@@ -16,6 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.akaza.openclinica.domain.datamap.AuditLogEvent;
+import org.akaza.openclinica.domain.datamap.AuditLogEventType;
+import org.akaza.openclinica.dao.hibernate.AuditLogEventDao;
+
 /**
  * Call Super Class SecurityContextLogoutHandler that Performs a logout by modifying the {@see org.springframework.security.context.SecurityContextHolder}.
  * <p>
@@ -28,6 +32,7 @@ public class OpenClinicaSecurityContextLogoutHandler extends SecurityContextLogo
     AuditUserLoginDao auditUserLoginDao;
     UserAccountDAO userAccountDao;
     DataSource dataSource;
+    AuditLogEventDao auditLogEventDao;
 
     // ~ Methods ========================================================================================================
 
@@ -58,6 +63,24 @@ public class OpenClinicaSecurityContextLogoutHandler extends SecurityContextLogo
         auditUserLogin.setLoginAttemptDate(new Date());
         auditUserLogin.setUserAccountId(userAccount != null ? userAccount.getId() : null);
         getAuditUserLoginDao().saveOrUpdate(auditUserLogin);
+
+        // Modern Audit Log for Logout
+        AuditLogEvent auditEvent = new AuditLogEvent();
+        auditEvent.setAuditDate(new Date());
+        auditEvent.setAuditTable("user_account");
+        auditEvent.setEntityId(userAccount != null ? userAccount.getId() : null);
+        if (userAccount != null) {
+            org.akaza.openclinica.domain.user.UserAccount ua = new org.akaza.openclinica.domain.user.UserAccount();
+            ua.setUserId(userAccount.getId());
+            auditEvent.setUserAccount(ua);
+        }
+        auditEvent.setEntityName(username);
+        
+        AuditLogEventType eventType = new AuditLogEventType();
+        eventType.setAuditLogEventTypeId(46);
+        auditEvent.setAuditLogEventType(eventType);
+        
+        getAuditLogEventDao().saveOrUpdate(auditEvent);
     }
 
     public DataSource getDataSource() {
@@ -78,6 +101,14 @@ public class OpenClinicaSecurityContextLogoutHandler extends SecurityContextLogo
 
     public void setAuditUserLoginDao(AuditUserLoginDao auditUserLoginDao) {
         this.auditUserLoginDao = auditUserLoginDao;
+    }
+
+    public AuditLogEventDao getAuditLogEventDao() {
+        return auditLogEventDao;
+    }
+
+    public void setAuditLogEventDao(AuditLogEventDao auditLogEventDao) {
+        this.auditLogEventDao = auditLogEventDao;
     }
 
 }
