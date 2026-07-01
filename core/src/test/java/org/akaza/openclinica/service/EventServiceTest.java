@@ -19,6 +19,7 @@ public class EventServiceTest {
 
     @Before
     public void setUp() {
+        org.akaza.openclinica.i18n.util.ResourceBundleProvider.updateLocale(new java.util.Locale("en", "US"));
         eventService = new EventService((javax.sql.DataSource) null);
         
         eventService.studyEventDao = new StudyEventDAO(null) {

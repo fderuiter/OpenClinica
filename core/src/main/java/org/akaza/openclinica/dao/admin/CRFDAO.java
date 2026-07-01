@@ -284,14 +284,53 @@ public class CRFDAO<K extends String, V extends ArrayList> extends AuditableEnti
     }
 
     public Collection findAllByPermission(Object objCurrentUser, int intActionType, String strOrderByColumn, boolean blnAscendingSort, String strSearchPhrase) {
-        ArrayList al = new ArrayList();
-
-        return al;
+        return findAllByPermission(objCurrentUser, intActionType);
     }
 
     public Collection findAllByPermission(Object objCurrentUser, int intActionType) {
-        ArrayList al = new ArrayList();
+        org.akaza.openclinica.bean.login.UserAccountBean user = (org.akaza.openclinica.bean.login.UserAccountBean) objCurrentUser;
+        if (user.isSysAdmin()) {
+            return findAll();
+        }
+        
+        java.util.List<org.akaza.openclinica.bean.login.StudyUserRoleBean> roles = user.getRoles();
+        if (roles == null || roles.isEmpty()) {
+            return new ArrayList();
+        }
 
+        ArrayList<Integer> studyIds = new ArrayList<Integer>();
+        for (org.akaza.openclinica.bean.login.StudyUserRoleBean role : roles) {
+            org.akaza.openclinica.bean.core.Role r = role.getRole();
+            if (r != null && r.hasPrivilege(org.akaza.openclinica.bean.core.Privilege.VIEW_CRFS)) {
+                studyIds.add(role.getStudyId());
+            }
+        }
+        if (studyIds.isEmpty()) {
+            return new ArrayList();
+        }
+
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT c.* FROM crf c ");
+        sql.append("LEFT JOIN event_definition_crf edc ON c.crf_id = edc.crf_id ");
+        sql.append("WHERE c.source_study_id IN (");
+        for (int i = 0; i < studyIds.size(); i++) {
+            sql.append(studyIds.get(i));
+            if (i < studyIds.size() - 1) sql.append(",");
+        }
+        sql.append(") OR edc.study_id IN (");
+        for (int i = 0; i < studyIds.size(); i++) {
+            sql.append(studyIds.get(i));
+            if (i < studyIds.size() - 1) sql.append(",");
+        }
+        sql.append(")");
+        
+        this.setTypesExpected();
+        ArrayList alist = this.select(sql.toString());
+        ArrayList al = new ArrayList();
+        Iterator it = alist.iterator();
+        while (it.hasNext()) {
+            org.akaza.openclinica.bean.admin.CRFBean eb = (org.akaza.openclinica.bean.admin.CRFBean) this.getEntityFromHashMap((HashMap) it.next());
+            al.add(eb);
+        }
         return al;
     }
 
