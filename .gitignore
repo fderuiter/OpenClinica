@@ -27,3 +27,6 @@ ws/.DS_Store
 
 # netbeans
 nb-configuration.xml
+.env
+web/node/
+node_modules/
