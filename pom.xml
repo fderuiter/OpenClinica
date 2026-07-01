@@ -464,7 +464,7 @@
 				<executions>
 					<execution>
 						<id>generate-docs</id>
-						<phase>initialize</phase>
+						<phase>validate</phase>
 						<goals>
 							<goal>exec</goal>
 						</goals>

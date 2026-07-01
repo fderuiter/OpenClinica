@@ -5,10 +5,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"
 
 # Fail the build if metadata cannot be extracted
-PROJECT_VERSION=$(grep -m 1 '<version>' pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 if [ -z "$PROJECT_VERSION" ]; then echo "Error: Could not extract PROJECT_VERSION"; exit 1; fi
 
-JDK_VERSION=$(grep -m 1 '<source>' pom.xml | sed 's/.*<source>\(.*\)<\/source>.*/\1/')
+JDK_VERSION=$(python3 -c "import xml.etree.ElementTree as ET; tree = ET.parse('pom.xml'); root = tree.getroot(); print([elem.text for elem in root.iter('{http://maven.apache.org/POM/4.0.0}source')][0])")
 if [ -z "$JDK_VERSION" ]; then echo "Error: Could not extract JDK_VERSION"; exit 1; fi
 
 TOMCAT_VERSION=$(grep -oP 'apache-tomcat-\K[0-9\.]+(?=\.tar\.gz)' Dockerfile | head -1)
