@@ -148,8 +148,8 @@ public class InitUpdateEventDefinitionServlet extends SecureController {
                 newEventDefinitionCRFs.add(edc);
             }
 
-            session.setAttribute("definition", sed);
-            session.setAttribute("eventDefinitionCRFs", newEventDefinitionCRFs);
+            request.setAttribute("definition", sed);
+            request.setAttribute("eventDefinitionCRFs", newEventDefinitionCRFs);
             // changed above to new list because static, in-place updating is
             // updating all EDCs, tbh 102007
 

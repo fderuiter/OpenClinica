@@ -73,7 +73,7 @@ public class ApplyFilterServlet extends SecureController {
                 if (fp.getInt("filterId") > 0) {
                     FilterDAO fdao = new FilterDAO(sm.getDataSource());
                     FilterBean fb = (FilterBean) fdao.findByPK(fp.getInt("filterId"));
-                    session.setAttribute("newFilter", fb);
+                    request.setAttribute("newFilter", fb);
 
                 } else {
                     Validator.addError(errors, "all", resword.getString("no_filter_was_chosen"));

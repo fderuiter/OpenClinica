@@ -59,7 +59,7 @@ public class InitUpdateStudyServlet extends SecureController {
             logger.info("date created:" + study.getCreatedDate());
             logger.info("protocol Type:" + study.getProtocolType());
 
-            session.setAttribute("newStudy", study);
+            request.setAttribute("newStudy", study);
             request.setAttribute("facRecruitStatusMap", CreateStudyServlet.facRecruitStatusMap);
             request.setAttribute("statuses", Status.toActiveArrayList());
 

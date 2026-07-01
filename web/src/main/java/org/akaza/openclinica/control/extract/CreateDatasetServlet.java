@@ -141,10 +141,10 @@ public class CreateDatasetServlet extends SecureController {
             
             
             // step 1 -- instructions, and continue button
-            session.setAttribute("newDataset", new DatasetBean());
-            session.setAttribute("allItems", new ArrayList());
-            session.setAttribute("crf", new CRFBean());
-            session.setAttribute("allSelectedItems", new ArrayList());
+            request.setAttribute("newDataset", new DatasetBean());
+            request.setAttribute("allItems", new ArrayList());
+            request.setAttribute("crf", new CRFBean());
+            request.setAttribute("allSelectedItems", new ArrayList());
             forwardPage(Page.CREATE_DATASET_1);
 
         } else {
@@ -195,13 +195,13 @@ public class CreateDatasetServlet extends SecureController {
                     ItemDAO idao = new ItemDAO(sm.getDataSource());
                     ArrayList sedItemIds = CreateDatasetServlet.allSedItemIdsInStudy(events, crfdao, idao);
 
-                    session.setAttribute("numberOfStudyItems", Integer.toString(sedItemIds.size()));
+                    request.setAttribute("numberOfStudyItems", Integer.toString(sedItemIds.size()));
                     request.setAttribute("eventlist", events);
 
-                    session.setAttribute(EVENTS_FOR_CREATE_DATASET, events);
-                    session.setAttribute("newDataset", new DatasetBean());
-                    session.setAttribute("allItems", new ArrayList());
-                    session.setAttribute("crf", new CRFBean());
+                    request.setAttribute(EVENTS_FOR_CREATE_DATASET, events);
+                    request.setAttribute("newDataset", new DatasetBean());
+                    request.setAttribute("allItems", new ArrayList());
+                    request.setAttribute("crf", new CRFBean());
                     forwardPage(Page.CREATE_DATASET_2);
                 }
 
@@ -214,8 +214,8 @@ public class CreateDatasetServlet extends SecureController {
                 }
                 extractIdsFromForm(db);
                 extractEventIds(db);
-                session.setAttribute("newDataset", db);
-                // session.setAttribute("itemSelectedNum",db.getItemIds().size()
+                request.setAttribute("newDataset", db);
+                // request.setAttribute("itemSelectedNum",db.getItemIds().size()
                 // +"");
                 if (!StringUtil.isBlank(saveItems)) {
                     request.setAttribute("eventlist", session.getAttribute(EVENTS_FOR_CREATE_DATASET));
@@ -233,7 +233,7 @@ public class CreateDatasetServlet extends SecureController {
                         if (sgclasses == null || sgclasses.size() == 0) {
                             sgclasses = setUpStudyGroups();
                         }
-                        session.setAttribute("allSelectedGroups", sgclasses);
+                        request.setAttribute("allSelectedGroups", sgclasses);
                         request.setAttribute("allSelectedGroups", sgclasses);
                         // TODO push out list of subject groups here???
                         // form submitted from "view selected item ' or
@@ -316,7 +316,7 @@ public class CreateDatasetServlet extends SecureController {
 
                     dsb.setDateStart(dateStart);
                     dsb.setDateEnd(dateEnd);
-                    session.setAttribute("newDataset", dsb);
+                    request.setAttribute("newDataset", dsb);
 
                     if (fp.getString("submit").equals(resword.getString("continue_to_apply_filter"))) {
                         // FilterDAO fdao = new FilterDAO(sm.getDataSource());
@@ -324,7 +324,7 @@ public class CreateDatasetServlet extends SecureController {
                         // TODO make findAllByProject
                         // request.setAttribute("filters",filters);
                         EntityBeanTable table = getFilterTable();
-                        session.setAttribute("partOfCreateDataset", new Integer(1));
+                        request.setAttribute("partOfCreateDataset", new Integer(1));
                         // to be used in createFiltersThree servlet, tbh
                         request.setAttribute("table", table);
                         forwardPage(Page.APPLY_FILTER);
@@ -397,10 +397,10 @@ public class CreateDatasetServlet extends SecureController {
                     request.setAttribute("statuses", Status.toActiveArrayList());
                     forwardPage(Page.CREATE_DATASET_4);
                 } else {
-                    session.setAttribute("mdvOID", mdvOID);
-                    session.setAttribute("mdvName", mdvName);
-                    session.setAttribute("mdvPrevStudy", mdvPrevStudy);
-                    session.setAttribute("mdvPrevOID", mdvPrevOID);
+                    request.setAttribute("mdvOID", mdvOID);
+                    request.setAttribute("mdvName", mdvName);
+                    request.setAttribute("mdvPrevStudy", mdvPrevStudy);
+                    request.setAttribute("mdvPrevOID", mdvPrevOID);
                     if (mdvPrevOID != null && mdvPrevOID.length() > 0 && (mdvPrevStudy == null || mdvPrevStudy.length() <= 0)) {
                         mdvPrevStudy = currentStudy.getId() + "";
                     }
@@ -438,7 +438,7 @@ public class CreateDatasetServlet extends SecureController {
                     dsb.setDescription(fp.getString("dsDesc"));
                     dsb.setStatus(Status.get(fp.getInt("dsStatus")));
                     dsb.setDatasetItemStatus(DatasetItemStatus.get(fp.getInt("itemStatus")));
-                    session.removeAttribute("partOfCreateDataset");
+                    request.removeAttribute("partOfCreateDataset");
                     Date ddate = new SimpleDateFormat("MM/dd/yyyy").parse("01/01/1900");
                     // done to remove the set up of going to get the filter, tbh
                     // set up dataset here, grab primary key???!!!???
@@ -446,7 +446,7 @@ public class CreateDatasetServlet extends SecureController {
                     request.setAttribute("defaultStart", local_df.parse(local_df.format(ddate)));
                     request.setAttribute("defaultEnd", getLastDayOfMonth(2100, 12));
 
-                    session.setAttribute("newDataset", dsb);
+                    request.setAttribute("newDataset", dsb);
                     forwardPage(Page.CONFIRM_DATASET);
                 }
 
@@ -456,8 +456,8 @@ public class CreateDatasetServlet extends SecureController {
                 if (!resword.getString("confirm_and_save").equalsIgnoreCase(submit)) {
                     // we're going back, so we should not destroy the
                     // data we've created, tbh
-                    // session.removeAttribute("newDataset");
-                    // session.removeAttribute("newFilter");
+                    // request.removeAttribute("newDataset");
+                    // request.removeAttribute("newFilter");
                     forwardPage(Page.CREATE_DATASET_4);
                 } else {
                     DatasetDAO ddao = new DatasetDAO(sm.getDataSource());
@@ -626,7 +626,7 @@ public class CreateDatasetServlet extends SecureController {
                 getCRFAttr(fp, db);
             }
 
-            session.setAttribute("allSelectedItems", newSelectItems);
+            request.setAttribute("allSelectedItems", newSelectItems);
 
         }
 
@@ -962,7 +962,7 @@ public class CreateDatasetServlet extends SecureController {
             // db.getSubjectGroupIds().add(new Integer(sgclass.getId()));
             logger.info("just added subject group ids: " + sgclass.getId());
         }
-        session.setAttribute("allSelectedGroups", allSelectedGroups);
+        request.setAttribute("allSelectedGroups", allSelectedGroups);
         request.setAttribute("allSelectedGroups", allSelectedGroups);
         // above really necessary? tbh
         logger.info("added SUBJECT group info");

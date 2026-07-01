@@ -72,8 +72,8 @@ public class CreateFiltersThreeServlet extends SecureController {
             } else {
                 FilterBean fb = (FilterBean) session.getAttribute("newFilter");
                 fb.setName(fp.getString("fName"));
-                session.removeAttribute("newFilter");
-                session.removeAttribute("newExp");// remove explanation for
+                request.removeAttribute("newFilter");
+                request.removeAttribute("newExp");// remove explanation for
                 // filter here,
                 // tbh
                 fb.setDescription(fp.getString("fDesc"));
@@ -93,10 +93,10 @@ public class CreateFiltersThreeServlet extends SecureController {
                 if (check != null) {
                     // move the creation process on to create a dataset
                     request.setAttribute("statuses", getStatuses());
-                    session.removeAttribute("partOfCreateDataset");
+                    request.removeAttribute("partOfCreateDataset");
                     forwardPage(Page.CREATE_DATASET_4);
                 } else {
-                    session.removeAttribute("newFilter");
+                    request.removeAttribute("newFilter");
                     FilterDAO fdao = new FilterDAO(sm.getDataSource());
                     EntityBeanTable table = fp.getEntityBeanTable();
 

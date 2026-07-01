@@ -238,38 +238,12 @@ public class DatasetBean extends AuditableEntityBean {
      * @return string in SQL, to elicit information.
      */
     public String generateQuery() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("select distinct * from " + VIEW_NAME + " where ");
-
-        if (!this.getEventIds().isEmpty()) {
-            String idList = this.getEventIds().toString();
-            sb.append("study_event_definition_id in (" + idList + ") and ");
-        }
-        if (!this.getItemIds().isEmpty()) {
-            String idList = this.getItemIds().toString();
-            sb.append("item_id in (" + idList + ") and ");
-        }
-
-        String pattern = "yyyy-MM-dd";
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        // guard clauses to defend vs NPE, tbh 10-2009
-        String beginDate = "1900-01-01";
-        if (dateStart != null) {
-            beginDate = sdf.format(this.dateStart);
-        }
-        String stopDate = "2100-01-01";
-        if (dateEnd != null) {
-            stopDate = sdf.format(this.dateEnd);
-        }
-        // << tbh 10/2009
-        sb.append("(date(date_created) >= date('" + beginDate + "')) and (date(date_created) <= date('" + stopDate + "'))");
-        // perform regexp here that pulls out [] square brackets
-
-        String returnMe = sb.toString().replaceAll("\\[|\\]", "");
-        // returnMe = returnMe.replaceAll("[^0-9])",")");
-        // return sb.toString();
-        returnMe = returnMe + " order by date_start asc";
-        return returnMe;
+        DatasetQueryBuilder builder = new DatasetQueryBuilder(VIEW_NAME, false);
+        builder.addInClause("study_event_definition_id", this.getEventIds());
+        builder.addInClause("item_id", this.getItemIds());
+        builder.addDateRangeClause("date_created", this.dateStart, this.dateEnd);
+        builder.setOrderBy("date_start asc");
+        return builder.build();
     }
 
     /**
@@ -279,33 +253,17 @@ public class DatasetBean extends AuditableEntityBean {
      * @return the Oracle SQL syntax to capture datasets.
      */
     public String generateOracleQuery() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("select distinct * from " + VIEW_NAME + " where ");
-        if (!this.getEventIds().isEmpty()) {
-            String idList = this.getEventIds().toString();
-            sb.append("study_event_definition_id in (" + idList + ") and ");
-        }
-
-        if (!this.getItemIds().isEmpty()) {
-            String idList = this.getItemIds().toString();
-            sb.append("item_id in (" + idList + ") and ");
-        }
-        String pattern = "dd-MMM-yyyy";// changed by bads issue 2152
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        String beginDate = sdf.format(this.dateStart);
-        String stopDate = sdf.format(this.dateEnd);
-
-        sb.append("(date_created >= '" + beginDate + "') and (date_created <= '" + stopDate + "')");
-        // perform regexp here that pulls out [] square brackets
-
+        DatasetQueryBuilder builder = new DatasetQueryBuilder(VIEW_NAME, true);
+        builder.addInClause("study_event_definition_id", this.getEventIds());
+        builder.addInClause("item_id", this.getItemIds());
+        builder.addDateRangeClause("date_created", this.dateStart, this.dateEnd);
+        builder.setOrderBy("date_start");
+        
+        String result = builder.build();
         logger.info("-----------------------------");
-        logger.info(sb.toString());
+        logger.info(result);
         logger.info("-----------------------------");
-        String returnMe = sb.toString().replaceAll("\\[|\\]", "");
-        // returnMe = returnMe.replaceAll("[^0-9])",")");
-        // return sb.toString();
-        returnMe = returnMe + " order by date_start";
-        return returnMe;
+        return result;
     }
 
     /**

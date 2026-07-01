@@ -70,8 +70,8 @@ public class UpdateStudySubjectServlet extends SecureController {
 
         String fromResolvingNotes = fp.getString("fromResolvingNotes",true);
         if (StringUtil.isBlank(fromResolvingNotes)) {
-            session.removeAttribute(ViewNotesServlet.WIN_LOCATION);
-            session.removeAttribute(ViewNotesServlet.NOTES_TABLE);
+            request.removeAttribute(ViewNotesServlet.WIN_LOCATION);
+            request.removeAttribute(ViewNotesServlet.NOTES_TABLE);
             checkStudyLocked(Page.LIST_STUDY_SUBJECTS_SERVLET, respage.getString("current_study_locked"));
             checkStudyFrozen(Page.LIST_STUDY_SUBJECTS_SERVLET, respage.getString("current_study_frozen"));
         }
@@ -126,19 +126,19 @@ public class UpdateStudySubjectServlet extends SecureController {
                     }
                 }
 
-                session.setAttribute("groups", classes);
+                request.setAttribute("groups", classes);
             }
 
             if ("show".equalsIgnoreCase(action)) {
 
-                session.setAttribute("studySub", sub);
+                request.setAttribute("studySub", sub);
                 // below added tbh 092007
                 String enrollDateStr = sub.getEnrollmentDate()!=null ?
                     local_df.format(sub.getEnrollmentDate()) : "";
-                session.setAttribute("enrollDateStr", enrollDateStr);
+                request.setAttribute("enrollDateStr", enrollDateStr);
                 // above added tbh 092007
                 discNotes = new FormDiscrepancyNotes();
-                session.setAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME, discNotes);
+                request.setAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME, discNotes);
 
                 forwardPage(Page.UPDATE_STUDY_SUBJECT);
             } else if ("confirm".equalsIgnoreCase(action)) {
@@ -187,10 +187,10 @@ public class UpdateStudySubjectServlet extends SecureController {
                 }
 
                 addPageMessage(respage.getString("study_subject_updated_succesfully"));
-                session.removeAttribute("studySub");
-                session.removeAttribute("groups");
-                session.removeAttribute("enrollDateStr");
-                session.removeAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
+                request.removeAttribute("studySub");
+                request.removeAttribute("groups");
+                request.removeAttribute("enrollDateStr");
+                request.removeAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
                 request.setAttribute("id", new Integer(studySubId).toString());
 
                 forwardPage(Page.VIEW_STUDY_SUBJECT_SERVLET);
@@ -272,9 +272,9 @@ public class UpdateStudySubjectServlet extends SecureController {
         // below added tbh 092007, fix for YY vs YYYY formatting
         String enrollDateStr = enrollDate != null ? local_df.format(enrollDate) : "";
 
-        session.setAttribute("enrollDateStr", enrollDateStr);
+        request.setAttribute("enrollDateStr", enrollDateStr);
         // above added tbh 092007
-        session.setAttribute("studySub", sub);
+        request.setAttribute("studySub", sub);
 
         if (!classes.isEmpty()) {
             for (int i = 0; i < classes.size(); i++) {
@@ -290,7 +290,7 @@ public class UpdateStudySubjectServlet extends SecureController {
                 }
             }
         }
-        session.setAttribute("groups", classes);
+        request.setAttribute("groups", classes);
         if (!errors.isEmpty()) {
             logger.info("has errors");
             if (StringUtil.isBlank(sub.getLabel())) {

@@ -66,8 +66,8 @@ public class UpdateSubjectGroupClassServlet extends SecureController {
 
                 ArrayList groups = sgdao.findAllByGroupClass(sgcb);
                 request.setAttribute("groupTypes", GroupClassType.toArrayList());
-                session.setAttribute("group", sgcb);
-                session.setAttribute("studyGroups", groups);
+                request.setAttribute("group", sgcb);
+                request.setAttribute("studyGroups", groups);
                 forwardPage(Page.UPDATE_SUBJECT_GROUP_CLASS);
             } else {
                 if (action.equalsIgnoreCase("confirm")) {
@@ -135,8 +135,8 @@ public class UpdateSubjectGroupClassServlet extends SecureController {
         group.setGroupClassTypeId(fp.getInt("groupClassTypeId"));
         group.setSubjectAssignment(fp.getString("subjectAssignment"));
 
-        session.setAttribute("group", group);
-        session.setAttribute("studyGroups", studyGroups);
+        request.setAttribute("group", group);
+        request.setAttribute("studyGroups", studyGroups);
 
         if (errors.isEmpty()) {
             logger.info("no errors in the first section");

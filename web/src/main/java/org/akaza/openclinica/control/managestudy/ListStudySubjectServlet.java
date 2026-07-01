@@ -161,9 +161,9 @@ public abstract class ListStudySubjectServlet extends SecureController {
         request.setAttribute("studyGroupClasses", studyGroupClasses);
 
         // information for the event tabs
-        session.setAttribute("allDefsArray", allDefs);
-        session.setAttribute("allDefsNumber", new Integer(allDefs.size()));
-        session.setAttribute("groupSize", new Integer(studyGroupClasses.size()));
+        request.setAttribute("allDefsArray", allDefs);
+        request.setAttribute("allDefsNumber", new Integer(allDefs.size()));
+        request.setAttribute("groupSize", new Integer(studyGroupClasses.size()));
 
         // find all the subjects in current study
         ArrayList subjects = sdao.findAllByStudyId(currentStudy.getId());
@@ -368,7 +368,7 @@ public abstract class ListStudySubjectServlet extends SecureController {
         }
 
         FormDiscrepancyNotes discNotes = new FormDiscrepancyNotes();
-        session.setAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME, discNotes);
+        request.setAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME, discNotes);
 
         forwardPage(getJSP());
     }

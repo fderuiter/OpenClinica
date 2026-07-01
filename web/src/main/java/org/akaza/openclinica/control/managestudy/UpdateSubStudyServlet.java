@@ -188,7 +188,7 @@ public class UpdateSubStudyServlet extends SecureController {
         // }
 
         StudyBean study = createStudyBean();
-        session.setAttribute("newStudy", study);
+        request.setAttribute("newStudy", study);
 
         if (errors.isEmpty()) {
             logger.info("no errors");
@@ -527,9 +527,9 @@ public class UpdateSubStudyServlet extends SecureController {
         if (!errors.isEmpty()) {
             logger.info("has errors");
             StudyBean study = createStudyBean();
-            session.setAttribute("newStudy", study);
+            request.setAttribute("newStudy", study);
             request.setAttribute("formMessages", errors);
-            session.setAttribute("changed", changes);
+            request.setAttribute("changed", changes);
             forwardPage(Page.UPDATE_SUB_STUDY);
         }else{  
             for (EventDefinitionCRFBean toBeCreated: toBeCreatedEventDefBean){
@@ -590,17 +590,17 @@ public class UpdateSubStudyServlet extends SecureController {
 
         submitSiteEventDefinitions(study);
 
-     //   session.removeAttribute("newStudy");
-    //    session.removeAttribute("parentName");
-    //    session.removeAttribute("definitions");
-   //     session.removeAttribute("sdvOptions");
+     //   request.removeAttribute("newStudy");
+    //    request.removeAttribute("parentName");
+    //    request.removeAttribute("definitions");
+   //     request.removeAttribute("sdvOptions");
         addPageMessage(respage.getString("the_site_has_been_updated_succesfully"));
         String fromListSite = (String) session.getAttribute("fromListSite");
         if (fromListSite != null && fromListSite.equals("yes")) {
-     //       session.removeAttribute("fromListSite");
+     //       request.removeAttribute("fromListSite");
             forwardPage(Page.SITE_LIST_SERVLET);
         } else {
-      //      session.removeAttribute("fromListSite");
+      //      request.removeAttribute("fromListSite");
             forwardPage(Page.STUDY_LIST_SERVLET);
         }
 

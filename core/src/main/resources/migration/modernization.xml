@@ -70,4 +70,25 @@
         <customChange class="org.akaza.openclinica.core.migration.DuplicateClinicalRecordsCleanupMigration"/>
     </changeSet>
 
+    <changeSet author="modernization" id="create_configuration_drafts">
+        <createTable tableName="configuration_drafts">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="draft_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="draft_data" type="clob"/>
+            <column name="created_at" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expires_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

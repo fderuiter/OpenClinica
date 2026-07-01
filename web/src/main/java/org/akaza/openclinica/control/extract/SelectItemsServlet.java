@@ -88,7 +88,7 @@ public class SelectItemsServlet extends SecureController {
                 // hmm, set it back into the array list? tbh
             }
         }
-        session.setAttribute("allSelectedGroups", sgclasses);
+        request.setAttribute("allSelectedGroups", sgclasses);
         request.setAttribute("allSelectedGroups", sgclasses);
     }
 
@@ -150,19 +150,19 @@ public class SelectItemsServlet extends SecureController {
         CRFBean crf = (CRFBean) crfdao.findByPK(crfId);
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(defId);
 
-        session.setAttribute("crf", crf);
-        session.setAttribute("definition", sed);
+        request.setAttribute("crf", crf);
+        request.setAttribute("definition", sed);
 
         DatasetBean db = (DatasetBean) session.getAttribute("newDataset");
         if (db == null) {
             db = new DatasetBean();
         }
 
-        session.setAttribute("newDataset", db);
+        request.setAttribute("newDataset", db);
         // save current def id in the seesion to avoid duplicated def id in
         // dataset
         // bean
-        // session.setAttribute(CURRENT_DEF_ID, new Integer(defId));
+        // request.setAttribute(CURRENT_DEF_ID, new Integer(defId));
 
         ArrayList items = idao.findAllActiveByCRF(crf);
         for (int i = 0; i < items.size(); i++) {
@@ -205,7 +205,7 @@ public class SelectItemsServlet extends SecureController {
         ArrayList itemArray = new ArrayList(itemMap.values());
         // now sort them by ordinal/name
         Collections.sort(itemArray);
-        session.setAttribute("allItems", itemArray);
+        request.setAttribute("allItems", itemArray);
 
         forwardPage(Page.CREATE_DATASET_2);
     }
