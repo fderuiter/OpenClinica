@@ -145,8 +145,6 @@ public class OpenRosaSubmissionController {
         }
 
         if (!errors.hasErrors()) {
-            // Log submission with Participate
-            notifier.notify(studyOID, subjectContext);
             logger.info("Completed xform submission. Sending successful response");
             String responseMessage = "<OpenRosaResponse xmlns=\"http://openrosa.org/http/response\">" + "<message>success</message>" + "</OpenRosaResponse>";
             return new ResponseEntity<String>(responseMessage, org.springframework.http.HttpStatus.CREATED);
