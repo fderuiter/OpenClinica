@@ -14,13 +14,13 @@ import java.util.*;
 // Description identifiers are taken from facilityinfo.properties
 public class Role extends Term {
     public static final Role INVALID = new Role(0, "invalid", "invalid", null);
-    public static final Role ADMIN = new Role(1, "admin", "System_Administrator", null);
-    public static final Role COORDINATOR = new Role(2, "coordinator", "Study_Coordinator", null);
-    public static final Role STUDYDIRECTOR = new Role(3, "director", "Study_Director", null);
-    public static final Role INVESTIGATOR = new Role(4, "Investigator", "Investigator", null);
-    public static final Role RESEARCHASSISTANT = new Role(5, "ra", "Data_Entry_Person", null);
-    public static final Role MONITOR = new Role(6, "monitor", "Monitor", null);
-    public static final Role RESEARCHASSISTANT2 = new Role(7, "ra2", "site_Data_Entry_Person2", null);
+    public static final Role ADMIN = new Role(1, "admin", "System_Administrator", new Privilege[]{Privilege.ADMIN, Privilege.VIEW_SUBJECTS, Privilege.VIEW_CRFS});
+    public static final Role COORDINATOR = new Role(2, "coordinator", "Study_Coordinator", new Privilege[]{Privilege.STUDYDIRECTOR, Privilege.VIEW_SUBJECTS, Privilege.VIEW_CRFS});
+    public static final Role STUDYDIRECTOR = new Role(3, "director", "Study_Director", new Privilege[]{Privilege.STUDYDIRECTOR, Privilege.VIEW_SUBJECTS, Privilege.VIEW_CRFS});
+    public static final Role INVESTIGATOR = new Role(4, "Investigator", "Investigator", new Privilege[]{Privilege.INVESTIGATOR, Privilege.VIEW_SUBJECTS, Privilege.VIEW_CRFS});
+    public static final Role RESEARCHASSISTANT = new Role(5, "ra", "Data_Entry_Person", new Privilege[]{Privilege.RESEARCHASSISTANT, Privilege.VIEW_SUBJECTS, Privilege.VIEW_CRFS});
+    public static final Role MONITOR = new Role(6, "monitor", "Monitor", new Privilege[]{Privilege.MONITOR, Privilege.VIEW_SUBJECTS, Privilege.VIEW_CRFS});
+    public static final Role RESEARCHASSISTANT2 = new Role(7, "ra2", "site_Data_Entry_Person2", new Privilege[]{Privilege.RESEARCHASSISTANT2, Privilege.VIEW_SUBJECTS, Privilege.VIEW_CRFS});
    
     
     private static final Role[] members = { ADMIN, COORDINATOR, STUDYDIRECTOR, INVESTIGATOR, MONITOR, RESEARCHASSISTANT,RESEARCHASSISTANT2};
@@ -49,7 +49,11 @@ public class Role extends Term {
 
     private Role(int id, String name, String description, Privilege[] myPrivs) {
         super(id, name, description);
-        // privileges = Arrays.asList(myPrivs);
+        if (myPrivs != null) {
+            privileges = Arrays.asList(myPrivs);
+        } else {
+            privileges = new ArrayList();
+        }
     }
 
     private Role() {
