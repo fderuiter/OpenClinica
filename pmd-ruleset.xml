@@ -6,7 +6,7 @@
     <description>Custom PMD Ruleset</description>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod">
         <properties>
-            <property name="ignoredAnnotations" value="javax.annotation.PostConstruct,org.springframework.beans.factory.annotation.Autowired,javax.persistence.PrePersist,javax.persistence.PreUpdate"/>
+            <property name="ignoredAnnotations" value="javax.annotation.PostConstruct|org.springframework.beans.factory.annotation.Autowired|javax.persistence.PrePersist|javax.persistence.PreUpdate"/>
         </properties>
     </rule>
 </ruleset>
