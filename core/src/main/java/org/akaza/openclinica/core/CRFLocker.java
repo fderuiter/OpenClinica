@@ -8,14 +8,14 @@
 package org.akaza.openclinica.core;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import javax.sql.DataSource;
+
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
- * Data strucutre used to keep track of CRFs locked by users. The synchronization of access to the locks is implemented
+ * Data structure used to keep track of CRFs locked by users. The synchronization of access to the locks is implemented
  * internally, so clients of this class don't have to deal with it.
  *
  * @author Doug Rodrigues (douglas.rodrigues@openclinica.com)
@@ -25,16 +25,32 @@ public class CRFLocker implements Serializable {
 
     private static final long serialVersionUID = -541015729642748245L;
 
-    private final ConcurrentMap<Integer, Integer> lockedCRFs = new ConcurrentHashMap<Integer, Integer>();
+    private transient JdbcTemplate jdbcTemplate;
+
+    public void setDataSource(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
 
     /**
      * Locks a CRF for an user.
      *
      * @param crfId ID of the CFR to be locked.
      * @param userId ID of the user who owns the lock.
+     * @return true if the lock was acquired or already held by the user, false if held by another user.
      */
-    public void lock(int crfId, int userId) {
-        lockedCRFs.put(crfId, userId);
+    public boolean lock(int crfId, int userId) {
+        if (jdbcTemplate != null) {
+            try {
+                jdbcTemplate.update("INSERT INTO crf_lock_registry (crf_id, user_id) VALUES (?, ?)", crfId, userId);
+                return true;
+            } catch (DuplicateKeyException e) {
+                Integer ownerId = getLockOwner(crfId);
+                return ownerId != null && ownerId.equals(userId);
+            } catch (DataAccessException e) {
+                return false;
+            }
+        }
+        return false;
     }
 
     /**
@@ -43,7 +59,13 @@ public class CRFLocker implements Serializable {
      * @param crfId The ID of the CRF to be unlocked
      */
     public void unlock(int crfId) {
-        lockedCRFs.remove(crfId);
+        if (jdbcTemplate != null) {
+            try {
+                jdbcTemplate.update("DELETE FROM crf_lock_registry WHERE crf_id = ?", crfId);
+            } catch (DataAccessException e) {
+                // Ignore
+            }
+        }
     }
 
     /**
@@ -52,14 +74,11 @@ public class CRFLocker implements Serializable {
      * @param userId ID of the user.
      */
     public void unlockAllForUser(int userId) {
-        synchronized (lockedCRFs) {
-            Set<Entry<Integer, Integer>> entries = lockedCRFs.entrySet();
-            Iterator<Entry<Integer, Integer>> it = entries.iterator();
-            while (it.hasNext()) {
-                Entry<Integer, Integer> entry = it.next();
-                if (entry.getValue().equals(userId)) {
-                    it.remove();
-                }
+        if (jdbcTemplate != null) {
+            try {
+                jdbcTemplate.update("DELETE FROM crf_lock_registry WHERE user_id = ?", userId);
+            } catch (DataAccessException e) {
+                // Ignore
             }
         }
     }
@@ -71,7 +90,15 @@ public class CRFLocker implements Serializable {
      * @return
      */
     public boolean isLocked(int crfId) {
-        return lockedCRFs.containsKey(crfId);
+        if (jdbcTemplate != null) {
+            try {
+                Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM crf_lock_registry WHERE crf_id = ?", Integer.class, crfId);
+                return count != null && count > 0;
+            } catch (DataAccessException e) {
+                return false;
+            }
+        }
+        return false;
     }
 
     /**
@@ -81,7 +108,14 @@ public class CRFLocker implements Serializable {
      * @return ID of the user who owns the lock, <code>null</code> if the CRF is not locked.
      */
     public Integer getLockOwner(int crfId) {
-        return lockedCRFs.get(crfId);
+        if (jdbcTemplate != null) {
+            try {
+                return jdbcTemplate.queryForObject("SELECT user_id FROM crf_lock_registry WHERE crf_id = ?", Integer.class, crfId);
+            } catch (DataAccessException e) {
+                return null;
+            }
+        }
+        return null;
     }
 
 }

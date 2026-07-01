@@ -104,7 +104,13 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
 
     private void unauthorized(HttpServletResponse response, String message) throws IOException {
         response.setHeader("WWW-Authenticate", "Basic realm=\"" + realm + "\"");
-        response.sendError(401, message);
+        response.setStatus(401);
+        response.setContentType("application/json;charset=UTF-8");
+        
+        org.codehaus.jackson.map.ObjectMapper mapper = new org.codehaus.jackson.map.ObjectMapper();
+        org.akaza.openclinica.bean.api.ApiError error = new org.akaza.openclinica.bean.api.ApiError("401", message);
+        org.akaza.openclinica.bean.api.ApiResponse<Object> apiResponse = new org.akaza.openclinica.bean.api.ApiResponse<>(java.util.Collections.singletonList(error));
+        mapper.writeValue(response.getWriter(), apiResponse);
     }
 
     private void unauthorized(HttpServletResponse response) throws IOException {

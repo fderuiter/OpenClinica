@@ -233,6 +233,33 @@ public class ItemDataDAO extends AuditableEntityDAO {
         return idb;
     }
 
+    public void batchUpdate(List<ItemDataBean> list) {
+        if (list == null || list.isEmpty()) return;
+        List<HashMap> batchVars = new ArrayList<>();
+        for (ItemDataBean idb : list) {
+            ItemDataType dataType = getDataType(idb.getItemId());
+            if (dataType.equals(ItemDataType.DATE)) {
+                idb.setValue(Utils.convertedItemDateValue(idb.getValue(), local_df_string, oc_df_string, locale));
+            } else if (dataType.equals(ItemDataType.PDATE)) {
+                idb.setValue(formatPDate(idb.getValue()));
+            }
+            idb.setActive(false);
+
+            HashMap<Integer, Comparable> variables = new HashMap<Integer, Comparable>();
+            variables.put(new Integer(1), new Integer(idb.getEventCRFId()));
+            variables.put(new Integer(2), new Integer(idb.getItemId()));
+            variables.put(new Integer(3), new Integer(idb.getStatus().getId()));
+            variables.put(new Integer(4), idb.getValue());
+            variables.put(new Integer(5), new Integer(idb.getUpdaterId()));
+            variables.put(new Integer(6), new Integer(idb.getOrdinal()));
+            variables.put(new Integer(7), new Integer(idb.getOldStatus().getId()));
+            variables.put(new Integer(8), new Boolean(idb.isDeleted()));
+            variables.put(new Integer(9), new Integer(idb.getId()));
+            batchVars.add(variables);
+        }
+        this.executeBatch(digester.getQuery("update"), batchVars);
+    }
+
     /**
      * This will update item data value
      * 
@@ -397,6 +424,34 @@ public class ItemDataDAO extends AuditableEntityDAO {
         }
 
         return idb;
+    }
+
+    public void batchCreate(List<ItemDataBean> list) {
+        if (list == null || list.isEmpty()) return;
+        List<HashMap> batchVars = new ArrayList<>();
+        for (ItemDataBean idb : list) {
+            ItemDataType dataType = getDataType(idb.getItemId());
+            if (dataType.equals(ItemDataType.DATE)) {
+                idb.setValue(Utils.convertedItemDateValue(idb.getValue(), local_df_string, oc_df_string, locale));
+            } else if (dataType.equals(ItemDataType.PDATE)) {
+                idb.setValue(formatPDate(idb.getValue()));
+            }
+
+            HashMap<Integer, Comparable> variables = new HashMap<Integer, Comparable>();
+            int id = getNextPK();
+            idb.setId(id);
+            variables.put(new Integer(1), new Integer(id));
+            variables.put(new Integer(2), new Integer(idb.getEventCRFId()));
+            variables.put(new Integer(3), new Integer(idb.getItemId()));
+            variables.put(new Integer(4), new Integer(idb.getStatus().getId()));
+            variables.put(new Integer(5), idb.getValue());
+            variables.put(new Integer(6), new Integer(idb.getOwnerId()));
+            variables.put(new Integer(7), new Integer(idb.getOrdinal()));
+            variables.put(new Integer(8), new Integer(idb.getStatus().getId()));
+            variables.put(new Integer(9), new Boolean(idb.isDeleted()));
+            batchVars.add(variables);
+        }
+        this.executeBatch(digester.getQuery("create"), batchVars);
     }
 
     public EntityBean upsert(EntityBean eb) {

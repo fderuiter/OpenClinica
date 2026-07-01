@@ -70,6 +70,18 @@
         <customChange class="org.akaza.openclinica.core.migration.DuplicateClinicalRecordsCleanupMigration"/>
     </changeSet>
 
+    <!-- Create CRF Lock Registry Table -->
+    <changeSet author="modernization" id="create_crf_lock_registry">
+        <createTable tableName="crf_lock_registry">
+            <column name="crf_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet author="modernization" id="create_configuration_drafts">
         <createTable tableName="configuration_drafts">
             <column name="id" type="varchar(36)">
@@ -105,5 +117,19 @@
             <column name="name" value="__user_logout"/>
         </insert>
     </changeSet>
+
+    <changeSet author="modernization" id="item_data_duplicate_uniqueness_key">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <!-- Workaround: Unique constraints are sometimes not easily checked, but checking the backing index usually works -->
+                <indexExists indexName="duplicate_item_uniqueness_key"/>
+            </not>
+        </preConditions>
+        <addUniqueConstraint constraintName="duplicate_item_uniqueness_key" 
+                             tableName="item_data" 
+                             columnNames="item_id, event_crf_id, ordinal"/>
+    </changeSet>
+
+    <include file="migration/modernization_indexes.xml"/>
 
 </databaseChangeLog>
