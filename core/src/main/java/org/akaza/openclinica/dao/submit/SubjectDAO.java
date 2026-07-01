@@ -596,14 +596,48 @@ public class SubjectDAO extends AuditableEntityDAO {
     }
 
     public Collection findAllByPermission(Object objCurrentUser, int intActionType, String strOrderByColumn, boolean blnAscendingSort, String strSearchPhrase) {
-        ArrayList al = new ArrayList();
-
-        return al;
+        return findAllByPermission(objCurrentUser, intActionType);
     }
 
     public Collection findAllByPermission(Object objCurrentUser, int intActionType) {
-        ArrayList al = new ArrayList();
+        org.akaza.openclinica.bean.login.UserAccountBean user = (org.akaza.openclinica.bean.login.UserAccountBean) objCurrentUser;
+        if (user.isSysAdmin()) {
+            return findAll();
+        }
+        
+        java.util.List<org.akaza.openclinica.bean.login.StudyUserRoleBean> roles = user.getRoles();
+        if (roles == null || roles.isEmpty()) {
+            return new ArrayList();
+        }
 
+        ArrayList<Integer> studyIds = new ArrayList<Integer>();
+        for (org.akaza.openclinica.bean.login.StudyUserRoleBean role : roles) {
+            org.akaza.openclinica.bean.core.Role r = role.getRole();
+            if (r != null && r.hasPrivilege(org.akaza.openclinica.bean.core.Privilege.VIEW_SUBJECTS)) {
+                studyIds.add(role.getStudyId());
+            }
+        }
+        if (studyIds.isEmpty()) {
+            return new ArrayList();
+        }
+
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT s.* FROM subject s ");
+        sql.append("JOIN study_subject ss ON s.subject_id = ss.subject_id ");
+        sql.append("WHERE ss.study_id IN (");
+        for (int i = 0; i < studyIds.size(); i++) {
+            sql.append(studyIds.get(i));
+            if (i < studyIds.size() - 1) sql.append(",");
+        }
+        sql.append(")");
+        
+        this.setTypesExpected();
+        ArrayList alist = this.select(sql.toString());
+        ArrayList al = new ArrayList();
+        Iterator it = alist.iterator();
+        while (it.hasNext()) {
+            org.akaza.openclinica.bean.submit.SubjectBean eb = (org.akaza.openclinica.bean.submit.SubjectBean) this.getEntityFromHashMap((HashMap) it.next());
+            al.add(eb);
+        }
         return al;
     }
 

@@ -1,0 +1,44 @@
+package org.akaza.openclinica.bean.api;
+
+import java.util.List;
+import java.util.Map;
+
+public class ApiResponse<T> {
+    private T data;
+    private List<ApiError> errors;
+    private Map<String, Object> meta;
+
+    public ApiResponse() {}
+
+    public ApiResponse(T data) {
+        this.data = data;
+    }
+
+    public ApiResponse(List<ApiError> errors) {
+        this.errors = errors;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public List<ApiError> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<ApiError> errors) {
+        this.errors = errors;
+    }
+
+    public Map<String, Object> getMeta() {
+        return meta;
+    }
+
+    public void setMeta(Map<String, Object> meta) {
+        this.meta = meta;
+    }
+}

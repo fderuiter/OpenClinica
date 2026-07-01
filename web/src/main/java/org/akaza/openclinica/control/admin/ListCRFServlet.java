@@ -59,13 +59,9 @@ public class ListCRFServlet extends SecureController {
         if (ub.isSysAdmin() || ub.isTechAdmin()) {
             return;
         }
-
-        if (currentRole.getRole().equals(Role.STUDYDIRECTOR) || currentRole.getRole().equals(Role.COORDINATOR)) {
-            return;
-        }
-
-        addPageMessage(respage.getString("no_have_correct_privilege_current_study") + respage.getString("change_study_contact_sysadmin"));
-        throw new InsufficientPermissionException(Page.MANAGE_STUDY_SERVLET, resexception.getString("not_study_director"), "1");
+        
+        // Let the DAO permissions handle what data the user can see.
+        return;
 
     }
 
@@ -108,7 +104,7 @@ public class ListCRFServlet extends SecureController {
 
         CRFDAO cdao = new CRFDAO(sm.getDataSource());
         CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
-        ArrayList crfs = (ArrayList) cdao.findAll();
+        ArrayList crfs = (ArrayList) cdao.findAllByPermission(ub, 1);
         for (int i = 0; i < crfs.size(); i++) {
             CRFBean eb = (CRFBean) crfs.get(i);
             logger.debug("crf id:" + eb.getId());

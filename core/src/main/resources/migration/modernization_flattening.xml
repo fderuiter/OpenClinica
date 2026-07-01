@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+    <changeSet author="modernization" id="flattening_triggers" dbms="postgresql">
+        <sql splitStatements="false">
+            -- Function to map item_data_type_id to PG Type
+            CREATE OR REPLACE FUNCTION get_pg_type(p_id INT) RETURNS VARCHAR AS $$
+            BEGIN
+                RETURN CASE p_id
+                    WHEN 1 THEN 'BOOLEAN'
+                    WHEN 2 THEN 'BOOLEAN'
+                    WHEN 6 THEN 'INTEGER'
+                    WHEN 7 THEN 'NUMERIC'
+                    WHEN 9 THEN 'DATE'
+                    ELSE 'VARCHAR(4000)'
+                END;
+            END;
+            $$ LANGUAGE plpgsql IMMUTABLE;
+
+            -- Safe cast functions
+            CREATE OR REPLACE FUNCTION safe_cast_boolean(p_val VARCHAR) RETURNS BOOLEAN AS $$
+            BEGIN
+                IF lower(p_val) IN ('1', 'true', 't', 'yes', 'y') THEN RETURN TRUE; END IF;
+                IF lower(p_val) IN ('0', 'false', 'f', 'no', 'n') THEN RETURN FALSE; END IF;
+                RETURN p_val::BOOLEAN;
+            EXCEPTION WHEN OTHERS THEN
+                RETURN NULL;
+            END;
+            $$ LANGUAGE plpgsql IMMUTABLE;
+
+            CREATE OR REPLACE FUNCTION safe_cast_integer(p_val VARCHAR) RETURNS INTEGER AS $$
+            BEGIN
+                RETURN p_val::INTEGER;
+            EXCEPTION WHEN OTHERS THEN
+                RETURN NULL;
+            END;
+            $$ LANGUAGE plpgsql IMMUTABLE;
+
+            CREATE OR REPLACE FUNCTION safe_cast_numeric(p_val VARCHAR) RETURNS NUMERIC AS $$
+            BEGIN
+                RETURN p_val::NUMERIC;
+            EXCEPTION WHEN OTHERS THEN
+                RETURN NULL;
+            END;
+            $$ LANGUAGE plpgsql IMMUTABLE;
+
+            CREATE OR REPLACE FUNCTION safe_cast_date(p_val VARCHAR) RETURNS DATE AS $$
+            BEGIN
+                RETURN p_val::DATE;
+            EXCEPTION WHEN OTHERS THEN
+                RETURN NULL;
+            END;
+            $$ LANGUAGE plpgsql IMMUTABLE;
+
+            -- Function to sync flattened schema
+            CREATE OR REPLACE FUNCTION sync_flattened_schema(p_crf_version_id INT) RETURNS VOID AS $$
+            DECLARE
+                v_table_name VARCHAR;
+                v_sql TEXT;
+                r RECORD;
+                v_col_name VARCHAR;
+                v_col_type VARCHAR;
+                v_exists BOOLEAN;
+            BEGIN
+                v_table_name := 'flattened_crf_' || p_crf_version_id;
+                
+                -- Create table if it doesn't exist
+                SELECT EXISTS (
+                    SELECT FROM information_schema.tables 
+                    WHERE table_name = v_table_name AND table_schema = current_schema()
+                ) INTO v_exists;
+                
+                IF NOT v_exists THEN
+                    v_sql := 'CREATE TABLE ' || v_table_name || ' (' ||
+                             'event_crf_id INT, ' ||
+                             'ordinal INT, ' ||
+                             'date_updated TIMESTAMP, ' ||
+                             'update_id INT, ' ||
+                             'PRIMARY KEY (event_crf_id, ordinal))';
+                    EXECUTE v_sql;
+                END IF;
+                
+                -- Loop through items for this crf_version
+                FOR r IN (
+                    SELECT lower(i.oc_oid) AS col_name, get_pg_type(i.item_data_type_id) AS col_type
+                    FROM item_form_metadata ifm
+                    JOIN item i ON i.item_id = ifm.item_id
+                    WHERE ifm.crf_version_id = p_crf_version_id
+                ) LOOP
+                    v_col_name := r.col_name;
+                    v_col_type := r.col_type;
+                    
+                    -- Check if column exists
+                    SELECT EXISTS (
+                        SELECT FROM information_schema.columns 
+                        WHERE table_name = v_table_name AND column_name = v_col_name AND table_schema = current_schema()
+                    ) INTO v_exists;
+                    
+                    IF NOT v_exists THEN
+                        v_sql := 'ALTER TABLE ' || v_table_name || ' ADD COLUMN ' || quote_ident(v_col_name) || ' ' || v_col_type;
+                        EXECUTE v_sql;
+                    END IF;
+                END LOOP;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            -- Trigger for item_form_metadata
+            CREATE OR REPLACE FUNCTION trg_item_form_metadata_schema() RETURNS TRIGGER AS $$
+            BEGIN
+                IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+                    PERFORM sync_flattened_schema(NEW.crf_version_id);
+                END IF;
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS trg_ifm_schema ON item_form_metadata;
+            CREATE TRIGGER trg_ifm_schema
+            AFTER INSERT OR UPDATE ON item_form_metadata
+            FOR EACH ROW EXECUTE PROCEDURE trg_item_form_metadata_schema();
+
+            -- Trigger for item_data
+            CREATE OR REPLACE FUNCTION trg_sync_item_data() RETURNS TRIGGER AS $$
+            DECLARE
+                v_crf_version_id INT;
+                v_table_name VARCHAR;
+                v_col_name VARCHAR;
+                v_item_data_type_id INT;
+                v_sql TEXT;
+                v_val_text VARCHAR;
+                v_val_bool BOOLEAN;
+                v_val_int INTEGER;
+                v_val_num NUMERIC;
+                v_val_date DATE;
+                v_ordinal INT;
+            BEGIN
+                IF TG_OP = 'DELETE' THEN
+                    RETURN OLD;
+                END IF;
+
+                -- Get metadata
+                SELECT ec.crf_version_id, lower(i.oc_oid), i.item_data_type_id
+                INTO v_crf_version_id, v_col_name, v_item_data_type_id
+                FROM event_crf ec
+                JOIN item i ON i.item_id = NEW.item_id
+                WHERE ec.event_crf_id = NEW.event_crf_id;
+
+                IF v_crf_version_id IS NULL THEN
+                    RETURN NEW;
+                END IF;
+
+                v_table_name := 'flattened_crf_' || v_crf_version_id;
+                v_ordinal := COALESCE(NEW.ordinal, 1);
+                
+                -- Determine audit metadata
+                DECLARE
+                    v_audit_date TIMESTAMP := COALESCE(NEW.date_updated, NEW.date_created, CURRENT_TIMESTAMP);
+                    v_audit_user INT := COALESCE(NEW.update_id, NEW.owner_id);
+                BEGIN
+
+                -- Prepare value and execute UPSERT
+                IF v_item_data_type_id IN (1, 2) THEN
+                    v_val_bool := safe_cast_boolean(NEW.value);
+                    v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
+                    EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_bool;
+                    IF NOT FOUND THEN
+                        v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
+                        EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_bool;
+                    END IF;
+                ELSIF v_item_data_type_id = 6 THEN
+                    v_val_int := safe_cast_integer(NEW.value);
+                    v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
+                    EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_int;
+                    IF NOT FOUND THEN
+                        v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
+                        EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_int;
+                    END IF;
+                ELSIF v_item_data_type_id = 7 THEN
+                    v_val_num := safe_cast_numeric(NEW.value);
+                    v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
+                    EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_num;
+                    IF NOT FOUND THEN
+                        v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
+                        EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_num;
+                    END IF;
+                ELSIF v_item_data_type_id = 9 THEN
+                    v_val_date := safe_cast_date(NEW.value);
+                    v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
+                    EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_date;
+                    IF NOT FOUND THEN
+                        v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
+                        EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_date;
+                    END IF;
+                ELSE
+                    v_val_text := NEW.value;
+                    v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
+                    EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_text;
+                    IF NOT FOUND THEN
+                        v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
+                        EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_text;
+                    END IF;
+                END IF;
+                END;
+
+                RETURN NEW;
+            EXCEPTION WHEN OTHERS THEN
+                RAISE WARNING 'trg_sync_item_data failed: % %', SQLERRM, SQLSTATE;
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS trg_item_data_sync ON item_data;
+            CREATE TRIGGER trg_item_data_sync
+            AFTER INSERT OR UPDATE ON item_data
+            FOR EACH ROW EXECUTE PROCEDURE trg_sync_item_data();
+
+            -- Initialize tables for all existing CRF versions
+            DO $$
+            DECLARE
+                r RECORD;
+            BEGIN
+                FOR r IN SELECT crf_version_id FROM crf_version LOOP
+                    PERFORM sync_flattened_schema(r.crf_version_id);
+                END LOOP;
+            END;
+            $$;
+
+            -- Backfill existing data
+            DO $$
+            DECLARE
+                r RECORD;
+                v_table_name VARCHAR;
+                v_col_name VARCHAR;
+                v_item_data_type_id INT;
+                v_sql TEXT;
+                v_ordinal INT;
+            BEGIN
+                FOR r IN (
+                    SELECT idata.item_data_id, idata.event_crf_id, idata.ordinal, 
+                           COALESCE(idata.date_updated, idata.date_created, CURRENT_TIMESTAMP) as date_updated, 
+                           COALESCE(idata.update_id, idata.owner_id) as update_id, 
+                           idata.value,
+                           ec.crf_version_id, lower(i.oc_oid) as col_name, i.item_data_type_id
+                    FROM item_data idata
+                    JOIN event_crf ec ON ec.event_crf_id = idata.event_crf_id
+                    JOIN item i ON i.item_id = idata.item_id
+                ) LOOP
+                    v_table_name := 'flattened_crf_' || r.crf_version_id;
+                    v_col_name := r.col_name;
+                    v_item_data_type_id := r.item_data_type_id;
+                    v_ordinal := COALESCE(r.ordinal, 1);
+
+                    BEGIN
+                        IF v_item_data_type_id IN (1, 2) THEN
+                            v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
+                            EXECUTE v_sql USING r.event_crf_id, v_ordinal, r.date_updated, r.update_id, safe_cast_boolean(r.value);
+                            IF NOT FOUND THEN
+                                v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
+                                EXECUTE v_sql USING r.event_crf_id, v_ordinal, r.date_updated, r.update_id, safe_cast_boolean(r.value);
+                            END IF;
+                        ELSIF v_item_data_type_id = 6 THEN
+                            v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
+                            EXECUTE v_sql USING r.event_crf_id, v_ordinal, r.date_updated, r.update_id, safe_cast_integer(r.value);
+                            IF NOT FOUND THEN
+                                v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
+                                EXECUTE v_sql USING r.event_crf_id, v_ordinal, r.date_updated, r.update_id, safe_cast_integer(r.value);
+                            END IF;
+                        ELSIF v_item_data_type_id = 7 THEN
+                            v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
+                            EXECUTE v_sql USING r.event_crf_id, v_ordinal, r.date_updated, r.update_id, safe_cast_numeric(r.value);
+                            IF NOT FOUND THEN
+                                v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
+                                EXECUTE v_sql USING r.event_crf_id, v_ordinal, r.date_updated, r.update_id, safe_cast_numeric(r.value);
+                            END IF;
+                        ELSIF v_item_data_type_id = 9 THEN
+                            v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
+                            EXECUTE v_sql USING r.event_crf_id, v_ordinal, r.date_updated, r.update_id, safe_cast_date(r.value);
+                            IF NOT FOUND THEN
+                                v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
+                                EXECUTE v_sql USING r.event_crf_id, v_ordinal, r.date_updated, r.update_id, safe_cast_date(r.value);
+                            END IF;
+                        ELSE
+                            v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
+                            EXECUTE v_sql USING r.event_crf_id, v_ordinal, r.date_updated, r.update_id, r.value;
+                            IF NOT FOUND THEN
+                                v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
+                                EXECUTE v_sql USING r.event_crf_id, v_ordinal, r.date_updated, r.update_id, r.value;
+                            END IF;
+                        END IF;
+                    EXCEPTION WHEN OTHERS THEN
+                        -- Silently continue if error on backfill
+                    END;
+                END LOOP;
+            END;
+            $$;
+        </sql>
+        <rollback>
+            <sql splitStatements="false">
+                DROP TRIGGER IF EXISTS trg_item_data_sync ON item_data;
+                DROP TRIGGER IF EXISTS trg_ifm_schema ON item_form_metadata;
+                DROP FUNCTION IF EXISTS trg_sync_item_data();
+                DROP FUNCTION IF EXISTS trg_item_form_metadata_schema();
+                DROP FUNCTION IF EXISTS sync_flattened_schema(INT);
+                DROP FUNCTION IF EXISTS safe_cast_date(VARCHAR);
+                DROP FUNCTION IF EXISTS safe_cast_numeric(VARCHAR);
+                DROP FUNCTION IF EXISTS safe_cast_integer(VARCHAR);
+                DROP FUNCTION IF EXISTS safe_cast_boolean(VARCHAR);
+                DROP FUNCTION IF EXISTS get_pg_type(INT);
+                
+                DO $$
+                DECLARE
+                    r RECORD;
+                BEGIN
+                    FOR r IN SELECT tablename FROM pg_tables WHERE tablename LIKE 'flattened_crf_%' LOOP
+                        EXECUTE 'DROP TABLE IF EXISTS ' || r.tablename;
+                    END LOOP;
+                END;
+                $$;
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -22,6 +22,9 @@ public class ExportFormDataBean extends FormDataBean {
     private String interviewerName;
     private String interviewDate;
     private String status;
+    private String locked;
+    private String signed;
+    private String stopped;
 
     public ExportFormDataBean() {
         super();
@@ -57,5 +60,29 @@ public class ExportFormDataBean extends FormDataBean {
 
     public String getStatus() {
         return this.status;
+    }
+
+    public String getLocked() {
+        return locked;
+    }
+
+    public void setLocked(String locked) {
+        this.locked = locked;
+    }
+
+    public String getSigned() {
+        return signed;
+    }
+
+    public void setSigned(String signed) {
+        this.signed = signed;
+    }
+
+    public String getStopped() {
+        return stopped;
+    }
+
+    public void setStopped(String stopped) {
+        this.stopped = stopped;
     }
 }
