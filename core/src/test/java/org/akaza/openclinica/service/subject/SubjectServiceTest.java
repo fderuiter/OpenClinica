@@ -18,6 +18,7 @@ public class SubjectServiceTest {
 
     @Before
     public void setUp() {
+        org.akaza.openclinica.i18n.util.ResourceBundleProvider.updateLocale(new java.util.Locale("en", "US"));
         subjectService = new SubjectService((javax.sql.DataSource) null);
         
         subjectService.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(null) {

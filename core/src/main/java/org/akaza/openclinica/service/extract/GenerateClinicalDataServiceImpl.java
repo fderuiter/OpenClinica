@@ -362,6 +362,16 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 			expSEBean.setAgeAtEvent(Utils.getAge(se.getStudySubject().getSubject().getDateOfBirth(), se.getDateStart()));
 			
 			expSEBean.setStatus(fetchStudyEventStatus(se.getSubjectEventStatusId()));
+			
+			org.akaza.openclinica.domain.datamap.SubjectEventStatus ses = org.akaza.openclinica.domain.datamap.SubjectEventStatus.getByCode(se.getSubjectEventStatusId());
+			if (ses == org.akaza.openclinica.domain.datamap.SubjectEventStatus.LOCKED) {
+			    expSEBean.setLocked("Yes");
+			} else if (ses == org.akaza.openclinica.domain.datamap.SubjectEventStatus.SIGNED) {
+			    expSEBean.setSigned("Yes");
+			} else if (ses == org.akaza.openclinica.domain.datamap.SubjectEventStatus.STOPPED) {
+			    expSEBean.setStopped("Yes");
+			}
+			
 			if(collectAudits)
 			expSEBean.setAuditLogs(fetchAuditLogs(se.getStudyEventId(),"study_event",se.getStudyEventDefinition().getOc_oid(), null));
 			if(collectDns)
@@ -432,6 +442,20 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 				dataBean.setInterviewerName(ecrf.getInterviewerName());
 				//dataBean.setStatus(EventCRFStatus.getByCode(Integer.valueOf(ecrf.getStatus().getCode())).getI18nDescription(getLocale()));
 				dataBean.setStatus(fetchEventCRFStatus(ecrf));
+				
+				org.akaza.openclinica.domain.Status ecStatus = org.akaza.openclinica.domain.Status.getByCode(ecrf.getStatusId());
+				if (ecStatus == org.akaza.openclinica.domain.Status.LOCKED) {
+				    dataBean.setLocked("Yes");
+				}
+				org.akaza.openclinica.domain.datamap.SubjectEventStatus ecses = org.akaza.openclinica.domain.datamap.SubjectEventStatus.getByCode(se.getSubjectEventStatusId());
+				if (ecses == org.akaza.openclinica.domain.datamap.SubjectEventStatus.LOCKED) {
+				    dataBean.setLocked("Yes");
+				} else if (ecses == org.akaza.openclinica.domain.datamap.SubjectEventStatus.SIGNED) {
+				    dataBean.setSigned("Yes");
+				} else if (ecses == org.akaza.openclinica.domain.datamap.SubjectEventStatus.STOPPED) {
+				    dataBean.setStopped("Yes");
+				}
+				
 				if(ecrf.getCrfVersion().getName()!=null)
 				dataBean.setCrfVersion(ecrf.getCrfVersion().getName());
 				if(collectAudits)
