@@ -125,8 +125,8 @@ public class CreateFiltersTwoServlet extends SecureController {
                 CRFVersionBean cvBean = (CRFVersionBean) cvDAO.findByPK(crfId);
                 CRFBean cBean = (CRFBean) cDAO.findByPK(cvBean.getCrfId());
                 request.setAttribute("sections", sections);
-                session.setAttribute("cBean", cBean);
-                session.setAttribute("cvBean", cvBean);// for further pages,
+                request.setAttribute("cBean", cBean);
+                request.setAttribute("cvBean", cvBean);// for further pages,
                 // tbh
 
                 forwardPage(Page.CREATE_FILTER_SCREEN_3_1);
@@ -148,7 +148,7 @@ public class CreateFiltersTwoServlet extends SecureController {
             if (sectionId > 0) {
                 SectionDAO secDAO = new SectionDAO(sm.getDataSource());
                 SectionBean secBean = (SectionBean) secDAO.findByPK(sectionId);
-                session.setAttribute("secBean", secBean);
+                request.setAttribute("secBean", secBean);
                 ItemFormMetadataDAO ifmDAO = new ItemFormMetadataDAO(sm.getDataSource());
                 Collection metadatas = ifmDAO.findAllBySectionId(sectionId);
                 if (metadatas.size() > 0) {
@@ -184,7 +184,7 @@ public class CreateFiltersTwoServlet extends SecureController {
             if (alist.size() > 0) {
                 ItemFormMetadataDAO ifmDAO = new ItemFormMetadataDAO(sm.getDataSource());
                 Collection questions = ifmDAO.findByMultiplePKs(alist);
-                session.setAttribute("questions", questions);
+                request.setAttribute("questions", questions);
                 forwardPage(Page.CREATE_FILTER_SCREEN_4);
             } else {
                 SectionBean secBean = (SectionBean) session.getAttribute("secBean");
@@ -250,9 +250,9 @@ public class CreateFiltersTwoServlet extends SecureController {
                 //
 
             }// end while
-            session.setAttribute("questions", questions);
+            request.setAttribute("questions", questions);
             // TODO where does the connector come into play?
-            // session.setAttribute("filterobjects",filterobjects);
+            // request.setAttribute("filterobjects",filterobjects);
             FilterDAO fDAO = new FilterDAO(sm.getDataSource());
             String newSQL = (String) session.getAttribute("newSQL");
             ArrayList newExp = (ArrayList) session.getAttribute("newExp");
@@ -278,16 +278,16 @@ public class CreateFiltersTwoServlet extends SecureController {
                 // statement--might add first part of statement here
                 // for legibility's sake
                 // tbh 06-02-2005
-                session.removeAttribute("newSQL");
+                request.removeAttribute("newSQL");
                 // end of the road
-                session.setAttribute("newFilter", fb);
+                request.setAttribute("newFilter", fb);
                 request.setAttribute("statuses", getStatuses());
                 forwardPage(Page.CREATE_FILTER_SCREEN_5);
             } else {
                 // replace the 'old' sql with the new sql gathered from the
                 // session
-                session.setAttribute("newSQL", newNewSQL);
-                session.setAttribute("newExp", newNewExp);
+                request.setAttribute("newSQL", newNewSQL);
+                request.setAttribute("newExp", newNewExp);
                 // add new params, and go back
                 StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
                 HashMap events = sedao.findCRFsByStudy(currentStudy);

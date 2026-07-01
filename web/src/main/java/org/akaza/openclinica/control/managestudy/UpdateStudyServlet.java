@@ -113,7 +113,7 @@ public class UpdateStudyServlet extends SecureController {
                         confirmStudy1();
                     }
                 } else {
-                    session.setAttribute("newStudy", study);
+                    request.setAttribute("newStudy", study);
                     // request.setAttribute("facRecruitStatusMap",
                     // CreateStudyServlet.facRecruitStatusMap);
                     // request.setAttribute("statuses",
@@ -164,7 +164,7 @@ public class UpdateStudyServlet extends SecureController {
         if (fp.getString("officialTitle").trim().length() > 255) {
             Validator.addError(errors, "officialTitle", resexception.getString("maximum_lenght_official_title_255"));
         }
-        session.setAttribute("newStudy", createStudyBean());
+        request.setAttribute("newStudy", createStudyBean());
 
         if (errors.isEmpty()) {
             logger.info("no errors in the first section");
@@ -315,7 +315,7 @@ public class UpdateStudyServlet extends SecureController {
         newStudy.setAgeMin(fp.getString("ageMin"));
         newStudy.setHealthyVolunteerAccepted(fp.getBoolean("healthyVolunteerAccepted"));
         newStudy.setExpectedTotalEnrollment(fp.getInt("expectedTotalEnrollment"));
-        session.setAttribute("newStudy", newStudy);
+        request.setAttribute("newStudy", newStudy);
         request.setAttribute("facRecruitStatusMap", CreateStudyServlet.facRecruitStatusMap);
         if (errors.isEmpty()) {
             forwardPage(Page.UPDATE_STUDY6);
@@ -364,7 +364,7 @@ public class UpdateStudyServlet extends SecureController {
         newStudy.setFacilityState(fp.getString("facState"));
         newStudy.setFacilityZip(fp.getString("facZip"));
 
-        session.setAttribute("newStudy", newStudy);
+        request.setAttribute("newStudy", newStudy);
         if (errors.isEmpty()) {
             forwardPage(Page.UPDATE_STUDY7);
         } else {
@@ -389,7 +389,7 @@ public class UpdateStudyServlet extends SecureController {
         newStudy.setResultsReference(fp.getBoolean("resultsReference"));
         newStudy.setUrl(fp.getString("url"));
         newStudy.setUrlDescription(fp.getString("urlDescription"));
-        session.setAttribute("newStudy", newStudy);
+        request.setAttribute("newStudy", newStudy);
         // request.setAttribute("interventions",session.getAttribute("interventions"));
         if (errors.isEmpty()) {
             forwardPage(Page.UPDATE_STUDY8);
@@ -422,7 +422,7 @@ public class UpdateStudyServlet extends SecureController {
 
         newStudy.getStudyParameterConfig().setPersonIdShownOnCRF(fp.getString("personIdShownOnCRF"));
 
-        session.setAttribute("newStudy", newStudy);
+        request.setAttribute("newStudy", newStudy);
 
         if (errors.isEmpty()) {
             forwardPage(Page.STUDY_UPDATE_CONFIRM);
@@ -503,7 +503,7 @@ public class UpdateStudyServlet extends SecureController {
         StudyBean curStudy = (StudyBean) session.getAttribute("study");
         if (curStudy != null && study1.getId() == curStudy.getId()) {
             super.currentStudy = study1;
-            session.setAttribute("study", study1);
+            request.setAttribute("study", study1);
         }
         // update manage_pedigrees for all sites
         ArrayList children = (ArrayList) sdao.findAllByParent(study1.getId());
@@ -525,8 +525,8 @@ public class UpdateStudyServlet extends SecureController {
             // YW >>
         }
 
-        session.removeAttribute("newStudy");
-        session.removeAttribute("interventions");
+        request.removeAttribute("newStudy");
+        request.removeAttribute("interventions");
     }
 
     /**
@@ -586,7 +586,7 @@ public class UpdateStudyServlet extends SecureController {
             newStudy.setGenetic(false);
         }
 
-        session.setAttribute("newStudy", newStudy);
+        request.setAttribute("newStudy", newStudy);
 
         String interventional = resadmin.getString("interventional");
         return interventional.equalsIgnoreCase(newStudy.getProtocolType());
@@ -625,8 +625,8 @@ public class UpdateStudyServlet extends SecureController {
             study.setSelection(fp.getString("selection"));
             study.setTiming(fp.getString("timing"));
         }
-        session.setAttribute("newStudy", study);
-        session.setAttribute("interventions", interventionArray);
+        request.setAttribute("newStudy", study);
+        request.setAttribute("interventions", interventionArray);
     }
 
     /**
@@ -675,7 +675,7 @@ public class UpdateStudyServlet extends SecureController {
             request.setAttribute("assignmentMap", CreateStudyServlet.assignmentMap);
             request.setAttribute("endpointMap", CreateStudyServlet.endpointMap);
             request.setAttribute("interTypeMap", CreateStudyServlet.interTypeMap);
-            session.setAttribute("interventions", interventionArray);
+            request.setAttribute("interventions", interventionArray);
         } else {
             request.setAttribute("obserPurposeMap", CreateStudyServlet.obserPurposeMap);
             request.setAttribute("selectionMap", CreateStudyServlet.selectionMap);

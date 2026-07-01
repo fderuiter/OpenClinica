@@ -140,8 +140,8 @@ public class ViewSectionDataEntryServlet extends DataEntryServlet {
         HttpSession session = request.getSession();
         String fromResolvingNotes = fp.getString("fromResolvingNotes", true);
         if (StringUtil.isBlank(fromResolvingNotes)) {
-            session.removeAttribute(ViewNotesServlet.WIN_LOCATION);
-            session.removeAttribute(ViewNotesServlet.NOTES_TABLE);
+            request.removeAttribute(ViewNotesServlet.WIN_LOCATION);
+            request.removeAttribute(ViewNotesServlet.NOTES_TABLE);
         }
 
         request.setAttribute("studySubjectId", studySubjectId + "");// Added for
@@ -193,7 +193,7 @@ public class ViewSectionDataEntryServlet extends DataEntryServlet {
         // BWP>> this has to be removed for CRFs that do not display an
         // interviewdate
         // for a particular event
-        session.removeAttribute("presetValues");
+        request.removeAttribute("presetValues");
 
         EventCRFDAO ecdao = new EventCRFDAO(getDataSource());
         SectionDAO sdao = new SectionDAO(getDataSource());
@@ -309,7 +309,7 @@ public class ViewSectionDataEntryServlet extends DataEntryServlet {
             HashMap presetVals = (HashMap) session.getAttribute("presetValues");
             if (presetVals == null) {
                 presetVals = new HashMap();
-                session.setAttribute("presetValues", presetVals);
+                request.setAttribute("presetValues", presetVals);
             }
             presetVals.put("interviewDate", formattedInterviewerDate);
             request.setAttribute("toc", displayBean);
@@ -450,7 +450,7 @@ public class ViewSectionDataEntryServlet extends DataEntryServlet {
         FormDiscrepancyNotes discNotes = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
         if (discNotes == null) {
             discNotes = new FormDiscrepancyNotes();
-            session.setAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME, discNotes);
+            request.setAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME, discNotes);
         }
 
         /*
@@ -471,7 +471,7 @@ public class ViewSectionDataEntryServlet extends DataEntryServlet {
         if (fp.getString("fromViewNotes") != null && "1".equals(fp.getString("fromViewNotes"))) {
             request.setAttribute("fromViewNotes", fp.getString("fromViewNotes"));
         } else {
-            session.removeAttribute("viewNotesURL");
+            request.removeAttribute("viewNotesURL");
         }
 
         if ("saveNotes".equalsIgnoreCase(action)) {

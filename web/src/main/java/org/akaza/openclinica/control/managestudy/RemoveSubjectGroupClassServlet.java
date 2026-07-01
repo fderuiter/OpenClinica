@@ -78,8 +78,8 @@ public class RemoveSubjectGroupClassServlet extends SecureController {
 
                 }
 
-                session.setAttribute("group", sgcb);
-                session.setAttribute("studyGroups", groups);
+                request.setAttribute("group", sgcb);
+                request.setAttribute("studyGroups", groups);
                 forwardPage(Page.REMOVE_SUBJECT_GROUP_CLASS);
 
             } else if (action.equalsIgnoreCase("submit")) {

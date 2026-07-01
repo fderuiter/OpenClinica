@@ -76,7 +76,7 @@ public class EditSelectedServlet extends SecureController {
             StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
             sgclasses = sgclassdao.findAllActiveByStudy(theStudy);
         }
-        session.setAttribute("allSelectedGroups", sgclasses);
+        request.setAttribute("allSelectedGroups", sgclasses);
         request.setAttribute("allSelectedGroups", sgclasses);
     }
 
@@ -98,7 +98,7 @@ public class EditSelectedServlet extends SecureController {
         DatasetBean db = (DatasetBean) session.getAttribute("newDataset");
         if (db == null) {
             db = new DatasetBean();
-            session.setAttribute("newDataset", db);
+            request.setAttribute("newDataset", db);
         }
         // << tbh
         // HashMap eventlist = (HashMap) request.getAttribute("eventlist");
@@ -158,11 +158,11 @@ public class EditSelectedServlet extends SecureController {
                 sgclass.setSelected(true);
                 newsgclasses.add(sgclass);
             }
-            session.setAttribute("allSelectedGroups", newsgclasses);
+            request.setAttribute("allSelectedGroups", newsgclasses);
             request.setAttribute("allSelectedGroups", newsgclasses);
         }
 
-        session.setAttribute("newDataset", db);
+        request.setAttribute("newDataset", db);
 
         HashMap events = (HashMap) session.getAttribute(CreateDatasetServlet.EVENTS_FOR_CREATE_DATASET);
         if (events == null) {
@@ -170,9 +170,9 @@ public class EditSelectedServlet extends SecureController {
         }
         ArrayList allSelectItems = selectAll ? selectAll(events, crfdao, idao) : ViewSelectedServlet.getAllSelected(db, idao, imfdao);
         // >> tbh
-        session.setAttribute("numberOfStudyItems", new Integer(ids.size()).toString());
+        request.setAttribute("numberOfStudyItems", new Integer(ids.size()).toString());
         // << tbh 11/2009
-        session.setAttribute("allSelectedItems", allSelectItems);
+        request.setAttribute("allSelectedItems", allSelectItems);
         setUpStudyGroups();
         forwardPage(Page.CREATE_DATASET_VIEW_SELECTED);
 

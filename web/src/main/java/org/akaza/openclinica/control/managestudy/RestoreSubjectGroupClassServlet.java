@@ -79,8 +79,8 @@ public class RestoreSubjectGroupClassServlet extends SecureController {
 
                 }
 
-                session.setAttribute("group", sgcb);
-                session.setAttribute("studyGroups", groups);
+                request.setAttribute("group", sgcb);
+                request.setAttribute("studyGroups", groups);
                 forwardPage(Page.RESTORE_SUBJECT_GROUP_CLASS);
 
             } else if (action.equalsIgnoreCase("submit")) {

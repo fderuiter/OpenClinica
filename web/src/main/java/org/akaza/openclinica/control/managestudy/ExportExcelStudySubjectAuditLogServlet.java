@@ -665,14 +665,14 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 		
 		workbook.write();
 		workbook.close();
-		session.setAttribute("subject", null);
-		session.setAttribute("study", null);
-		session.setAttribute("studySub", null);
-		session.setAttribute("studyEventAudits", null);
-		session.setAttribute("studySubjectAudits", null);
-		session.setAttribute("events", null);
-		session.setAttribute("eventCRFAudits", null);
-		session.setAttribute("allDeletedEventCRFs", null);
+		request.setAttribute("subject", null);
+		request.setAttribute("study", null);
+		request.setAttribute("studySub", null);
+		request.setAttribute("studyEventAudits", null);
+		request.setAttribute("studySubjectAudits", null);
+		request.setAttribute("events", null);
+		request.setAttribute("eventCRFAudits", null);
+		request.setAttribute("allDeletedEventCRFs", null);
     	}
     	catch(Exception e) {
     		throw e;

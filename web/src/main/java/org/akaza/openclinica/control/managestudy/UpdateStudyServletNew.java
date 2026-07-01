@@ -146,7 +146,7 @@ public class UpdateStudyServletNew extends SecureController {
                 submitStudy(study);
                 addPageMessage(respage.getString("the_study_has_been_updated_succesfully"));
                 ArrayList pageMessages = (ArrayList) request.getAttribute(PAGE_MESSAGE);
-                session.setAttribute("pageMessages", pageMessages);
+                request.setAttribute("pageMessages", pageMessages);
                 response.sendRedirect(request.getContextPath() + "/pages/studymodule");
                 // forwardPage(Page.MANAGE_STUDY_MODULE);
             }
@@ -481,7 +481,7 @@ public class UpdateStudyServletNew extends SecureController {
             request.setAttribute("assignmentMap", CreateStudyServlet.assignmentMap);
             request.setAttribute("endpointMap", CreateStudyServlet.endpointMap);
             request.setAttribute("interTypeMap", CreateStudyServlet.interTypeMap);
-            session.setAttribute("interventions", interventionArray);
+            request.setAttribute("interventions", interventionArray);
         } else {
             request.setAttribute("obserPurposeMap", CreateStudyServlet.obserPurposeMap);
             request.setAttribute("selectionMap", CreateStudyServlet.selectionMap);
@@ -591,7 +591,7 @@ public class UpdateStudyServletNew extends SecureController {
         if (curStudy != null && study1.getId() == curStudy.getId()) {
             super.currentStudy = study1;
 
-            session.setAttribute("study", study1);
+            request.setAttribute("study", study1);
         }
         // update manage_pedigrees for all sites
         ArrayList children = (ArrayList) sdao.findAllByParent(study1.getId());

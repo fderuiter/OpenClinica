@@ -107,13 +107,13 @@ public class DefineStudyEventServlet extends SecureController {
                 }
 
             }
-            session.setAttribute("crfsWithVersion", crfsWithVersion);
+            request.setAttribute("crfsWithVersion", crfsWithVersion);
         }
         if (StringUtil.isBlank(actionName)) {
             StudyEventDefinitionBean sed = new StudyEventDefinitionBean();
             sed.setStudyId(currentStudy.getId());
-            session.setAttribute("definition", sed);
-            session.removeAttribute("tmpCRFIdMap");
+            request.setAttribute("definition", sed);
+            request.removeAttribute("tmpCRFIdMap");
             forwardPage(Page.DEFINE_STUDY_EVENT1);
         } else {
             if ("confirm".equalsIgnoreCase(actionName)) {
@@ -126,14 +126,14 @@ public class DefineStudyEventServlet extends SecureController {
                     Integer nextAction = Integer.valueOf(request.getParameter("nextAction"));
                     if (nextAction != null) {
                         if (nextAction.intValue() == 1) {
-                            session.removeAttribute("definition");
+                            request.removeAttribute("definition");
                             addPageMessage(respage.getString("the_new_event_definition_creation_cancelled"));
                             forwardPage(Page.LIST_DEFINITION_SERVLET);
                         } else if (nextAction.intValue() == 2) {
                             submitDefinition();
                             //forwardPage(Page.LIST_DEFINITION_SERVLET);
                             ArrayList pageMessages = (ArrayList) request.getAttribute(PAGE_MESSAGE);
-                            session.setAttribute("pageMessages", pageMessages);
+                            request.setAttribute("pageMessages", pageMessages);
                             response.sendRedirect(request.getContextPath() + Page.MANAGE_STUDY_MODULE.getFileName());
                             //forwardPage(Page.MANAGE_STUDY_MODULE);
 //                            request.getRequestDispatcher("/pages/studymodule").forward(request, response);
@@ -149,7 +149,7 @@ public class DefineStudyEventServlet extends SecureController {
                             submitDefinition();
                             StudyEventDefinitionBean sed = new StudyEventDefinitionBean();
                             sed.setStudyId(currentStudy.getId());
-                            session.setAttribute("definition", sed);
+                            request.setAttribute("definition", sed);
                             forwardPage(Page.DEFINE_STUDY_EVENT1);
                         }
                     }
@@ -181,7 +181,7 @@ public class DefineStudyEventServlet extends SecureController {
                     if (session.getAttribute("definition") == null) {
                         StudyEventDefinitionBean sed = new StudyEventDefinitionBean();
                         sed.setStudyId(currentStudy.getId());
-                        session.setAttribute("definition", sed);
+                        request.setAttribute("definition", sed);
                     }
                     forwardPage(Page.DEFINE_STUDY_EVENT1);
                 }
@@ -205,7 +205,7 @@ public class DefineStudyEventServlet extends SecureController {
 
         errors = v.validate();
 
-        session.setAttribute("definition", createStudyEventDefinition());
+        request.setAttribute("definition", createStudyEventDefinition());
 
         if (errors.isEmpty()) {
             logger.debug("no errors in the first section");
@@ -238,7 +238,7 @@ public class DefineStudyEventServlet extends SecureController {
                     }
                 }
             }
-            session.setAttribute("tmpCRFIdMap", tmpCRFIdMap);
+            request.setAttribute("tmpCRFIdMap", tmpCRFIdMap);
 
             EntityBeanTable table = fp.getEntityBeanTable();
             ArrayList allRows = CRFRow.generateRowsFromBeans(crfsWithVersion);
@@ -396,7 +396,7 @@ public class DefineStudyEventServlet extends SecureController {
              request.setAttribute("participateFormStatus",participateFormStatus );
         
         request.setAttribute("eventDefinitionCRFs", eventDefinitionCRFs);
-        session.setAttribute("edCRFs", eventDefinitionCRFs);// not used on page
+        request.setAttribute("edCRFs", eventDefinitionCRFs);// not used on page
     
         ArrayList <EventDefinitionCRFBean>  edcsInSession = (ArrayList<EventDefinitionCRFBean>) session.getAttribute("edCRFs");
         int parentStudyId=sed.getStudyId();
@@ -416,7 +416,7 @@ public class DefineStudyEventServlet extends SecureController {
             request.setAttribute("sdvOptions", sdvOptions);
 
             logger.info("has errors");
-           session.setAttribute("eventDefinitionCRFs", eventDefinitionCRFs);
+           request.setAttribute("eventDefinitionCRFs", eventDefinitionCRFs);
             request.setAttribute("formMessages", errors);
             forwardPage(Page.DEFINE_STUDY_EVENT4);
         } 
@@ -522,7 +522,7 @@ public class DefineStudyEventServlet extends SecureController {
                 crfArray.add(cb);
             }
         }
-        session.removeAttribute("tmpCRFIdMap");
+        request.removeAttribute("tmpCRFIdMap");
         StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
         
         if (crfArray.size() == 0) {// no crf seleted
@@ -533,17 +533,17 @@ public class DefineStudyEventServlet extends SecureController {
             sed.setCrfs(new ArrayList());
             String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();
              request.setAttribute("participateFormStatus",participateFormStatus );
-            session.setAttribute("definition", sed);
+            request.setAttribute("definition", sed);
             request.setAttribute("eventDefinitionCRFs", new ArrayList());
-            session.setAttribute("edCRFs", new ArrayList());// not used on page
+            request.setAttribute("edCRFs", new ArrayList());// not used on page
             forwardPage(Page.DEFINE_STUDY_EVENT_CONFIRM);
             // forwardPage(Page.DEFINE_STUDY_EVENT2);
 
         } else {
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) session.getAttribute("definition");
             sed.setCrfs(crfArray);// crfs selected by user
-            session.setAttribute("eventDefinitionCRFs", new ArrayList());
-            session.setAttribute("definition", sed);
+            request.setAttribute("eventDefinitionCRFs", new ArrayList());
+            request.setAttribute("definition", sed);
             String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();
             if (participateFormStatus.equals("enabled")) baseUrl();
 
@@ -610,9 +610,9 @@ public class DefineStudyEventServlet extends SecureController {
             cdao.create(edc);
         }
 
-        session.removeAttribute("definition");
-        session.removeAttribute("edCRFs");
-        session.removeAttribute("crfsWithVersion");
+        request.removeAttribute("definition");
+        request.removeAttribute("edCRFs");
+        request.removeAttribute("crfsWithVersion");
 
         addPageMessage(respage.getString("the_new_event_definition_created_succesfully"));
 

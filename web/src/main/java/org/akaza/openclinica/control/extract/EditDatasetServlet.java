@@ -96,7 +96,7 @@ public class EditDatasetServlet extends SecureController {
                 forwardPage(Page.VIEW_DATASETS);
             } else {
                 request.setAttribute("eventlist", events);
-                session.setAttribute("eventsForCreateDataset", events);
+                request.setAttribute("eventsForCreateDataset", events);
             }
         }
         /*
@@ -162,9 +162,9 @@ public class EditDatasetServlet extends SecureController {
     public DatasetBean initializeAttributes(int datasetId) {
         DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
         DatasetBean db = dsdao.initialDatasetData(datasetId);
-        session.setAttribute("newDataset", db);
-        session.setAttribute("allItems", db.getItemDefCrf().clone());
-        session.setAttribute("allSelectedItems", db.getItemDefCrf().clone());
+        request.setAttribute("newDataset", db);
+        request.setAttribute("allItems", db.getItemDefCrf().clone());
+        request.setAttribute("allSelectedItems", db.getItemDefCrf().clone());
         StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
         StudyDAO studydao = new StudyDAO(sm.getDataSource());
         StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
@@ -180,7 +180,7 @@ public class EditDatasetServlet extends SecureController {
                 }
             }
         }
-        session.setAttribute("allSelectedGroups", allSelectedGroups);
+        request.setAttribute("allSelectedGroups", allSelectedGroups);
 
         return db;
     }
