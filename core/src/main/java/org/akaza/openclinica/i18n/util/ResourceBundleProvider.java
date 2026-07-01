@@ -143,7 +143,10 @@ public class ResourceBundleProvider {
      * @return The corresponding ResourceBundle
      */
     private static ResourceBundle getResBundle(String name, Locale locale) {
-        return resBundleSetMap.get(locale).get(name);
+        if (locale != null && resBundleSetMap.containsKey(locale) && resBundleSetMap.get(locale).containsKey(name)) {
+            return resBundleSetMap.get(locale).get(name);
+        }
+        return ResourceBundle.getBundle(name, locale != null ? locale : Locale.getDefault());
     }
 
     /**
