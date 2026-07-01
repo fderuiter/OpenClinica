@@ -81,4 +81,8 @@ public class SoapCreateSubject extends WebServiceGatewaySupport implements Subje
         return null;
     }
 
+    public SubjectBean updateSubject(SubjectBean subjectBean, org.akaza.openclinica.bean.login.UserAccountBean updater, String reasonForChange, org.akaza.openclinica.bean.managestudy.DiscrepancyNoteBean note) {
+        return null;
+    }
+
 }
