@@ -9,10 +9,7 @@ import org.akaza.openclinica.bean.service.StudyParameterValueBean;
 import org.akaza.openclinica.bean.submit.SubjectBean;
 import org.akaza.openclinica.core.SessionManager;
 import org.akaza.openclinica.dao.login.UserAccountDAO;
-import org.akaza.openclinica.dao.managestudy.StudyDAO;
-import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
 import org.akaza.openclinica.dao.service.StudyParameterValueDAO;
-import org.akaza.openclinica.dao.submit.SubjectDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +21,9 @@ import javax.sql.DataSource;
 public class SubjectService implements SubjectServiceInterface {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
-    SubjectDAO subjectDao;
+    org.akaza.openclinica.repository.UnifiedRepository unifiedRepository;
     StudyParameterValueDAO studyParameterValueDAO;
-    StudySubjectDAO studySubjectDao;
     UserAccountDAO userAccountDao;
-    StudyDAO studyDao;
     DataSource dataSource;
 
     public SubjectService(DataSource dataSource) {
@@ -40,7 +35,7 @@ public class SubjectService implements SubjectServiceInterface {
     }
 
     public List<StudySubjectBean> getStudySubject(StudyBean study) {
-        return getStudySubjectDao().findAllByStudy(study);
+        return getUnifiedRepository().findAllStudySubjectBeansByStudy(study);
 
     }
 
@@ -51,18 +46,18 @@ public class SubjectService implements SubjectServiceInterface {
      */
     public String createSubject(SubjectBean subjectBean, StudyBean studyBean, Date enrollmentDate, String secondaryId) {
         if (subjectBean.getUniqueIdentifier() != null && subjectBean.getUniqueIdentifier().trim().length()> 0 && 
-        		getSubjectDao().findByUniqueIdentifier(subjectBean.getUniqueIdentifier()).getId() != 0) {
+        		getUnifiedRepository().getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier()).getId() != 0) {
         	//we need to keep the label to transfer it to the StudySubjectBean later
         	String label = subjectBean.getLabel();
-        	subjectBean = getSubjectDao().findByUniqueIdentifier(subjectBean.getUniqueIdentifier());
+        	subjectBean = getUnifiedRepository().getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier());
         	subjectBean.setLabel(label);
         } else {
             subjectBean.setStatus(Status.AVAILABLE);
-            subjectBean = getSubjectDao().create(subjectBean);
+            subjectBean = getUnifiedRepository().createSubjectBean(subjectBean);
         }
         
         StudySubjectBean studySubject = createStudySubject(subjectBean, studyBean, enrollmentDate, secondaryId);
-        getStudySubjectDao().createWithoutGroup(studySubject);
+        getUnifiedRepository().createStudySubjectBean(studySubject);
         return studySubject.getLabel();
     }
 
@@ -81,7 +76,7 @@ public class SubjectService implements SubjectServiceInterface {
         if (idSetting.equals("auto editable") || idSetting.equals("auto non-editable")) {
         	// Warning: Here we have a race condition. 
         	// At least, a uniqueness constraint should be set on the database! Better provide an atomic method which stores a new label in the database and returns it.  
-            int nextLabel = getStudySubjectDao().findTheGreatestLabel() + 1;
+            int nextLabel = getUnifiedRepository().findTheGreatestStudySubjectLabel() + 1;
             studySubject.setLabel(Integer.toString(nextLabel));
         } else {
         	studySubject.setLabel(subject.getLabel());
@@ -98,7 +93,7 @@ public class SubjectService implements SubjectServiceInterface {
         StudyParameterValueBean subjectIdGenerationParameter = getStudyParameterValueDAO().findByHandleAndStudy(handleStudyId, "subjectIdGeneration");
         String idSetting = subjectIdGenerationParameter.getValue();
         if (idSetting.equals("auto editable") || idSetting.equals("auto non-editable")) {
-            int nextLabel = getStudySubjectDao().findTheGreatestLabel() + 1;
+            int nextLabel = getUnifiedRepository().findTheGreatestStudySubjectLabel() + 1;
             return Integer.toString(nextLabel);
         } else {
             return null;
@@ -121,33 +116,12 @@ public class SubjectService implements SubjectServiceInterface {
         return user;
     }
 
-    /**
-     * @return the subjectDao
-     */
-    public SubjectDAO getSubjectDao() {
-        subjectDao = subjectDao != null ? subjectDao : new SubjectDAO(dataSource);
-        return subjectDao;
-    }
     
     public StudyParameterValueDAO getStudyParameterValueDAO() {
         return this.studyParameterValueDAO != null ? studyParameterValueDAO : new StudyParameterValueDAO(dataSource);
     }
 
-    /**
-     * @return the subjectDao
-     */
-    public StudyDAO getStudyDao() {
-        studyDao = studyDao != null ? studyDao : new StudyDAO(dataSource);
-        return studyDao;
-    }
 
-    /**
-     * @return the subjectDao
-     */
-    public StudySubjectDAO getStudySubjectDao() {
-        studySubjectDao = studySubjectDao != null ? studySubjectDao : new StudySubjectDAO(dataSource);
-        return studySubjectDao;
-    }
 
     /**
      * @return the UserAccountDao
@@ -172,4 +146,11 @@ public class SubjectService implements SubjectServiceInterface {
         this.dataSource = dataSource;
     }
 
+
+    private org.akaza.openclinica.repository.UnifiedRepository getUnifiedRepository() {
+        if (this.unifiedRepository == null) {
+            this.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(dataSource);
+        }
+        return this.unifiedRepository;
+    }
 }

@@ -58,6 +58,8 @@ import org.akaza.openclinica.domain.datamap.CrfVersion;
 import org.akaza.openclinica.domain.datamap.EventCrf;
 import org.akaza.openclinica.domain.datamap.StudyEvent;
 import org.akaza.openclinica.domain.datamap.StudySubject;
+import org.akaza.openclinica.domain.datamap.Study;
+import org.akaza.openclinica.domain.datamap.StudyEventDefinition;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -726,14 +728,14 @@ public class BatchCRFMigrationController implements Runnable {
                 session.clear();
             }
 
-            StudySubjectBean ssBean = (StudySubjectBean) ssdao().findByPK(eventCrfToMigrate.getStudySubjectId());
-            StudyBean sBean = (StudyBean) sdao().findByPK(ssBean.getStudyId());
-            StudyEventBean seBean = (StudyEventBean) sedao().findByPK(eventCrfToMigrate.getStudyEventId());
-            StudyEventDefinitionBean sedBean = (StudyEventDefinitionBean) seddao().findByPK(seBean.getStudyEventDefinitionId());
+            StudySubject studySubject = helperObject.getStudySubjectDao().findById(eventCrfToMigrate.getStudySubjectId());
+            Study study = studySubject.getStudy();
+            StudyEvent studyEvent = helperObject.getStudyEventDao().findById(eventCrfToMigrate.getStudyEventId());
+            StudyEventDefinition sed = studyEvent.getStudyEventDefinition();
             reportLog.getLogs().add(
                     cBean.getName() + "," + helperObject.getSourceCrfVersionBean().getName() + "," + helperObject.getTargetCrfVersionBean().getName() + ","
-                            + ssBean.getLabel() + ","
-                            + sBean.getName() + "," + sedBean.getName() + "," + seBean.getSampleOrdinal());
+                            + studySubject.getLabel() + ","
+                            + study.getName() + "," + sed.getName() + "," + studyEvent.getSampleOrdinal());
         }
         tx.commit();
         session.close();
