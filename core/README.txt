@@ -1,4 +1,4 @@
-﻿--------------------------------------------------------------
+--------------------------------------------------------------
 OPENCLINICA RELEASE NOTES
 OpenClinica Version 3.1-beta
 Document Version 1.0
@@ -62,11 +62,9 @@ III. SOFTWARE DEPENDENCIES AND SYSTEM REQUIREMENTS
 --------------------------------------------------------------
 
 Pre-requisites (versions):
-    Operating system(s): Windows XP, Windows Server 2003, Redhat Enterprise Linux 4.0+
-    Browsers: Internet Explorer  7.0, or 8.0 Mozilla Firefox 3.0 or 3.5
-    JDK : 1.6.0_16
-    Application server : Tomcat 6.0.20
-    Database server : PostgreSQL 8.4 or Oracle 10g
+    Operating system(s): Modern Linux, Windows, or macOS
+    Browsers: Modern browsers (Chrome, Firefox, Safari, Edge)
+    Please refer to the root README.md for current technical requirements including JDK, Tomcat, and PostgreSQL versions.
     OpenClinica version for Upgrades only: OpenClinica 3.0.x
 
 The source code has been removed from the distribution package to make it easier to navigate the file structure.  To access the source code, please follow the instructions at http://www.openclinica.org/dokuwiki/doku.php?id=developerwiki:start#developing_with_openclinica.
