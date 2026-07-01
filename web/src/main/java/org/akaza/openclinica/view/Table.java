@@ -63,80 +63,44 @@ public abstract class Table {
         noColsMessage = "";
     }
 
-    /**
-     * @return Returns the totalPageNumbers.
-     */
     public int getTotalPageNumbers() {
         return totalPageNumbers;
     }
 
-    /**
-     * @return Returns the columns.
-     */
     public ArrayList getColumns() {
         return columns;
     }
 
-    /**
-     * @param columns
-     *            The columns to set.
-     */
     public void setColumns(ArrayList columns) {
         this.columns = columns;
         numColumns = columns.size();
     }
 
-    /**
-     * @return Returns the ascendingSort.
-     */
     public boolean isAscendingSort() {
         return ascendingSort;
     }
 
-    /**
-     * @return Returns the currPageNumber.
-     */
     public int getCurrPageNumber() {
         return currPageNumber;
     }
 
-    /**
-     * @return Returns the keywordFilter.
-     */
     public String getKeywordFilter() {
         return keywordFilter;
     }
 
-    /**
-     * @return Returns the rows.
-     */
     public ArrayList getRows() {
         return rows;
     }
 
-    /**
-     * Re-computes the correct value of page numbers as:
-     * <code>rows.size() / NUM_ROWS_PER_PAGE</code>
-     */
     private void updateTotalPageNumbers() {
         totalPageNumbers = rows.size() / NUM_ROWS_PER_PAGE;
     }
 
-    /**
-     *
-     * @param rows
-     */
     public void setRows(ArrayList rows) {
         this.rows = rows;
         updateTotalPageNumbers();
     }
 
-    /**
-     * Adds an entity to display at the bottom of the table.
-     *
-     * @param e
-     *            The entity to add to the table.
-     */
     public void addRow(EntityBean e) {
         rows.add(e);
         updateTotalPageNumbers();
@@ -146,23 +110,14 @@ public abstract class Table {
 
     }
 
-    /**
-     * @return Returns the filtered.
-     */
     public boolean isFiltered() {
         return filtered;
     }
 
-    /**
-     * @return Returns the sortingColumnInd.
-     */
     public int getSortingColumnInd() {
         return sortingColumnInd;
     }
 
-    /**
-     * @return Returns the numColumns.
-     */
     public int getNumColumns() {
         return numColumns;
     }
@@ -178,99 +133,20 @@ public abstract class Table {
         while (it.hasNext()) {
             String key = (String) it.next();
             String value = (String) args.get(key);
-            // TODO: provide URL Encoding!
             baseGetQuery += "&" + key + "=" + value;
         }
 
     }
 
-    /**
-     * @return Returns the baseGetQuery.
-     */
     public String getBaseGetQuery() {
         return baseGetQuery;
     }
 
-    /**
-     * @return Returns the postAction.
-     */
     public String getPostAction() {
         return postAction;
     }
 
-    /**
-     * @return Returns the postArgs.
-     */
     public HashMap getPostArgs() {
         return postArgs;
-    }
-
-    /***************************************************************************
-     * old functions from when we had view code in the Java
-     **************************************************************************/
-
-    /**
-     * @deprecated
-     * @return header
-     */
-    @Deprecated
-    protected String showHeader() {
-        String header = "<table border>\n";
-        header += "<tr>\n";
-
-        Iterator columnsIt = columns.iterator();
-
-        while (columnsIt.hasNext()) {
-            String column = (String) columnsIt.next();
-            header += "<td>" + column + "</td>\n";
-        }
-
-        header += "</tr>\n";
-
-        return header;
-    }
-
-    /**
-     * @deprecated
-     * @return footer
-     */
-    @Deprecated
-    protected String showFooter() {
-        return "</table>\n";
-    }
-
-    /**
-     * @deprecated
-     * @param e
-     */
-    @Deprecated
-    protected abstract String showRow(EntityBean e);
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    protected abstract String getEntitiesNamePlural();
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public String showTable() {
-        if (rows.size() <= 0) {
-            return "<p><i>There are no " + getEntitiesNamePlural() + " available for display.</i></p>";
-        }
-
-        String table = showHeader();
-
-        Iterator rowsIt = rows.iterator();
-        while (rowsIt.hasNext()) {
-            EntityBean e = (EntityBean) rowsIt.next();
-            table += showRow(e);
-        }
-
-        table += showFooter();
-
-        return table;
     }
 }
