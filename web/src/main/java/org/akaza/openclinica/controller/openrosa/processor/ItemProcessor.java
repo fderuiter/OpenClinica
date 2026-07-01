@@ -17,6 +17,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.akaza.openclinica.controller.openrosa.ItemItemDataContainer;
 import org.akaza.openclinica.controller.openrosa.PformValidator;
 import org.akaza.openclinica.controller.openrosa.SubmissionContainer;
+import org.akaza.openclinica.controller.openrosa.UnifiedWorkflowEnforcementService;
 import org.akaza.openclinica.dao.hibernate.CrfVersionDao;
 import org.akaza.openclinica.dao.hibernate.DiscrepancyNoteDao;
 import org.akaza.openclinica.dao.hibernate.DiscrepancyNoteTypeDao;
@@ -89,6 +90,9 @@ public class ItemProcessor implements Processor, Ordered {
     @Autowired
     DnItemDataMapDao dnItemDataMapDao;
     
+    @Autowired
+    UnifiedWorkflowEnforcementService unifiedWorkflowEnforcementService;
+
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     public int getOrder() {
@@ -202,9 +206,9 @@ public class ItemProcessor implements Processor, Ordered {
                                                 newItemData.setOrdinal(itemDataDao.getMaxGroupRepeat(eventCrf.getEventCrfId(), item.getItemId()) + 1);
                                                 groupOrdinalMapping.get(itemGroup.getItemGroupId()).add(newItemData.getOrdinal());
                                             }
-                                            itemDataDao.saveOrUpdate(newItemData);
+                                            unifiedWorkflowEnforcementService.saveItemData(newItemData, eventCrf, container.getStudy(), container.getUser(), container.getSubject());
                                             newItemData.setStatus(Status.UNAVAILABLE);
-                                            itemDataDao.saveOrUpdate(newItemData);
+                                            unifiedWorkflowEnforcementService.saveItemData(newItemData, eventCrf, container.getStudy(), container.getUser(), container.getSubject());
 
                                         } else if (existingItemData.getValue().equals(newItemData.getValue())) {
                                             // Existing item. Value unchanged. Do nothing.
@@ -213,7 +217,7 @@ public class ItemProcessor implements Processor, Ordered {
                                             existingItemData.setValue(newItemData.getValue());
                                             existingItemData.setUpdateId(container.getUser().getUserId());
                                             existingItemData.setDateUpdated(new Date());
-                                            itemDataDao.saveOrUpdate(existingItemData);
+                                            unifiedWorkflowEnforcementService.saveItemData(existingItemData, eventCrf, container.getStudy(), container.getUser(), container.getSubject());
                                         }
                                     }
                                 }
@@ -356,7 +360,7 @@ public class ItemProcessor implements Processor, Ordered {
                     itemData.setUserAccount(user);
                     itemData.setStatus(Status.AVAILABLE);
                     itemData.setUpdateId(user.getUserId());
-                    itemData = itemDataDao.saveOrUpdate(itemData);
+                    itemData = unifiedWorkflowEnforcementService.saveItemData(itemData, eventCrf, study, user, studySubject);
 
                     //Close discrepancy notes
                     closeItemDiscrepancyNotes(itemData, study, studySubject, locale, user);

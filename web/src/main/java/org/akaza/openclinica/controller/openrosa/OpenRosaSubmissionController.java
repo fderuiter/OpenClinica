@@ -126,6 +126,12 @@ public class OpenRosaSubmissionController {
             // Execute save as Hibernate transaction to avoid partial imports
             openRosaSubmissionService.processRequest(study, subjectContext, requestBody, errors, locale , listOfUploadFilePaths);
 
+        } catch (org.akaza.openclinica.controller.openrosa.exception.CRFLockedException e) {
+            logger.info("Submission rejected due to CRF lock.");
+            return new ResponseEntity<String>(org.springframework.http.HttpStatus.LOCKED);
+        } catch (org.akaza.openclinica.controller.openrosa.exception.ClinicalWorkflowException e) {
+            logger.info("Submission blocked by clinical workflow rules.");
+            return new ResponseEntity<String>(org.springframework.http.HttpStatus.LOCKED);
         } catch (Exception e) {
             logger.error("Exception while processing xform submission.");
             logger.error(e.getMessage());
