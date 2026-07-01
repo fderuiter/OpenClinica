@@ -130,6 +130,7 @@
                 <prop key="sed">http://openclinica.org/ws/studyEventDefinition/v1</prop>
                 <prop key="data">http://openclinica.org/ws/data/v1</prop>
                 <prop key="odm13">http://www.cdisc.org/ns/odm/v1.3</prop>
+                <prop key="s">http://openclinica.org/ws/ccts/subject/v1</prop>
             </props>
         </property>
     </bean>
@@ -191,6 +192,14 @@
         <constructor-arg ref="dataSource"/>
         <property name="dateFormat" value="yyyy-MM-dd"/>
         <property name="dataInfo" ref="dataInfo"/>
+    </bean>
+
+    <bean id="cctsSubjectEndpoint" class="org.akaza.openclinica.ws.ccts.CctsSubjectEndpoint">
+        <constructor-arg ref="subjectService"/>
+        <constructor-arg ref="dataSource"/>
+        <constructor-arg ref="messageSource"/>
+        <property name="dateFormat" value="yyyy-MM-dd"/>
+        <property name="transactionTemplate" ref="sharedTransactionTemplate"/>
     </bean>
 
     <!-- Security -->
