@@ -1191,6 +1191,22 @@ function openNctEntryWindow(inURL) {
 
 function openDocWindow(inURL) {
 
+    // Standardize UI help triggers to call the centralized help service
+    if ((inURL.indexOf('http://www.openclinica.org') === 0 || 
+         inURL.indexOf('https://docs.openclinica.com') === 0 || 
+         inURL.indexOf('help/') === 0 ||
+         (inURL.indexOf('http://') === 0 && inURL.indexOf('ChooseDownloadFormat') === -1) || 
+         (inURL.indexOf('https://') === 0 && inURL.indexOf('ChooseDownloadFormat') === -1)) &&
+         inURL.indexOf('ChooseDownloadFormat') === -1) {
+        
+        var contextPath = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1));
+        if (contextPath === "" || contextPath === "/pages") {
+            contextPath = "/OpenClinica"; 
+        }
+        
+        inURL = contextPath + '/pages/help?url=' + encodeURIComponent(inURL);
+    }
+
     openNewWindow(inURL,
     		'',
             'directories=no,location=no,menubar=yes,scrollbars=yes,toolbar=no,status=no,resizable=yes',
