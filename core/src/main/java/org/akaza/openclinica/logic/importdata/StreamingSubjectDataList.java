@@ -1,0 +1,105 @@
+package org.akaza.openclinica.logic.importdata;
+
+import org.akaza.openclinica.bean.submit.crfdata.SubjectDataBean;
+import org.akaza.openclinica.bean.submit.crfdata.UpsertOnBean;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class StreamingSubjectDataList extends ArrayList<SubjectDataBean> {
+
+    private File xmlFile;
+    private String xmlString;
+    private String studyOid;
+    private UpsertOnBean upsertOn;
+    private int size = -1;
+
+    public StreamingSubjectDataList(File xmlFile) {
+        this.xmlFile = xmlFile;
+        initMetadata();
+    }
+    
+    public StreamingSubjectDataList(String xmlString) {
+        this.xmlString = xmlString;
+        initMetadata();
+    }
+
+    private InputStream getInputStream() throws Exception {
+        if (xmlFile != null) return new FileInputStream(xmlFile);
+        if (xmlString != null) return new ByteArrayInputStream(xmlString.getBytes("UTF-8"));
+        throw new IllegalStateException("No data source");
+    }
+
+    private void initMetadata() {
+        try (InputStream is = getInputStream()) {
+            XMLInputFactory factory = XMLInputFactory.newInstance();
+            XMLStreamReader reader = factory.createXMLStreamReader(is);
+            
+            while (reader.hasNext()) {
+                int event = reader.next();
+                if (event == XMLStreamReader.START_ELEMENT) {
+                    if ("ClinicalData".equals(reader.getLocalName())) {
+                        studyOid = reader.getAttributeValue(null, "StudyOID");
+                    } else if ("UpsertOn".equals(reader.getLocalName())) {
+                        upsertOn = new UpsertOnBean();
+                        String ns = reader.getAttributeValue(null, "NotStarted");
+                        if (ns != null) upsertOn.setNotStarted("true".equalsIgnoreCase(ns) || "1".equals(ns));
+                        String des = reader.getAttributeValue(null, "DataEntryStarted");
+                        if (des != null) upsertOn.setDataEntryStarted("true".equalsIgnoreCase(des) || "1".equals(des));
+                        String dec = reader.getAttributeValue(null, "DataEntryComplete");
+                        if (dec != null) upsertOn.setDataEntryComplete("true".equalsIgnoreCase(dec) || "1".equals(dec));
+                    } else if ("SubjectData".equals(reader.getLocalName())) {
+                        break;
+                    }
+                }
+            }
+            reader.close();
+        } catch (Exception e) {
+            throw new RuntimeException("Error reading metadata", e);
+        }
+    }
+
+    public String getStudyOid() {
+        return studyOid;
+    }
+
+    public UpsertOnBean getUpsertOn() {
+        return upsertOn;
+    }
+
+    @Override
+    public int size() {
+        if (size == -1) {
+            size = 0;
+            try (InputStream is = getInputStream()) {
+                XMLInputFactory factory = XMLInputFactory.newInstance();
+                XMLStreamReader reader = factory.createXMLStreamReader(is);
+                while (reader.hasNext()) {
+                    if (reader.next() == XMLStreamReader.START_ELEMENT && "SubjectData".equals(reader.getLocalName())) {
+                        size++;
+                    }
+                }
+                reader.close();
+            } catch (Exception e) {
+            }
+        }
+        return size;
+    }
+
+    @Override
+    public Iterator<SubjectDataBean> iterator() {
+        try {
+            return new SubjectDataIterator(getInputStream());
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating stream", e);
+        }
+    }
+}

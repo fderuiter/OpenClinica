@@ -240,7 +240,14 @@ public class DataEndpoint {
             // File xsdFileFinal = new File(xsdFile);
             // schemaValidator.validateAgainstSchema(xml, xsdFile);
             // removing schema validation since we are presented with the chicken v egg error problem
-            odmContainer = (ODMContainer) jaxb2Marshaller.unmarshal(new StreamSource(new StringReader(xml)));
+            
+            org.akaza.openclinica.logic.importdata.StreamingSubjectDataList streamingList = new org.akaza.openclinica.logic.importdata.StreamingSubjectDataList(xml);
+            org.akaza.openclinica.bean.submit.crfdata.CRFDataPostImportContainer crfDataPostImportContainer = new org.akaza.openclinica.bean.submit.crfdata.CRFDataPostImportContainer();
+            crfDataPostImportContainer.setStudyOID(streamingList.getStudyOid());
+            crfDataPostImportContainer.setUpsertOn(streamingList.getUpsertOn());
+            crfDataPostImportContainer.setSubjectData(streamingList);
+            odmContainer.setCrfDataPostImportContainer(crfDataPostImportContainer);
+
             LOG.debug("Found crf data container for study oid: " + odmContainer.getCrfDataPostImportContainer().getStudyOID());
             LOG.debug("found length of subject list: " + odmContainer.getCrfDataPostImportContainer().getSubjectData().size());
             return odmContainer;
