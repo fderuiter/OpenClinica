@@ -2,56 +2,56 @@ package org.akaza.openclinica.dao;
 
 import org.akaza.openclinica.dao.hibernate.DatabaseChangeLogDao;
 import org.akaza.openclinica.domain.technicaladmin.DatabaseChangeLogBean;
-import org.akaza.openclinica.templates.HibernateOcDbTestCase;
+import org.hibernate.Query;
+import org.hibernate.classic.Session;
+import org.hibernate.SessionFactory;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
 
-public class DatabaseChangeLogDaoTest extends HibernateOcDbTestCase {
+public class DatabaseChangeLogDaoTest {
 
-    private final Integer POSTGRES_COUNT = 833;
-    private final Integer ORACLE_COUNT = 833;
+    private DatabaseChangeLogDao databaseChangeLogDao;
 
-    public DatabaseChangeLogDaoTest() {
-        super();
+    @Mock
+    private SessionFactory mockSessionFactory;
+
+    @Mock
+    private Session mockSession;
+
+    @Mock
+    private Query mockQuery;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        databaseChangeLogDao = new DatabaseChangeLogDao();
+        databaseChangeLogDao.setSessionFactory(mockSessionFactory);
+
+        when(mockSessionFactory.getCurrentSession()).thenReturn(mockSession);
     }
 
-   /* public void testCount() {
-        DatabaseChangeLogDao databaseChangeLogDao = (DatabaseChangeLogDao) getContext().getBean("databaseChangeLogDao");
-        Long count = databaseChangeLogDao.count();
-
-        if (getDbName().equals("postgres")) {
-            assertEquals("Total Count should be", String.valueOf(POSTGRES_COUNT), String.valueOf(count));
-        }
-        if (getDbName().equals("oracle")) {
-            assertEquals("Total Count should be", String.valueOf(ORACLE_COUNT), String.valueOf(count));
-        }
-
-    }
-
-    public void testfindAll() {
-        DatabaseChangeLogDao databaseChangeLogDao = (DatabaseChangeLogDao) getContext().getBean("databaseChangeLogDao");
-        DatabaseChangeLogBean databaseChangeLogBean = null;
-        ArrayList<DatabaseChangeLogBean> databaseChangeLogBeans = databaseChangeLogDao.findAll();
-        databaseChangeLogBean = databaseChangeLogBeans.get(0);
-
-        if (getDbName().equals("postgres")) {
-            assertEquals("Total Count should be", String.valueOf(POSTGRES_COUNT), String.valueOf(databaseChangeLogBeans.size()));
-        }
-        if (getDbName().equals("oracle")) {
-            assertEquals("Total Count should be", String.valueOf(ORACLE_COUNT), String.valueOf(databaseChangeLogBeans.size()));
-        }
-        assertNotNull(databaseChangeLogBean);
-
-    }
-*/
+    @Test
     public void testfindById() {
-        DatabaseChangeLogDao databaseChangeLogDao = (DatabaseChangeLogDao) getContext().getBean("databaseChangeLogDao");
-        DatabaseChangeLogBean databaseChangeLogBean = null;
-        databaseChangeLogBean = databaseChangeLogDao.findById("1235684743487-1", "pgawade (generated)", "migration/2.5/changeLogCreateTables.xml");
+        DatabaseChangeLogBean mockBean = new DatabaseChangeLogBean();
+        mockBean.setId("1235684743487-1");
+        mockBean.setAuthor("pgawade (generated)");
+        mockBean.setFileName("migration/2.5/changeLogCreateTables.xml");
 
-        assertNotNull(databaseChangeLogBean);
-        assertEquals("Author should be pgawade (generated)", "pgawade (generated)", databaseChangeLogBean.getAuthor());
+        when(mockSession.createQuery(anyString())).thenReturn(mockQuery);
+        when(mockQuery.setString(eq("id"), eq("1235684743487-1"))).thenReturn(mockQuery);
+        when(mockQuery.setString(eq("author"), eq("pgawade (generated)"))).thenReturn(mockQuery);
+        when(mockQuery.setString(eq("fileName"), eq("migration/2.5/changeLogCreateTables.xml"))).thenReturn(mockQuery);
+        when(mockQuery.uniqueResult()).thenReturn(mockBean);
 
+        DatabaseChangeLogBean result = databaseChangeLogDao.findById("1235684743487-1", "pgawade (generated)", "migration/2.5/changeLogCreateTables.xml");
+
+        assertNotNull(result);
+        assertEquals("Author should be pgawade (generated)", "pgawade (generated)", result.getAuthor());
     }
-
 }

@@ -1262,11 +1262,16 @@ public class StudySubjectDAO<K extends String,V extends ArrayList> extends Audit
                     ssb.setGender(' ');
 
                 } else {
-                    String gender = (String) hm.get("gender");
-                    char[] genderarr = gender.toCharArray();
-                    ssb.setGender(genderarr[0]);
+                    Object genderObj = hm.get("gender");
+                    if (genderObj != null) {
+                        if (genderObj instanceof String && ((String) genderObj).length() > 0) {
+                            ssb.setGender(((String) genderObj).charAt(0));
+                        } else if (genderObj instanceof Character) {
+                            ssb.setGender(((Character) genderObj).charValue());
+                        }
+                    }
                 }
-            } catch (ClassCastException ce) {
+            } catch (Exception ce) {
                 // object type is Character
                 ssb.setGender(' ');
             }

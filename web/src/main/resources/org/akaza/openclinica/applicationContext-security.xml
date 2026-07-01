@@ -77,6 +77,7 @@
         <property name="auditUserLoginDao" ref="auditUserLoginDao"/>
         <property name="configurationDao" ref="configurationDao"/>
         <property name="dataSource" ref="dataSource"/>
+        <property name="auditLogEventDao" ref="auditLogEventDaoDomain"/>
         <property name="allowSessionCreation" value="true" />
         <property name="sessionAuthenticationStrategy" ref="sas"/>
         <property name="crfLocker" ref="crfLocker"/>
@@ -109,6 +110,7 @@
         <property name="auditUserLoginDao" ref="auditUserLoginDao"/>
         <property name="dataSource" ref="dataSource"/>
          <property name="crfLocker" ref="crfLocker" />
+         <property name="auditLogEventDao" ref="auditLogEventDaoDomain" />
      </bean>
     
     
@@ -122,6 +124,7 @@
     <bean id="openClinicaLogoutHandler" class="org.akaza.openclinica.web.filter.OpenClinicaSecurityContextLogoutHandler">
         <property name="auditUserLoginDao" ref="auditUserLoginDao"/>
         <property name="dataSource" ref="dataSource"/>
+        <property name="auditLogEventDao" ref="auditLogEventDaoDomain"/>
     </bean>
 
     <bean id="tokenServices"
