@@ -172,6 +172,19 @@
                              columnNames="item_id, event_crf_id, ordinal"/>
     </changeSet>
 
+    <changeSet author="modernization" id="create_audit_event_discrepancy_note">
+        <createTable tableName="audit_event_discrepancy_note">
+            <column name="audit_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="discrepancy_note_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="audit_id" baseTableName="audit_event_discrepancy_note" constraintName="fk_aedn_audit_event" referencedColumnNames="audit_id" referencedTableName="audit_event"/>
+        <addForeignKeyConstraint baseColumnNames="discrepancy_note_id" baseTableName="audit_event_discrepancy_note" constraintName="fk_aedn_disc_note" referencedColumnNames="discrepancy_note_id" referencedTableName="discrepancy_note"/>
+    </changeSet>
+
     <include file="migration/modernization_indexes.xml"/>
 
 </databaseChangeLog>
