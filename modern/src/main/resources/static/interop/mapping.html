@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapping Interface</title>
+</head>
+<body>
+    <h1>Mapping Interface</h1>
+    <form id="mappingForm">
+        <label for="ehrField">EHR Field:</label>
+        <input type="text" id="ehrField" name="ehrField"><br><br>
+        <label for="studyItem">Study Item (ItemDataBean):</label>
+        <input type="text" id="studyItem" name="studyItem"><br><br>
+        <input type="button" value="Save Mapping" onclick="saveMapping()">
+    </form>
+    <script>
+        function saveMapping() {
+            var ehrField = document.getElementById("ehrField").value;
+            var studyItem = document.getElementById("studyItem").value;
+            var payload = {};
+            payload[ehrField] = studyItem;
+            fetch('/interop/mapping/data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            }).then(response => alert("Mapping saved"));
+        }
+    </script>
+</body>
+</html>
