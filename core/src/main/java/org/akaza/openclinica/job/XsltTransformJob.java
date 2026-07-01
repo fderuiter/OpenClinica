@@ -359,13 +359,18 @@ public class XsltTransformJob extends QuartzJobBean {
                     // removed..added it only for the sake of custom processing
                     // but it will produce erroneous results in case of custom
                     // post processing as well.
+                    ExportFormatBean formatBean = ExportFormatBean.TXTFILE;
                     if (function.getClass().equals(org.akaza.openclinica.bean.service.PdfProcessingFunction.class)) {
                         archivedFile = function.getArchivedFileName();
+                        formatBean = ExportFormatBean.PDFFILE;
+                    } else if (function.getClass().equals(org.akaza.openclinica.bean.service.JsonProcessingFunction.class)) {
+                        archivedFile = function.getArchivedFileName();
+                        formatBean = ExportFormatBean.JSONFILE;
                     }
 
                     ArchivedDatasetFileBean fbFinal =
                         generateFileRecord(archivedFile, outputPath, datasetBean, done, new File(outputPath + File.separator + archivedFile).length(),
-                                ExportFormatBean.PDFFILE, userAccountId);
+                                formatBean, userAccountId);
 
                     if (successMsg.contains("$linkURL")) {
                         successMsg =

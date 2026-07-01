@@ -118,6 +118,35 @@
         </insert>
     </changeSet>
 
+    <changeSet author="modernization" id="create_notification_outbox_seq" dbms="postgresql, oracle">
+        <createSequence sequenceName="notification_outbox_id_seq" />
+    </changeSet>
+
+    <changeSet author="modernization" id="create_notification_outbox">
+        <createTable tableName="notification_outbox">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="study_oid" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="study_event_def_id" type="int"/>
+            <column name="study_event_def_ordinal" type="int"/>
+            <column name="crf_version_oid" type="varchar(255)"/>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attempt_count" type="int" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_error_message" type="varchar(1000)"/>
+            <column name="created_at" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP"/>
+            <column name="version" type="int" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
     <changeSet author="modernization" id="item_data_duplicate_uniqueness_key">
         <preConditions onFail="MARK_RAN">
             <not>
