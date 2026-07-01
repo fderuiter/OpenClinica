@@ -91,4 +91,19 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="modernization" id="auth_audit_event_types">
+        <insert tableName="audit_log_event_type">
+            <column name="audit_log_event_type_id" valueNumeric="44"/>
+            <column name="name" value="__successful_login"/>
+        </insert>
+        <insert tableName="audit_log_event_type">
+            <column name="audit_log_event_type_id" valueNumeric="45"/>
+            <column name="name" value="__failed_login"/>
+        </insert>
+        <insert tableName="audit_log_event_type">
+            <column name="audit_log_event_type_id" valueNumeric="46"/>
+            <column name="name" value="__user_logout"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
