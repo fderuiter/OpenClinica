@@ -12,6 +12,7 @@
 				)
 			where dn.parent_dn_id isNull
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
      <changeSet author="ywang" id="2010-10-11-5962-2" dbms="oracle">
     	<comment>Update Resolution Status of Parent DN As Their Last Child</comment>
@@ -25,6 +26,7 @@
 				)
 			where dn.parent_dn_id = null
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     <changeSet author="ywang" id="2010-10-11-5962-3" dbms="postgresql">
     	<comment>Create or Replace a View DN_DAYS</comment>
@@ -42,6 +44,7 @@
 				from discrepancy_note dn
 				where dn.parent_dn_id isNull
     	</sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     <changeSet author="ywang" id="2010-10-11-5962-4" dbms="oracle">
     	<comment>Create or Replace a View DN_DAYS</comment>
@@ -60,5 +63,6 @@
 				from discrepancy_note dn
 				where dn.parent_dn_id is NULL
     	</sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
 </databaseChangeLog>
