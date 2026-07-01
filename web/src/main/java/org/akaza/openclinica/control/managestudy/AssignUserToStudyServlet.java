@@ -69,7 +69,7 @@ public class AssignUserToStudyServlet extends SecureController {
             ArrayList allRows = UserAccountRow.generateRowsFromBeans(users);
 
             if (nextListPage == null) {
-                session.removeAttribute("tmpSelectedUsersMap");
+                request.removeAttribute("tmpSelectedUsersMap");
             }
 
             /*
@@ -98,7 +98,7 @@ public class AssignUserToStudyServlet extends SecureController {
                         }
                     }
                 }
-                session.setAttribute("tmpSelectedUsersMap", tmpSelectedUsersMap);
+                request.setAttribute("tmpSelectedUsersMap", tmpSelectedUsersMap);
             }
 
             String[] columns =
@@ -214,7 +214,7 @@ public class AssignUserToStudyServlet extends SecureController {
                 }
             }
         }
-        session.removeAttribute("tmpSelectedUsersMap");
+        request.removeAttribute("tmpSelectedUsersMap");
 
         if ("".equals(pageMass)) {
             addPageMessage(respage.getString("no_new_user_assigned_to_study"));
@@ -223,7 +223,7 @@ public class AssignUserToStudyServlet extends SecureController {
         }
 
         ArrayList pageMessages = (ArrayList) request.getAttribute(PAGE_MESSAGE);
-        session.setAttribute("pageMessages", pageMessages);
+        request.setAttribute("pageMessages", pageMessages);
         // tbh #3936 07/2009
         if (currentStudy.getParentStudyId() == 0) {
             response.sendRedirect(request.getContextPath() + Page.MANAGE_STUDY_MODULE.getFileName());

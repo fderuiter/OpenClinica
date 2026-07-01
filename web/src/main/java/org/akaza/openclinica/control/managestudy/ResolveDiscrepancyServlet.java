@@ -341,10 +341,10 @@ public class ResolveDiscrepancyServlet extends SecureController {
         /*
          * BWP: This caused a problem with page refreshing (the subjectId was
          * lost); so I had to comment it out if(subjectId != null){
-         * session.removeAttribute("subjectId"); }
+         * request.removeAttribute("subjectId"); }
          */
         if (module != null) {
-            session.removeAttribute("module");
+            request.removeAttribute("module");
         }
 
         // BWP 11/03/2008 3029: redirect monitor user to ViewStudySubject if

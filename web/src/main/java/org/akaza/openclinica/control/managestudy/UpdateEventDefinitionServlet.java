@@ -150,7 +150,7 @@ public class UpdateEventDefinitionServlet extends SecureController {
             //OC-12780
             
 
-            session.setAttribute("definition", sed);
+            request.setAttribute("definition", sed);
             CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
             ArrayList<EventDefinitionCRFBean> edcs = (ArrayList) session.getAttribute("eventDefinitionCRFs");
             for (int i = 0; i < edcs.size(); i++) {
@@ -251,13 +251,13 @@ public class UpdateEventDefinitionServlet extends SecureController {
 
             if (!errors.isEmpty()) {
                 logger.info("has errors");
-                session.setAttribute("eventDefinitionCRFs", edcs);
+                request.setAttribute("eventDefinitionCRFs", edcs);
                 request.setAttribute("formMessages", errors);
                 forwardPage(Page.UPDATE_EVENT_DEFINITION1);
 
             } 
 
-            session.setAttribute("eventDefinitionCRFs", edcs);
+            request.setAttribute("eventDefinitionCRFs", edcs);
             forwardPage(Page.UPDATE_EVENT_DEFINITION_CONFIRM);
         
         
@@ -335,12 +335,12 @@ public class UpdateEventDefinitionServlet extends SecureController {
 
             }
         }
-        session.removeAttribute("definition");
-        session.removeAttribute("eventDefinitionCRFs");
+        request.removeAttribute("definition");
+        request.removeAttribute("eventDefinitionCRFs");
 
-        session.removeAttribute("tmpCRFIdMap");
-        session.removeAttribute("crfsWithVersion");
-        session.removeAttribute("eventDefinitionCRFs");
+        request.removeAttribute("tmpCRFIdMap");
+        request.removeAttribute("crfsWithVersion");
+        request.removeAttribute("eventDefinitionCRFs");
         
         addPageMessage(respage.getString("the_ED_has_been_updated_succesfully"));
         forwardPage(Page.LIST_DEFINITION_SERVLET);

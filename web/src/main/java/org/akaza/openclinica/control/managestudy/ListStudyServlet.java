@@ -92,7 +92,7 @@ public class ListStudyServlet extends SecureController {
 
         request.setAttribute("table", table);
         // request.setAttribute("studies", studies);
-        session.setAttribute("fromListSite", "no");
+        request.setAttribute("fromListSite", "no");
 
         resetPanel();
         panel.setStudyInfoShown(false);

@@ -54,14 +54,17 @@ public class AdminSystemServlet extends SecureController {
         SubjectDAO subdao = new SubjectDAO(sm.getDataSource());
         ArrayList subjects = (ArrayList) subdao.findAllByLimit(true);
         request.setAttribute("subjects", subjects);
-        ArrayList allSubjects = (ArrayList) subdao.findAll();
+        ArrayList allSubjects = (ArrayList) subdao.findAllByPermission(ub, 1);
         request.setAttribute("allSubjectNumber", new Integer(allSubjects.size()));
 
         CRFDAO cdao = new CRFDAO(sm.getDataSource());
         ArrayList crfs = (ArrayList) cdao.findAllByLimit(true);
         request.setAttribute("crfs", crfs);
-        ArrayList allCrfs = (ArrayList) cdao.findAll();
+        ArrayList allCrfs = (ArrayList) cdao.findAllByPermission(ub, 1);
         request.setAttribute("allCrfNumber", new Integer(allCrfs.size()));
+
+        request.setAttribute("deploymentVersion", "3.18-SNAPSHOT");
+        request.setAttribute("activeConfiguration", "Primary Production Configuration");
 
         resetPanel();
         panel.setOrderedData(true);

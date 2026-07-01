@@ -85,6 +85,16 @@
 
 
     <filter>
+        <filter-name>apiResponseWrapperFilter</filter-name>
+        <filter-class>org.akaza.openclinica.web.filter.ApiResponseWrapperFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>apiResponseWrapperFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
         <init-param>

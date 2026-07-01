@@ -114,8 +114,8 @@ public class UpdateStudyEventServlet extends SecureController {
 
         String fromResolvingNotes = fp.getString("fromResolvingNotes", true);
         if (StringUtil.isBlank(fromResolvingNotes)) {
-            session.removeAttribute(ViewNotesServlet.WIN_LOCATION);
-            session.removeAttribute(ViewNotesServlet.NOTES_TABLE);
+            request.removeAttribute(ViewNotesServlet.WIN_LOCATION);
+            request.removeAttribute(ViewNotesServlet.NOTES_TABLE);
             checkStudyLocked(Page.MANAGE_STUDY, respage.getString("current_study_locked"));
             checkStudyFrozen(Page.MANAGE_STUDY, respage.getString("current_study_frozen"));
         }
@@ -428,7 +428,7 @@ public class UpdateStudyEventServlet extends SecureController {
                 request.setAttribute("displayEventCRFs", displayEventCRFs);
 
                 request.setAttribute(EVENT_BEAN, studyEvent);
-                session.setAttribute("eventSigned", studyEvent);
+                request.setAttribute("eventSigned", studyEvent);
 
                 DiscrepancyNoteUtil discNoteUtil = new DiscrepancyNoteUtil();
                 DisplayStudyEventBean displayEvBean = new DisplayStudyEventBean();
@@ -492,7 +492,7 @@ public class UpdateStudyEventServlet extends SecureController {
                 
                 addPageMessage(respage.getString("study_event_updated"));
                 request.setAttribute("id", new Integer(studySubjectId).toString());
-                session.removeAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
+                request.removeAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
                 forwardPage(Page.VIEW_STUDY_SUBJECT_SERVLET);
                 // FORWARD SHOULD BE TO THE NEW PAGE
             }
@@ -535,7 +535,7 @@ public class UpdateStudyEventServlet extends SecureController {
                 AddNewSubjectServlet.saveFieldNotes(INPUT_STARTDATE_PREFIX, fdn, dndao, studyEvent.getId(), "studyEvent", currentStudy);
                 AddNewSubjectServlet.saveFieldNotes(INPUT_ENDDATE_PREFIX, fdn, dndao, studyEvent.getId(), "studyEvent", currentStudy);
 
-                session.removeAttribute("eventSigned");
+                request.removeAttribute("eventSigned");
                 request.setAttribute("id", new Integer(studySubjectId).toString());
                 addPageMessage(respage.getString("study_event_updated"));
                 forwardPage(Page.VIEW_STUDY_SUBJECT_SERVLET);
@@ -664,7 +664,7 @@ public class UpdateStudyEventServlet extends SecureController {
             request.setAttribute("studySubject", studySubjectBean);
 
             discNotes = new FormDiscrepancyNotes();
-            session.setAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME, discNotes);
+            request.setAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME, discNotes);
 
             forwardPage(Page.UPDATE_STUDY_EVENT);
         }// else

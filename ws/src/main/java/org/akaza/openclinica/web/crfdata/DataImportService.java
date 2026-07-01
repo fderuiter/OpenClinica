@@ -235,6 +235,9 @@ public class DataImportService {
                 }
                 
                 int eventCrfBeanIdProcessed = 0;
+                List<ItemDataBean> itemsToCreate = new ArrayList<>();
+                List<ItemDataBean> itemsToUpdate = new ArrayList<>();
+                
                 for (DisplayItemBean displayItemBean : wrapper.getDisplayItemBeans()) {
                     eventCrfBeanId = displayItemBean.getData().getEventCRFId();
                     eventCrfBean = (EventCRFBean) eventCrfDao.findByPK(eventCrfBeanId);
@@ -268,19 +271,27 @@ public class DataImportService {
                         itemDataBean.setValue(displayItemBean.getData().getValue());
 
                         // set status?
-                        itemDataDao.update(itemDataBean);
+                        itemsToUpdate.add(itemDataBean);
                         logger.debug("updated: " + itemDataBean.getItemId());
                         // need to set pk here in order to create dn
                         displayItemBean.getData().setId(itemDataBean.getId());
                     } else {
                         resetSDV = true;
-                        itemDataDao.create(displayItemBean.getData());
+                        itemsToCreate.add(displayItemBean.getData());
                         logger.debug("created: " + displayItemBean.getData().getItemId());
-                        itemDataBean = itemDataDao.findByItemIdAndEventCRFIdAndOrdinal(displayItemBean.getItem().getId(), eventCrfBean.getId(), displayItemBean
-                                .getData().getOrdinal());
-                        // logger.debug("found: id " + itemDataBean2.getId() + " name " + itemDataBean2.getName());
-                        displayItemBean.getData().setId(itemDataBean.getId());
                     }
+                }
+                
+                if (!itemsToCreate.isEmpty()) {
+                    itemDataDao.batchCreate(itemsToCreate);
+                }
+                if (!itemsToUpdate.isEmpty()) {
+                    itemDataDao.batchUpdate(itemsToUpdate);
+                }
+
+                for (DisplayItemBean displayItemBean : wrapper.getDisplayItemBeans()) {
+                    eventCrfBeanId = displayItemBean.getData().getEventCRFId();
+                    eventCrfBean = (EventCRFBean) eventCrfDao.findByPK(eventCrfBeanId);
                     ItemDAO idao = new ItemDAO(dataSource);
                     ItemBean ibean = (ItemBean) idao.findByPK(displayItemBean.getData().getItemId());
                     // logger.debug("*** checking for validation errors: " + ibean.getName());

@@ -43,7 +43,7 @@ public class CreateFiltersOneServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
         // clean up the previous setup, if necessary
-        session.removeAttribute("newExp");
+        request.removeAttribute("newExp");
         // removes the new explanation for setting up the create dataset
         // covers the plan if you cancel out of a process then want to get in
         // again, tbh

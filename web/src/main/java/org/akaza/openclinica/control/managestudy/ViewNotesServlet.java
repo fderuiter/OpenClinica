@@ -93,7 +93,7 @@ public class ViewNotesServlet extends SecureController {
         int oneSubjectId = fp.getInt("id");
         // BWP 11/03/2008 3029: This session attribute in removed in
         // ResolveDiscrepancyServlet.mayProceed() >>
-        session.setAttribute("subjectId", oneSubjectId);
+        request.setAttribute("subjectId", oneSubjectId);
         // >>
 
         int resolutionStatusSubj = fp.getInt(RESOLUTION_STATUS);
@@ -110,7 +110,7 @@ public class ViewNotesServlet extends SecureController {
 
         // BWP 11/03/2008 3029: This session attribute in removed in
         // ResolveDiscrepancyServlet.mayProceed() >>
-        session.setAttribute("module", module);
+        request.setAttribute("module", module);
         // >>
 
         // Do we only want to view the notes for 1 subject?
@@ -130,20 +130,20 @@ public class ViewNotesServlet extends SecureController {
         }
 
         if (removeSession) {
-            session.removeAttribute(WIN_LOCATION);
-            session.removeAttribute(NOTES_TABLE);
+            request.removeAttribute(WIN_LOCATION);
+            request.removeAttribute(NOTES_TABLE);
         }
 
         // after resolving a note, user wants to go back to view notes page, we
         // save the current URL
         // so we can go back later
-        session.setAttribute(WIN_LOCATION, "ViewNotes?viewForOne=" + viewForOne + "&id=" + oneSubjectId + "&module=" + module + " &removeSession=1");
+        request.setAttribute(WIN_LOCATION, "ViewNotes?viewForOne=" + viewForOne + "&id=" + oneSubjectId + "&module=" + module + " &removeSession=1");
 
         boolean hasAResolutionStatus = resolutionStatus >= 1 && resolutionStatus <= 5;
         Set<Integer> resolutionStatusIds = (HashSet) session.getAttribute(RESOLUTION_STATUS);
         // remove the session if there is no resolution status
         if (!hasAResolutionStatus && resolutionStatusIds != null) {
-            session.removeAttribute(RESOLUTION_STATUS);
+            request.removeAttribute(RESOLUTION_STATUS);
             resolutionStatusIds = null;
         }
         if (hasAResolutionStatus) {
@@ -151,7 +151,7 @@ public class ViewNotesServlet extends SecureController {
                 resolutionStatusIds = new HashSet<Integer>();
             }
             resolutionStatusIds.add(resolutionStatus);
-            session.setAttribute(RESOLUTION_STATUS, resolutionStatusIds);
+            request.setAttribute(RESOLUTION_STATUS, resolutionStatusIds);
         }
 
         StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
@@ -208,9 +208,9 @@ public class ViewNotesServlet extends SecureController {
 
         request.setAttribute("viewNotesHtml", viewNotesHtml);
         String viewNotesURL = this.getPageURL();
-        session.setAttribute("viewNotesURL", viewNotesURL);
+        request.setAttribute("viewNotesURL", viewNotesURL);
         String viewNotesPageFileName = this.getPageServletFileName();
-        session.setAttribute("viewNotesPageFileName", viewNotesPageFileName);
+        request.setAttribute("viewNotesPageFileName", viewNotesPageFileName);
 
         request.setAttribute("mapKeys", ResolutionStatus.getMembers());
         request.setAttribute("typeNames", DiscrepancyNoteUtil.getTypeNames());

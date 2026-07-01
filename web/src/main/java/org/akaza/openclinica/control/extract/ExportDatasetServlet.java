@@ -424,7 +424,7 @@ public class ExportDatasetServlet extends SecureController {
 
         table.setQuery("ExportDataset?datasetId=" + db.getId(), new HashMap());
         // trying to continue...
-        session.setAttribute("newDataset", db);
+        request.setAttribute("newDataset", db);
         table.setRows(filterRows);
         table.computeDisplay();
 

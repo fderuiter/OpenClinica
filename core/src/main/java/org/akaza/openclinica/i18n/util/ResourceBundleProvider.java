@@ -38,7 +38,8 @@ public class ResourceBundleProvider {
     }
 
     public static Locale getLocale() {
-        return localeMap.get(Thread.currentThread());
+        Locale l = localeMap.get(Thread.currentThread());
+        return l != null ? l : Locale.getDefault();
     }
 
     public static ResourceBundle getAdminBundle() {
@@ -126,8 +127,11 @@ public class ResourceBundleProvider {
      * @return
      */
     private static ResourceBundle getResBundle(String name) {
-
-        return resBundleSetMap.get(localeMap.get(Thread.currentThread())).get(name);
+        Locale l = getLocale();
+        if (l != null && resBundleSetMap.containsKey(l) && resBundleSetMap.get(l).containsKey(name)) {
+            return resBundleSetMap.get(l).get(name);
+        }
+        return ResourceBundle.getBundle(name, l != null ? l : Locale.getDefault());
     }
 
     /**
@@ -139,7 +143,10 @@ public class ResourceBundleProvider {
      * @return The corresponding ResourceBundle
      */
     private static ResourceBundle getResBundle(String name, Locale locale) {
-        return resBundleSetMap.get(locale).get(name);
+        if (locale != null && resBundleSetMap.containsKey(locale) && resBundleSetMap.get(locale).containsKey(name)) {
+            return resBundleSetMap.get(locale).get(name);
+        }
+        return ResourceBundle.getBundle(name, locale != null ? locale : Locale.getDefault());
     }
 
     /**

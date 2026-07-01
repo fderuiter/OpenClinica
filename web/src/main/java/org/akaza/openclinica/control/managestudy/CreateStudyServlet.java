@@ -276,7 +276,7 @@ public class CreateStudyServlet extends SecureController {
         panel.setManageSubject(false);
 
         if (StringUtil.isBlank(action)) {
-            session.setAttribute("newStudy", new StudyBean());
+            request.setAttribute("newStudy", new StudyBean());
 
             // request.setAttribute("facRecruitStatusMap", facRecruitStatusMap);
             // request.setAttribute("statuses", Status.toActiveArrayList());
@@ -297,14 +297,14 @@ public class CreateStudyServlet extends SecureController {
 
                 submitStudy();
 
-                session.removeAttribute("interventions");
-                session.removeAttribute("isInterventionalFlag");
-                session.removeAttribute("interventionArray");
+                request.removeAttribute("interventions");
+                request.removeAttribute("isInterventionalFlag");
+                request.removeAttribute("interventionArray");
 
                 // swith user to the newly created study
 
-                session.setAttribute("study", session.getAttribute("newStudy"));
-                session.removeAttribute("newStudy");
+                request.setAttribute("study", session.getAttribute("newStudy"));
+                request.removeAttribute("newStudy");
                 currentStudy = (StudyBean) session.getAttribute("study");
 
                 UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
@@ -316,13 +316,13 @@ public class CreateStudyServlet extends SecureController {
                 sub.setOwner(ub);
                 udao.createStudyUserRole(ub, sub);
                 currentRole = sub;
-                session.setAttribute("userRole", sub);
+                request.setAttribute("userRole", sub);
 
                 addPageMessage(respage.getString("the_new_study_created_succesfully_current"));
                 // forwardPage(Page.STUDY_LIST_SERVLET);
 
                 ArrayList pageMessages = (ArrayList) request.getAttribute(PAGE_MESSAGE);
-                session.setAttribute("pageMessages", pageMessages);
+                request.setAttribute("pageMessages", pageMessages);
                 response.sendRedirect(request.getContextPath() + Page.MANAGE_STUDY_MODULE.getFileName());
             } else if ("next".equalsIgnoreCase(action)) {
                 Integer pageNumber = Integer.valueOf(request.getParameter("pageNum"));
@@ -343,7 +343,7 @@ public class CreateStudyServlet extends SecureController {
                     }
                 } else {
                     if (session.getAttribute("newStudy") == null) {
-                        session.setAttribute("newStudy", new StudyBean());
+                        request.setAttribute("newStudy", new StudyBean());
                     }
 
                     UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
@@ -462,12 +462,12 @@ public class CreateStudyServlet extends SecureController {
                 addPageMessage(respage.getString("the_new_study_created_succesfully_current"));
                 forwardPage(Page.STUDY_LIST_SERVLET);
             } else {
-                session.setAttribute("newStudy", studyBean);
+                request.setAttribute("newStudy", studyBean);
                 forwardPage(Page.CREATE_STUDY2);
             }
 
         } else {
-            session.setAttribute("newStudy", studyBean);
+            request.setAttribute("newStudy", studyBean);
             logger.info("has validation errors in the first section");
             request.setAttribute("formMessages", errors);
             // request.setAttribute("facRecruitStatusMap", facRecruitStatusMap);
@@ -501,7 +501,7 @@ public class CreateStudyServlet extends SecureController {
 
         errors = v.validate();
         boolean isInterventional = updateStudy2();
-        session.setAttribute("isInterventionalFlag", new Boolean(isInterventional));
+        request.setAttribute("isInterventionalFlag", new Boolean(isInterventional));
 
         if (errors.isEmpty()) {
             logger.info("no errors");
@@ -630,7 +630,7 @@ public class CreateStudyServlet extends SecureController {
         newStudy.setAgeMin(fp.getString("ageMin"));
         newStudy.setHealthyVolunteerAccepted(fp.getBoolean("healthyVolunteerAccepted"));
         newStudy.setExpectedTotalEnrollment(fp.getInt("expectedTotalEnrollment"));
-        session.setAttribute("newStudy", newStudy);
+        request.setAttribute("newStudy", newStudy);
         request.setAttribute("facRecruitStatusMap", facRecruitStatusMap);
         if (errors.isEmpty()) {
             // get default facility info from property file
@@ -644,7 +644,7 @@ public class CreateStudyServlet extends SecureController {
             newStudy.setFacilityContactPhone(SQLInitServlet.getField(FAC_CONTACT_PHONE));
             newStudy.setFacilityZip(SQLInitServlet.getField(FAC_ZIP));
 
-            session.setAttribute("newStudy", newStudy);
+            request.setAttribute("newStudy", newStudy);
             forwardPage(Page.CREATE_STUDY6);
 
         } else {
@@ -691,7 +691,7 @@ public class CreateStudyServlet extends SecureController {
         newStudy.setFacilityState(fp.getString("facState"));
         newStudy.setFacilityZip(fp.getString("facZip"));
 
-        session.setAttribute("newStudy", newStudy);
+        request.setAttribute("newStudy", newStudy);
         if (errors.isEmpty()) {
             forwardPage(Page.CREATE_STUDY7);
         } else {
@@ -723,7 +723,7 @@ public class CreateStudyServlet extends SecureController {
         newStudy.setUrl(fp.getString("url"));
         newStudy.setUrlDescription(fp.getString("urlDescription"));
 
-        session.setAttribute("newStudy", newStudy);
+        request.setAttribute("newStudy", newStudy);
 
         if (errors.isEmpty()) {
             if (session.getAttribute("interventionArray") == null) {
@@ -771,7 +771,7 @@ public class CreateStudyServlet extends SecureController {
         newStudy.getStudyParameterConfig().setAdminForcedReasonForChange(fp.getString("adminForcedReasonForChange"));
       //  newStudy.getStudyParameterConfig().setParticipantPortant(fp.getString("participantPortal"));
         
-        session.setAttribute("newStudy", newStudy);
+        request.setAttribute("newStudy", newStudy);
 
         if (errors.isEmpty()) {
             if (session.getAttribute("interventionArray") == null) {
@@ -935,7 +935,7 @@ public class CreateStudyServlet extends SecureController {
             newStudy.setGenetic(false);
         }
 
-        session.setAttribute("newStudy", newStudy);
+        request.setAttribute("newStudy", newStudy);
 
         String interventional = resadmin.getString("interventional");
         return interventional.equalsIgnoreCase(newStudy.getProtocolType());
@@ -975,14 +975,14 @@ public class CreateStudyServlet extends SecureController {
                 }
             }
             newStudy.setInterventions(interventions.toString());
-            session.setAttribute("interventionArray", interventionArray);
+            request.setAttribute("interventionArray", interventionArray);
 
         } else {// type = observational
             newStudy.setDuration(fp.getString("duration"));
             newStudy.setSelection(fp.getString("selection"));
             newStudy.setTiming(fp.getString("timing"));
         }
-        session.setAttribute("newStudy", newStudy);
+        request.setAttribute("newStudy", newStudy);
 
     }
 
@@ -1002,9 +1002,9 @@ public class CreateStudyServlet extends SecureController {
             request.setAttribute("endpointMap", endpointMap);
             request.setAttribute("interTypeMap", interTypeMap);
             if (session.getAttribute("interventionArray") == null) {
-                session.setAttribute("interventions", new ArrayList());
+                request.setAttribute("interventions", new ArrayList());
             } else {
-                session.setAttribute("interventions", session.getAttribute("interventionArray"));
+                request.setAttribute("interventions", session.getAttribute("interventionArray"));
             }
         } else {
             request.setAttribute("obserPurposeMap", obserPurposeMap);

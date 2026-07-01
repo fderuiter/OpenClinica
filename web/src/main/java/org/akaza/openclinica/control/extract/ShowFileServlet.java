@@ -71,7 +71,7 @@ public class ShowFileServlet extends SecureController {
         // table.setQuery("ExportDataset?datasetId=" +db.getId(), new
         // HashMap());
         // trying to continue...
-        // session.setAttribute("newDataset",db);
+        // request.setAttribute("newDataset",db);
         request.setAttribute("dataset", db);
         request.setAttribute("file", asdfBean);
         table.setRows(filterRows);

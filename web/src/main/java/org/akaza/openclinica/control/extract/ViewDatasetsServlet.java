@@ -60,10 +60,10 @@ public class ViewDatasetsServlet extends SecureController {
         resetPanel();
         request.setAttribute(STUDY_INFO_PANEL, panel);
         // YW, 2-15-2008 <<
-        session.removeAttribute("allSelectedItems");
-        session.removeAttribute("allSelectedGroups");
-        session.removeAttribute("allItems");
-        session.removeAttribute("newDataset");
+        request.removeAttribute("allSelectedItems");
+        request.removeAttribute("allSelectedGroups");
+        request.removeAttribute("allItems");
+        request.removeAttribute("newDataset");
         // YW >>
         if (StringUtil.isBlank(action)) {
             // YW 08-2008 << 2529 fix
@@ -86,7 +86,7 @@ public class ViewDatasetsServlet extends SecureController {
                     events.put(sed, crfs);
                 }
             }
-            session.setAttribute("eventsForCreateDataset", events);
+            request.setAttribute("eventsForCreateDataset", events);
             // YW >>
 
             FormProcessor fp = new FormProcessor(request);
@@ -211,9 +211,9 @@ public class ViewDatasetsServlet extends SecureController {
     public DatasetBean initializeAttributes(int datasetId) {
         DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
         DatasetBean db = dsdao.initialDatasetData(datasetId);
-        session.setAttribute("newDataset", db);
-        session.setAttribute("allItems", db.getItemDefCrf().clone());
-        session.setAttribute("allSelectedItems", db.getItemDefCrf().clone());
+        request.setAttribute("newDataset", db);
+        request.setAttribute("allItems", db.getItemDefCrf().clone());
+        request.setAttribute("allSelectedItems", db.getItemDefCrf().clone());
         StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
         StudyDAO studydao = new StudyDAO(sm.getDataSource());
         StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
@@ -229,7 +229,7 @@ public class ViewDatasetsServlet extends SecureController {
                 }
             }
         }
-        session.setAttribute("allSelectedGroups", allSelectedGroups);
+        request.setAttribute("allSelectedGroups", allSelectedGroups);
 
         return db;
     }
