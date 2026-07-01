@@ -167,6 +167,7 @@
 
   <bean id="abstractDomainDao" class="org.akaza.openclinica.dao.hibernate.AbstractDomainDao" abstract="true"/>
 
+  <bean id="ruleEvaluationLogDao" class="org.akaza.openclinica.dao.hibernate.RuleEvaluationLogDao" parent="abstractDomainDao" autowire="byName" />
   <bean id="ruleActionRunLogDao" class="org.akaza.openclinica.dao.hibernate.RuleActionRunLogDao" parent="abstractDomainDao" autowire="byName" />
   <bean id="dynamicsItemFormMetadataDao" class="org.akaza.openclinica.dao.hibernate.DynamicsItemFormMetadataDao" parent="abstractDomainDao" autowire="byName" />
   <bean id="dynamicsItemGroupMetadataDao" class="org.akaza.openclinica.dao.hibernate.DynamicsItemGroupMetadataDao" parent="abstractDomainDao" autowire="byName" />

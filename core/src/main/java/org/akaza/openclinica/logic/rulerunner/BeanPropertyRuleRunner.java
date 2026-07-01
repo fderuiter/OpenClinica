@@ -86,6 +86,7 @@ public class BeanPropertyRuleRunner extends RuleRunner{
                             logger.debug( "Rule Expression Evaluation Result: " + result);
 	                        // Actions
 	                        List<RuleActionBean> actionListBasedOnRuleExecutionResult = ruleSetRule.getActions(result.toString());
+                            logRuleEvaluation(ruleSet, ruleSetRule, result.toString(), null, actionListBasedOnRuleExecutionResult);
 	
 	                        for (RuleActionBean ruleActionBean: actionListBasedOnRuleExecutionResult){
 	                            // ActionProcessor ap =ActionProcessorFacade.getActionProcessor(ruleActionBean.getActionType(), ds, null, null,ruleSet, null, ruleActionBean.getRuleSetRule());

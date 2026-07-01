@@ -103,6 +103,7 @@ public class DataEntryRuleRunner extends RuleRunner {
                         itemData = (ItemDataBean) itemDatasHm.get(itemDataKey);
                         // Actions
                         List<RuleActionBean> actionListBasedOnRuleExecutionResult = ruleSetRule.getActions(result, phase);
+                        logRuleEvaluation(ruleSet, ruleSetRule, result, variableAndValue, actionListBasedOnRuleExecutionResult);
 
                         if (itemData != null) {
                             Iterator<RuleActionBean> itr = actionListBasedOnRuleExecutionResult.iterator();

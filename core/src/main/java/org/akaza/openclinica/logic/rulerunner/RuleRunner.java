@@ -43,9 +43,45 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import java.util.Map;
+import java.util.List;
+import org.akaza.openclinica.domain.rule.RuleEvaluationLogBean;
+import org.akaza.openclinica.service.RuleEvaluationLoggerService;
+
 public class RuleRunner {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
+    
+    protected void logRuleEvaluation(RuleSetBean ruleSet, RuleSetRuleBean ruleSetRule, String result, Map<String, String> variableAndValue, List<RuleActionBean> actions) {
+        try {
+            RuleEvaluationLogBean evalLog = new RuleEvaluationLogBean();
+            evalLog.setRuleSetId(ruleSet.getId());
+            evalLog.setRuleSetVersion(ruleSet.getVersion());
+            evalLog.setRuleOid(ruleSetRule.getRuleBean().getOid());
+            evalLog.setResult(result);
+            evalLog.setCreatedAt(new java.util.Date());
+            
+            StringBuilder snapshot = new StringBuilder();
+            if (variableAndValue != null) {
+                for (Map.Entry<String, String> entry : variableAndValue.entrySet()) {
+                    snapshot.append(entry.getKey()).append("=").append(entry.getValue()).append("; ");
+                }
+            }
+            evalLog.setInputDataSnapshot(snapshot.toString());
+            
+            StringBuilder outcome = new StringBuilder();
+            if (actions != null) {
+                for(RuleActionBean actionBean : actions) {
+                    outcome.append(actionBean.getActionType().name()).append(": ").append(actionBean.getPropertiesForDisplay().toString()).append("; ");
+                }
+            }
+            evalLog.setOutcomeDetails(outcome.toString());
+            
+            RuleEvaluationLoggerService.addLog(evalLog);
+        } catch (Exception e) {
+            logger.error("Error logging rule evaluation", e);
+        }
+    }
     private RuleSetDAO ruleSetDao;
     private RuleSetRuleDAO ruleSetRuleDao;
     private RuleActionDAO ruleActionDao;

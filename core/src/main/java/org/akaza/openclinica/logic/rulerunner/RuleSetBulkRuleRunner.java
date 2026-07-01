@@ -84,6 +84,7 @@ public class RuleSetBulkRuleRunner extends RuleRunner {
 
                         // HashMap<String, ArrayList<RuleActionBean>> actionsToBeExecuted = ruleSetRule.getAllActionsWithEvaluatesToAsKey(result);
                         List<RuleActionBean> actionListBasedOnRuleExecutionResult = ruleSetRule.getActions(result, Phase.BATCH);
+                        logRuleEvaluation(ruleSet, ruleSetRule, result, variableAndValue, actionListBasedOnRuleExecutionResult);
 
                         ItemDataBean itemData = getExpressionService().getItemDataBeanFromDb(ruleSet.getTarget().getValue());
                         if (itemData != null) {
@@ -167,6 +168,7 @@ public class RuleSetBulkRuleRunner extends RuleRunner {
 						System.out.println("The result: " + result);
 
                         List<RuleActionBean> actionListBasedOnRuleExecutionResult = ruleSetRule.getActions(result, Phase.BATCH);
+                        logRuleEvaluation(ruleSet, ruleSetRule, result, variableAndValue, actionListBasedOnRuleExecutionResult);
 
                         if (itemData != null) {
                             Iterator<RuleActionBean> itr = actionListBasedOnRuleExecutionResult.iterator();
