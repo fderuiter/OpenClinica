@@ -79,7 +79,8 @@ public class OpenClinicaUsernamePasswordAuthenticationFilter extends AbstractAut
     private ConfigurationDao configurationDao;
     private UserAccountDAO userAccountDao;
     private DataSource dataSource;
-    private org.akaza.openclinica.core.CRFLocker crfLocker; 
+    private org.akaza.openclinica.core.CRFLocker crfLocker;
+    private org.akaza.openclinica.dao.hibernate.AuditLogEventDao auditLogEventDao;
 
     //~ Constructors ===================================================================================================
 
@@ -158,33 +159,56 @@ public class OpenClinicaUsernamePasswordAuthenticationFilter extends AbstractAut
                 throw new LockedException("locked");
             }
             authentication = this.getAuthenticationManager().authenticate(authRequest);
-            auditUserLogin(username, LoginStatus.SUCCESSFUL_LOGIN, userAccountBean);
+            auditUserLogin(username, LoginStatus.SUCCESSFUL_LOGIN, userAccountBean, "Successful Login");
             resetLockCounter(username, LoginStatus.SUCCESSFUL_LOGIN, userAccountBean);
             request.getSession().setAttribute(SecureController.USER_BEAN_NAME, userAccountBean);
             //To remove the locking of Event CRFs previusly locked by this user.
             crfLocker.unlockAllForUser(userAccountBean.getId());
         } catch (LockedException le) {
-            auditUserLogin(username, LoginStatus.FAILED_LOGIN_LOCKED, userAccountBean);
+            auditUserLogin(username, LoginStatus.FAILED_LOGIN_LOCKED, userAccountBean, "locked");
             throw le;
         } catch (BadCredentialsException au) {
-            auditUserLogin(username, LoginStatus.FAILED_LOGIN, userAccountBean);
+            auditUserLogin(username, LoginStatus.FAILED_LOGIN, userAccountBean, "Bad Credentials");
             lockAccount(username, LoginStatus.FAILED_LOGIN, userAccountBean);
             throw au;
         } catch (AuthenticationException ae) {
-            auditUserLogin(username, LoginStatus.FAILED_LOGIN, userAccountBean);
+            auditUserLogin(username, LoginStatus.FAILED_LOGIN, userAccountBean, ae.getMessage());
             lockAccount(username, LoginStatus.FAILED_LOGIN, userAccountBean);
             throw ae;
         }
         return authentication;
     }
 
-    private void auditUserLogin(String username, LoginStatus loginStatus, UserAccountBean userAccount) {
+    private void auditUserLogin(String username, LoginStatus loginStatus, UserAccountBean userAccount, String reason) {
         AuditUserLoginBean auditUserLogin = new AuditUserLoginBean();
         auditUserLogin.setUserName(username);
         auditUserLogin.setLoginStatus(loginStatus);
         auditUserLogin.setLoginAttemptDate(new Date());
         auditUserLogin.setUserAccountId(userAccount != null ? userAccount.getId() : null);
         getAuditUserLoginDao().saveOrUpdate(auditUserLogin);
+
+        // Modern Audit Log for Authentication
+        org.akaza.openclinica.domain.datamap.AuditLogEvent auditEvent = new org.akaza.openclinica.domain.datamap.AuditLogEvent();
+        auditEvent.setAuditDate(new Date());
+        auditEvent.setAuditTable("user_account");
+        auditEvent.setEntityId(userAccount != null ? userAccount.getId() : null);
+        if (userAccount != null) {
+            org.akaza.openclinica.domain.user.UserAccount ua = new org.akaza.openclinica.domain.user.UserAccount();
+            ua.setUserId(userAccount.getId());
+            auditEvent.setUserAccount(ua);
+        }
+        auditEvent.setEntityName(username);
+        
+        org.akaza.openclinica.domain.datamap.AuditLogEventType eventType = new org.akaza.openclinica.domain.datamap.AuditLogEventType();
+        if (loginStatus == LoginStatus.SUCCESSFUL_LOGIN) {
+            eventType.setAuditLogEventTypeId(44);
+        } else {
+            eventType.setAuditLogEventTypeId(45);
+            auditEvent.setReasonForChange(reason);
+        }
+        auditEvent.setAuditLogEventType(eventType);
+        
+        getAuditLogEventDao().saveOrUpdate(auditEvent);
     }
 
     private void resetLockCounter(String username, LoginStatus loginStatus, UserAccountBean userAccount) {
@@ -293,6 +317,14 @@ public class OpenClinicaUsernamePasswordAuthenticationFilter extends AbstractAut
 
     public void setAuditUserLoginDao(AuditUserLoginDao auditUserLoginDao) {
         this.auditUserLoginDao = auditUserLoginDao;
+    }
+
+    public org.akaza.openclinica.dao.hibernate.AuditLogEventDao getAuditLogEventDao() {
+        return auditLogEventDao;
+    }
+
+    public void setAuditLogEventDao(org.akaza.openclinica.dao.hibernate.AuditLogEventDao auditLogEventDao) {
+        this.auditLogEventDao = auditLogEventDao;
     }
 
     public ConfigurationDao getConfigurationDao() {

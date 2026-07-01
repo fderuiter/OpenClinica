@@ -17,12 +17,17 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.ldap.userdetails.LdapUserDetails;
 
+import org.akaza.openclinica.domain.datamap.AuditLogEvent;
+import org.akaza.openclinica.domain.datamap.AuditLogEventType;
+import org.akaza.openclinica.dao.hibernate.AuditLogEventDao;
+
 public class OpenClinicaSessionRegistryImpl extends SessionRegistryImpl {
 
     AuditUserLoginDao auditUserLoginDao;
     UserAccountDAO userAccountDao;
     DataSource dataSource;
     CRFLocker crfLocker;
+    AuditLogEventDao auditLogEventDao;
 
     @Override
     public void removeSessionInformation(String sessionId) {
@@ -45,7 +50,9 @@ public class OpenClinicaSessionRegistryImpl extends SessionRegistryImpl {
     void auditLogout(String username) {
         ResourceBundleProvider.updateLocale(new Locale("en_US"));
         UserAccountBean userAccount = (UserAccountBean) getUserAccountDao().findByUserName(username);
-        crfLocker.unlockAllForUser(userAccount.getId());
+        if (userAccount != null) {
+            crfLocker.unlockAllForUser(userAccount.getId());
+        }
 
         AuditUserLoginBean auditUserLogin = new AuditUserLoginBean();
         auditUserLogin.setUserName(username);
@@ -53,6 +60,25 @@ public class OpenClinicaSessionRegistryImpl extends SessionRegistryImpl {
         auditUserLogin.setLoginAttemptDate(new Date());
         auditUserLogin.setUserAccountId(userAccount != null ? userAccount.getId() : null);
         getAuditUserLoginDao().saveOrUpdate(auditUserLogin);
+
+        AuditLogEvent auditEvent = new AuditLogEvent();
+        auditEvent.setAuditDate(new Date());
+        auditEvent.setAuditTable("user_account");
+        auditEvent.setEntityId(userAccount != null ? userAccount.getId() : null);
+        if (userAccount != null) {
+            org.akaza.openclinica.domain.user.UserAccount ua = new org.akaza.openclinica.domain.user.UserAccount();
+            ua.setUserId(userAccount.getId());
+            auditEvent.setUserAccount(ua);
+        }
+        auditEvent.setEntityName(username);
+        
+        AuditLogEventType eventType = new AuditLogEventType();
+        eventType.setAuditLogEventTypeId(46);
+        auditEvent.setAuditLogEventType(eventType);
+        
+        if (getAuditLogEventDao() != null) {
+            getAuditLogEventDao().saveOrUpdate(auditEvent);
+        }
     }
 
     public DataSource getDataSource() {
@@ -77,5 +103,13 @@ public class OpenClinicaSessionRegistryImpl extends SessionRegistryImpl {
 
     public void setCrfLocker(CRFLocker crfLocker) {
         this.crfLocker = crfLocker;
+    }
+    
+    public AuditLogEventDao getAuditLogEventDao() {
+        return auditLogEventDao;
+    }
+
+    public void setAuditLogEventDao(AuditLogEventDao auditLogEventDao) {
+        this.auditLogEventDao = auditLogEventDao;
     }
 }
