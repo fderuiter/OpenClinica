@@ -47,6 +47,19 @@ The application prioritizes environment variables over file-based properties. Th
 - [Extensions/Contributions](https://community.openclinica.com/extensions)
 - [Installation](https://github.com/OpenClinica/OpenClinica/wiki)
 
+## Technical Requirements
+
+<!-- BEGIN GENERATED REQUIREMENTS -->
+> **Note:** The following technical requirements are programmatically generated from the build configuration. Manual modifications will be overwritten.
+
+- **Project Version:** 3.18-SNAPSHOT
+- **JDK Version:** 17
+- **Database:** PostgreSQL 15
+- **Application Server:** Tomcat 9.0.83
+
+For non-technical user guides and comprehensive documentation, please visit the [OpenClinica Documentation Portal](https://docs.openclinica.com).
+<!-- END GENERATED REQUIREMENTS -->
+
 ## Request a feature
 
 To request a feature please submit a ticket on [Jira](https://jira.openclinica.com/) or start a discussion on the [OpenClinica Forum](http://forums.openclinica.com).
