@@ -419,6 +419,7 @@ public enum Page {
     VIEW_DATASET_DETAILS ("/WEB-INF/jsp/extract/viewDatasetDetails.jsp", "View Dataset Details"),
 
     EXPORT_DATASETS ("/WEB-INF/jsp/extract/exportDatasets.jsp", "Export Dataset"),
+    EXPORT_DATASET_WAIT ("/WEB-INF/jsp/extract/exportDatasetWait.jsp", "Export Dataset Wait"),
     GENERATE_DATASET ("/WEB-INF/jsp/extract/generatedDataset.jsp", "Generate Dataset"),
     GENERATE_DATASET_HTML ("/WEB-INF/jsp/extract/generatedDatasetHtml.jsp", "Generate Dataset"),
     GENERATE_EXCEL_DATASET ("/WEB-INF/jsp/extract/generatedExcelDataset.jsp", "Generate Excel Dataset"),

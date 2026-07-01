@@ -39,6 +39,23 @@ http://www.springframework.org/schema/task/spring-task-3.2.xsd"
                 <bean class="org.akaza.openclinica.job.JobTriggerListener"/>
             </list>
         </property>
+        <property name="triggers">
+            <list>
+                <ref bean="notificationOutboxTrigger" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="notificationOutboxJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.akaza.openclinica.job.NotificationOutboxJob" />
+        <property name="name" value="NotificationOutboxJob" />
+        <property name="group" value="DEFAULT" />
+    </bean>
+
+    <bean id="notificationOutboxTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="notificationOutboxJobDetail" />
+        <property name="startDelay" value="10000" />
+        <property name="repeatInterval" value="60000" />
     </bean>
 
 </beans>
