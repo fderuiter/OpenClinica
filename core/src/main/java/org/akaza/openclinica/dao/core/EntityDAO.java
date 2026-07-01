@@ -537,6 +537,34 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
         }
     }
 
+    public void executeBatch(String query, java.util.List<HashMap> batchVars) {
+        clearSignals();
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            if (con.isClosed()) {
+                if (logger.isWarnEnabled())
+                    logger.warn("Connection is closed: EntityDAO.executeBatch!");
+                throw new SQLException();
+            }
+            for (HashMap variables : batchVars) {
+                PreparedStatementFactory psf = new PreparedStatementFactory(variables);
+                psf.generate(ps);
+                ps.addBatch();
+            }
+            ps.executeBatch();
+            signalSuccess();
+        } catch (SQLException sqle) {
+            signalFailure(sqle);
+            if (logger.isWarnEnabled()) {
+                logger.warn("SQL Exception inside executeBatch: " + sqle.getMessage());
+            }
+        } catch (NullPointerException npe) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("NullPointerException inside executeBatch: " + npe.getMessage());
+            }
+        }
+    }
+
     /**
      * This method inserts one row for an entity table and gets latestPK of this row.
      *
