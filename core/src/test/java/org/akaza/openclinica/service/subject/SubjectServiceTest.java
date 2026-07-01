@@ -20,9 +20,9 @@ public class SubjectServiceTest {
     public void setUp() {
         subjectService = new SubjectService((javax.sql.DataSource) null);
         
-        subjectService.studySubjectDao = new StudySubjectDAO(null) {
+        subjectService.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(null) {
             @Override
-            public int findTheGreatestLabel() {
+            public int findTheGreatestStudySubjectLabel() {
                 return mockLabelToReturn;
             }
         };
