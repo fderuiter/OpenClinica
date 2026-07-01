@@ -83,28 +83,32 @@ public class SystemController {
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private HttpSession session;
 
-    @RequestMapping(value = "/systemstatus", method = RequestMethod.POST)
-    public ResponseEntity<HashMap> getSystemStatus() throws Exception {
+    @RequestMapping(value = "/telemetry", method = {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity<HashMap> getTelemetry(HttpServletRequest request) throws Exception {
+        UserAccountBean ub = (UserAccountBean) request.getSession().getAttribute("userBean");
+        if (ub == null || !ub.isSysAdmin()) {
+            return new ResponseEntity<>(org.springframework.http.HttpStatus.UNAUTHORIZED);
+        }
+
         ResourceBundleProvider.updateLocale(new Locale("en_US"));
         HashMap<String, String> map = new HashMap<>();
 
         map.put("OpenClinica Version", CoreResources.getField("OpenClinica.version"));
-        map.put("Java Version", System.getProperty("java.version"));
-        map.put("Java Class Path", System.getProperty("java.class.path"));
-        map.put("Java Home", System.getProperty("java.home"));
-        map.put("OS Name", System.getProperty("os.name"));
-        map.put("OS Version", System.getProperty("os.version"));
-        map.put("OS Architecture", System.getProperty("os.arch"));
-        map.put("File Separator", System.getProperty("file.separator"));
-        map.put("Path Separator", System.getProperty("path.separator"));
-        map.put("Line Separator", System.getProperty("line.separator"));
-        map.put("User Home", System.getProperty("user.home"));
-        map.put("User Directory", System.getProperty("user.dir"));
-        map.put("User Name", System.getProperty("user.name"));
+        
+        java.util.List<String> allowedProps = java.util.Arrays.asList("java.version", "java.class.path", "java.home", "os.name", "os.version", "os.arch", "file.separator", "path.separator", "line.separator", "user.home", "user.dir", "user.name");
+        for (String key : allowedProps) {
+            String value = System.getProperty(key);
+            if (value != null) {
+                map.put(key, value);
+            }
+        }
 
         Map<String, String> env = System.getenv();
-        for (String envName : env.keySet()) {
-            System.out.format("%s=%s%n", envName, env.get(envName));
+        java.util.List<String> allowedEnv = java.util.Arrays.asList("PATH", "CATALINA_HOME", "CATALINA_BASE", "JAVA_HOME");
+        for (String envName : allowedEnv) {
+            if (env.containsKey(envName)) {
+                System.out.format("%s=%s%n", envName, env.get(envName));
+            }
         }
 
         DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
