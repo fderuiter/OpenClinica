@@ -152,6 +152,9 @@ public class CoreResources implements ResourceLoaderAware {
                 dataInfo = OC_dataDataInfoProperties;
             if (OC_dataExtractProperties != null)
                 extractInfo = OC_dataExtractProperties;
+                
+            overrideWithEnvVars(dataInfo);
+            overrideWithEnvVars(extractInfo);
 
             String dbName = dataInfo.getProperty("dbType");
 
@@ -998,6 +1001,28 @@ public class CoreResources implements ResourceLoaderAware {
 
     public Properties getDATAINFO() {
         return DATAINFO;
+    }
+    
+    private void overrideWithEnvVars(Properties props) {
+        if (props == null) return;
+        Enumeration<String> properties = (Enumeration<String>) props.propertyNames();
+        while (properties.hasMoreElements()) {
+            String key = properties.nextElement();
+            String envVal = System.getenv(key);
+            if (envVal == null) {
+                envVal = System.getenv(key.toUpperCase());
+            }
+            if (envVal == null) {
+                envVal = System.getenv(key.toUpperCase().replace('.', '_'));
+            }
+            if (envVal == null) {
+                String envKey = key.replaceAll("([a-z])([A-Z]+)", "$1_$2").toUpperCase().replace('.', '_');
+                envVal = System.getenv(envKey);
+            }
+            if (envVal != null) {
+                props.setProperty(key, envVal);
+            }
+        }
     }
 
     // // TODO comment out system out after dev

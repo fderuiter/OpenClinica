@@ -6,7 +6,7 @@
      <changeSet author="kkrumlian" id="2015-11-17-6829-2" runOnChange="true">
     	<preConditions onFail="MARK_RAN">
 	 	<dbms type="postgresql" />
-		<!--<runningAs username="clinica" />-->
+		<runningAs username="${dbUser}" />
 	</preConditions>
     	 <sql splitStatements="false">
  CREATE OR REPLACE FUNCTION event_crf_trigger() RETURNS "trigger"
