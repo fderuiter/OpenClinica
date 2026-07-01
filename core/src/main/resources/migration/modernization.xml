@@ -91,4 +91,16 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="modernization" id="item_data_id_mysql_table_generator" dbms="mysql">
+        <createTable tableName="item_data_item_data_id_seq">
+            <column name="next_val" type="bigint"/>
+        </createTable>
+        <sql>
+            INSERT INTO item_data_item_data_id_seq (next_val) SELECT COALESCE(MAX(item_data_id), 0) + 1 FROM item_data;
+        </sql>
+        <sql>
+            ALTER TABLE item_data MODIFY item_data_id INT NOT NULL;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
