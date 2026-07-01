@@ -91,4 +91,18 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="modernization" id="item_data_duplicate_uniqueness_key">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <!-- Workaround: Unique constraints are sometimes not easily checked, but checking the backing index usually works -->
+                <indexExists indexName="duplicate_item_uniqueness_key"/>
+            </not>
+        </preConditions>
+        <addUniqueConstraint constraintName="duplicate_item_uniqueness_key" 
+                             tableName="item_data" 
+                             columnNames="item_id, event_crf_id, ordinal"/>
+    </changeSet>
+
+    <include file="migration/modernization_indexes.xml"/>
+
 </databaseChangeLog>
