@@ -1,3 +1,8 @@
+<!--
+  For detailed documentation on defining rules, see the Rules XML Reference:
+  https://docs.openclinica.com/diataxis/references/rules
+-->
+
 <RuleImport>
 	<RuleAssignment>
 		<Target Context="OC_RULES_V1"></Target>
