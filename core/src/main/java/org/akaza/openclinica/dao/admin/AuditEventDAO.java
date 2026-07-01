@@ -50,6 +50,7 @@ public class AuditEventDAO extends AuditableEntityDAO {
     @Override
     protected void setDigesterName() {
         digesterName = SQLFactory.getInstance().DAO_AUDITEVENT;
+        getCurrentPKName = "getCurrentPK";
     }
 
     @Override
@@ -238,6 +239,14 @@ public class AuditEventDAO extends AuditableEntityDAO {
     /**
      * Creates a new row in the audit_log_event table
      */
+    public void createAuditEventDiscrepancyNoteLink(int auditId, int discrepancyNoteId) {
+        String sql = "INSERT INTO audit_event_discrepancy_note (audit_id, discrepancy_note_id) VALUES (?, ?)";
+        HashMap<Integer, Object> variables = new HashMap<Integer, Object>();
+        variables.put(new Integer(1), new Integer(auditId));
+        variables.put(new Integer(2), new Integer(discrepancyNoteId));
+        this.execute(sql, variables);
+    }
+
     public EntityBean create(EntityBean eb) {
         AuditEventBean sb = (AuditEventBean) eb;
         HashMap<Integer, Object> variables = new HashMap<Integer, Object>();
@@ -257,7 +266,8 @@ public class AuditEventDAO extends AuditableEntityDAO {
         variables.put(new Integer(4), sb.getReasonForChangeKey());
         variables.put(new Integer(5), sb.getActionMessageKey());
 
-        this.execute(digester.getQuery("create"), variables);
+        this.executeWithPK(digester.getQuery("create"), variables, new HashMap());
+        sb.setId(this.getLatestPK());
 
         return sb;
     }

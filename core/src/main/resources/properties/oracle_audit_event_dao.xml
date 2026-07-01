@@ -79,4 +79,8 @@
 		<name>findAllByAuditTable</name>
 		<sql>select * from audit_event where AUDIT_TABLE=?</sql>
 	</query>
+	<query>
+		<name>getCurrentPK</name>
+		<sql>SELECT audit_id_seq.currval AS key FROM dual</sql>
+	</query>
 </queries>

@@ -153,4 +153,27 @@ public class SubjectService implements SubjectServiceInterface {
         }
         return this.unifiedRepository;
     }
+
+    public SubjectBean updateSubject(SubjectBean subjectBean, UserAccountBean updater, String reasonForChange, org.akaza.openclinica.bean.managestudy.DiscrepancyNoteBean note) {
+        org.akaza.openclinica.dao.submit.SubjectDAO sdao = new org.akaza.openclinica.dao.submit.SubjectDAO(dataSource);
+        
+        SubjectBean oldSubject = (SubjectBean) sdao.findByPK(subjectBean.getId());
+        subjectBean.setUpdater(updater);
+        subjectBean.setUpdatedDate(new Date());
+        SubjectBean updatedSubject = (SubjectBean) sdao.update(subjectBean);
+        
+        org.akaza.openclinica.service.audit.AuditService auditService = new org.akaza.openclinica.service.audit.AuditService(dataSource);
+        
+        org.akaza.openclinica.bean.admin.AuditEventBean auditEvent = new org.akaza.openclinica.bean.admin.AuditEventBean();
+        auditEvent.setAuditDate(new Date());
+        auditEvent.setAuditTable("subject");
+        auditEvent.setUserId(updater.getId());
+        auditEvent.setEntityId(updatedSubject.getId());
+        auditEvent.setReasonForChange(reasonForChange != null ? reasonForChange : "");
+        auditEvent.setActionMessage("Subject updated via Centralized Service");
+        
+        auditService.logEvent(auditEvent, note);
+        
+        return updatedSubject;
+    }
 }

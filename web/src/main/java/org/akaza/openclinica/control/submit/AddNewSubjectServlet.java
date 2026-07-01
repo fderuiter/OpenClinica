@@ -704,7 +704,19 @@ public class AddNewSubjectServlet extends SecureController {
                         subject = subjectWithSameId;
                     } else {
                         updateSubject.setUpdater(ub);
-                        updateSubject = (SubjectBean) sdao.update(updateSubject);
+                        org.akaza.openclinica.service.subject.SubjectService subjectService = new org.akaza.openclinica.service.subject.SubjectService(sm.getDataSource());
+                        org.akaza.openclinica.bean.managestudy.DiscrepancyNoteBean theNote = null;
+                        org.akaza.openclinica.control.form.FormDiscrepancyNotes tempFdn = (org.akaza.openclinica.control.form.FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
+                        if (tempFdn != null) {
+                            for (java.util.Iterator it = tempFdn.getFieldNotes().values().iterator(); it.hasNext();) {
+                                java.util.ArrayList notes = (java.util.ArrayList) it.next();
+                                if (notes != null && !notes.isEmpty()) {
+                                    theNote = (org.akaza.openclinica.bean.managestudy.DiscrepancyNoteBean) notes.get(0);
+                                    break;
+                                }
+                            }
+                        }
+                        updateSubject = subjectService.updateSubject(updateSubject, ub, theNote != null ? theNote.getDescription() : "Subject updated via UI", theNote);
 
                         if (!updateSubject.isActive()) {
                             throw new OpenClinicaException("Could not create subject.", "5");

@@ -144,7 +144,19 @@ public class UpdateSubjectServlet extends SecureController {
                     }
                 
                 
-                sdao.update(subject);
+                org.akaza.openclinica.service.subject.SubjectService subjectService = new org.akaza.openclinica.service.subject.SubjectService(sm.getDataSource());
+                org.akaza.openclinica.bean.managestudy.DiscrepancyNoteBean theNote = null;
+                FormDiscrepancyNotes tempFdn = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
+                if (tempFdn != null) {
+                    for (java.util.Iterator it = tempFdn.getFieldNotes().values().iterator(); it.hasNext();) {
+                        java.util.ArrayList notes = (java.util.ArrayList) it.next();
+                        if (notes != null && !notes.isEmpty()) {
+                            theNote = (org.akaza.openclinica.bean.managestudy.DiscrepancyNoteBean) notes.get(0);
+                            break;
+                        }
+                    }
+                }
+                subjectService.updateSubject(subject, ub, theNote != null ? theNote.getDescription() : "Subject updated via UI", theNote);
 
                 // save discrepancy notes into DB
                 DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
