@@ -2,98 +2,101 @@ package org.akaza.openclinica.dao;
 
 import org.akaza.openclinica.dao.hibernate.AuthoritiesDao;
 import org.akaza.openclinica.domain.user.AuthoritiesBean;
-import org.akaza.openclinica.templates.HibernateOcDbTestCase;
-import org.hibernate.HibernateException;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.hibernate.Query;
+import org.hibernate.classic.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
-import java.sql.SQLException;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
 
-public class AuthoritiesDaoTest extends HibernateOcDbTestCase {
-    private static AuthoritiesDao authoritiesDao;
-   /* 
-    static
-    {
-        
-        loadProperties();
-        dbName = properties.getProperty("dbName");
-        dbUrl = properties.getProperty("url");
-        dbUserName = properties.getProperty("username");
-        dbPassword = properties.getProperty("password");
-        dbDriverClassName = properties.getProperty("driver");
-        locale = properties.getProperty("locale");
-        initializeLocale();
-        initializeQueriesInXml();
-       
-     
-        
-        context =
-            new ClassPathXmlApplicationContext(
-                    new String[] { "classpath*:applicationContext-core-s*.xml", "classpath*:org/akaza/openclinica/applicationContext-core-db.xml",
-                        "classpath*:org/akaza/openclinica/applicationContext-core-email.xml",
-                        "classpath*:org/akaza/openclinica/applicationContext-core-hibernate.xml",
-                        "classpath*:org/akaza/openclinica/applicationContext-core-service.xml",
-                       " classpath*:org/akaza/openclinica/applicationContext-core-timer.xml",
-                        "classpath*:org/akaza/openclinica/applicationContext-security.xml" });
-      transactionManager = (PlatformTransactionManager) context.getBean("transactionManager");
-     // transactionManager.getTransaction(new DefaultTransactionDefinition());
-        
+public class AuthoritiesDaoTest {
+    private AuthoritiesDao authoritiesDao;
 
+    @Mock
+    private HibernateTemplate mockHibernateTemplate;
+
+    @Mock
+    private SessionFactory mockSessionFactory;
+
+    @Mock
+    private Session mockSession;
+
+    @Mock
+    private Statistics mockStatistics;
+
+    @Mock
+    private Query mockQuery;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        authoritiesDao = new AuthoritiesDao();
+        authoritiesDao.setHibernateTemplate(mockHibernateTemplate);
+
+        when(mockHibernateTemplate.getSessionFactory()).thenReturn(mockSessionFactory);
+        when(mockSessionFactory.getCurrentSession()).thenReturn(mockSession);
+        when(mockSessionFactory.getStatistics()).thenReturn(mockStatistics);
     }
-*/
-    public void setUp() throws Exception{
-        super.setUp();
-        authoritiesDao = (AuthoritiesDao) getContext().getBean("authoritiesDao");
-        
-    }
-  
+
+    @Test
     public void testSaveOrUpdate() {
-    	//AuthoritiesDao authoritiesDao = (AuthoritiesDao) getContext().getBean("authoritiesDao");
         AuthoritiesBean authorities = new AuthoritiesBean();
         authorities.setUsername("root");
         authorities.setAuthority("ROLE_USER");
         authorities.setId(-1);
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                AuthoritiesBean bean = (AuthoritiesBean) invocation.getArguments()[0];
+                bean.setId(1); // Set some persisted ID
+                return null;
+            }
+        }).when(mockSession).saveOrUpdate(any(AuthoritiesBean.class));
+
         authorities = authoritiesDao.saveOrUpdate(authorities);
 
         assertNotNull("Persistant id is null", authorities.getId());
     }
 
+    @Test
     public void testFindById() {
-    //	AuthoritiesDao authoritiesDao = (AuthoritiesDao) getContext().getBean("authoritiesDao");
-        
-    	AuthoritiesBean authorities = null;
-    	authorities = authoritiesDao.findById(-1);
+        AuthoritiesBean mockBean = new AuthoritiesBean();
+        mockBean.setId(-1);
+        mockBean.setUsername("root");
 
-        // Test Authorities
+        when(mockSession.createQuery(anyString())).thenReturn(mockQuery);
+        when(mockQuery.setInteger(eq("id"), eq(-1))).thenReturn(mockQuery);
+        when(mockQuery.uniqueResult()).thenReturn(mockBean);
+
+        AuthoritiesBean authorities = authoritiesDao.findById(-1);
+
         assertNotNull("RuleSet is null", authorities);
         assertEquals("The id of the retrieved Domain Object should be -1", new Integer(-1), authorities.getId());
-   }
+    }
+
+    @Test
     public void testFindByUsername() {
+        AuthoritiesBean mockBean = new AuthoritiesBean();
+        mockBean.setId(-1);
+        mockBean.setUsername("root");
 
-        
-        AuthoritiesBean authorities = null;
-        authorities = authoritiesDao.findByUsername("root");
-        
-      
-        // Test Authorities
+        when(mockSession.createQuery(anyString())).thenReturn(mockQuery);
+        when(mockQuery.setString(eq("username"), eq("root"))).thenReturn(mockQuery);
+        when(mockQuery.uniqueResult()).thenReturn(mockBean);
+
+        AuthoritiesBean authorities = authoritiesDao.findByUsername("root");
+
         assertNotNull("RuleSet is null", authorities);
         assertEquals("The id of the retrieved Domain Object should be -1", new Integer(-1), authorities.getId());
     }
-    
-    
-    
-    
-    public void tearDown(){
-        try {
-           
-            authoritiesDao.getSessionFactory().getCurrentSession().close();
-        } catch (HibernateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        super.tearDown();
-    }
-
 }

@@ -31,58 +31,6 @@ public class FilterTable extends Table {
         columns.add("Actions");
     }
 
-    @Override
-    public String getEntitiesNamePlural() {
-        return "filters";
-    }
 
-    @Override
-    public String showRow(EntityBean e) {
-        FilterBean fb = (FilterBean) e;
-        Status s = fb.getStatus();
-
-        // do the first row, just the "flat" properties
-        String row = "<tr>\n";
-
-        // filter name
-        String colorOn = s.equals(Status.AVAILABLE) ? "" : "<font color='gray'>";
-        String colorOff = s.equals(Status.AVAILABLE) ? "" : "</font>";
-        row += "<td>" + colorOn + fb.getName() + colorOff + "</td>\n";
-
-        row += "<td>" + fb.getDescription() + "</td>\n";
-        row += "<td>" + fb.getOwner().getName() + "</td>\n";
-        // created date
-        row += "<td>" + fb.getCreatedDate().toString() + "</td>\n";
-        // status
-        row += "<td>" + s.getName() + "</td>\n";
-
-        // actions
-        row += "<td>";
-        if (!s.equals(Status.DELETED) && !s.equals(Status.AUTO_DELETED)) {
-            String confirmQuestion = "Are you sure you want to delete " + fb.getName() + "?";
-            String onClick = "onClick=\"return confirm('" + confirmQuestion + "');\"";
-            row += "<a href='" + ApplyFilterServlet.getLink(fb.getId()) + "'>view</a>";
-            row += " <a href='" + EditFilterServlet.getLink(fb.getId()) + "'>edit</a>";
-            row += " <a href='" + RemoveFilterServlet.getLink(fb.getId()) + "'" + onClick + ">delete</a>";
-        } else {
-            // write the servlet to restore filters later, tbh 01-23-2005
-
-            /*
-             * String confirmQuestion = "Are you sure you want to restore " +
-             * u.getName() + "?"; String onClick = "onClick=\"return confirm('" +
-             * confirmQuestion + "');\""; row += " <a href='" +
-             * DeleteUserServlet.getLink(u, EntityAction.RESTORE) + "'" +
-             * onClick + ">restore</a>";
-             */
-        }
-        row += "</td>\n";
-
-        row += "</tr>\n";
-
-        row += "<tr>\n";
-        row += "</tr>\n";
-
-        return row;
-    }
 
 }
