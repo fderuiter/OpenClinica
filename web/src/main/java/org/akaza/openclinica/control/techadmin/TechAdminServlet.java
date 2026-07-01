@@ -47,14 +47,14 @@ public class TechAdminServlet extends SecureController {
         SubjectDAO subdao = new SubjectDAO(sm.getDataSource());
         // ArrayList subjects = (ArrayList) subdao.findAllByLimit(true);
         // request.setAttribute("subjects", subjects);
-        ArrayList allSubjects = (ArrayList) subdao.findAll();
+        ArrayList allSubjects = (ArrayList) subdao.findAllByPermission(ub, 1);
         // request.setAttribute("allSubjectNumber", new
         // Integer(allSubjects.size()));
 
         CRFDAO cdao = new CRFDAO(sm.getDataSource());
         // ArrayList crfs = (ArrayList) cdao.findAllByLimit(true);
         // request.setAttribute("crfs", subjects);
-        ArrayList allCrfs = (ArrayList) cdao.findAll();
+        ArrayList allCrfs = (ArrayList) cdao.findAllByPermission(ub, 1);
         // request.setAttribute("allCrfNumber", new Integer(allCrfs.size()));
 
         resetPanel();
