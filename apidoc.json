@@ -6,5 +6,49 @@
   "template": {
     "withCompare": false,
     "withGenerator": false
+  },
+  "schemas": {
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "description": "The primary payload for successful responses. Null on error or if no data is expected.",
+          "type": ["object", "array", "null"]
+        },
+        "errors": {
+          "description": "Array of error objects for failed responses.",
+          "type": "array",
+          "items": {
+            "$ref": "#/schemas/ApiError"
+          }
+        },
+        "meta": {
+          "description": "Optional metadata such as pagination information.",
+          "type": "object",
+          "properties": {
+            "totalCount": { "type": "integer" },
+            "pageSize": { "type": "integer" }
+          }
+        }
+      }
+    },
+    "ApiError": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "description": "Machine-readable error code.",
+          "type": "string"
+        },
+        "message": {
+          "description": "Human-readable error summary.",
+          "type": "string"
+        },
+        "field": {
+          "description": "Optional field-level detail if the error is specific to a field.",
+          "type": "string"
+        }
+      }
+    }
   }
 }

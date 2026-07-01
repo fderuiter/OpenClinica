@@ -124,6 +124,15 @@ public class ClinicalDataReportBean extends OdmXmlReportBean {
                     if (se.getAgeAtEvent() != null) {
                         xml.append("\" OpenClinica:SubjectAgeAtEvent=\"" + se.getAgeAtEvent());
                     }
+                    if ("Yes".equalsIgnoreCase(se.getLocked())) {
+                        xml.append("\" OpenClinica:Locked=\"Yes");
+                    }
+                    if ("Yes".equalsIgnoreCase(se.getSigned())) {
+                        xml.append("\" OpenClinica:Signed=\"Yes");
+                    }
+                    if ("Yes".equalsIgnoreCase(se.getStopped())) {
+                        xml.append("\" OpenClinica:Stopped=\"Yes");
+                    }
                 }
                 xml.append("\"");
                 if (!"-1".equals(se.getStudyEventRepeatKey())) {
@@ -150,6 +159,15 @@ public class ClinicalDataReportBean extends OdmXmlReportBean {
                         String status = form.getStatus();
                         if (status != null && status.length() > 0) {
                             xml.append("\" OpenClinica:Status=\"" + StringEscapeUtils.escapeXml(status));
+                        }
+                        if ("Yes".equalsIgnoreCase(form.getLocked())) {
+                            xml.append("\" OpenClinica:Locked=\"Yes");
+                        }
+                        if ("Yes".equalsIgnoreCase(form.getSigned())) {
+                            xml.append("\" OpenClinica:Signed=\"Yes");
+                        }
+                        if ("Yes".equalsIgnoreCase(form.getStopped())) {
+                            xml.append("\" OpenClinica:Stopped=\"Yes");
                         }
                     }
                     xml.append("\">");

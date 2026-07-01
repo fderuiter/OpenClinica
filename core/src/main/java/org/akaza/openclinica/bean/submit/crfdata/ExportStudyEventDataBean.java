@@ -25,6 +25,9 @@ public class ExportStudyEventDataBean extends StudyEventDataBean {
     private String status;
     private Integer ageAtEvent;
     private ArrayList<ExportFormDataBean> exportFormData;
+    private String locked;
+    private String signed;
+    private String stopped;
 
     public ExportStudyEventDataBean() {
         super();
@@ -77,5 +80,29 @@ public class ExportStudyEventDataBean extends StudyEventDataBean {
 
     public Integer getAgeAtEvent() {
         return this.ageAtEvent;
+    }
+
+    public String getLocked() {
+        return locked;
+    }
+
+    public void setLocked(String locked) {
+        this.locked = locked;
+    }
+
+    public String getSigned() {
+        return signed;
+    }
+
+    public void setSigned(String signed) {
+        this.signed = signed;
+    }
+
+    public String getStopped() {
+        return stopped;
+    }
+
+    public void setStopped(String stopped) {
+        this.stopped = stopped;
     }
 }
