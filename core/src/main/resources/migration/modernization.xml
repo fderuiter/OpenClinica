@@ -103,6 +103,19 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="modernization" id="create_audit_event_discrepancy_note">
+        <createTable tableName="audit_event_discrepancy_note">
+            <column name="audit_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="discrepancy_note_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="audit_id" baseTableName="audit_event_discrepancy_note" constraintName="fk_aedn_audit_event" referencedColumnNames="audit_id" referencedTableName="audit_event"/>
+        <addForeignKeyConstraint baseColumnNames="discrepancy_note_id" baseTableName="audit_event_discrepancy_note" constraintName="fk_aedn_disc_note" referencedColumnNames="discrepancy_note_id" referencedTableName="discrepancy_note"/>
+    </changeSet>
+
     <changeSet author="modernization" id="item_data_id_mysql_table_generator" dbms="mysql">
         <createTable tableName="item_data_item_data_id_seq">
             <column name="next_val" type="bigint"/>
@@ -173,5 +186,4 @@
     </changeSet>
 
     <include file="migration/modernization_indexes.xml"/>
-
 </databaseChangeLog>

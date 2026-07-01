@@ -83,7 +83,8 @@ public class RemoveSubjectServlet extends SecureController {
                 subject.setStatus(Status.DELETED);
                 subject.setUpdater(ub);
                 subject.setUpdatedDate(new Date());
-                sdao.update(subject);
+                org.akaza.openclinica.service.subject.SubjectService subjectService = new org.akaza.openclinica.service.subject.SubjectService(sm.getDataSource());
+                subjectService.updateSubject(subject, ub, "Subject removed", null);
 
                 // remove subject references from study
                 for (int i = 0; i < studySubs.size(); i++) {
