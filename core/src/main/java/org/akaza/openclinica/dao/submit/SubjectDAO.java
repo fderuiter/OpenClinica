@@ -233,10 +233,15 @@ public class SubjectDAO extends AuditableEntityDAO {
         Date birthday = (Date) hm.get("date_of_birth");
         eb.setDateOfBirth(birthday);
         try {
-            String gender = (String) hm.get("gender");
-            char[] genderarr = gender.toCharArray();
-            eb.setGender(genderarr[0]);
-        } catch (ClassCastException ce) {
+            Object genderObj = hm.get("gender");
+            if (genderObj != null) {
+                if (genderObj instanceof String && ((String) genderObj).length() > 0) {
+                    eb.setGender(((String) genderObj).charAt(0));
+                } else if (genderObj instanceof Character) {
+                    eb.setGender(((Character) genderObj).charValue());
+                }
+            }
+        } catch (Exception ce) {
             eb.setGender(' ');
         }
         eb.setUniqueIdentifier((String) hm.get("unique_identifier"));

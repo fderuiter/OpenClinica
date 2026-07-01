@@ -26,6 +26,10 @@ public class UserController {
     private SidebarInit sidebarInit;
 
 
+    @Autowired
+    @Qualifier("userDaoDomain")
+    private org.akaza.openclinica.dao.hibernate.UserAccountDao userDaoDomain;
+
     public UserController(){}
 
     /**
@@ -44,14 +48,13 @@ public class UserController {
         //set up request attributes for sidebar
         setUpSidebar(request);
 
-        userList.add("Bruce");
-        userList.add("Yufang");
-        userList.add("Krikor");
-        userList.add("Tom");
+        org.akaza.openclinica.domain.user.UserAccount user = userDaoDomain.findByUserId(userId);
+        if (user != null) {
+            userList.add(user.getUserName());
+        } else {
+            throw new org.akaza.openclinica.exception.OpenClinicaSystemException("error.user.not.found", new Object[]{userId}, "User not found");
+        }
 
-
-        //TODO: Get user from Hibernate DAO class
-        //userList.add(userDao.loadUser(userId).getName())
         map.addObject(userList);
         return map;
     }
