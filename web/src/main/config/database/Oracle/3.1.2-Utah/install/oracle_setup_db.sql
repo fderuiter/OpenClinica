@@ -7,9 +7,9 @@ Rem
 prompt We will now setup the oracle user account that OpenClinica will use.
 Rem
 prompt
-accept ts_name prompt "Specify the Tablespace name you provided when you executed the create_ts.sql script: "
+DEFINE ts_name = 'clinica'
 prompt
-accept user_name prompt "Specify the wanted username for the OpenClinica oracle account: "
+DEFINE user_name = 'clinica'
 prompt
 prompt The user &user_name will be created with a default tablespace of &ts_name.
 Rem

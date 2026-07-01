@@ -251,12 +251,6 @@ public class CreateUserAccountServlet extends SecureController {
                 createdUserAccountBean.setAccessCode("null");
                 createdUserAccountBean.setEnableApiKey(true);
                 
-                String apiKey=null; 		
-                do{
-                 	apiKey=getRandom32ChApiKey() ;
-                } while(isApiKeyExist(apiKey));                
-                createdUserAccountBean.setApiKey(apiKey);
-                
                 int studyId = fp.getInt(INPUT_STUDY);
                 Role r = Role.get(fp.getInt(INPUT_ROLE));
                 createdUserAccountBean = addActiveStudyRole(createdUserAccountBean, studyId, r);
