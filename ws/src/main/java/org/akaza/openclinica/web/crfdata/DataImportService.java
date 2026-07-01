@@ -223,6 +223,8 @@ public class DataImportService {
         ItemDataBean itemDataBean;
 
         CrfBusinessLogicHelper crfBusinessLogicHelper = new CrfBusinessLogicHelper(dataSource);
+        org.akaza.openclinica.dao.hibernate.ItemDataDao itemDataHibernateDao = (org.akaza.openclinica.dao.hibernate.ItemDataDao) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("itemDataDao");
+        int itemDataCount = 0;
         for (DisplayItemBeanWrapper wrapper : displayItemBeanWrappers) {
             boolean resetSDV = false;
 
@@ -235,8 +237,6 @@ public class DataImportService {
                 }
                 
                 int eventCrfBeanIdProcessed = 0;
-                List<ItemDataBean> itemsToCreate = new ArrayList<>();
-                List<ItemDataBean> itemsToUpdate = new ArrayList<>();
                 
                 for (DisplayItemBean displayItemBean : wrapper.getDisplayItemBeans()) {
                     eventCrfBeanId = displayItemBean.getData().getEventCRFId();
@@ -258,35 +258,15 @@ public class DataImportService {
                        eventCrfBean.setCRFVersionId(newCRFVersionId);
                      }
       			    
-                    itemDataBean = itemDataDao.findByItemIdAndEventCRFIdAndOrdinal(displayItemBean.getItem().getId(), eventCrfBean.getId(), displayItemBean
-                            .getData().getOrdinal());
-                    if (wrapper.isOverwrite() && itemDataBean.getStatus() != null) {
-
-                        if (!itemDataBean.getValue().equals(displayItemBean.getData().getValue()))
-                            resetSDV = true;
-
-                        logger.debug("just tried to find item data bean on item name " + displayItemBean.getItem().getName());
-                        itemDataBean.setUpdatedDate(new Date());
-                        itemDataBean.setUpdater(userBean);
-                        itemDataBean.setValue(displayItemBean.getData().getValue());
-
-                        // set status?
-                        itemsToUpdate.add(itemDataBean);
-                        logger.debug("updated: " + itemDataBean.getItemId());
-                        // need to set pk here in order to create dn
-                        displayItemBean.getData().setId(itemDataBean.getId());
-                    } else {
+                    boolean localResetSDV = itemDataHibernateDao.saveOrUpdateFromBean(displayItemBean.getData(), userBean, wrapper.isOverwrite());
+                    if (localResetSDV) {
                         resetSDV = true;
-                        itemsToCreate.add(displayItemBean.getData());
-                        logger.debug("created: " + displayItemBean.getData().getItemId());
                     }
-                }
-                
-                if (!itemsToCreate.isEmpty()) {
-                    itemDataDao.batchCreate(itemsToCreate);
-                }
-                if (!itemsToUpdate.isEmpty()) {
-                    itemDataDao.batchUpdate(itemsToUpdate);
+                    
+                    if (++itemDataCount % 50 == 0) {
+                        itemDataHibernateDao.getCurrentSession().flush();
+                        itemDataHibernateDao.getCurrentSession().clear();
+                    }
                 }
 
                 for (DisplayItemBean displayItemBean : wrapper.getDisplayItemBeans()) {

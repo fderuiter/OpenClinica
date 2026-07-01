@@ -619,6 +619,8 @@ public class ImportSpringJob extends QuartzJobBean {
                 List<ImportDataRuleRunnerContainer> containers = this.ruleRunSetup(dataSource, studyBean, ub, ruleSetService, odmContainer);
 
                 CrfBusinessLogicHelper crfBusinessLogicHelper = new CrfBusinessLogicHelper(dataSource);
+                org.akaza.openclinica.dao.hibernate.ItemDataDao itemDataHibernateDao = (org.akaza.openclinica.dao.hibernate.ItemDataDao) appContext.getBean("itemDataDao");
+                int itemDataCount = 0;
                 for (DisplayItemBeanWrapper wrapper : displayItemBeanWrappers) {
 
                     boolean resetSDV = false;
@@ -651,29 +653,14 @@ public class ImportSpringJob extends QuartzJobBean {
                                eventCrfBean.setCRFVersionId(newCRFVersionId);
                             }
                             
-                            ItemDataBean itemDataBean = new ItemDataBean();
-                            itemDataBean = itemDataDao.findByItemIdAndEventCRFIdAndOrdinal(displayItemBean.getItem().getId(), eventCrfBean.getId(),
-                                    displayItemBean.getData().getOrdinal());
-                            if (wrapper.isOverwrite() && itemDataBean.getStatus() != null) {
-                                logger.debug("just tried to find item data bean on item name " + displayItemBean.getItem().getName());
-                                if (!itemDataBean.getValue().equals(displayItemBean.getData().getValue()))
-                                    resetSDV = true;
-                                itemDataBean.setUpdatedDate(new Date());
-                                itemDataBean.setUpdater(ub);
-                                itemDataBean.setValue(displayItemBean.getData().getValue());
-                                // set status?
-                                itemDataDao.update(itemDataBean);
-                                logger.debug("updated: " + itemDataBean.getItemId());
-                                // need to set pk here in order to create dn
-                                displayItemBean.getData().setId(itemDataBean.getId());
-                            } else {
+                            boolean localResetSDV = itemDataHibernateDao.saveOrUpdateFromBean(displayItemBean.getData(), ub, wrapper.isOverwrite());
+                            if (localResetSDV) {
                                 resetSDV = true;
-                                itemDataDao.create(displayItemBean.getData());
-                                logger.debug("created: " + displayItemBean.getData().getItemId());
-                                ItemDataBean itemDataBean2 = itemDataDao.findByItemIdAndEventCRFIdAndOrdinal(displayItemBean.getItem().getId(),
-                                        eventCrfBean.getId(), displayItemBean.getData().getOrdinal());
-                                logger.debug("found: id " + itemDataBean2.getId() + " name " + itemDataBean2.getName());
-                                displayItemBean.getData().setId(itemDataBean2.getId());
+                            }
+                            
+                            if (++itemDataCount % 50 == 0) {
+                                itemDataHibernateDao.getCurrentSession().flush();
+                                itemDataHibernateDao.getCurrentSession().clear();
                             }
                             ItemDAO idao = new ItemDAO(dataSource);
                             ItemBean ibean = (ItemBean) idao.findByPK(displayItemBean.getData().getItemId());

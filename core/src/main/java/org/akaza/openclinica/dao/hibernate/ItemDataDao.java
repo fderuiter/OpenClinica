@@ -51,11 +51,42 @@ public class ItemDataDao extends AbstractDomainDao<ItemData> {
     }
     
     public int getMaxGroupRepeat(Integer eventCrfId, Integer itemId) {
-        getCurrentSession().flush();
         String query = "select max(ordinal) from item_data where event_crf_id = " + eventCrfId + " and item_id = " + itemId;
         org.hibernate.Query q = getCurrentSession().createSQLQuery(query);
         Number result = (Number) q.uniqueResult();
         if (result == null) return 0;
         else return result.intValue();
+    }
+
+    public boolean saveOrUpdateFromBean(org.akaza.openclinica.bean.submit.ItemDataBean itemDataBean, org.akaza.openclinica.bean.login.UserAccountBean ub, boolean overwrite) {
+        boolean resetSDV = false;
+        ItemData idData = findByItemEventCrfOrdinal(itemDataBean.getItemId(), itemDataBean.getEventCRFId(), itemDataBean.getOrdinal());
+        if (overwrite && idData != null && idData.getStatus() != null) {
+            if (!idData.getValue().equals(itemDataBean.getValue())) {
+                resetSDV = true;
+            }
+            idData.setDateUpdated(new java.util.Date());
+            idData.setUpdateId(ub.getId());
+            idData.setValue(itemDataBean.getValue());
+            if (itemDataBean.getStatus() != null) {
+                idData.setStatus((org.akaza.openclinica.domain.Status) getCurrentSession().load(org.akaza.openclinica.domain.Status.class, itemDataBean.getStatus().getId()));
+            }
+            saveOrUpdate(idData);
+            itemDataBean.setId(idData.getItemDataId());
+        } else if (idData == null) {
+            resetSDV = true;
+            idData = new ItemData();
+            idData.setDateCreated(new java.util.Date());
+            idData.setItem((org.akaza.openclinica.domain.datamap.Item) getCurrentSession().load(org.akaza.openclinica.domain.datamap.Item.class, itemDataBean.getItemId()));
+            idData.setEventCrf((org.akaza.openclinica.domain.datamap.EventCrf) getCurrentSession().load(org.akaza.openclinica.domain.datamap.EventCrf.class, itemDataBean.getEventCRFId()));
+            idData.setUserAccount((org.akaza.openclinica.domain.user.UserAccount) getCurrentSession().load(org.akaza.openclinica.domain.user.UserAccount.class, ub.getId()));
+            idData.setValue(itemDataBean.getValue());
+            idData.setOrdinal(itemDataBean.getOrdinal());
+            int statusId = (itemDataBean.getStatus() != null) ? itemDataBean.getStatus().getId() : 1;
+            idData.setStatus((org.akaza.openclinica.domain.Status) getCurrentSession().load(org.akaza.openclinica.domain.Status.class, statusId));
+            saveOrUpdate(idData);
+            itemDataBean.setId(idData.getItemDataId());
+        }
+        return resetSDV;
     }
 }
