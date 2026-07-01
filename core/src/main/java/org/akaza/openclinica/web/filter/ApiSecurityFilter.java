@@ -13,6 +13,10 @@ import javax.sql.DataSource;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.dao.login.UserAccountDAO;
 import org.apache.commons.codec.binary.Base64;
+import org.akaza.openclinica.domain.datamap.AuditLogEvent;
+import org.akaza.openclinica.domain.datamap.AuditLogEventType;
+import org.akaza.openclinica.dao.hibernate.AuditLogEventDao;
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -26,6 +30,8 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private AuditLogEventDao auditLogEventDao;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -51,11 +57,14 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
                             UserAccountBean ub = (UserAccountBean) userAccountDAO.findByApiKey(_username);
                             if (!_username.equals("") && ub.getId() != 0) {
                                 request.getSession().setAttribute("userBean",ub);
+                                auditApiLogin(_username, ub, true, "Successful API Login");
                             }else{
+                                auditApiLogin(_username, null, false, "Bad credentials");
                                 unauthorized(response, "Bad credentials");
                                 return;
                             }
                         } else {
+                            auditApiLogin("unknown", null, false, "Invalid authentication token");
                             unauthorized(response, "Invalid authentication token");
                             return;
                         }
@@ -69,6 +78,28 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void auditApiLogin(String username, UserAccountBean ub, boolean success, String reason) {
+        AuditLogEvent auditEvent = new AuditLogEvent();
+        auditEvent.setAuditDate(new Date());
+        auditEvent.setAuditTable("user_account");
+        auditEvent.setEntityId(ub != null ? ub.getId() : null);
+        if (ub != null) {
+            org.akaza.openclinica.domain.user.UserAccount ua = new org.akaza.openclinica.domain.user.UserAccount();
+            ua.setUserId(ub.getId());
+            auditEvent.setUserAccount(ua);
+        }
+        auditEvent.setEntityName(username);
+        AuditLogEventType eventType = new AuditLogEventType();
+        if (success) {
+            eventType.setAuditLogEventTypeId(44);
+        } else {
+            eventType.setAuditLogEventTypeId(45);
+            auditEvent.setReasonForChange(reason);
+        }
+        auditEvent.setAuditLogEventType(eventType);
+        auditLogEventDao.saveOrUpdate(auditEvent);
     }
 
     private void unauthorized(HttpServletResponse response, String message) throws IOException {
