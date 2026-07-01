@@ -363,8 +363,9 @@ public class OdmFileCreation {
             // created in database!
 
         } catch (Exception e) {
-            LOG.error(e.getMessage());
-            e.printStackTrace();
+            String username = userBean != null ? userBean.getName() : "unknown";
+            LOG.error("Export failure in module Extract/Export for user " + username + " : " + e.getMessage(), e);
+            throw new org.akaza.openclinica.exception.ExportException("Failed to create ODM file: " + e.getMessage(), e);
         }
         finally{
             if(w!=null)

@@ -343,8 +343,9 @@ public class GenerateExtractFileService {
             // created in database!
 
         } catch (Exception e) {
-            logger.warn(e.getMessage());
-            e.printStackTrace();
+            String username = userBean != null ? userBean.getName() : "unknown";
+            logger.error("Export failure in module Extract/Export for user " + username + " : " + e.getMessage(), e);
+            throw new org.akaza.openclinica.exception.ExportException("Failed to create file: " + e.getMessage(), e);
         }
         finally{
             if(w!=null)
@@ -444,8 +445,9 @@ public class GenerateExtractFileService {
             // created in database!
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
+            String username = userBean != null ? userBean.getName() : "unknown";
+            logger.error("Export failure in module Extract/Export for user " + username + " : " + e.getMessage(), e);
+            throw new org.akaza.openclinica.exception.ExportException("Failed to create file K: " + e.getMessage(), e);
         }
         finally{
             if(w!=null)
@@ -563,8 +565,9 @@ public class GenerateExtractFileService {
             // created in database!
 
         } catch (Exception e) {
-            logger.error("-- exception thrown at createFile: " + e.getMessage());
-            e.printStackTrace();
+            String username = userBean != null ? userBean.getName() : "unknown";
+            logger.error("Export failure in module Extract/Export for user " + username + " : " + e.getMessage(), e);
+            throw new org.akaza.openclinica.exception.ExportException("Failed to create file (zip): " + e.getMessage(), e);
         }
 
         return fbFinal.getId();
