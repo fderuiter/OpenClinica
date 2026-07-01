@@ -642,6 +642,11 @@
         <servlet-class>org.akaza.openclinica.control.extract.ExportDatasetServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ExportStatusServlet</servlet-name>
+        <display-name>ExportStatus</display-name>
+        <servlet-class>org.akaza.openclinica.control.extract.ExportStatusServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>BatchCRFMigrationServlet</servlet-name>
         <display-name>BatchCRFMigration</display-name>
         <servlet-class>org.akaza.openclinica.control.admin.BatchCRFMigrationServlet</servlet-class>
@@ -1800,6 +1805,10 @@
     <servlet-mapping>
         <servlet-name>ExportDatasetServlet</servlet-name>
         <url-pattern>/ExportDataset</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExportStatusServlet</servlet-name>
+        <url-pattern>/ExportStatus</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CreateDatasetServlet</servlet-name>
