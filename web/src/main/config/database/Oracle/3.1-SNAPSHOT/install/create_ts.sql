@@ -4,15 +4,15 @@ set verify off
 set serveroutput on size 20000
 Rem
 Rem
-accept ts_name prompt "Specify Tablespace name for Clinica Data: "
+DEFINE ts_name = 'clinica'
 Rem
 prompt If the tablespace is new, please specify the following
 prompt Tablespace Size ( (S)mall - 32MB, (M)edium - 256MB, (L)arge -512MB
 prompt
-accept ts_type prompt "Specify Tablespace type for Clinica Data (S/M/L): "
+DEFINE ts_type = 'L'
 Rem
 prompt Please make sure there is enough space available on the disk.
-accept ts_file prompt "DataFile Name (with exact path): "
+DEFINE ts_file = '/path/to/clinica.dbf'
 Rem
 Rem
 column ts_size new_value ts_size;

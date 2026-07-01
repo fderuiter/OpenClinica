@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+    <!-- Add the missing RESEARCHASSISTANT2 role to the database to match Role.java -->
+    <changeSet author="modernization" id="insert_ra2_role">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from user_role where role_id = 7</sqlCheck>
+        </preConditions>
+        <insert tableName="user_role">
+            <column name="role_id" valueNumeric="7"/>
+            <column name="role_name" value="ra2"/>
+            <column name="parent_id" valueNumeric="1"/>
+            <column name="role_desc" value="site_Data_Entry_Person2"/>
+        </insert>
+    </changeSet>
+
+    <!-- PostgreSQL API Key Trigger & Backfill -->
+    <changeSet author="modernization" id="api_key_trigger_pg" dbms="postgresql">
+        <sql splitStatements="false">
+            CREATE OR REPLACE FUNCTION generate_api_key() RETURNS TRIGGER AS $$
+            BEGIN
+                IF NEW.api_key IS NULL THEN
+                    NEW.api_key := replace(CAST(gen_random_uuid() AS text), '-', '');
+                    NEW.enable_api_key := true;
+                END IF;
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS user_account_api_key_trg ON user_account;
+            CREATE TRIGGER user_account_api_key_trg
+            BEFORE INSERT ON user_account
+            FOR EACH ROW EXECUTE PROCEDURE generate_api_key();
+        </sql>
+    </changeSet>
+    
+    <changeSet author="modernization" id="api_key_backfill_pg" dbms="postgresql">
+        <sql>
+            UPDATE user_account SET api_key = replace(CAST(gen_random_uuid() AS text), '-', ''), enable_api_key = true WHERE api_key IS NULL OR api_key = '';
+        </sql>
+    </changeSet>
+
+    <!-- Oracle API Key Trigger & Backfill -->
+    <changeSet author="modernization" id="api_key_trigger_oracle" dbms="oracle">
+        <sql splitStatements="false">
+            CREATE OR REPLACE TRIGGER user_account_api_key_trg
+            BEFORE INSERT ON user_account
+            FOR EACH ROW
+            BEGIN
+                IF :NEW.api_key IS NULL THEN
+                    :NEW.api_key := lower(rawtohex(sys_guid()));
+                    :NEW.enable_api_key := 1;
+                END IF;
+            END;
+        </sql>
+    </changeSet>
+
+    <changeSet author="modernization" id="api_key_backfill_oracle" dbms="oracle">
+        <sql>
+            UPDATE user_account SET api_key = lower(rawtohex(sys_guid())), enable_api_key = 1 WHERE api_key IS NULL;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

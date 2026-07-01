@@ -29,15 +29,15 @@ prompt
 prompt Setting up new tablespace for the OpenClinica data.
 prompt
 Rem
-accept ts_name prompt "Specify Tablespace name for Clinica Data: "
+DEFINE ts_name = 'clinica'
 prompt
 prompt For the new tablespace &ts_name, please specify the following
 prompt Tablespace Size ( (S)mall - 32MB, (M)edium - 256MB, (L)arge -512MB
 prompt
-accept ts_type prompt "Specify Tablespace type for Clinica Data (S/M/L): "
+DEFINE ts_type = 'L'
 prompt
 prompt Please make sure there is enough space available on the disk.
-accept ts_file prompt "DataFile Name (with exact path): "
+DEFINE ts_file = '/path/to/clinica.dbf'
 Rem
 Rem
 column ts_size new_value ts_size;
@@ -68,7 +68,7 @@ Rem
 prompt We will now setup the oracle user account that OpenClinica will use.
 Rem
 prompt
-accept user_name prompt "Specify the wanted username for the OpenClinica oracle account: "
+DEFINE user_name = 'clinica'
 prompt
 prompt The user &user_name will be created with a default tablespace of &ts_name.
 Rem

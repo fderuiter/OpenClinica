@@ -11,7 +11,7 @@ prompt If the tablespace is new, please specify the following
 prompt
 
 prompt Please make sure there is enough space available on the disk for 512M
-accept ts_file prompt "DataFile Name (with exact path): "
+DEFINE ts_file = '/path/to/clinica.dbf'
 Rem
 Rem
 

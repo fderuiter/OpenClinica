@@ -175,12 +175,6 @@ public class EditUserAccountServlet extends SecureController {
                 user.setUpdater(ub);
                 user.setRunWebservices(fp.getBoolean(INPUT_RUN_WEBSERVICES));
                 user.setEnableApiKey(true);
- 
-               String apiKey=null; 		
-               do{
-                	apiKey=getRandom32ChApiKey() ;
-               } while(isApiKeyExist(apiKey));                
-               user.setApiKey(apiKey);
                 
                 UserType ut = UserType.get(fp.getInt(INPUT_USER_TYPE));
                 if (ut.equals(UserType.SYSADMIN)) {

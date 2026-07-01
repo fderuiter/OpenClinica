@@ -266,12 +266,6 @@ public class UserAccountController {
 		createdUserAccountBean.setPasswd(passwordHash);
 		createdUserAccountBean.setRunWebservices(authorizeSoap);
 
-		String apiKey = null;
-		do {
-			apiKey = getRandom32ChApiKey();
-		} while (isApiKeyExist(apiKey));
-		createdUserAccountBean.setApiKey(apiKey);
-
 		createdUserAccountBean = addActiveStudyRole(createdUserAccountBean, study.getId(), roleName, ownerUserAccount);
 		createdUserAccountBean.addUserType(userType);
 
