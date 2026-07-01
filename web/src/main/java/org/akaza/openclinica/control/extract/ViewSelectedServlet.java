@@ -76,8 +76,8 @@ public class ViewSelectedServlet extends SecureController {
             StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
             sgclasses = sgclassdao.findAllActiveByStudy(theStudy);
         }
-        session.setAttribute("allSelectedGroups", sgclasses);
-        session.setAttribute("numberOfStudyGroups", sgclasses.size());
+        request.setAttribute("allSelectedGroups", sgclasses);
+        request.setAttribute("numberOfStudyGroups", sgclasses.size());
         request.setAttribute("allSelectedGroups", sgclasses);
     }
 
@@ -105,11 +105,11 @@ public class ViewSelectedServlet extends SecureController {
         // ids.add(itemId);
         // }
         // }
-        session.setAttribute("numberOfStudyItems", new Integer(ids.size()).toString());
+        request.setAttribute("numberOfStudyItems", new Integer(ids.size()).toString());
 
         ArrayList items = new ArrayList();
         if (db == null || db.getItemIds().size() == 0) {
-            session.setAttribute("allSelectedItems", items);
+            request.setAttribute("allSelectedItems", items);
             setUpStudyGroups();// FIXME can it be that we have no selected
             // items and
             // some selected groups? tbh
@@ -119,7 +119,7 @@ public class ViewSelectedServlet extends SecureController {
 
         items = getAllSelected(db, idao, imfdao);
 
-        session.setAttribute("allSelectedItems", items);
+        request.setAttribute("allSelectedItems", items);
 
         FormProcessor fp = new FormProcessor(request);
         String status = fp.getString("status");

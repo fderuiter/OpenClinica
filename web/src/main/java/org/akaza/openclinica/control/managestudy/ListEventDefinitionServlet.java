@@ -58,9 +58,9 @@ public class ListEventDefinitionServlet extends SecureController {
      */
     @Override
     public void mayProceed() throws InsufficientPermissionException {
-        session.removeAttribute("tmpCRFIdMap");
-        session.removeAttribute("crfsWithVersion");
-        session.removeAttribute("eventDefinitionCRFs");
+        request.removeAttribute("tmpCRFIdMap");
+        request.removeAttribute("crfsWithVersion");
+        request.removeAttribute("eventDefinitionCRFs");
 
         locale = LocaleResolver.getLocale(request);
         // < resword =

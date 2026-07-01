@@ -67,6 +67,7 @@
             
         
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     <changeSet author="kkrumlian" id="2010-09-22-5926-2" dbms="oracle">
         <comment>fix a bug introduced in 3.0.4 that allowed Pdate to store dd-MMM-yyyy instead of mm/dd/yyyy</comment>
@@ -227,5 +228,6 @@
                 idx.item_data_id = ITEM_DATA.item_data_id and
                 i.item_data_type_id = idt.item_data_type_id and  idt.item_data_type_id = 10 );           
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
 </databaseChangeLog>

@@ -84,7 +84,7 @@ public class CreateSubStudyServlet extends SecureController {
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         String action = request.getParameter("action");
-        session.setAttribute("sdvOptions", this.setSDVOptions());
+        request.setAttribute("sdvOptions", this.setSDVOptions());
 
         if (StringUtil.isBlank(action)) {
             if (currentStudy.getParentStudyId() > 0) {
@@ -172,8 +172,8 @@ public class CreateSubStudyServlet extends SecureController {
                 // >> tbh
                 setPresetValues(fp.getPresetValues());
 
-                session.setAttribute("newStudy", newStudy);
-                session.setAttribute("definitions", this.initDefinitions(newStudy));
+                request.setAttribute("newStudy", newStudy);
+                request.setAttribute("definitions", this.initDefinitions(newStudy));
                 request.setAttribute("facRecruitStatusMap", CreateStudyServlet.facRecruitStatusMap);
                 request.setAttribute("statuses", Status.toActiveArrayList());
                 forwardPage(Page.CREATE_SUB_STUDY);
@@ -281,8 +281,8 @@ public class CreateSubStudyServlet extends SecureController {
     
         StudyBean newSite = this.createStudyBean();
         StudyBean parentStudy = (StudyBean) new StudyDAO(sm.getDataSource()).findByPK(newSite.getParentStudyId());
-        session.setAttribute("newStudy", newSite);
-        session.setAttribute("definitions", this.createSiteEventDefinitions(parentStudy,v));
+        request.setAttribute("newStudy", newSite);
+        request.setAttribute("definitions", this.createSiteEventDefinitions(parentStudy,v));
 
         if (errors.isEmpty()) {
             logger.info("no errors");
@@ -451,13 +451,13 @@ public class CreateSubStudyServlet extends SecureController {
         this.submitSiteEventDefinitions(study);
 
         // switch user to the newly created site
-        //session.setAttribute("study", session.getAttribute("newStudy"));
+        //request.setAttribute("study", session.getAttribute("newStudy"));
         //currentStudy = (StudyBean) session.getAttribute("study");
 
-        session.removeAttribute("newStudy");
+        request.removeAttribute("newStudy");
         addPageMessage(respage.getString("the_new_site_created_succesfully_current"));
         ArrayList pageMessages = (ArrayList) request.getAttribute(PAGE_MESSAGE);
-        session.setAttribute("pageMessages", pageMessages);
+        request.setAttribute("pageMessages", pageMessages);
         response.sendRedirect(request.getContextPath() + Page.MANAGE_STUDY_MODULE.getFileName());
 
     }
@@ -675,8 +675,8 @@ public class CreateSubStudyServlet extends SecureController {
        if (!errors.isEmpty()) {
     //       logger.info("has errors");
            StudyBean study = createStudyBean();
-           session.setAttribute("newStudy", study);
-           session.setAttribute("definitions", seds);
+           request.setAttribute("newStudy", study);
+           request.setAttribute("definitions", seds);
            request.setAttribute("formMessages", errors);
         /*   try {
                local_df.parse(fp.getString(INPUT_START_DATE));
@@ -708,7 +708,7 @@ public class CreateSubStudyServlet extends SecureController {
            forwardPage(Page.CREATE_SUB_STUDY);
        }
         
-        session.setAttribute("changed", changes);
+        request.setAttribute("changed", changes);
         return seds;
     }
 
@@ -745,9 +745,9 @@ public class CreateSubStudyServlet extends SecureController {
                 }
             }
         }
-        session.removeAttribute("definitions");
-        session.removeAttribute("changed");
-        session.removeAttribute("sdvOptions");
+        request.removeAttribute("definitions");
+        request.removeAttribute("changed");
+        request.removeAttribute("sdvOptions");
     }
 
     private ArrayList<StudyEventDefinitionBean> initDefinitions(StudyBean site) throws MalformedURLException {

@@ -19,10 +19,12 @@
         <comment>Change study_parameter values</comment>
         <sql>Update study_parameter_value set value = 'yes' where
             parameter in('interviewerNameRequired', 'interviewDateRequired') and value = 'true'</sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
     <changeSet author="ahamid" id="2010-08-26-5237-3">
         <comment>Change study_parameter values</comment>
         <sql>Update study_parameter_value set value = 'no' where
             parameter in('interviewerNameRequired', 'interviewDateRequired') and value = 'false'</sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
 </databaseChangeLog>

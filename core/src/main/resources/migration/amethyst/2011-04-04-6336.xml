@@ -9,5 +9,6 @@
              DROP TRIGGER dataset_item_status_bef_trg;
              DROP SEQUENCE DATASET_ITEM_STATUS_ID_SEQ;
         </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
     </changeSet>
 </databaseChangeLog>

@@ -74,7 +74,7 @@ public class RestoreCRFFromDefinitionServlet extends SecureController {
                 }
 
             }
-            session.setAttribute("eventDefinitionCRFs", edcs);
+            request.setAttribute("eventDefinitionCRFs", edcs);
             addPageMessage(crfName + " " + respage.getString("has_been_restored"));
             forwardPage(Page.UPDATE_EVENT_DEFINITION1);
         }

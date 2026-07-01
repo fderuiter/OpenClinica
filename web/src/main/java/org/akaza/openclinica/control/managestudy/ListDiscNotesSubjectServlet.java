@@ -86,7 +86,7 @@ public class ListDiscNotesSubjectServlet extends SecureController {
         Set<Integer> resolutionStatusIds = (HashSet) session.getAttribute(RESOLUTION_STATUS);
         // remove the session if there is no resolution status
         if (!hasAResolutionStatus && resolutionStatusIds != null) {
-            session.removeAttribute(RESOLUTION_STATUS);
+            request.removeAttribute(RESOLUTION_STATUS);
             resolutionStatusIds = null;
         }
         if (hasAResolutionStatus) {
@@ -94,7 +94,7 @@ public class ListDiscNotesSubjectServlet extends SecureController {
                 resolutionStatusIds = new HashSet<Integer>();
             }
             resolutionStatusIds.add(resolutionStatus);
-            session.setAttribute(RESOLUTION_STATUS, resolutionStatusIds);
+            request.setAttribute(RESOLUTION_STATUS, resolutionStatusIds);
         }
 
         int discNoteType = 0;

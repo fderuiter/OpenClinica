@@ -119,8 +119,8 @@ public class InitUpdateSubStudyServlet extends SecureController {
                 study.setStudyParameters(configs);
             }
             request.setAttribute("parentStudy", parent);
-            session.setAttribute("parentName", parentStudyName);
-            session.setAttribute("newStudy", study);
+            request.setAttribute("parentName", parentStudyName);
+            request.setAttribute("newStudy", study);
             request.setAttribute("facRecruitStatusMap", CreateStudyServlet.facRecruitStatusMap);
             request.setAttribute("statuses", Status.toStudyUpdateMembersList());
 
@@ -206,8 +206,8 @@ public class InitUpdateSubStudyServlet extends SecureController {
         }
         // not sure if request is better, since not sure if there is another
         // process using this.
-        session.setAttribute("definitions", seds);
-        session.setAttribute("sdvOptions", this.setSDVOptions());
+        request.setAttribute("definitions", seds);
+        request.setAttribute("sdvOptions", this.setSDVOptions());
     }
 
     private ArrayList<String> setSDVOptions() {

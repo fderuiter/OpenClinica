@@ -81,7 +81,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
                 crf.setSelected(true);
             }
         }
-        session.setAttribute("crfsWithVersion", crfs);
+        request.setAttribute("crfsWithVersion", crfs);
         if(submit!=null){
             addCRF();
         }else{
@@ -136,7 +136,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
                 }
             }
         }
-        session.setAttribute("tmpCRFIdMap", tmpCRFIdMap);
+        request.setAttribute("tmpCRFIdMap", tmpCRFIdMap);
 
         EntityBeanTable table = fp.getEntityBeanTable();
         ArrayList allRows = CRFRow.generateRowsFromBeans(crfsWithVersion);
@@ -214,7 +214,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
                 crfArray.add(cb);
             }
         }
-        session.removeAttribute("tmpCRFIdMap");
+        request.removeAttribute("tmpCRFIdMap");
         StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
 
 
@@ -225,7 +225,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
             request.setAttribute("participateFormStatus",participateFormStatus );
 
             sed.setCrfs(new ArrayList());
-            session.setAttribute("definition", sed);
+            request.setAttribute("definition", sed);
             forwardPage(Page.UPDATE_EVENT_DEFINITION1);
         } else {
 
@@ -257,7 +257,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
                 ordinalForNewCRF++;
                 edcs.add(edcBean);
             }
-            session.setAttribute("eventDefinitionCRFs", edcs);
+            request.setAttribute("eventDefinitionCRFs", edcs);
             ArrayList<String> sdvOptions = new ArrayList<String>();
             sdvOptions.add(SourceDataVerification.AllREQUIRED.toString());
             sdvOptions.add(SourceDataVerification.PARTIALREQUIRED.toString());
@@ -328,7 +328,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
 //                }
 //            }
 //        }
-//        session.setAttribute("eventDefinitionCRFs", edcs);
+//        request.setAttribute("eventDefinitionCRFs", edcs);
 //        ArrayList<String> sdvOptions = new ArrayList<String>();
 //        sdvOptions.add(SourceDataVerification.AllREQUIRED.toString());
 //        sdvOptions.add(SourceDataVerification.PARTIALREQUIRED.toString());

@@ -9,7 +9,7 @@ import org.akaza.openclinica.dao.hibernate.EventDefinitionCrfDao;
 import org.akaza.openclinica.dao.hibernate.StudyEventDao;
 import org.akaza.openclinica.dao.hibernate.StudyEventDefinitionDao;
 import org.akaza.openclinica.dao.hibernate.StudyParameterValueDao;
-import org.akaza.openclinica.dao.hibernate.StudySubjectDao;
+
 import org.akaza.openclinica.domain.datamap.EventCrf;
 import org.akaza.openclinica.domain.datamap.EventDefinitionCrf;
 import org.akaza.openclinica.domain.datamap.Study;
@@ -35,11 +35,11 @@ import org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean;
 import org.akaza.openclinica.bean.managestudy.StudySubjectBean;
 import org.akaza.openclinica.core.SessionManager;
 import org.akaza.openclinica.dao.login.UserAccountDAO;
-import org.akaza.openclinica.dao.managestudy.StudyDAO;
+import org.akaza.openclinica.repository.UnifiedRepository;
 import org.akaza.openclinica.dao.managestudy.StudyEventDAO;
 import org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO;
-import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
-import org.akaza.openclinica.dao.submit.SubjectDAO;
+
+
 import org.akaza.openclinica.exception.OpenClinicaSystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,20 +47,18 @@ import org.slf4j.LoggerFactory;
 public class EventService implements EventServiceInterface {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
-    SubjectDAO subjectDao;
-    StudySubjectDAO studySubjectDao;
     UserAccountDAO userAccountDao;
     StudyEventDefinitionDAO studyEventDefinitionDao;
     StudyEventDAO studyEventDao;
-    StudyDAO studyDao;
     DataSource dataSource;
+
+    @Autowired(required = false)
+    private UnifiedRepository unifiedRepository;
 
     @Autowired(required = false)
     private EventCrfDao eventCrfDaoHibernate;
     @Autowired(required = false)
     private StudyEventDao studyEventDaoHibernate;
-    @Autowired(required = false)
-    private StudySubjectDao studySubjectDaoHibernate;
     @Autowired(required = false)
     private StudyEventDefinitionDao studyEventDefinitionDaoHibernate;
     @Autowired(required = false)
@@ -82,13 +80,13 @@ public class EventService implements EventServiceInterface {
             String siteUniqueId, String eventDefinitionOID, String studySubjectId) throws OpenClinicaSystemException {
 
         // Business Validation
-        StudyBean study = getStudyDao().findByUniqueIdentifier(studyUniqueId);
+        StudyBean study = getUnifiedRepository().getStudyBeanByUniqueIdentifier(studyUniqueId);
         int parentStudyId = study.getId();
         if (siteUniqueId != null) {
-            study = getStudyDao().findSiteByUniqueIdentifier(studyUniqueId, siteUniqueId);
+            study = getUnifiedRepository().getSiteBeanByUniqueIdentifier(studyUniqueId, siteUniqueId);
         }
         StudyEventDefinitionBean studyEventDefinition = getStudyEventDefinitionDao().findByOidAndStudy(eventDefinitionOID, study.getId(), parentStudyId);
-        StudySubjectBean studySubject = getStudySubjectDao().findByLabelAndStudy(studySubjectId, study);
+        StudySubjectBean studySubject = getUnifiedRepository().getStudySubjectBeanByLabelAndStudy(studySubjectId, study);
 
         Integer studyEventOrdinal = null;
         if (canSubjectScheduleAnEvent(studyEventDefinition, studySubject)) {
@@ -122,7 +120,7 @@ public class EventService implements EventServiceInterface {
 
     
     public boolean completeParticipantEvent(String studySubjectOid, String studyEventDefOid, Integer ordinal) throws Exception {
-        StudySubject subject = studySubjectDaoHibernate.findByOcOID(studySubjectOid);
+        StudySubject subject = getUnifiedRepository().getStudySubjectEntityByOid(studySubjectOid);
         StudyEvent studyEvent = studyEventDaoHibernate.fetchByStudyEventDefOIDAndOrdinal(studyEventDefOid, ordinal, subject.getStudySubjectId());
         StudyEventDefinition studyEventDefinition = studyEventDefinitionDaoHibernate.findByStudyEventDefinitionId(studyEvent.getStudyEventDefinition().getStudyEventDefinitionId());
         Study study = studyEventDefinition.getStudy();
@@ -199,29 +197,8 @@ public class EventService implements EventServiceInterface {
         return true;
     }
 
-    /**
-     * @return the subjectDao
-     */
-    public SubjectDAO getSubjectDao() {
-        subjectDao = subjectDao != null ? subjectDao : new SubjectDAO(dataSource);
-        return subjectDao;
-    }
 
-    /**
-     * @return the subjectDao
-     */
-    public StudyDAO getStudyDao() {
-        studyDao = studyDao != null ? studyDao : new StudyDAO(dataSource);
-        return studyDao;
-    }
 
-    /**
-     * @return the subjectDao
-     */
-    public StudySubjectDAO getStudySubjectDao() {
-        studySubjectDao = studySubjectDao != null ? studySubjectDao : new StudySubjectDAO(dataSource);
-        return studySubjectDao;
-    }
 
     /**
      * @return the UserAccountDao
@@ -262,4 +239,11 @@ public class EventService implements EventServiceInterface {
         this.dataSource = dataSource;
     }
 
+
+    private org.akaza.openclinica.repository.UnifiedRepository getUnifiedRepository() {
+        if (this.unifiedRepository == null) {
+            this.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(dataSource);
+        }
+        return this.unifiedRepository;
+    }
 }

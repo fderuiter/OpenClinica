@@ -63,8 +63,8 @@ public class CreateSubjectGroupClassServlet extends SecureController {
             }
             StudyGroupClassBean group = new StudyGroupClassBean();
             request.setAttribute("groupTypes", GroupClassType.toArrayList());
-            session.setAttribute("group", group);
-            session.setAttribute("studyGroups", studyGroups);
+            request.setAttribute("group", group);
+            request.setAttribute("studyGroups", studyGroups);
             forwardPage(Page.CREATE_SUBJECT_GROUP_CLASS);
 
         } else {
@@ -129,8 +129,8 @@ public class CreateSubjectGroupClassServlet extends SecureController {
         group.setGroupClassTypeId(fp.getInt("groupClassTypeId"));
         group.setSubjectAssignment(fp.getString("subjectAssignment"));
 
-        session.setAttribute("group", group);
-        session.setAttribute("studyGroups", studyGroups);
+        request.setAttribute("group", group);
+        request.setAttribute("studyGroups", studyGroups);
 
         if (errors.isEmpty()) {
             logger.info("no errors in the first section");
@@ -177,7 +177,7 @@ public class CreateSubjectGroupClassServlet extends SecureController {
             addPageMessage(respage.getString("the_subject_group_class_created_succesfully"));
         }
         ArrayList pageMessages = (ArrayList) request.getAttribute(PAGE_MESSAGE);
-        session.setAttribute("pageMessages", pageMessages);
+        request.setAttribute("pageMessages", pageMessages);
         response.sendRedirect(request.getContextPath() + Page.MANAGE_STUDY_MODULE.getFileName());
 
     }

@@ -75,7 +75,7 @@ public class RemoveCRFFromDefinitionServlet extends SecureController {
                         logger.info("\nversion:" + edc.getDefaultVersionId());
                     }
                 }
-                session.setAttribute("eventDefinitionCRFs", updatedEdcs);
+                request.setAttribute("eventDefinitionCRFs", updatedEdcs);
                 addPageMessage(respage.getString("has_been_removed_need_confirmation"));
                 forwardPage(Page.UPDATE_EVENT_DEFINITION1);
             }

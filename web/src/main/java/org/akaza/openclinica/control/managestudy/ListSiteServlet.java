@@ -97,7 +97,7 @@ public class ListSiteServlet extends SecureController {
             if (request.getParameter("read") != null && request.getParameter("read").equals("true")) {
                 request.setAttribute("readOnly", true);
             }
-            session.setAttribute("fromListSite", "yes");
+            request.setAttribute("fromListSite", "yes");
             forwardPage(Page.SITE_LIST);
         }
 
