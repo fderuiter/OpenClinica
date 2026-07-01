@@ -102,6 +102,7 @@ public class ImportDataRuleRunner extends RuleRunner {
 
                         // Actions
                         List<RuleActionBean> actionListBasedOnRuleExecutionResult = ruleSetRule.getActions(result, Phase.IMPORT);
+                        logRuleEvaluation(ruleSet, ruleSetRule, result, variableAndValue, actionListBasedOnRuleExecutionResult);
 
                         if (itemData != null) {
                             Iterator<RuleActionBean> itr = actionListBasedOnRuleExecutionResult.iterator();

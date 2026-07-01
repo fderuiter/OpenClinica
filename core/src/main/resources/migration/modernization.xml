@@ -186,4 +186,24 @@
     </changeSet>
 
     <include file="migration/modernization_indexes.xml"/>
+
+    <changeSet author="modernization" id="create_rule_evaluation_log">
+        <createTable tableName="rule_evaluation_log">
+            <column autoIncrement="true" name="id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="rule_set_id" type="int"/>
+            <column name="rule_set_version" type="int"/>
+            <column name="version" type="int"/>
+            <column name="rule_oid" type="varchar(255)"/>
+            <column name="input_data_snapshot" type="varchar(4000)"/>
+            <column name="result" type="varchar(255)"/>
+            <column name="outcome_details" type="varchar(4000)"/>
+            <column name="created_at" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="modernization" id="create_rule_evaluation_log_seq" dbms="oracle">
+        <createSequence sequenceName="rule_evaluation_log_id_seq"/>
+    </changeSet>
 </databaseChangeLog>

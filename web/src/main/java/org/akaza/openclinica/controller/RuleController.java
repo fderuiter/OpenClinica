@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ import org.akaza.openclinica.dao.login.UserAccountDAO;
 import org.akaza.openclinica.dao.managestudy.StudyDAO;
 import org.akaza.openclinica.domain.rule.AuditableBeanWrapper;
 import org.akaza.openclinica.domain.rule.RuleBean;
+import org.akaza.openclinica.domain.rule.RuleEvaluationLogBean;
 import org.akaza.openclinica.domain.rule.RuleSetBean;
 import org.akaza.openclinica.domain.rule.RuleSetRuleBean;
 import org.akaza.openclinica.domain.rule.RulesPostImportContainer;
@@ -509,6 +511,29 @@ public class RuleController {
         }
         UserAccountDAO userAccountDao = new UserAccountDAO(dataSource);
         return (UserAccountBean) userAccountDao.findByUserName(username);
+    }
+
+    @Autowired
+    private org.akaza.openclinica.dao.hibernate.RuleEvaluationLogDao ruleEvaluationLogDao;
+
+    @RequestMapping(value = "/studies/{study}/validationHistory", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<RuleEvaluationLogBean> getValidationHistory(
+            @PathVariable("study") String studyOid,
+            @RequestParam(value = "ruleOid", required = false) String ruleOid) throws Exception {
+        
+        List<RuleEvaluationLogBean> allLogs = ruleEvaluationLogDao.findAll();
+        if (ruleOid == null || ruleOid.isEmpty()) {
+            return allLogs;
+        }
+        
+        List<RuleEvaluationLogBean> filtered = new ArrayList<RuleEvaluationLogBean>();
+        for (RuleEvaluationLogBean log : allLogs) {
+            if (ruleOid.equals(log.getRuleOid())) {
+                filtered.add(log);
+            }
+        }
+        return filtered;
     }
 
     public static boolean isAjaxRequest(String requestedWith) {

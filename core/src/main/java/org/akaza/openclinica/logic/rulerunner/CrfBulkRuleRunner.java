@@ -124,6 +124,7 @@ public class CrfBulkRuleRunner extends RuleRunner {
 
                         // Actions
                         List<RuleActionBean> actionListBasedOnRuleExecutionResult = ruleSetRule.getActions(result, Phase.BATCH);
+                        logRuleEvaluation(ruleSet, ruleSetRule, result, variableAndValue, actionListBasedOnRuleExecutionResult);
 
                         ItemDataBean itemData = getExpressionService().getItemDataBeanFromDb(ruleSet.getTarget().getValue());
                         if (itemData != null) {
@@ -211,6 +212,7 @@ public class CrfBulkRuleRunner extends RuleRunner {
 
                         // Actions
                         List<RuleActionBean> actionListBasedOnRuleExecutionResult = ruleSetRule.getActions(result, Phase.BATCH);
+                        logRuleEvaluation(ruleSet, ruleSetRule, result, variableAndValue, actionListBasedOnRuleExecutionResult);
 
                         if (itemData != null) {
                             Iterator<RuleActionBean> itr = actionListBasedOnRuleExecutionResult.iterator();
