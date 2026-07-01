@@ -4,7 +4,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-358">
     	<preConditions onFail="MARK_RAN">
 		<dbms type="postgresql" />
-		<!--<runningAs username="clinica" />-->
+		<runningAs username="${dbUser}" />
 	</preConditions>
     	<sql splitStatements="false">
     		CREATE OR REPLACE FUNCTION event_crf_trigger() RETURNS "trigger"
@@ -75,7 +75,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-359">
     	<preConditions onFail="MARK_RAN">
     		<dbms type="postgresql" />
-    		<!--<runningAs username="clinica" />-->
+    		<runningAs username="${dbUser}" />
 	</preConditions>
     	<sql splitStatements="false">
     		CREATE OR REPLACE FUNCTION global_subject_trigger() RETURNS "trigger"
@@ -142,7 +142,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-360" runOnChange="true">
     	<preConditions onFail="MARK_RAN">
 	 	<dbms type="postgresql" />
-		<!--<runningAs username="clinica" />-->
+		<runningAs username="${dbUser}" />
 	</preConditions>
     	 <sql splitStatements="false">
     	 	CREATE OR REPLACE FUNCTION item_data_trigger() RETURNS "trigger"
@@ -195,7 +195,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-361">
     	<preConditions onFail="MARK_RAN">
 	 	<dbms type="postgresql" />
-		<!--<runningAs username="clinica" />-->
+		<runningAs username="${dbUser}" />
 	</preConditions>    
 	 <sql splitStatements="false">
 	 	CREATE OR REPLACE FUNCTION study_subject_trigger() RETURNS "trigger"
@@ -277,7 +277,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-362" runOnChange="true">
     	 <preConditions onFail="MARK_RAN">
 	 	 <dbms type="postgresql" />
-		 <!--<runningAs username="clinica" />-->
+		 <runningAs username="${dbUser}" />
 	 </preConditions> 
 	 <sql splitStatements="false">
 	 	CREATE OR REPLACE FUNCTION study_event_trigger() RETURNS "trigger"
@@ -350,7 +350,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-363">
     	 <preConditions onFail="MARK_RAN">
 	 	 <dbms type="postgresql" />
-		 <!--<runningAs username="clinica" />-->
+		 <runningAs username="${dbUser}" />
 	 </preConditions> 	 
 	 <sql splitStatements="false">
 	 	/*group assignment trigger*/
@@ -385,7 +385,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-364">
 	 <preConditions onFail="MARK_RAN">
 		 <dbms type="postgresql" />
-		 <!--<runningAs username="clinica" />-->
+		 <runningAs username="${dbUser}" />
 	 </preConditions> 
     	 <sql splitStatements="false">
     	 	CREATE OR REPLACE FUNCTION repeating_item_data_trigger()
@@ -432,7 +432,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-365">
     	<preConditions onFail="MARK_RAN">
 	 	<dbms type="postgresql" />
-		<!--<runningAs username="clinica" />-->
+		<runningAs username="${dbUser}" />
 	</preConditions>     	 
     	 <sql splitStatements="false">
     	 	CREATE TRIGGER event_crf_update
@@ -444,7 +444,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-366">
     	<preConditions onFail="MARK_RAN">
 	 	<dbms type="postgresql" />
-		<!--<runningAs username="clinica" />-->
+		<runningAs username="${dbUser}" />
 	</preConditions>     
 	 <sql splitStatements="false">
 	 	CREATE TRIGGER global_subject_insert_update
@@ -456,7 +456,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-367">
     	<preConditions onFail="MARK_RAN">
 	 	<dbms type="postgresql" />
-		<!--<runningAs username="clinica" />-->
+		<runningAs username="${dbUser}" />
 	</preConditions>     
 	 <sql splitStatements="false">
 	 	CREATE TRIGGER item_data_update
@@ -468,7 +468,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-368">
     	<preConditions onFail="MARK_RAN">
 	 	<dbms type="postgresql" />
-		<!--<runningAs username="clinica" />-->
+		<runningAs username="${dbUser}" />
 	</preConditions>     
 	 <sql splitStatements="false">
 	 	CREATE TRIGGER study_subject_insert_updare
@@ -480,7 +480,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-369">
     	<preConditions onFail="MARK_RAN">
 	 	<dbms type="postgresql" />
-		<!--<runningAs username="clinica" />-->
+		<runningAs username="${dbUser}" />
 	</preConditions>     
 	 <sql splitStatements="false">
 	 	CREATE TRIGGER study_event_insert_update
@@ -492,7 +492,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-370">
     	<preConditions onFail="MARK_RAN">
 	 	<dbms type="postgresql" />
-		<!--<runningAs username="clinica" />-->
+		<runningAs username="${dbUser}" />
 	</preConditions>     
 	 <sql splitStatements="false">
 	 	CREATE TRIGGER subject_group_map_insert_update
@@ -504,7 +504,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-371">
     	 <preConditions onFail="MARK_RAN">
 	 	 <dbms type="postgresql" />
-		 <!--<runningAs username="clinica" />-->
+		 <runningAs username="${dbUser}" />
 	 </preConditions>     
 	 <sql splitStatements="false">
 	 	CREATE TRIGGER repeating_data_insert
@@ -518,7 +518,7 @@
     <changeSet author="pgawade (generated)" id="1235684743487-372">
     	<preConditions onFail="MARK_RAN">
     		<dbms type="postgresql" />
-    		<!--<runningAs username="clinica" />-->
+    		<runningAs username="${dbUser}" />
 		</preConditions>
     	<sql splitStatements="false">
     		CREATE OR REPLACE FUNCTION global_user_trigger() RETURNS "trigger"
@@ -559,7 +559,7 @@
      <changeSet author="pgawade (generated)" id="1235684743487-375">
     	<preConditions onFail="MARK_RAN">
 		 	<dbms type="postgresql" />
-			<!--<runningAs username="clinica" />-->
+			<runningAs username="${dbUser}" />
 		</preConditions>     
 		 <sql splitStatements="false">
 		 	CREATE TRIGGER global_user_insert_update

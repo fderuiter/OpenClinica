@@ -5,7 +5,7 @@
     <changeSet author="jkeremian" id="2015-06-26-OC-6467-01">
     	<preConditions onFail="MARK_RAN">
 		<dbms type="postgresql" />
-		    <!--<runningAs username="clinica" />-->
+		    <runningAs username="${dbUser}" />
 	    </preConditions>
     	<sql splitStatements="false">
 

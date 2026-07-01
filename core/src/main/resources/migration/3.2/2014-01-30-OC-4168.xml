@@ -3,7 +3,7 @@
     <changeSet author="kkrumlian" id="2014-01-30-OC-4168-1" runOnChange="true">
         <preConditions onFail="MARK_RAN">
             <dbms type="postgresql" />
-            <!--<runningAs username="clinica" />-->
+            <runningAs username="${dbUser}" />
         </preConditions>
         <sql splitStatements="false">
             /*group assignment trigger*/
