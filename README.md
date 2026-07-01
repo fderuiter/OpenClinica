@@ -64,9 +64,9 @@ For non-technical user guides and comprehensive documentation, please visit the 
 
 To request a feature please submit a ticket on [Jira](https://jira.openclinica.com/) or start a discussion on the [OpenClinica Forum](http://forums.openclinica.com).
 
-##Screenshots
+## Screenshots
 ![Imgur](http://i.imgur.com/ACXj3L7.jpg "Home screen") 
-##![Imgur](http://i.imgur.com/DqHQ05Z.jpg "Subject Matrix")
+![Imgur](http://i.imgur.com/DqHQ05Z.jpg "Subject Matrix")
 
 
 
