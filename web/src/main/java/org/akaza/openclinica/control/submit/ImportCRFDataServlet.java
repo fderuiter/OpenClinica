@@ -159,7 +159,14 @@ public class ImportCRFDataServlet extends SecureController {
             session.removeAttribute("odmContainer");
             try {
                 InputStreamReader isr = new InputStreamReader(new FileInputStream(f), "UTF-8");
-                odmContainer = (ODMContainer) jaxb2Marshaller.unmarshal(new StreamSource(isr));
+                
+                org.akaza.openclinica.logic.importdata.StreamingSubjectDataList streamingList = new org.akaza.openclinica.logic.importdata.StreamingSubjectDataList(f);
+                org.akaza.openclinica.bean.submit.crfdata.CRFDataPostImportContainer crfDataPostImportContainer = new org.akaza.openclinica.bean.submit.crfdata.CRFDataPostImportContainer();
+                crfDataPostImportContainer.setStudyOID(streamingList.getStudyOid());
+                crfDataPostImportContainer.setUpsertOn(streamingList.getUpsertOn());
+                crfDataPostImportContainer.setSubjectData(streamingList);
+                odmContainer.setCrfDataPostImportContainer(crfDataPostImportContainer);
+
 
                 logger.debug("Found crf data container for study oid: " + odmContainer.getCrfDataPostImportContainer().getStudyOID());
                 logger.debug("found length of subject list: " + odmContainer.getCrfDataPostImportContainer().getSubjectData().size());
@@ -204,7 +211,14 @@ public class ImportCRFDataServlet extends SecureController {
                     // for backwards compatibility, we also try to validate vs
                     // 1.2.1 ODM 06/2008
                     InputStreamReader isr = new InputStreamReader(new FileInputStream(f), "UTF-8");
-                    odmContainer = (ODMContainer) jaxb2Marshaller.unmarshal(new StreamSource(isr));
+                    
+                org.akaza.openclinica.logic.importdata.StreamingSubjectDataList streamingList = new org.akaza.openclinica.logic.importdata.StreamingSubjectDataList(f);
+                org.akaza.openclinica.bean.submit.crfdata.CRFDataPostImportContainer crfDataPostImportContainer = new org.akaza.openclinica.bean.submit.crfdata.CRFDataPostImportContainer();
+                crfDataPostImportContainer.setStudyOID(streamingList.getStudyOid());
+                crfDataPostImportContainer.setUpsertOn(streamingList.getUpsertOn());
+                crfDataPostImportContainer.setSubjectData(streamingList);
+                odmContainer.setCrfDataPostImportContainer(crfDataPostImportContainer);
+
                 } catch (Exception me2) {
                     // not sure if we want to report me2
                     MessageFormat mf = new MessageFormat("");
