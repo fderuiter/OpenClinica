@@ -26,7 +26,7 @@ def merge_specs():
         'core/external-api.json',
         'core/src/main/resources/randomize-api.yaml',
         'web/target/generated-docs/legacy-openapi.json',
-        'modern/src/test/resources/established-contract.json'
+        'modern/target/generated-docs/modern-openapi.json'
     ]
 
     for spec_path in specs_to_merge:
