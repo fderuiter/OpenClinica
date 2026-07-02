@@ -57,6 +57,12 @@ python3 merge_openapi.py
 # Extract static SOAP definitions
 python3 extract_soap.py
 
+# Generate React Components API docs
+cd web
+npm install
+npm run docs
+cd ..
+
 # Build the documentation site
 mkdocs build
 

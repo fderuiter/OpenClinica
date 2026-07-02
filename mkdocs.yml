@@ -23,5 +23,8 @@ nav:
     - Extract Selection Guide: maintenance/extract_select_crf_and_group.md
     - Generate Dataset HTML: maintenance/generate_dataset_html.md
     - Staged Batch Persistence: maintenance/staged_batch_persistence.md
+  - Frontend Architecture:
+    - Architecture Guide: frontend/architecture.md
+    - React Components API: frontend-api/modules.md
   - Interactive REST API: api.md
   - SOAP API Documentation: soap.md
