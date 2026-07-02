@@ -1,0 +1,76 @@
+const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
+
+test.describe('Printable CRF', () => {
+  test('should display investigator signature and labels', async ({ page }) => {
+    page.on('console', msg => console.log('BROWSER LOG:', msg.text()));
+    page.on('pageerror', err => console.log('PAGE ERROR:', err.stack || err.message));
+    
+    // Read Vite manifest to get the correct bundle file name
+    const manifestPath = path.join(__dirname, '../../web/src/main/webapp/dist/.vite/manifest.json');
+    let mainScript = 'assets/main.js'; // fallback
+    try {
+      const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+      mainScript = manifest['src/main/webapp/js/main.js'].file;
+    } catch(e) { }
+
+    await page.route('**/clinicaldata/html/print/**', async (route) => {
+      const mockHtml = `
+      <html>
+       <head>
+        <meta charset="UTF-8">
+        <title>OpenClinica - Printable Forms</title>
+        <script>
+          window.app_studyOID = 'STUDY-123';
+          window.app_investigatorLabel = 'Investigator';
+          window.app_investigatorSignatureLabel = 'Investigator Signature';
+          window.app_meaning_of_signatureLabel = 'Meaning of Signature';
+        </script>
+        <script src="http://localhost:8080/OpenClinica-web/dist/${mainScript}"></script>
+        <style>
+          .spinner { display: none; }
+        </style>
+       </head>
+       <body>
+         <div id="menuContainer"></div>
+         <script>
+           setTimeout(() => {
+             document.dispatchEvent(new Event('DOMContentLoaded'));
+           }, 1000);
+         </script>
+       </body>
+      </html>
+      `;
+      route.fulfill({ contentType: 'text/html', body: mockHtml });
+    });
+
+    await page.route('**/dist/assets/*.js', async (route) => {
+      const url = new URL(route.request().url());
+      const fileName = path.basename(url.pathname);
+      const assetsDir = '/app/web/src/main/webapp/dist/assets';
+      
+      try {
+        const bundle = fs.readFileSync(path.join(assetsDir, fileName), 'utf8');
+        route.fulfill({ contentType: 'application/javascript', body: bundle });
+      } catch (e) {
+        route.abort();
+      }
+    });
+
+    await page.goto('http://localhost:8080/OpenClinica-web/rest/clinicaldata/html/print/STUDY-123/SUBJ-1/EVENT-1/FORM-1');
+
+    // Wait for React to render the component
+    await expect(page.locator('.crf-renderer')).toBeVisible({ timeout: 10000 });
+    
+    // The investigator signature must be visible
+    const signatureBlock = page.locator('.investigator-signature');
+    await expect(signatureBlock).toBeVisible();
+    await expect(signatureBlock).toContainText('Investigator:');
+    await expect(signatureBlock).toContainText('Investigator Signature:');
+    await expect(signatureBlock).toContainText('Meaning of Signature:');
+
+    // Take a snapshot
+    await expect(page).toHaveScreenshot('crf-printable-view.png', { maxDiffPixelRatio: 0.01 });
+  });
+});
