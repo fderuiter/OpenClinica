@@ -1329,7 +1329,7 @@ public class Validator {
     protected boolean isDateInPast(String fieldName) {
         Date d = null;
         if (fieldName != null) {
-            d = FormProcessor.parseDate(getFieldValue(fieldName), locale);
+            d = parseDate(getFieldValue(fieldName), locale);
         }
         if (d != null) {
             Date today = new Date();
@@ -1347,7 +1347,7 @@ public class Validator {
     protected boolean isDateInPast(String fieldName, Locale locale) {
         Date d = null;
         if (fieldName != null) {
-            d = FormProcessor.parseDate(getFieldValue(fieldName), locale);
+            d = parseDate(getFieldValue(fieldName), locale);
         }
         if (d != null) {
             Date today = new Date();
@@ -1695,8 +1695,8 @@ public class Validator {
             return false;
         }
 
-        Date laterDate = FormProcessor.parseDate(laterDateValue, locale);
-        Date earlierDate = FormProcessor.parseDate(earlierDateValue, locale);
+        Date laterDate = parseDate(laterDateValue, locale);
+        Date earlierDate = parseDate(earlierDateValue, locale);
 
         if (laterDate.compareTo(earlierDate) >= 0) {
             return true;
@@ -2216,5 +2216,16 @@ public class Validator {
             }
         }
         return message;
+    }
+    public static Date parseDate(String date, Locale locale) {
+        Date answer;
+        try {
+            SimpleDateFormat f = I18nFormatUtil.getDateFormat(locale);
+            f.setLenient(false);
+            answer = f.parse(date);
+        } catch (Exception e) {
+            answer = null;
+        }
+        return answer;
     }
 }
