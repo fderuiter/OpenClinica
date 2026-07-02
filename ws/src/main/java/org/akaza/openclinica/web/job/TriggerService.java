@@ -48,12 +48,13 @@ public class TriggerService {
 
     public String generateHardValidationErrorMessage(ArrayList<SubjectDataBean> subjectData, HashMap<String, String> hardValidationErrors, String groupRepeatKey) {
         StringBuffer sb = new StringBuffer();
-        String studyEventRepeatKey = null;
+        String[] studyEventRepeatKey = {null};
         sb.append("");
-        for (SubjectDataBean subjectDataBean : subjectData) {
+        org.akaza.openclinica.logic.importdata.SubjectDataProcessor.process(subjectData, new org.akaza.openclinica.logic.importdata.SubjectDataProcessor<Object>() {
+public void process(SubjectDataBean subjectDataBean) {
             ArrayList<StudyEventDataBean> studyEventDataBeans = subjectDataBean.getStudyEventData();
             for (StudyEventDataBean studyEventDataBean : studyEventDataBeans) {
-                studyEventRepeatKey = studyEventDataBean.getStudyEventRepeatKey();
+                studyEventRepeatKey[0] = studyEventDataBean.getStudyEventRepeatKey();
 
                 ArrayList<FormDataBean> formDataBeans = studyEventDataBean.getFormData();
                 for (FormDataBean formDataBean : formDataBeans) {
@@ -62,7 +63,7 @@ public class TriggerService {
                         ArrayList<ImportItemDataBean> itemDataBeans = itemGroupDataBean.getItemData();
                         for (ImportItemDataBean itemDataBean : itemDataBeans) {
 
-                            String oidKey = itemDataBean.getItemOID() + "_" + studyEventRepeatKey + "_" + groupRepeatKey + "_"
+                            String oidKey = itemDataBean.getItemOID() + "_" + studyEventRepeatKey[0] + "_" + groupRepeatKey + "_"
                                     + subjectDataBean.getSubjectOID();
                             if (hardValidationErrors.containsKey(oidKey)) {
                                 // What about event repeat ordinal and item group and item group repeat ordinal?
@@ -84,6 +85,8 @@ public class TriggerService {
                 }
             }
         }
+});
+
 
         sb.append("");
         return sb.toString();

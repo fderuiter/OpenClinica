@@ -95,6 +95,37 @@ public class StreamingSubjectDataList extends ArrayList<SubjectDataBean> {
     }
 
     @Override
+    public void forEach(java.util.function.Consumer<? super SubjectDataBean> action) {
+        try (SubjectDataIterator it = new SubjectDataIterator(getInputStream())) {
+            while (it.hasNext()) {
+                action.accept(it.next());
+            }
+        } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
+            throw new RuntimeException("Error processing stream", e);
+        }
+    }
+
+    public <R> R process(SubjectDataProcessor<R> processor) {
+        try (SubjectDataIterator it = new SubjectDataIterator(getInputStream())) {
+            while (it.hasNext()) {
+                processor.process(it.next());
+                if (processor.isStop()) {
+                    return processor.getResult();
+                }
+            }
+            return processor.getResult();
+        } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
+            throw new RuntimeException("Error processing stream", e);
+        }
+    }
+
+    @Override
     public Iterator<SubjectDataBean> iterator() {
         try {
             return new SubjectDataIterator(getInputStream());

@@ -52,15 +52,17 @@ public class ImportCRFInfoContainer {
         StudyDAO studyDAO = new StudyDAO(ds);
         StudyEventDAO studyEventDAO = new StudyEventDAO(ds);
         UpsertOnBean upsert = odmContainer.getCrfDataPostImportContainer().getUpsertOn();
+        final UpsertOnBean finalUpsert = upsert == null ? new UpsertOnBean() : upsert;
         // If Upsert bean is not present, create one with default settings
-        if (upsert == null)
-            upsert = new UpsertOnBean();
+        
+            
         String studyOID = odmContainer.getCrfDataPostImportContainer().getStudyOID();
         StudyBean studyBean = studyDAO.findByOid(studyOID);
         ArrayList<SubjectDataBean> subjectDataBeans = odmContainer.getCrfDataPostImportContainer().getSubjectData();
 
         Map<String, Map<String, Map<String, String>>> subjectMap = new HashMap<String, Map<String, Map<String, String>>>();
-        for (SubjectDataBean subjectDataBean : subjectDataBeans) {
+        org.akaza.openclinica.logic.importdata.SubjectDataProcessor.process(subjectDataBeans, new org.akaza.openclinica.logic.importdata.SubjectDataProcessor<Object>() {
+public void process(SubjectDataBean subjectDataBean) {
             ArrayList<StudyEventDataBean> studyEventDataBeans = subjectDataBean.getStudyEventData();
             StudySubjectBean studySubjectBean = studySubjectDAO.findByOidAndStudy(subjectDataBean.getSubjectOID(), studyBean.getId());
 
@@ -113,7 +115,7 @@ public class ImportCRFInfoContainer {
                                     || studyEventBean.getSubjectEventStatus().equals(SubjectEventStatus.DATA_ENTRY_STARTED) || studyEventBean
                                     .getSubjectEventStatus().equals(SubjectEventStatus.COMPLETED))) {
 
-                                if (!upsert.isNotStarted()) {
+                                if (!finalUpsert.isNotStarted()) {
                                     importCrfInfo.setProcessImport(false);
                                     importCrfInfo.setEventCRFID(null);
                                 }
@@ -131,8 +133,8 @@ public class ImportCRFInfoContainer {
                             if (crfStatus != null && crfStatus.equals(DataEntryStage.INITIAL_DATA_ENTRY.getName()))
                                 importCrfInfo.setPostImportStage(DataEntryStage.INITIAL_DATA_ENTRY);
                             importCrfInfo.setEventCRFID(new Integer(ecb.getId()));
-                            if (!(ecb.getStage().equals(DataEntryStage.INITIAL_DATA_ENTRY) && upsert.isDataEntryStarted())
-                                    && !(ecb.getStage().equals(DataEntryStage.DOUBLE_DATA_ENTRY_COMPLETE) && upsert.isDataEntryComplete()))
+                            if (!(ecb.getStage().equals(DataEntryStage.INITIAL_DATA_ENTRY) && finalUpsert.isDataEntryStarted())
+                                    && !(ecb.getStage().equals(DataEntryStage.DOUBLE_DATA_ENTRY_COMPLETE) && finalUpsert.isDataEntryComplete()))
                                 importCrfInfo.setProcessImport(false);
                             importCRFList.add(importCrfInfo);
                             if (importCrfInfo.isProcessImport())
@@ -145,7 +147,9 @@ public class ImportCRFInfoContainer {
             } // study event loop
             if (eventMap.size() > 0)
                 subjectMap.put(subjectDataBean.getSubjectOID(), eventMap);
-        } // subject data loop
+        }
+});
+ // subject data loop
         importCRFMap = subjectMap;
     }
 
