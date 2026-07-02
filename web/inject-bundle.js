@@ -25,18 +25,7 @@ function copyAndReplace(dir) {
             if (fullPath.endsWith('load_scripts.js')) {
                 content = `head.js(
                          app_contextPath + "/dist/${mainScript}",
-                         app_contextPath + "/js/util.js",
-                         app_contextPath + "/js/com/openclinica/renderer/RenderUtil.js",
-                         app_contextPath + "/js/app.js",
-                         app_contextPath + "/js/com/openclinica/renderer/ODMRenderer.js",
-                         app_contextPath + "/js/com/openclinica/renderer/StudyDataLoader.js",
-                         app_contextPath + "/js/com/openclinica/renderer/StudyRenderer.js",
-                         app_contextPath + "/js/com/openclinica/renderer/FormDefRenderer.js",
-                         app_contextPath + "/js/com/openclinica/renderer/StudyEventDefRenderer.js",
-                         app_contextPath + "/js/com/openclinica/renderer/StudySubjectDefRenderer.js",
-                         app_contextPath + "/js/com/openclinica/renderer/ItemDefRenderer.js",
-                         app_contextPath + "/js/com/openclinica/renderer/PageHeaderRenderer.js",
-                         app_contextPath + "/js/com/openclinica/renderer/ParseUtil.js"
+                         app_contextPath + "/js/util.js"
                        );`;
                 changed = true;
             } else {
