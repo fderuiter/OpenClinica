@@ -42,7 +42,8 @@ public class LegacyProxyFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         String uri = req.getRequestURI();
 
-        if (uri.startsWith("/DataEntry") || uri.startsWith("/interop") || uri.equals("/api/auth/token") || 
+        if (uri.startsWith("/DataEntry") || uri.startsWith("/interop") || uri.startsWith("/api") || 
+            uri.startsWith("/v3/api-docs") || uri.startsWith("/swagger-ui") ||
             uri.startsWith("/ListUserAccounts") || uri.startsWith("/CreateUserAccount") || 
             uri.startsWith("/EditUserAccount") || uri.startsWith("/ViewUserAccount") || 
             uri.startsWith("/DeleteUser")) {

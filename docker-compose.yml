@@ -22,3 +22,15 @@ services:
     - .env
 volumes:
   db-data: null
+  modern:
+    build:
+      context: .
+      target: modern
+    ports:
+    - 8081:8080
+    depends_on:
+    - db
+    environment:
+    - spring.datasource.url=jdbc:postgresql://db:5432/clinica
+    - spring.datasource.username=clinica
+    - spring.datasource.password=clinica
