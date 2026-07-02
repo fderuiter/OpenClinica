@@ -431,6 +431,16 @@
                             <arguments>run build</arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>npm run docs</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run docs</arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
