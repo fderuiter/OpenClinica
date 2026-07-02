@@ -9,6 +9,12 @@
 		  <version>3.18-SNAPSHOT</version>
 	</parent>
 	<dependencies>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.20</version>
+        </dependency>
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>OpenClinica-core</artifactId>
@@ -243,13 +249,6 @@
 		    <artifactId>quartz-oracle</artifactId>
 		</dependency>
 
-		<!-- XML serializer-->
-    	<dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-        </dependency>
         <dependency>
             <groupId>xom</groupId>
             <artifactId>xom</artifactId>
@@ -322,38 +321,69 @@
             <version>4.11.0</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-    <groupId>org.codehaus.jackson</groupId>
-    <artifactId>jackson-core-lgpl</artifactId>
-    <version>1.8.1</version>
-</dependency>
-
-<dependency>
-    <groupId>org.codehaus.jackson</groupId>
-    <artifactId>jackson-mapper-lgpl</artifactId>
-    <version>1.8.1</version>
-</dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>2.2.15</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.ws.rs</groupId>
+                        <artifactId>javax.ws.rs-api</artifactId>
+                        <version>2.1.1</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <outputFileName>legacy-openapi</outputFileName>
+                    <outputPath>${project.build.directory}/generated-docs</outputPath>
+                    <outputFormat>JSON</outputFormat>
+                    <resourcePackages>
+                        <resourcePackage>org.akaza.openclinica.web.restful</resourcePackage>
+                    </resourcePackages>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>generate-legacy-openapi</id>
-                        <phase>process-classes</phase>
-                        <goals><goal>exec</goal></goals>
-                        <configuration>
-                            <executable>node</executable>
-                            <arguments><argument>${project.parent.basedir}/generate-legacy-openapi.js</argument></arguments>
-                        </configuration>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>resolve</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>3.1.8</version>
+                <configuration>
+                    <apiSources>
+                        <apiSource>
+                            <springmvc>true</springmvc>
+                            <locations>org.akaza.openclinica.controller</locations>
+                            <schemes>http</schemes>
+                            <host>localhost:8080</host>
+                            <basePath>/OpenClinica</basePath>
+                            <info>
+                                <title>OpenClinica API</title>
+                                <version>v1</version>
+                            </info>
+                            <swaggerDirectory>${project.build.directory}/swagger-ui</swaggerDirectory>
+                            <outputFormats>json,yaml</outputFormats>
+                        </apiSource>
+                    </apiSources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
@@ -403,7 +433,6 @@
                     </execution>
                 </executions>
             </plugin>
-            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>

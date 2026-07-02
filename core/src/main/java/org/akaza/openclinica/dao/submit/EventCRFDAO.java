@@ -183,6 +183,18 @@ public class EventCRFDAO<K extends String, V extends ArrayList> extends Auditabl
 
         if (isQuerySuccessful()) {
             ecb.setActive(true);
+            try {
+                if (org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext() != null) {
+                    org.akaza.openclinica.service.streamer.AIEventStreamerService streamer = 
+                        (org.akaza.openclinica.service.streamer.AIEventStreamerService) 
+                        org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("aiEventStreamerService");
+                    if (streamer != null) {
+                        streamer.streamEventCrfAsync(ecb.getId());
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Could not trigger AIEventStreamerService", e);
+            }
         }
 
         return ecb;

@@ -73,8 +73,10 @@ public class SoapCreateSubject extends WebServiceGatewaySupport implements Subje
     }
 
     public boolean validate(SubjectTransferBean subjectTransferBean) {
-        // TODO Auto-generated method stub
-        return false;
+        if (subjectTransferBean == null) return false;
+        if (subjectTransferBean.getStudySubjectId() == null || subjectTransferBean.getStudySubjectId().trim().isEmpty()) return false;
+        if (subjectTransferBean.getStudyOid() == null || subjectTransferBean.getStudyOid().trim().isEmpty()) return false;
+        return true;
     }
     
     public List<StudySubjectBean> getStudySubject(StudyBean study){
