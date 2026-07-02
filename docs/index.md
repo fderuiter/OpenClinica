@@ -7,7 +7,9 @@ Welcome to the centralized OpenClinica Documentation Portal.
 - [Installation Guide](installation/windows-install.md)
 - [Configuration Guide](configuration/build_study.md)
 - [Maintenance Guide](maintenance/import_data.md)
-- [API Documentation](api/index.html)
+- [Interactive REST API Documentation](api.md)
+- [SOAP API Documentation](soap.md)
+- [Frontend Architecture Guide](frontend/architecture.md)
 
 ## Global Project Information
 For system requirements, please refer to the project README.

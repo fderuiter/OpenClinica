@@ -2,10 +2,10 @@ import os
 import glob
 
 def generate_soap_docs():
-    schema_dir = '/app/ws/src/main/webapp/WEB-INF/schemas/'
+    schema_dir = 'ws/src/main/webapp/WEB-INF/schemas/'
     schema_files = glob.glob(os.path.join(schema_dir, '*.xsd'))
     
-    docs_dir = '/app/docs'
+    docs_dir = 'docs'
     os.makedirs(docs_dir, exist_ok=True)
     
     with open(os.path.join(docs_dir, 'soap.md'), 'w') as out:

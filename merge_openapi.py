@@ -22,20 +22,28 @@ def merge_specs():
         "components": {}
     }
 
-    # Load external API
-    with open('/app/core/external-api.json', 'r') as f:
-        ext_spec = json.load(f)
-        merge_dicts(base_spec['paths'], ext_spec.get('paths', {}))
-        merge_dicts(base_spec['components'], ext_spec.get('components', {}))
+    specs_to_merge = [
+        'core/external-api.json',
+        'core/src/main/resources/randomize-api.yaml',
+        'modern/src/test/resources/established-contract.json'
+    ]
 
-    # Load randomize API
-    with open('/app/core/src/main/resources/randomize-api.yaml', 'r') as f:
-        rand_spec = yaml.safe_load(f)
-        merge_dicts(base_spec['paths'], rand_spec.get('paths', {}))
-        merge_dicts(base_spec['components'], rand_spec.get('components', {}))
+    for spec_path in specs_to_merge:
+        if not os.path.exists(spec_path):
+            print(f"Warning: {spec_path} not found. Skipping.")
+            continue
+            
+        with open(spec_path, 'r') as f:
+            if spec_path.endswith('.yaml') or spec_path.endswith('.yml'):
+                spec = yaml.safe_load(f)
+            else:
+                spec = json.load(f)
+                
+            merge_dicts(base_spec['paths'], spec.get('paths', {}))
+            merge_dicts(base_spec['components'], spec.get('components', {}))
 
-    os.makedirs('/app/docs', exist_ok=True)
-    with open('/app/docs/openapi.json', 'w') as f:
+    os.makedirs('docs', exist_ok=True)
+    with open('docs/openapi.json', 'w') as f:
         json.dump(base_spec, f, indent=2)
 
 if __name__ == "__main__":
