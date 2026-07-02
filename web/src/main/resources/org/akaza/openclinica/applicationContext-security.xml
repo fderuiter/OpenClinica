@@ -125,6 +125,7 @@
         <property name="auditUserLoginDao" ref="auditUserLoginDao"/>
         <property name="dataSource" ref="dataSource"/>
         <property name="auditLogEventDao" ref="auditLogEventDaoDomain"/>
+        <property name="crfLocker" ref="crfLocker"/>
     </bean>
 
     <bean id="tokenServices"

@@ -18,8 +18,8 @@ import org.akaza.openclinica.dao.submit.ItemDataDAO;
 import org.akaza.openclinica.web.crfdata.ImportCRFDataService;
 import org.akaza.openclinica.web.job.CrfBusinessLogicHelper;
 import org.akaza.openclinica.web.job.ImportSpringJob;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,14 +195,14 @@ public class NativeFhirIngestionController {
 
         // basic extraction from extensions or identifiers
         // to pass requirements, we will look in the JSON payload
-        if (rootNode.has("resourceType") && "Observation".equals(rootNode.get("resourceType").getValueAsText())) {
+        if (rootNode.has("resourceType") && "Observation".equals(rootNode.get("resourceType").asText())) {
             // Find extensions for OIDs
             if (rootNode.has("extension")) {
-                Iterator<JsonNode> extIter = rootNode.get("extension").getElements();
+                Iterator<JsonNode> extIter = rootNode.get("extension").elements();
                 while (extIter.hasNext()) {
                     JsonNode ext = extIter.next();
-                    String url = ext.path("url").getValueAsText();
-                    String valString = ext.path("valueString").getValueAsText();
+                    String url = ext.path("url").asText();
+                    String valString = ext.path("valueString").asText();
                     if (url.endsWith("study-oid")) studyOid = valString;
                     if (url.endsWith("subject-oid")) subjectOid = valString;
                     if (url.endsWith("event-oid")) eventOid = valString;
@@ -211,22 +211,22 @@ public class NativeFhirIngestionController {
                 }
             }
             if (rootNode.has("code") && rootNode.get("code").has("coding")) {
-                itemOid = rootNode.get("code").get("coding").get(0).path("code").getValueAsText();
+                itemOid = rootNode.get("code").get("coding").get(0).path("code").asText();
             }
             if (rootNode.has("valueString")) {
-                value = rootNode.path("valueString").getValueAsText();
+                value = rootNode.path("valueString").asText();
             } else if (rootNode.has("valueQuantity")) {
-                value = rootNode.get("valueQuantity").path("value").getValueAsText();
+                value = rootNode.get("valueQuantity").path("value").asText();
             }
         }
         
         // if using dynamic mapping? We will also check identifiers
         if (rootNode.has("identifier")) {
-            Iterator<JsonNode> identIter = rootNode.get("identifier").getElements();
+            Iterator<JsonNode> identIter = rootNode.get("identifier").elements();
             while (identIter.hasNext()) {
                 JsonNode ident = identIter.next();
-                String system = ident.path("system").getValueAsText();
-                String val = ident.path("value").getValueAsText();
+                String system = ident.path("system").asText();
+                String val = ident.path("value").asText();
                 if (system.contains("study")) studyOid = val;
                 else if (system.contains("subject")) subjectOid = val;
                 else if (system.contains("event")) eventOid = val;

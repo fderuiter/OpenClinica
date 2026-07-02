@@ -238,40 +238,21 @@
 		    <groupId>org.quartz-scheduler</groupId>
 		    <artifactId>quartz-oracle</artifactId>
 		</dependency>
-
-
-		<dependency>
-    <groupId>org.codehaus.jackson</groupId>
-    <artifactId>jackson-core-lgpl</artifactId>
-    <version>1.8.1</version>
-</dependency>
-
-		<dependency>
-    		<groupId>org.codehaus.jackson</groupId>
-    		<artifactId>jackson-mapper-lgpl</artifactId>
-    		<version>1.8.1</version>
-		</dependency>
-
         <!-- OpenAPI Generator Dependencies -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.14.2</version>
+            <version>2.15.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.14.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.14.2</version>
+            <version>2.15.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.14.2</version>
+            <version>2.15.2</version>
         </dependency>
         <dependency>
             <groupId>org.openapitools</groupId>
@@ -294,7 +275,6 @@
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
         </dependency>
-
 	</dependencies>
 	<!-- @pgawade 16-NOV-2010 unit tests through maven -->
 

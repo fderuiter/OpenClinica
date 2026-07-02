@@ -106,6 +106,7 @@
      <bean id="sessionRegistry" class="org.akaza.openclinica.web.filter.OpenClinicaSessionRegistryImpl">
         <property name="auditUserLoginDao" ref="auditUserLoginDao"/>
         <property name="dataSource" ref="dataSource"/>
+        <property name="crfLocker" ref="crfLocker" />
      </bean>
     
     
@@ -119,6 +120,7 @@
     <bean id="openClinicaLogoutHandler" class="org.akaza.openclinica.web.filter.OpenClinicaSecurityContextLogoutHandler">
         <property name="auditUserLoginDao" ref="auditUserLoginDao"/>
         <property name="dataSource" ref="dataSource"/>
+        <property name="crfLocker" ref="crfLocker" />
     </bean>
     
     <!-- 

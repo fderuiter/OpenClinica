@@ -41,11 +41,14 @@ public class CRFLocker implements Serializable {
     public boolean lock(int crfId, int userId) {
         if (jdbcTemplate != null) {
             try {
+                Integer ownerId = getLockOwner(crfId);
+                if (ownerId != null) {
+                    return ownerId.equals(userId);
+                }
                 jdbcTemplate.update("INSERT INTO crf_lock_registry (crf_id, user_id) VALUES (?, ?)", crfId, userId);
                 return true;
             } catch (DuplicateKeyException e) {
-                Integer ownerId = getLockOwner(crfId);
-                return ownerId != null && ownerId.equals(userId);
+                return false;
             } catch (DataAccessException e) {
                 return false;
             }
