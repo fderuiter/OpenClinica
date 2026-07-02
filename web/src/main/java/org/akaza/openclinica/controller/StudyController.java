@@ -22,6 +22,12 @@ import org.akaza.openclinica.bean.service.StudyParameterValueBean;
 import org.akaza.openclinica.control.SpringServletAccess;
 import org.akaza.openclinica.control.form.FormProcessor;
 import org.akaza.openclinica.control.form.Validator;
+import org.akaza.openclinica.controller.validator.StudyValidator;
+import org.akaza.openclinica.controller.validator.SiteValidator;
+import org.akaza.openclinica.controller.validator.EventDefinitionValidator;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.akaza.openclinica.dao.hibernate.AuthoritiesDao;
 import org.akaza.openclinica.dao.login.UserAccountDAO;
 import org.akaza.openclinica.dao.managestudy.StudyDAO;
@@ -42,6 +48,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,6 +73,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+@Api(value = "Study API", description = "Operations pertaining to Studies in OpenClinica")
 @Controller
 @RequestMapping(value = "/auth/api/v1/studies")
 public class StudyController {
@@ -148,6 +162,7 @@ public class StudyController {
 
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
+	@ApiOperation(value = "Create a study", response = ResponseEntity.class)
 	public ResponseEntity<Object> createNewStudy(HttpServletRequest request, @RequestBody HashMap<String, Object> map) throws Exception {
 		ArrayList<ErrorObject> errorObjects = new ArrayList();
 		StudyBean studyBean = null;
@@ -294,66 +309,28 @@ public class StudyController {
 
 		}
 
-		Validator v0 = new Validator(request);
-		v0.addValidation("name", Validator.NO_BLANKS);
-		HashMap vError0 = v0.validate();
-		if (!vError0.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Study Object", "This field cannot be blank.", "BriefTitle");
-			errorObjects.add(errorOBject);
-		}
+		
+        StudyValidator studyValidator = new StudyValidator();
+        Errors springErrors = new BeanPropertyBindingResult(studyDTO, "studyDTO");
+        studyValidator.validate(studyDTO, springErrors);
+        
+        if (springErrors.hasErrors()) {
+            for (FieldError fe : springErrors.getFieldErrors()) {
+                ErrorObject errorOBject = createErrorObject("Study Object", fe.getDefaultMessage(), fe.getField());
+                errorObjects.add(errorOBject);
+            }
+        }
+        
+        if (uniqueProtocolID != null) {
+            Validator v6 = new Validator(request);
+            HashMap vError6 = v6.validate();
+            validateUniqueProId(request, vError6);
+            if (!vError6.isEmpty()) {
+                ErrorObject errorOBject = createErrorObject("Study Object", "Unique Protocol Id exist in the System", "UniqueProtocolId");
+                errorObjects.add(errorOBject);
+            }
+        }
 
-		Validator v1 = new Validator(request);
-		v1.addValidation("uniqueProId", Validator.NO_BLANKS);
-		HashMap vError1 = v1.validate();
-		if (!vError1.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Study Object", "This field cannot be blank.", "UniqueProtocolId");
-			errorObjects.add(errorOBject);
-		}
-		Validator v2 = new Validator(request);
-		v2.addValidation("description", Validator.NO_BLANKS);
-		HashMap vError2 = v2.validate();
-		if (!vError2.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Study Object", "This field cannot be blank.", "BriefSummary");
-			errorObjects.add(errorOBject);
-		}
-		Validator v3 = new Validator(request);
-		v3.addValidation("prinInvestigator", Validator.NO_BLANKS);
-		HashMap vError3 = v3.validate();
-		if (!vError3.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Study Object", "This field cannot be blank.", "PrincipleInvestigator");
-			errorObjects.add(errorOBject);
-		}
-		Validator v4 = new Validator(request);
-		v4.addValidation("sponsor", Validator.NO_BLANKS);
-		HashMap vError4 = v4.validate();
-		if (!vError4.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Study Object", "This field cannot be blank.", "Sponsor");
-			errorObjects.add(errorOBject);
-		}
-		Validator v5 = new Validator(request);
-		v5.addValidation("startDate", Validator.NO_BLANKS);
-		HashMap vError5 = v5.validate();
-		if (!vError5.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Study Object", "This field cannot be blank.", "StartDate");
-			errorObjects.add(errorOBject);
-		}
-
-		Validator v6 = new Validator(request);
-		HashMap vError6 = v6.validate();
-		if (uniqueProtocolID != null)
-			validateUniqueProId(request, vError6);
-		if (!vError6.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Study Object", "Unique Protocol Id exist in the System", "UniqueProtocolId");
-			errorObjects.add(errorOBject);
-		}
-
-		Validator v7 = new Validator(request);
-		v7.addValidation("expectedTotalEnrollment", Validator.NO_BLANKS);
-		HashMap vError7 = v7.validate();
-		if (!vError7.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Study Object", "This field cannot be blank.", "ExpectedTotalEnrollment");
-			errorObjects.add(errorOBject);
-		}
 
 		if (protocolType != null && !verifyProtocolTypeExist(protocolType)) {
 			ErrorObject errorOBject = createErrorObject("Study Object", "Protocol Type is not Valid", "ProtocolType");
@@ -468,6 +445,7 @@ public class StudyController {
 	 */
 
 	@RequestMapping(value = "/{uniqueProtocolID}/sites", method = RequestMethod.POST)
+	@ApiOperation(value = "Create a site", response = ResponseEntity.class)
 	public ResponseEntity<Object> createNewSites(HttpServletRequest request, @RequestBody HashMap<String, Object> map, @PathVariable("uniqueProtocolID") String uniqueProtocolID) throws Exception {
 		System.out.println("I'm in Create Sites ");
 		ArrayList<ErrorObject> errorObjects = new ArrayList();
@@ -620,44 +598,28 @@ public class StudyController {
 			}
 		}
 
-		Validator v1 = new Validator(request);
-		v1.addValidation("uniqueProId", Validator.NO_BLANKS);
-		HashMap vError1 = v1.validate();
-		if (!vError1.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Site Object", "This field cannot be blank.", "UniqueProtocolId");
-			errorObjects.add(errorOBject);
-		}
-		Validator v2 = new Validator(request);
-		v2.addValidation("name", Validator.NO_BLANKS);
-		HashMap vError2 = v2.validate();
-		if (!vError2.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Site Object", "This field cannot be blank.", "BriefTitle");
-			errorObjects.add(errorOBject);
-		}
-		Validator v3 = new Validator(request);
-		v3.addValidation("prinInvestigator", Validator.NO_BLANKS);
-		HashMap vError3 = v3.validate();
-		if (!vError3.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Site Object", "This field cannot be blank.", "PrincipleInvestigator");
-			errorObjects.add(errorOBject);
-		}
+		
+        SiteValidator siteValidator = new SiteValidator();
+        Errors springErrors = new BeanPropertyBindingResult(siteDTO, "siteDTO");
+        siteValidator.validate(siteDTO, springErrors);
+        
+        if (springErrors.hasErrors()) {
+            for (FieldError fe : springErrors.getFieldErrors()) {
+                ErrorObject errorOBject = createErrorObject("Site Object", fe.getDefaultMessage(), fe.getField());
+                errorObjects.add(errorOBject);
+            }
+        }
 
-		Validator v6 = new Validator(request);
-		HashMap vError6 = v6.validate();
-		if (uniqueProtocolID != null)
-			validateUniqueProId(request, vError6);
-		if (!vError6.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Site Object", "Unique Protocol Id exist in the System", "UniqueProtocolId");
-			errorObjects.add(errorOBject);
-		}
+        if (uniqueProtocolID != null) {
+            Validator v6 = new Validator(request);
+            HashMap vError6 = v6.validate();
+            validateUniqueProId(request, vError6);
+            if (!vError6.isEmpty()) {
+                ErrorObject errorOBject = createErrorObject("Site Object", "Unique Protocol Id exist in the System", "UniqueProtocolId");
+                errorObjects.add(errorOBject);
+            }
+        }
 
-		Validator v7 = new Validator(request);
-		v7.addValidation("expectedTotalEnrollment", Validator.NO_BLANKS);
-		HashMap vError7 = v7.validate();
-		if (!vError7.isEmpty()) {
-			ErrorObject errorOBject = createErrorObject("Site Object", "This field cannot be blank.", "ExpectedTotalEnrollment");
-			errorObjects.add(errorOBject);
-		}
 
 		if (request.getAttribute("name") != null && ((String) request.getAttribute("name")).length() > 100) {
 			ErrorObject errorOBject = createErrorObject("Site Object", "BriefTitle Length exceeds the max length 100", "BriefTitle");
@@ -758,6 +720,7 @@ public class StudyController {
 	 *                    }
 	 */
 	@RequestMapping(value = "/{uniqueProtocolID}/eventdefinitions", method = RequestMethod.POST)
+	@ApiOperation(value = "Create a study event definition", response = ResponseEntity.class)
 	public ResponseEntity<Object> createEventDefinition(HttpServletRequest request, @RequestBody HashMap<String, Object> map, @PathVariable("uniqueProtocolID") String uniqueProtocolID)
 			throws Exception {
 		System.out.println("I'm in Create Event Definition ");
