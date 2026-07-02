@@ -150,7 +150,7 @@ public class MetaDataReportBean extends OdmXmlReportBean {
     public void addNodeRulesData(MetaDataVersionBean a) {
 
         RulesPostImportContainer rpic = new RulesPostImportContainer();
-        rpic.populate(a.getRuleSetRules());
+        rpic.populate((java.util.List)a.getRuleSetRules());
 
         if (rpic.getRuleSets() != null && rpic.getRuleSets().size() > 0) {
             StringBuffer xml = this.getXmlOutput();

@@ -255,7 +255,7 @@ public class MetadataUnit extends OdmUnit {
             // metadata, this.getODMBean().getODMVersion());
             // studyBase.setNullClSet(nullCodeSet);
             oedao.getMetadata(parentStudyId, studyId, metadata, this.odmBean.getODMVersion());
-            metadata.setRuleSetRules(getRuleSetRuleDao().findByRuleSetStudyIdAndStatusAvail(parentStudyId));
+            metadata.setRuleSetRules((java.util.List)getRuleSetRuleDao().findByRuleSetStudyIdAndStatusAvail(parentStudyId));
         }
     }
 

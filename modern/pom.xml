@@ -51,6 +51,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.akaza.openclinica</groupId>
+            <artifactId>domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-base</artifactId>
             <version>6.8.0</version>

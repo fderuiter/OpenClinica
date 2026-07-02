@@ -8,8 +8,8 @@
 package org.akaza.openclinica.bean.core;
 
 import org.akaza.openclinica.bean.login.UserAccountBean;
-import org.akaza.openclinica.core.SessionManager;
-import org.akaza.openclinica.dao.login.UserAccountDAO;
+
+
 
 import java.util.Date;
 
@@ -48,8 +48,7 @@ public class AuditableEntityBean extends EntityBean {
 
     protected Status oldStatus;
 
-    // used to retrieve the owner and updater when needed
-    protected UserAccountDAO udao;
+    public static java.util.function.Function<Integer, UserAccountBean> userLoader;
 
     public AuditableEntityBean() {
         createdDate = new Date(0);
@@ -59,7 +58,7 @@ public class AuditableEntityBean extends EntityBean {
         updaterId = 0;
         updater = null;
         status = null;
-        udao = null;
+        
     }
 
     /**
@@ -71,12 +70,8 @@ public class AuditableEntityBean extends EntityBean {
         }
 
         try {
-            if (udao == null) {
-                //SessionManager sm = new SessionManager();
-                udao = new UserAccountDAO(SessionManager.getStaticDataSource());
-            }
-            if (owner == null || owner.getId() != ownerId) {
-                owner = (UserAccountBean) udao.findByPK(ownerId);
+            if (userLoader != null && ownerId > 0) {
+                owner = userLoader.apply(ownerId);
             }
         } catch (Exception e) {
             owner = null;
@@ -127,28 +122,12 @@ public class AuditableEntityBean extends EntityBean {
         }
 
         try {
-            if (udao == null) {
-                //SessionManager sm = new SessionManager();
-                udao = new UserAccountDAO(SessionManager.getStaticDataSource());
+            if (userLoader != null && updaterId > 0) {
+                updater = userLoader.apply(updaterId);
             }
-            if (updater == null || updater.getId() != updaterId) {
-                updater = (UserAccountBean) udao.findByPK(updaterId);
-            }
-
         } catch (Exception e) {
             updater = null;
         }
-
-        // try {
-        // if (udao == null) {
-        // SessionManager sm = new SessionManager(null, "tomh");
-        // udao = new UserAccountDAO(sm.getDataSource());
-        // }
-        // updater = (UserAccountBean) udao.findByPK(updaterId);
-        // }
-        // catch (Exception e) {
-        // updater = null;
-        // }
 
         return updater;
     }
