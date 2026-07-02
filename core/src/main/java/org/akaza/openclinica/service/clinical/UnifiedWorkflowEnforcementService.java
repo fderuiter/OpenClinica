@@ -249,7 +249,20 @@ public class UnifiedWorkflowEnforcementService {
     @Transactional
     public EventCrf saveEventCrf(EventCrf eventCrf) {
         validateLock(eventCrf);
-        return eventCrfDao.saveOrUpdate(eventCrf);
+        EventCrf saved = eventCrfDao.saveOrUpdate(eventCrf);
+        try {
+            if (org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext() != null) {
+                org.akaza.openclinica.service.streamer.AIEventStreamerService streamer = 
+                    (org.akaza.openclinica.service.streamer.AIEventStreamerService) 
+                    org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("aiEventStreamerService");
+                if (streamer != null && saved.getEventCrfId() > 0) {
+                    streamer.streamEventCrfAsync(saved.getEventCrfId());
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("Could not trigger AIEventStreamerService", e);
+        }
+        return saved;
     }
 
     @Transactional
