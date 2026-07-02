@@ -15,6 +15,7 @@ nav:
     - Participate Setup: configuration/participate_setup.md
     - Randomize Setup: configuration/randomize_setup.md
     - Rules XML Reference: configuration/rules.md
+    - Lifecycle Management: configuration/lifecycle_management.md
   - Maintenance:
     - Import Data: maintenance/import_data.md
     - Verify Import Rule: maintenance/verify_import_rule.md
