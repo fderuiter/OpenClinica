@@ -40,13 +40,18 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.CommonsClientHttpRequestFactory;
+//import org.springframework.security.oauth2.common.json.JSONException;
+//import org.springframework.security.oauth2.common.json.JSONObject;
+import org.json.JSONObject;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
-import org.akaza.openclinica.randomize.ApiClient;
-import org.akaza.openclinica.randomize.ApiException;
-import org.akaza.openclinica.randomize.api.DefaultApi;
-import org.akaza.openclinica.randomize.model.GetRandomisation200Response;
-import org.apache.commons.codec.binary.Base64;
-import java.nio.charset.Charset;
 
 public class RandomizeService extends RandomizationRegistrar {
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
@@ -65,6 +70,7 @@ public class RandomizeService extends RandomizationRegistrar {
     private StudyEventDAO studyEventDAO;
     private EventDefinitionCRFDAO eventDefinitionCRFDAO;
     private ExpressionService expressionService;
+    CommonsClientHttpRequestFactory requestFactory = new CommonsClientHttpRequestFactory();
     public static final int RANDOMIZATION_READ_TIMEOUT = 10000;
     StudyDAO sdao=null;
 
@@ -112,58 +118,31 @@ public class RandomizeService extends RandomizationRegistrar {
         String password = randomization.getPassword();
         String timezone = "America/New_York";
 
-        ApiClient client = new ApiClient();
-        client.setBasePath(randomiseUrl);
-        String auth = username + ":" + password;
-        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
-        String authHeader = "Basic " + new String(encodedAuth);
-        client.setRequestInterceptor(builder -> builder.header("Authorization", authHeader));
-        
-        DefaultApi api = new DefaultApi(client);
+            // String randomiseUrl = "https://evaluation.sealedenvelope.com/redpill/seti2";
+            // String username = "oc";
+            // String password = "secret";
 
-        try {
-            GetRandomisation200Response randResponse = api.getRandomisation(identifier);
-            if (randResponse != null && randResponse.getCode() != null) {
-                return randResponse.getCode();
-            }
-        } catch (ApiException e) {
-            logger.error("Failed to retrieve randomisation: " + e.getMessage());
-        }
-        
-        try {
-            api.addSite(siteIdentifier, name, timezone);
-        } catch (ApiException e) {
-            logger.error("Failed to add or update site: " + e.getMessage());
-        }
-
-        int i = 1;
-        String exp = "";
-        String[] questions = new String[10];
-        for (StratificationFactorBean stratificationFactorBean : stratificationFactorBeans) {
-            exp = stratificationFactorBean.getStratificationFactor().getValue();
-            if (exp.startsWith("SS.")) {
-                questions[i - 1] = getStudySubjectAttrValue(exp, eventCrfBean, ruleSet);
+            HttpHeaders headers = createHeaders(username, password);
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            // retrieve json object if Randomization exist ,otherwise return a null object
+            JSONObject jsonRandObject = retrieveARandomisation(randomiseUrl, ssBean, headers);
+            if (jsonRandObject != null) {
+                return (String) jsonRandObject.get("code");
             } else {
-                questions[i - 1] = getExpressionValue(exp, eventCrfBean, ruleSet);
-            }
-            i++;
-        }
+                // if Site identifier exists ,then update otherwise create new Site identifier
+                addOrUpdateASite(randomiseUrl, sBean, headers, timezone);
 
-        try {
-            GetRandomisation200Response randResponse = api.randomiseSubject(
-                identifier, siteIdentifier, user, 
-                questions[0], questions[1], questions[2], questions[3], questions[4], 
-                questions[5], questions[6], questions[7], questions[8], questions[9]
-            );
-            if (randResponse != null && randResponse.getCode() != null) {
-                return randResponse.getCode();
+                // send for Randomization
+                JSONObject jsonRandomisedObject = randomiseSubject(randomiseUrl, ssBean, sBean, headers, user, stratificationFactorBeans, eventCrfBean, ruleSet);
+                if (jsonRandomisedObject != null)
+                    return (String) jsonRandomisedObject.get("code");
+                else
+                    return "";
             }
-        } catch (ApiException e) {
-            logger.error("Failed to randomise subject: " + e.getMessage());
-            logger.error(ExceptionUtils.getStackTrace(e));
-        }
-        return "";
-    }
+          }
+
+
+
 
     private String getExpressionValue(String expr, EventCRFBean eventCrfBean, RuleSetBean ruleSet) {
         String expression = getExpressionService().constructFullExpressionIfPartialProvided(expr, ruleSet.getTarget().getValue());
@@ -208,6 +187,125 @@ public class RandomizeService extends RandomizationRegistrar {
                 value = sgBean.getName();
         }
         return value;
+    }
+
+    private JSONObject retrieveARandomisation(String randomiseUrl, StudySubjectBean studySubject, HttpHeaders headers) {
+        org.akaza.openclinica.sdk.ApiClient client = new org.akaza.openclinica.sdk.ApiClient();
+        client.updateBaseUri(randomiseUrl);
+        
+        // Extract basic auth credentials from headers
+        String authHeader = headers.getFirst("Authorization");
+        if (authHeader != null && authHeader.startsWith("Basic ")) {
+            String base64Credentials = authHeader.substring("Basic ".length()).trim();
+            String credentials = new String(org.apache.commons.codec.binary.Base64.decodeBase64(base64Credentials.getBytes(Charset.forName("US-ASCII"))), Charset.forName("US-ASCII"));
+            String[] values = credentials.split(":", 2);
+            if (values.length == 2) {
+                client.setRequestInterceptor(requestBuilder -> {
+                    requestBuilder.header("Authorization", authHeader);
+                });
+            }
+        }
+        
+        org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
+
+        try {
+            Object response = api.apiRandomisationGet(studySubject.getOid());
+            if (response != null) {
+                // response is usually a Map from Jackson
+                return new JSONObject(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(response));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return null;
+
+    }
+
+    private void addOrUpdateASite(String randomiseUrl, StudyBean studyBean, HttpHeaders headers, String timezone) {
+        // mehtod : POST
+        org.akaza.openclinica.sdk.ApiClient client = new org.akaza.openclinica.sdk.ApiClient();
+        client.updateBaseUri(randomiseUrl);
+        String authHeader = headers.getFirst("Authorization");
+        if (authHeader != null && authHeader.startsWith("Basic ")) {
+            client.setRequestInterceptor(requestBuilder -> {
+                requestBuilder.header("Authorization", authHeader);
+            });
+        }
+        org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
+        
+        org.akaza.openclinica.sdk.model.SiteForm siteForm = new org.akaza.openclinica.sdk.model.SiteForm();
+        siteForm.setSiteIdentifier(studyBean.getOid());
+        siteForm.setName(studyBean.getName());
+        siteForm.setTimezone(timezone);
+
+        try {
+            api.apiSitesPost(siteForm);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+    }
+
+    private JSONObject randomiseSubject(String randomiseUrl, StudySubjectBean studySubject, StudyBean studyBean, HttpHeaders headers, String user,
+            List<StratificationFactorBean> stratificationFactorBeans, EventCRFBean eventCrfBean, RuleSetBean ruleSet) {
+        // method : POST
+        int i = 1;
+        String exp = "";
+
+        org.akaza.openclinica.sdk.ApiClient client = new org.akaza.openclinica.sdk.ApiClient();
+        client.updateBaseUri(randomiseUrl);
+        String authHeader = headers.getFirst("Authorization");
+        if (authHeader != null && authHeader.startsWith("Basic ")) {
+            client.setRequestInterceptor(requestBuilder -> {
+                requestBuilder.header("Authorization", authHeader);
+            });
+        }
+        org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
+
+        java.util.Map<String, Object> subjectMap = new java.util.HashMap<>();
+        subjectMap.put("identifier", String.valueOf(studySubject.getOid()));
+        subjectMap.put("siteIdentifier", studyBean.getOid());
+        subjectMap.put("user", user);
+        for (StratificationFactorBean stratificationFactorBean : stratificationFactorBeans) {
+            exp = stratificationFactorBean.getStratificationFactor().getValue();
+            if (exp.startsWith("SS.")) {
+                subjectMap.put("question" + i, getStudySubjectAttrValue(exp, eventCrfBean, ruleSet));
+
+            } else {
+
+                String output = getExpressionValue(exp, eventCrfBean, ruleSet);
+                subjectMap.put("question" + i, output);
+            }
+            i++;
+        }
+
+        JSONObject jsonObject = null;
+
+        try {
+            String body = api.apiRandomisePost(subjectMap);
+            jsonObject = new JSONObject(body);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
+            System.out.println(ExceptionUtils.getStackTrace(e));
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+
+        return jsonObject;
+    }
+
+    HttpHeaders createHeaders(final String username, final String password) {
+        return new HttpHeaders() {
+            {
+                String auth = username + ":" + password;
+                byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+                String authHeader = "Basic " + new String(encodedAuth);
+                set("Authorization", authHeader);
+            }
+        };
     }
 
     public ExpressionService getExpressionService() {

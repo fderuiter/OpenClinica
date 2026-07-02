@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.akaza.openclinica.modern.dto.ApiResponse;
 
 import java.util.Map;
 import java.util.List;
@@ -28,48 +29,48 @@ public class InteropController {
     private InteropService interopService;
 
     @PostMapping("/fhir")
-    public ResponseEntity<String> ingestFhir(@RequestBody String payload) {
+    public ResponseEntity<ApiResponse<String>> ingestFhir(@RequestBody String payload) {
         try {
             IParser parser = fhirContext.newJsonParser();
             Patient patient = parser.parseResource(Patient.class, payload);
             interopService.validate(patient.getIdBase(), payload);
-            return ResponseEntity.ok("FHIR R4 resource received: " + patient.getIdBase());
+            return ResponseEntity.ok(new ApiResponse<>("FHIR R4 resource received: " + patient.getIdBase()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid FHIR payload");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>("Invalid FHIR payload"));
         }
     }
 
     @PostMapping("/hl7")
-    public ResponseEntity<String> ingestHl7(@RequestBody String payload) {
+    public ResponseEntity<ApiResponse<String>> ingestHl7(@RequestBody String payload) {
         try {
             PipeParser parser = hl7Context.getPipeParser();
             Message message = parser.parse(payload);
             interopService.validate(message.getName(), payload);
-            return ResponseEntity.ok("HL7 v2 message parsed: " + message.getName());
+            return ResponseEntity.ok(new ApiResponse<>("HL7 v2 message parsed: " + message.getName()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid HL7 payload");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>("Invalid HL7 payload"));
         }
     }
 
     @GetMapping("/mapping/data")
-    public ResponseEntity<Map<String, String>> getMappingInterface() {
-        return ResponseEntity.ok(mappings);
+    public ResponseEntity<ApiResponse<Map<String, String>>> getMappingInterface() {
+        return ResponseEntity.ok(new ApiResponse<>(mappings));
     }
 
     @PostMapping("/mapping/data")
-    public ResponseEntity<String> saveMapping(@RequestBody Map<String, String> newMappings) {
+    public ResponseEntity<ApiResponse<String>> saveMapping(@RequestBody Map<String, String> newMappings) {
         mappings.putAll(newMappings);
-        return ResponseEntity.ok("Mapping saved");
+        return ResponseEntity.ok(new ApiResponse<>("Mapping saved"));
     }
     
     @GetMapping("/pipeline/review")
-    public ResponseEntity<List<String>> pipelineReview() {
-        return ResponseEntity.ok(interopService.getReviewQueue());
+    public ResponseEntity<ApiResponse<List<String>>> pipelineReview() {
+        return ResponseEntity.ok(new ApiResponse<>(interopService.getReviewQueue()));
     }
 
     @PostMapping("/pipeline/commit")
-    public ResponseEntity<String> pipelineCommit(@RequestParam String recordId) {
+    public ResponseEntity<ApiResponse<String>> pipelineCommit(@RequestParam String recordId) {
         interopService.commit(recordId);
-        return ResponseEntity.ok("Data committed");
+        return ResponseEntity.ok(new ApiResponse<>("Data committed"));
     }
 }

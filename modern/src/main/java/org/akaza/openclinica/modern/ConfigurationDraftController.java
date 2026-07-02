@@ -1,6 +1,7 @@
 package org.akaza.openclinica.modern;
 
 import org.akaza.openclinica.modern.model.ConfigurationDraft;
+import org.akaza.openclinica.modern.dto.ApiResponse;
 import org.akaza.openclinica.modern.service.ConfigurationDraftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +21,17 @@ public class ConfigurationDraftController {
     }
 
     @PostMapping("/draft")
-    public ResponseEntity<ConfigurationDraft> createDraft(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<ApiResponse<ConfigurationDraft>> createDraft(@RequestBody Map<String, String> payload) {
         String userName = payload.getOrDefault("userName", "system"); // Should come from security context
         String draftData = payload.getOrDefault("draftData", "{}");
         ConfigurationDraft draft = draftService.saveDraft(userName, "DATASET", draftData);
-        return ResponseEntity.ok(draft);
+        return ResponseEntity.ok(new ApiResponse<>(draft));
     }
 
     @GetMapping("/draft/{id}")
-    public ResponseEntity<ConfigurationDraft> getDraft(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<ConfigurationDraft>> getDraft(@PathVariable String id) {
         ConfigurationDraft draft = draftService.getDraft(id);
-        return ResponseEntity.ok(draft);
+        return ResponseEntity.ok(new ApiResponse<>(draft));
     }
 
     @PutMapping("/draft/{id}")
@@ -41,11 +42,11 @@ public class ConfigurationDraftController {
     }
 
     @PostMapping("/draft/{id}/commit")
-    public ResponseEntity<String> commitDraft(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<String>> commitDraft(@PathVariable String id) {
         ConfigurationDraft draft = draftService.getDraft(id);
         // Normally would convert draftData to DatasetBean and save it using dataset DAOs
         // For the headless foundation, deleting the draft signifies a successful commit
         draftService.deleteDraft(id);
-        return ResponseEntity.ok("Dataset successfully created and committed.");
+        return ResponseEntity.ok(new ApiResponse<>("Dataset successfully created and committed."));
     }
 }

@@ -1,12 +1,14 @@
 package org.akaza.openclinica.modern.dto;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ApiResponse<T> {
     private T data;
-    private List<ApiError> errors;
-    private Map<String, Object> meta;
+    private List<ApiError> errors = new ArrayList<>();
+    private Map<String, Object> meta = new HashMap<>();
 
     public ApiResponse() {}
 

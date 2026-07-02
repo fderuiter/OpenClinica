@@ -249,6 +249,11 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>pre-integration-test</id>
                         <goals>
                             <goal>start</goal>
@@ -357,12 +362,38 @@
                             <inputSpec>${project.build.directory}/generated-docs/openclinica-openapi.json</inputSpec>
                             <generatorName>java</generatorName>
                             <output>${project.build.directory}/generated-sdk</output>
+                            <groupId>org.akaza.openclinica</groupId>
+                            <artifactId>unified-sdk</artifactId>
+                            <artifactVersion>${project.version}</artifactVersion>
                             <apiPackage>org.akaza.openclinica.sdk.api</apiPackage>
                             <modelPackage>org.akaza.openclinica.sdk.model</modelPackage>
                             <configOptions>
                                 <ignoreUnknownJacksonAnnotation>true</ignoreUnknownJacksonAnnotation>
                             </configOptions>
                             <skipValidateSpec>true</skipValidateSpec>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>build-unified-sdk</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mvn</executable>
+                            <workingDirectory>${project.build.directory}/generated-sdk</workingDirectory>
+                            <arguments>
+                                <argument>clean</argument>
+                                <argument>install</argument>
+                                <argument>-DskipTests</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
