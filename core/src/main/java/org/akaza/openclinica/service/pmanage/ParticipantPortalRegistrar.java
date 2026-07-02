@@ -31,7 +31,7 @@ public class ParticipantPortalRegistrar {
 
         try {
             Authorization[] response = rest.getForObject(pManageUrl, Authorization[].class);
-            if (response.length > 0 && response[0].getAuthorizationStatus() != null)
+            if (response != null && response.length > 0 && response[0].getAuthorizationStatus() != null)
                 return response[0];
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -52,7 +52,7 @@ public class ParticipantPortalRegistrar {
         RestTemplate rest = new RestTemplate(requestFactory);
         try {
             Authorization[] response = rest.getForObject(pManageUrl, Authorization[].class);
-            if (response.length > 0 && response[0].getAuthorizationStatus() != null)
+            if (response != null && response.length > 0 && response[0].getAuthorizationStatus() != null)
                 return response[0].getAuthorizationStatus().getStatus();
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -71,11 +71,11 @@ public class ParticipantPortalRegistrar {
             if (!validHostNameCheck(hostName))
                 return INVALID;
             response = rest.getForObject(pManageUrl, String.class);
-            if (response.equals("UNAVAILABLE"))
+            if ("UNAVAILABLE".equals(response))
                 return UNAVAILABLE;
-            else if (response.equals("INVALID"))
+            else if ("INVALID".equals(response))
                 return INVALID;
-            else if (response.equals("AVAILABLE"))
+            else if ("AVAILABLE".equals(response))
                 return AVAILABLE;
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -165,7 +165,7 @@ public class ParticipantPortalRegistrar {
         RestTemplate rest = new RestTemplate(requestFactory);
         try {
             Authorization[] response = rest.getForObject(pManageUrlFull, Authorization[].class);
-            if (response.length > 0 && response[0].getStudy() != null && response[0].getStudy().getHost() != null
+            if (response != null && response.length > 0 && response[0].getStudy() != null && response[0].getStudy().getHost() != null
                     && !response[0].getStudy().getHost().equals("")) {
                 URL url = new URL(pManageUrl);
                 String port = "";

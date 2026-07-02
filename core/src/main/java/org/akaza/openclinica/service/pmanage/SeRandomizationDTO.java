@@ -1,5 +1,8 @@
 package org.akaza.openclinica.service.pmanage;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SeRandomizationDTO {
 
     private Long id = null;
