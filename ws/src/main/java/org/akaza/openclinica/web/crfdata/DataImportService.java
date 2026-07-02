@@ -207,11 +207,17 @@ public class DataImportService {
 
     }
 
-    public ArrayList<String> submitData(ODMContainer odmContainer, DataSource dataSource, StudyBean studyBean, UserAccountBean userBean,
-            List<DisplayItemBeanWrapper> displayItemBeanWrappers, Map<Integer, String> importedCRFStatuses) throws Exception {
+    public ArrayList<String> submitData(final ODMContainer odmContainer, final DataSource dataSource, final StudyBean studyBean, final UserAccountBean userBean,
+            final List<DisplayItemBeanWrapper> displayItemBeanWrappers, final Map<Integer, String> importedCRFStatuses) throws Exception {
 
-        java.util.Set<Integer> lockedCrfIds = new java.util.HashSet<Integer>();
-        try {
+        org.springframework.transaction.support.TransactionTemplate transactionTemplate = 
+            (org.springframework.transaction.support.TransactionTemplate) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("sharedTransactionTemplate");
+        
+        return transactionTemplate.execute(new org.springframework.transaction.support.TransactionCallback<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> doInTransaction(org.springframework.transaction.TransactionStatus status) {
+                java.util.Set<Integer> lockedCrfIds = new java.util.HashSet<Integer>();
+                try {
             boolean discNotesGenerated = false;
 
         ItemDataDAO itemDataDao = new ItemDataDAO(dataSource);
@@ -340,7 +346,10 @@ public class DataImportService {
         } else {
             return getReturnList("warn", "", auditMsg.toString());
         }
-        } finally {
+                } catch (Exception e) {
+                    status.setRollbackOnly();
+                    throw new RuntimeException("Transaction was rolled back: " + e.getMessage(), e);
+                } finally {
             try {
                 org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService unifiedService = 
                     org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext()
@@ -352,6 +361,8 @@ public class DataImportService {
                 logger.error("Error unlocking CRFs during SOAP data import", e);
             }
         }
+            }
+        });
     }
 
     public DiscrepancyNoteBean createDiscrepancyNote(ItemBean itemBean, String message, EventCRFBean eventCrfBean, DisplayItemBean displayItemBean,
