@@ -8,9 +8,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta name="gwt:property" content="locale=${pageContext.request.locale}">
     <title><decorator:title default="OpenClinica" /></title>
-    <script type="text/javascript" language="javascript" src="../gwt/GwtMenu/org.akaza.openclinica.gwt.GwtMenu.nocache.js"></script>
     <script type="text/javascript" language="javascript" src="../includes/prototype.js"></script>
     <script type="text/javascript" language="javascript" src="../includes/global_functions_javascript.js"></script>
     <script type="text/javascript" language="javascript" src="../includes/Tabs.js"></script>
@@ -24,7 +22,6 @@
     <!-- End -->
     <link rel="stylesheet" href="../includes/styles_updated.css" type="text/css">
     <link rel="stylesheet" href="../includes/proto_styles.css" type="text/css">
-    <link rel="stylesheet" href="../gwt/GwtMenu/GwtMenu.css" type="text/css">
     <decorator:head />
 </head>
 <body>
