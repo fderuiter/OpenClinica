@@ -131,6 +131,7 @@ public class VerifyImportedCRFDataServlet extends SecureController {
     public void processRequest() throws Exception {
         ItemDataDAO itemDataDao = new ItemDataDAO(sm.getDataSource());
         itemDataDao.setFormatDates(false);
+        itemDataDao.setBatchingEnabled(true);
         EventCRFDAO eventCrfDao = new EventCRFDAO(sm.getDataSource());
         CrfBusinessLogicHelper crfBusinessLogicHelper = new CrfBusinessLogicHelper(sm.getDataSource());
         String action = request.getParameter("action");
@@ -262,17 +263,6 @@ public class VerifyImportedCRFDataServlet extends SecureController {
                             itemDataDao.create(displayItemBean.getData());
                             logger.info("created: " + displayItemBean.getData().getItemId() + "event CRF ID = " + eventCrfBean.getId() + "CRF VERSION ID ="
                                     + eventCrfBean.getCRFVersionId());
-
-                            // does this dao function work for repeating
-                            // events/groups?
-                            // ItemDataBean itemDataBean =
-                            // itemDataDao.findByEventCRFIdAndItemName(
-                            // eventCrfBean,
-                            // displayItemBean.getItem().getName());
-                            ItemDataBean itemDataBean2 = itemDataDao.findByItemIdAndEventCRFIdAndOrdinal(displayItemBean.getItem().getId(),
-                                    eventCrfBean.getId(), displayItemBean.getData().getOrdinal());
-                            logger.info("found: id " + itemDataBean2.getId() + " name " + itemDataBean2.getName());
-                            displayItemBean.getData().setId(itemDataBean2.getId());
                         }
                         // logger.info("created item data bean:
                         // "+displayItemBean.getData().getId());
@@ -289,6 +279,7 @@ public class VerifyImportedCRFDataServlet extends SecureController {
                         String itemOid = displayItemBean.getItem().getOid() + "_" + wrapper.getStudyEventRepeatKey() + "_"
                                 + displayItemBean.getData().getOrdinal() + "_" + wrapper.getStudySubjectOid();
                         if (wrapper.getValidationErrors().containsKey(itemOid)) {
+                            itemDataDao.flushBatch();
                             ArrayList messageList = (ArrayList) wrapper.getValidationErrors().get(itemOid);
                             // if
                             // (wrapper.getValidationErrors().containsKey(ibean
@@ -323,6 +314,7 @@ public class VerifyImportedCRFDataServlet extends SecureController {
                             eventCrfInts.add(new Integer(eventCrfBean.getId()));
                         }
                     }
+                    itemDataDao.flushBatch();
                     // Reset the SDV status if item data has been changed or added
                     if (eventCrfBean != null && resetSDV)
                         eventCrfDao.setSDVStatus(false, ub.getId(), eventCrfBean.getId());

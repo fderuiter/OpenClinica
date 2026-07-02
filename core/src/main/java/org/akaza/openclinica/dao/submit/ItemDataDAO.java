@@ -49,6 +49,18 @@ public class ItemDataDAO extends AuditableEntityDAO {
 
     boolean formatDates = true;
 
+    private java.util.List<Integer> idCache = new java.util.ArrayList<Integer>();
+    private java.util.Map<Integer, ItemDataType> dataTypeCache = new java.util.HashMap<Integer, ItemDataType>();
+    private java.util.List<ItemDataBean> batchBuffer = new java.util.ArrayList<ItemDataBean>();
+    private boolean batchingEnabled = false;
+
+    public void setBatchingEnabled(boolean enabled) {
+        this.batchingEnabled = enabled;
+        if (!enabled) {
+            flushBatch();
+        }
+    }
+
     // YW 12-06-2007 <<!!! Be careful when there is item with data-type as
     // "Date".
     // You have to make sure that string pattern conversion has been done before
@@ -406,24 +418,67 @@ public class ItemDataDAO extends AuditableEntityDAO {
             idb.setValue(formatPDate(idb.getValue()));
         }
 
-        HashMap<Integer, Comparable> variables = new HashMap<Integer, Comparable>();
         int id = getNextPK();
-        variables.put(new Integer(1), new Integer(id));
-        variables.put(new Integer(2), new Integer(idb.getEventCRFId()));
-        variables.put(new Integer(3), new Integer(idb.getItemId()));
-        variables.put(new Integer(4), new Integer(idb.getStatus().getId()));
-        variables.put(new Integer(5), idb.getValue());
-        variables.put(new Integer(6), new Integer(idb.getOwnerId()));
-        variables.put(new Integer(7), new Integer(idb.getOrdinal()));
-        variables.put(new Integer(8), new Integer(idb.getStatus().getId()));
-        variables.put(new Integer(9), new Boolean(idb.isDeleted()));
-        this.execute(digester.getQuery("create"), variables);
-
-        if (isQuerySuccessful()) {
-            idb.setId(id);
+        idb.setId(id);
+        
+        if (batchingEnabled) {
+            batchBuffer.add(idb);
+            if (batchBuffer.size() >= 500) {
+                flushBatch();
+            }
+        } else {
+            batchBuffer.add(idb);
+            flushBatch();
         }
 
         return idb;
+    }
+
+    public void flushBatch() {
+        if (batchBuffer.isEmpty()) return;
+        List<HashMap> batchVars = new java.util.ArrayList<HashMap>();
+        for (ItemDataBean idb : batchBuffer) {
+            HashMap<Integer, Comparable> variables = new HashMap<Integer, Comparable>();
+            variables.put(new Integer(1), new Integer(idb.getId()));
+            variables.put(new Integer(2), new Integer(idb.getEventCRFId()));
+            variables.put(new Integer(3), new Integer(idb.getItemId()));
+            variables.put(new Integer(4), new Integer(idb.getStatus().getId()));
+            variables.put(new Integer(5), idb.getValue());
+            variables.put(new Integer(6), new Integer(idb.getOwnerId()));
+            variables.put(new Integer(7), new Integer(idb.getOrdinal()));
+            variables.put(new Integer(8), new Integer(idb.getStatus().getId()));
+            variables.put(new Integer(9), new Boolean(idb.isDeleted()));
+            batchVars.add(variables);
+        }
+        this.executeBatch(digester.getQuery("create"), batchVars);
+        if (!this.isQuerySuccessful()) {
+            throw new RuntimeException("Batch execution failed for ItemData records");
+        }
+        batchBuffer.clear();
+    }
+
+    @Override
+    public int getNextPK() {
+        if (!idCache.isEmpty()) {
+            return idCache.remove(0);
+        }
+        int batchSize = 1000;
+        String query = digester.getQuery(getNextPKName);
+        if (org.akaza.openclinica.dao.core.CoreResources.getDBName().equals("oracle")) {
+            query = query + " connect by level <= " + batchSize;
+        } else {
+            query = query + " from generate_series(1, " + batchSize + ")";
+        }
+        this.unsetTypeExpected();
+        this.setTypeExpected(1, org.akaza.openclinica.dao.core.TypeNames.INT);
+        ArrayList<HashMap<String, ?>> al = select(query);
+        if (al.size() > 0) {
+            for (HashMap<String, ?> h : al) {
+                idCache.add(((Integer) h.get("key")).intValue());
+            }
+            return idCache.remove(0);
+        }
+        return super.getNextPK();
     }
 
     public void batchCreate(List<ItemDataBean> list) {
@@ -489,9 +544,14 @@ public class ItemDataDAO extends AuditableEntityDAO {
      * Small check to make sure the type is a date, tbh
      */
     public ItemDataType getDataType(int itemId) {
+        if (dataTypeCache.containsKey(itemId)) {
+            return dataTypeCache.get(itemId);
+        }
         ItemDAO itemDAO = new ItemDAO(this.getDs());
         ItemBean itemBean = (ItemBean) itemDAO.findByPK(itemId);
-        return itemBean.getDataType();
+        ItemDataType dt = itemBean.getDataType();
+        dataTypeCache.put(itemId, dt);
+        return dt;
     }
 
     // public boolean isPDateType(int itemId) {

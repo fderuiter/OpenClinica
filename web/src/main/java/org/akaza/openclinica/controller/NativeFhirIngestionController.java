@@ -118,6 +118,7 @@ public class NativeFhirIngestionController {
                 boolean resetSDV = false;
                 if (wrapper.isSavable()) {
                     itemDataDao.setFormatDates(false);
+                    itemDataDao.setBatchingEnabled(true);
                     ArrayList<Integer> eventCrfInts = new ArrayList<Integer>();
                     int eventCrfBeanIdProcessed = 0;
                     EventCRFBean eventCrfBean = null;
@@ -146,9 +147,6 @@ public class NativeFhirIngestionController {
                         } else {
                             resetSDV = true;
                             itemDataDao.create(displayItemBean.getData());
-                            ItemDataBean itemDataBean2 = itemDataDao.findByItemIdAndEventCRFIdAndOrdinal(displayItemBean.getItem().getId(),
-                                    eventCrfBean.getId(), displayItemBean.getData().getOrdinal());
-                            displayItemBean.getData().setId(itemDataBean2.getId());
                         }
 
                         if (!eventCrfInts.contains(new Integer(eventCrfBean.getId()))) {
@@ -162,6 +160,7 @@ public class NativeFhirIngestionController {
                             eventCrfInts.add(new Integer(eventCrfBean.getId()));
                         }
                     }
+                    itemDataDao.flushBatch();
                     itemDataDao.setFormatDates(true);
                     if (eventCrfBean != null && resetSDV)
                         eventCrfDao.setSDVStatus(false, ub.getId(), eventCrfBean.getId());
