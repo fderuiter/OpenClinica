@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "vite",
     "test": "vitest run --environment jsdom",
-    "build": "vite build && node inject-bundle.js"
+    "build": "vite build && node inject-bundle.js",
+    "docs": "typedoc --plugin typedoc-plugin-markdown src/main/webapp/js/components/*.jsx --out ../docs/frontend-api"
   },
   "keywords": [],
   "author": "",
@@ -33,6 +35,8 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.3",
     "jsdom": "^29.1.1",
+    "typedoc": "^0.28.19",
+    "typedoc-plugin-markdown": "^4.12.0",
     "vite": "^8.1.0",
     "vitest": "^4.1.9"
   }

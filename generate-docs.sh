@@ -54,6 +54,12 @@ cp README.md docs/project-info.md
 # Generate REST API docs
 npx apidoc -i web/src/main/java -o docs/api
 
+# Generate React Components API docs
+cd web
+npm install
+npm run docs
+cd ..
+
 # Build the documentation site
 mkdocs build
 
