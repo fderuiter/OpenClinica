@@ -19,7 +19,7 @@ import org.springframework.http.client.CommonsClientHttpRequestFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.web.client.RestTemplate;
+
 
 public class RandomizationRegistrar {
 
@@ -42,15 +42,28 @@ public class RandomizationRegistrar {
     // Rest Call to OCUI to get Randomization
     public SeRandomizationDTO getRandomizationDTOObject(String studyOid) {
         String ocUrl = CoreResources.getField("sysURL.base") + "rest2/openrosa/" + studyOid;
-        String randomizationUrl = CoreResources.getField("moduleManager") + "/app/rest/oc/se_randomizations?studyoid=" + studyOid + "&instanceurl=" + ocUrl;
-        CommonsClientHttpRequestFactory requestFactory = new CommonsClientHttpRequestFactory();
-
-        requestFactory.setReadTimeout(RANDOMIZATION_READ_TIMEOUT);
-        RestTemplate rest = new RestTemplate(requestFactory);
-
         try {
-            SeRandomizationDTO response = rest.getForObject(randomizationUrl, SeRandomizationDTO.class);
-            if (response.getStudyOid() != null) {
+            org.akaza.openclinica.sdk.ApiClient client = new org.akaza.openclinica.sdk.ApiClient();
+            client.updateBaseUri(CoreResources.getField("moduleManager"));
+            org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
+            
+            org.akaza.openclinica.sdk.model.SeRandomizationDTO sdkResponse = api.appRestOcSeRandomizationsGet(studyOid, ocUrl);
+            if (sdkResponse.getStudyOid() != null) {
+                SeRandomizationDTO response = new SeRandomizationDTO();
+                response.setId(sdkResponse.getId());
+                response.setUrl(sdkResponse.getUrl());
+                response.setUsername(sdkResponse.getUsername());
+                response.setPassword(sdkResponse.getPassword());
+                response.setStatusId(sdkResponse.getStatusId());
+                response.setStatus(sdkResponse.getStatus());
+                response.setInstanceUrl(sdkResponse.getInstanceUrl());
+                response.setStudyOid(sdkResponse.getStudyOid());
+                response.setOcUser_username(sdkResponse.getOcUserUsername());
+                response.setOcUser_name(sdkResponse.getOcUserName());
+                response.setOcUser_lastname(sdkResponse.getOcUserLastname());
+                response.setOcUser_emailAddress(sdkResponse.getOcUserEmailAddress());
+                response.setStudyName(sdkResponse.getStudyName());
+                response.setOpenClinicaVersion(sdkResponse.getOpenClinicaVersion());
                 return response;
             } else {
                 return null;
@@ -108,23 +121,22 @@ public class RandomizationRegistrar {
         public String randomizeStudy(String studyOid, String studyName,UserAccountBean userAccount) {
             
             String ocUrl = CoreResources.getField("sysURL.base") + "rest2/openrosa/" + studyOid;
-            String randomizationUrl = CoreResources.getField("moduleManager") + "/app/rest/oc/se_randomizations";
-            SeRandomizationDTO seRandomizationDTO = new SeRandomizationDTO();
-            seRandomizationDTO.setStudyOid(studyOid);
-            seRandomizationDTO.setInstanceUrl(ocUrl);
-            seRandomizationDTO.setOcUser_username(userAccount.getName());
-            seRandomizationDTO.setOcUser_name(userAccount.getFirstName());
-            seRandomizationDTO.setOcUser_lastname(userAccount.getLastName());
-            seRandomizationDTO.setOcUser_emailAddress(userAccount.getEmail());
-            seRandomizationDTO.setStudyName(studyName);
-            seRandomizationDTO.setOpenClinicaVersion(CoreResources.getField("OpenClinica.version"));
-
-        CommonsClientHttpRequestFactory requestFactory = new CommonsClientHttpRequestFactory();
-        requestFactory.setReadTimeout(RANDOMIZATION_READ_TIMEOUT);
-        RestTemplate rest = new RestTemplate(requestFactory);
+            org.akaza.openclinica.sdk.model.SeRandomizationDTO sdkDto = new org.akaza.openclinica.sdk.model.SeRandomizationDTO();
+            sdkDto.setStudyOid(studyOid);
+            sdkDto.setInstanceUrl(ocUrl);
+            sdkDto.setOcUserUsername(userAccount.getName());
+            sdkDto.setOcUserName(userAccount.getFirstName());
+            sdkDto.setOcUserLastname(userAccount.getLastName());
+            sdkDto.setOcUserEmailAddress(userAccount.getEmail());
+            sdkDto.setStudyName(studyName);
+            sdkDto.setOpenClinicaVersion(CoreResources.getField("OpenClinica.version"));
 
         try {
-            SeRandomizationDTO response = rest.postForObject(randomizationUrl, seRandomizationDTO, SeRandomizationDTO.class);
+            org.akaza.openclinica.sdk.ApiClient client = new org.akaza.openclinica.sdk.ApiClient();
+            client.updateBaseUri(CoreResources.getField("moduleManager"));
+            org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
+            
+            org.akaza.openclinica.sdk.model.SeRandomizationDTO response = api.appRestOcSeRandomizationsPost(sdkDto);
             if (response != null && response.getStatus() != null)
                 return response.getStatus();
 

@@ -53,7 +53,7 @@ import org.akaza.openclinica.domain.rule.action.PropertyBean;
 import org.akaza.openclinica.domain.rule.action.StratificationFactorBean;
 import org.akaza.openclinica.exception.OpenClinicaException;
 import org.akaza.openclinica.service.RandomizeService;
-import org.akaza.openclinica.service.pmanage.Authorization;
+import org.akaza.openclinica.sdk.model.Authorization;
 import org.akaza.openclinica.service.rule.expression.ExpressionService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.map.HashedMap;

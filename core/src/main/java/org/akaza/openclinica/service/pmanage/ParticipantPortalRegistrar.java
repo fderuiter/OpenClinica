@@ -2,16 +2,19 @@ package org.akaza.openclinica.service.pmanage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
-
+import java.time.Duration;
+import java.util.List;
 
 import org.akaza.openclinica.bean.login.ParticipantDTO;
 import org.akaza.openclinica.dao.core.CoreResources;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.client.CommonsClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate;
+
+import org.akaza.openclinica.sdk.ApiClient;
+import org.akaza.openclinica.sdk.api.DefaultApi;
+
+
 
 public class ParticipantPortalRegistrar {
 
@@ -22,17 +25,23 @@ public class ParticipantPortalRegistrar {
     public static final String UNKNOWN = "unknown";
     public static final int PARTICIPATE_READ_TIMEOUT = 5000;
 
+    private DefaultApi getApi(String baseUrl) {
+        ApiClient client = new ApiClient();
+        client.updateBaseUri(baseUrl);
+        client.setConnectTimeout(Duration.ofMillis(PARTICIPATE_READ_TIMEOUT));
+        return new DefaultApi(client);
+    }
+
     public Authorization getAuthorization(String studyOid) {
         String ocUrl = CoreResources.getField("sysURL.base") + "rest2/openrosa/" + studyOid;
-        String pManageUrl = CoreResources.getField("portalURL") + "/app/rest/oc/authorizations?studyoid=" + studyOid + "&instanceurl=" + ocUrl;
-        CommonsClientHttpRequestFactory requestFactory = new CommonsClientHttpRequestFactory();
-        requestFactory.setReadTimeout(PARTICIPATE_READ_TIMEOUT);
-        RestTemplate rest = new RestTemplate(requestFactory);
-
+        String baseUrl = CoreResources.getField("portalURL");
         try {
-            Authorization[] response = rest.getForObject(pManageUrl, Authorization[].class);
-            if (response.length > 0 && response[0].getAuthorizationStatus() != null)
-                return response[0];
+            List<org.akaza.openclinica.sdk.model.Authorization> sdkResponse = getApi(baseUrl).appRestOcAuthorizationsGet(studyOid, ocUrl);
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            java.util.List<Authorization> response = mapper.convertValue(sdkResponse, mapper.getTypeFactory().constructCollectionType(java.util.List.class, Authorization.class));
+            if (response != null && response.size() > 0 && response.get(0).getAuthorizationStatus() != null)
+                return response.get(0);
         } catch (Exception e) {
             logger.error(e.getMessage());
             logger.error(ExceptionUtils.getStackTrace(e));
@@ -46,14 +55,14 @@ public class ParticipantPortalRegistrar {
 
     private String loadRegistrationStatus(String studyOid) {
         String ocUrl = CoreResources.getField("sysURL.base") + "rest2/openrosa/" + studyOid;
-        String pManageUrl = CoreResources.getField("portalURL") + "/app/rest/oc/authorizations?studyoid=" + studyOid + "&instanceurl=" + ocUrl;
-        CommonsClientHttpRequestFactory requestFactory = new CommonsClientHttpRequestFactory();
-        requestFactory.setReadTimeout(PARTICIPATE_READ_TIMEOUT);
-        RestTemplate rest = new RestTemplate(requestFactory);
+        String baseUrl = CoreResources.getField("portalURL");
         try {
-            Authorization[] response = rest.getForObject(pManageUrl, Authorization[].class);
-            if (response.length > 0 && response[0].getAuthorizationStatus() != null)
-                return response[0].getAuthorizationStatus().getStatus();
+            List<org.akaza.openclinica.sdk.model.Authorization> sdkResponse = getApi(baseUrl).appRestOcAuthorizationsGet(studyOid, ocUrl);
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            java.util.List<Authorization> response = mapper.convertValue(sdkResponse, mapper.getTypeFactory().constructCollectionType(java.util.List.class, Authorization.class));
+            if (response != null && response.size() > 0 && response.get(0).getAuthorizationStatus() != null)
+                return response.get(0).getAuthorizationStatus().getStatus();
         } catch (Exception e) {
             logger.error(e.getMessage());
             logger.debug(ExceptionUtils.getStackTrace(e));
@@ -62,20 +71,16 @@ public class ParticipantPortalRegistrar {
     }
 
     public String getHostNameAvailability(String hostName) {
-        String pManageUrl = CoreResources.getField("portalURL") + "/app/permit/studys/name?hostName=" + hostName;
-        CommonsClientHttpRequestFactory requestFactory = new CommonsClientHttpRequestFactory();
-        requestFactory.setReadTimeout(PARTICIPATE_READ_TIMEOUT);
-        RestTemplate rest = new RestTemplate(requestFactory);
-        String response = null;
+        String baseUrl = CoreResources.getField("portalURL");
         try {
             if (!validHostNameCheck(hostName))
                 return INVALID;
-            response = rest.getForObject(pManageUrl, String.class);
-            if (response.equals("UNAVAILABLE"))
+            String response = getApi(baseUrl).appPermitStudysNameGet(hostName);
+            if ("UNAVAILABLE".equals(response))
                 return UNAVAILABLE;
-            else if (response.equals("INVALID"))
+            else if ("INVALID".equals(response))
                 return INVALID;
-            else if (response.equals("AVAILABLE"))
+            else if ("AVAILABLE".equals(response))
                 return AVAILABLE;
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -112,14 +117,10 @@ public class ParticipantPortalRegistrar {
 
     public String sendEmailThruMandrillViaOcui(ParticipantDTO participantDTO, String hostname) {
     	String host = hostname.substring(0,hostname.indexOf("/app/oauth2"));
-       	String pManageUrl =host + "/app/rest/oc/email";
-
-        CommonsClientHttpRequestFactory requestFactory = new CommonsClientHttpRequestFactory();
-        requestFactory.setReadTimeout(PARTICIPATE_READ_TIMEOUT);
-        RestTemplate rest = new RestTemplate(requestFactory);
-
         try {
-            ParticipantDTO response = rest.postForObject(pManageUrl, participantDTO, ParticipantDTO.class);
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            org.akaza.openclinica.sdk.model.ParticipantDTO sdkDto = mapper.convertValue(participantDTO, org.akaza.openclinica.sdk.model.ParticipantDTO.class);
+            getApi(host).appRestOcEmailPost(sdkDto);
         } catch (Exception e) {
             logger.error(e.getMessage());
             logger.error(ExceptionUtils.getStackTrace(e));
@@ -129,9 +130,10 @@ public class ParticipantPortalRegistrar {
 
     public String registerStudy(String studyOid, String hostName, String studyName) {
         String ocUrl = CoreResources.getField("sysURL.base") + "rest2/openrosa/" + studyOid;
-        String pManageUrl = CoreResources.getField("portalURL") + "/app/rest/oc/authorizations?studyoid=" + studyOid + "&instanceurl=" + ocUrl;
-        Authorization authRequest = new Authorization();
-        Study authStudy = new Study();
+        String baseUrl = CoreResources.getField("portalURL");
+        
+        org.akaza.openclinica.sdk.model.Authorization authRequest = new org.akaza.openclinica.sdk.model.Authorization();
+        org.akaza.openclinica.sdk.model.Study authStudy = new org.akaza.openclinica.sdk.model.Study();
         authStudy.setStudyOid(studyOid);
         authStudy.setInstanceUrl(ocUrl);
         authStudy.setHost(hostName);
@@ -139,12 +141,8 @@ public class ParticipantPortalRegistrar {
         authStudy.setOpenClinicaVersion(CoreResources.getField("OpenClinica.version"));
         authRequest.setStudy(authStudy);
 
-        CommonsClientHttpRequestFactory requestFactory = new CommonsClientHttpRequestFactory();
-        requestFactory.setReadTimeout(PARTICIPATE_READ_TIMEOUT);
-        RestTemplate rest = new RestTemplate(requestFactory);
-
         try {
-            Authorization response = rest.postForObject(pManageUrl, authRequest, Authorization.class);
+            org.akaza.openclinica.sdk.model.Authorization response = getApi(baseUrl).appRestOcAuthorizationsPost(authRequest);
             if (response != null && response.getAuthorizationStatus() != null)
                 return response.getAuthorizationStatus().getStatus();
         } catch (Exception e) {
@@ -155,23 +153,22 @@ public class ParticipantPortalRegistrar {
     }
 
     public String getStudyHost(String studyOid) throws Exception {
-
         String ocUrl = CoreResources.getField("sysURL.base") + "rest2/openrosa/" + studyOid;
         String pManageUrl = CoreResources.getField("portalURL");
-        String pManageUrlFull = pManageUrl + "/app/rest/oc/authorizations?studyoid=" + studyOid + "&instanceurl=" + ocUrl;
 
-        CommonsClientHttpRequestFactory requestFactory = new CommonsClientHttpRequestFactory();
-        requestFactory.setReadTimeout(PARTICIPATE_READ_TIMEOUT);
-        RestTemplate rest = new RestTemplate(requestFactory);
         try {
-            Authorization[] response = rest.getForObject(pManageUrlFull, Authorization[].class);
-            if (response.length > 0 && response[0].getStudy() != null && response[0].getStudy().getHost() != null
-                    && !response[0].getStudy().getHost().equals("")) {
+            List<org.akaza.openclinica.sdk.model.Authorization> sdkResponse = getApi(pManageUrl).appRestOcAuthorizationsGet(studyOid, ocUrl);
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            java.util.List<Authorization> response = mapper.convertValue(sdkResponse, mapper.getTypeFactory().constructCollectionType(java.util.List.class, Authorization.class));
+            if (response != null && response.size() > 0 && response.get(0).getStudy() != null 
+                    && response.get(0).getStudy().getHost() != null
+                    && !response.get(0).getStudy().getHost().equals("")) {
                 URL url = new URL(pManageUrl);
                 String port = "";
                 if (url.getPort() > 0)
                     port = ":" + String.valueOf(url.getPort());
-                return url.getProtocol() + "://" + response[0].getStudy().getHost() + "." + url.getHost() + port + "/app/oauth2";
+                return url.getProtocol() + "://" + response.get(0).getStudy().getHost() + "." + url.getHost() + port + "/app/oauth2";
             }
         } catch (Exception e) {
             logger.error(e.getMessage());

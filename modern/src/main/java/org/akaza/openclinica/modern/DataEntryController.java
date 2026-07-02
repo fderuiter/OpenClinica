@@ -1,5 +1,6 @@
 package org.akaza.openclinica.modern;
 
+import org.akaza.openclinica.modern.dto.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DataEntryController {
 
     @GetMapping("/DataEntry")
-    public String dataEntry() {
-        return "Modern Data Entry Workflow";
+    public ApiResponse<String> dataEntry() {
+        return new ApiResponse<>("Modern Data Entry Workflow");
     }
 }

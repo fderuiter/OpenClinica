@@ -6,10 +6,10 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.context.ApplicationContext;
 import org.akaza.openclinica.dao.hibernate.NotificationOutboxDao;
 import org.akaza.openclinica.domain.datamap.NotificationOutbox;
-import org.akaza.openclinica.service.pmanage.Submission;
-import org.akaza.openclinica.service.pmanage.Study;
+import org.akaza.openclinica.sdk.model.Submission;
+import org.akaza.openclinica.sdk.model.Study;
 import org.akaza.openclinica.dao.core.CoreResources;
-import org.springframework.web.client.RestTemplate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
@@ -26,8 +26,9 @@ public class NotificationOutboxJob extends QuartzJobBean {
             List<NotificationOutbox> pending = dao.findPendingNotifications();
             if (pending == null || pending.isEmpty()) return;
 
-            RestTemplate rest = new RestTemplate();
-            String pManageUrl = CoreResources.getField("portalURL") + "/app/rest/oc/submission";
+            org.akaza.openclinica.sdk.ApiClient client = new org.akaza.openclinica.sdk.ApiClient();
+            client.updateBaseUri(CoreResources.getField("portalURL"));
+            org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
             
             int backoffMultiplier = 5; // default 5 minutes
             try {
@@ -56,14 +57,14 @@ public class NotificationOutboxJob extends QuartzJobBean {
                     pManageStudy.setInstanceUrl(CoreResources.getField("sysURL.base") + "rest2/openrosa/" + outbox.getStudyOid());
                     pManageStudy.setStudyOid(outbox.getStudyOid());
                     submission.setStudy(pManageStudy);
-                    submission.setStudy_event_def_id(outbox.getStudyEventDefId());
-                    submission.setStudy_event_def_ordinal(outbox.getStudyEventDefOrdinal());
+                    submission.setStudyEventDefId(outbox.getStudyEventDefId());
+                    submission.setStudyEventDefOrdinal(outbox.getStudyEventDefOrdinal());
                     // Wait, we need crf_version_id, but outbox has crfVersionOid. We need to look it up!
                     // Let's get crfVersionDao from context
                     org.akaza.openclinica.dao.hibernate.CrfVersionDao cvDao = (org.akaza.openclinica.dao.hibernate.CrfVersionDao) appContext.getBean("crfVersionDao");
-                    submission.setCrf_version_id(cvDao.findByOcOID(outbox.getCrfVersionOid()).getCrfVersionId());
+                    submission.setCrfVersionId(cvDao.findByOcOID(outbox.getCrfVersionOid()).getCrfVersionId());
 
-                    String result = rest.postForObject(pManageUrl, submission, String.class);
+                    String result = api.appRestOcSubmissionPost(submission);
                     logger.debug("Notified Participate of CRF submission with a result of: " + result);
 
                     outbox.setStatus("COMPLETED");

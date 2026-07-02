@@ -51,7 +51,7 @@ import org.springframework.http.client.CommonsClientHttpRequestFactory;
 import org.json.JSONObject;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
+
 
 public class RandomizeService extends RandomizationRegistrar {
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
@@ -190,44 +190,58 @@ public class RandomizeService extends RandomizationRegistrar {
     }
 
     private JSONObject retrieveARandomisation(String randomiseUrl, StudySubjectBean studySubject, HttpHeaders headers) {
-        // method : GET
-        randomiseUrl = randomiseUrl + "/api/randomisation?identifier=" + studySubject.getOid(); // concatenate
-                                                                                                // Study_Siubject_oid
-        RestTemplate rest = new RestTemplate(requestFactory);
-        ResponseEntity<String> response = null;
-        String body = null;
-        JSONObject jsonObject = null;
-        HttpEntity<String> request = new HttpEntity<String>(headers);
+        org.akaza.openclinica.sdk.ApiClient client = new org.akaza.openclinica.sdk.ApiClient();
+        client.updateBaseUri(randomiseUrl);
+        
+        // Extract basic auth credentials from headers
+        String authHeader = headers.getFirst("Authorization");
+        if (authHeader != null && authHeader.startsWith("Basic ")) {
+            String base64Credentials = authHeader.substring("Basic ".length()).trim();
+            String credentials = new String(org.apache.commons.codec.binary.Base64.decodeBase64(base64Credentials.getBytes(Charset.forName("US-ASCII"))), Charset.forName("US-ASCII"));
+            String[] values = credentials.split(":", 2);
+            if (values.length == 2) {
+                client.setRequestInterceptor(requestBuilder -> {
+                    requestBuilder.header("Authorization", authHeader);
+                });
+            }
+        }
+        
+        org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
 
         try {
-            response = rest.exchange(randomiseUrl, HttpMethod.GET, request, String.class);
-            body = response.getBody();
-            jsonObject = new JSONObject(body);
-            // if (!jsonObject.get("error").equals("0"))
-            // jsonObject= null;
-
+            Object response = api.apiRandomisationGet(studySubject.getOid());
+            if (response != null) {
+                // response is usually a Map from Jackson
+                return new JSONObject(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(response));
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             logger.error(e.getMessage());
             logger.error(ExceptionUtils.getStackTrace(e));
         }
-        return jsonObject;
+        return null;
 
     }
 
     private void addOrUpdateASite(String randomiseUrl, StudyBean studyBean, HttpHeaders headers, String timezone) {
         // mehtod : POST
-        randomiseUrl = randomiseUrl + "/api/sites";
-        RestTemplate rest = new RestTemplate(requestFactory);
-        ResponseEntity<String> response = null;
-        MultiValueMap<String, String> siteMap = new LinkedMultiValueMap<String, String>();
-        siteMap.add("siteIdentifier", studyBean.getOid());
-        siteMap.add("name", studyBean.getName());
-        siteMap.add("timezone", timezone);
-        HttpEntity<MultiValueMap<String, String>> siteRequest = new HttpEntity<MultiValueMap<String, String>>(siteMap, headers);
+        org.akaza.openclinica.sdk.ApiClient client = new org.akaza.openclinica.sdk.ApiClient();
+        client.updateBaseUri(randomiseUrl);
+        String authHeader = headers.getFirst("Authorization");
+        if (authHeader != null && authHeader.startsWith("Basic ")) {
+            client.setRequestInterceptor(requestBuilder -> {
+                requestBuilder.header("Authorization", authHeader);
+            });
+        }
+        org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
+        
+        org.akaza.openclinica.sdk.model.SiteForm siteForm = new org.akaza.openclinica.sdk.model.SiteForm();
+        siteForm.setSiteIdentifier(studyBean.getOid());
+        siteForm.setName(studyBean.getName());
+        siteForm.setTimezone(timezone);
 
         try {
-            response = rest.exchange(randomiseUrl, HttpMethod.POST, siteRequest, String.class);
+            api.apiSitesPost(siteForm);
         } catch (Exception e) {
             logger.error(e.getMessage());
             logger.error(ExceptionUtils.getStackTrace(e));
@@ -240,33 +254,37 @@ public class RandomizeService extends RandomizationRegistrar {
         int i = 1;
         String exp = "";
 
-        randomiseUrl = randomiseUrl + "/api/randomise";
-        RestTemplate rest = new RestTemplate(requestFactory);
-        ResponseEntity<String> response = null;
-        MultiValueMap<String, String> subjectMap = new LinkedMultiValueMap<String, String>();
-        subjectMap.add("identifier", String.valueOf(studySubject.getOid()));
-        subjectMap.add("siteIdentifier", studyBean.getOid());
-        subjectMap.add("user", user);
+        org.akaza.openclinica.sdk.ApiClient client = new org.akaza.openclinica.sdk.ApiClient();
+        client.updateBaseUri(randomiseUrl);
+        String authHeader = headers.getFirst("Authorization");
+        if (authHeader != null && authHeader.startsWith("Basic ")) {
+            client.setRequestInterceptor(requestBuilder -> {
+                requestBuilder.header("Authorization", authHeader);
+            });
+        }
+        org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
+
+        java.util.Map<String, Object> subjectMap = new java.util.HashMap<>();
+        subjectMap.put("identifier", String.valueOf(studySubject.getOid()));
+        subjectMap.put("siteIdentifier", studyBean.getOid());
+        subjectMap.put("user", user);
         for (StratificationFactorBean stratificationFactorBean : stratificationFactorBeans) {
             exp = stratificationFactorBean.getStratificationFactor().getValue();
             if (exp.startsWith("SS.")) {
-                subjectMap.add("question" + i, getStudySubjectAttrValue(exp, eventCrfBean, ruleSet));
+                subjectMap.put("question" + i, getStudySubjectAttrValue(exp, eventCrfBean, ruleSet));
 
             } else {
 
                 String output = getExpressionValue(exp, eventCrfBean, ruleSet);
-                subjectMap.add("question" + i, output);
+                subjectMap.put("question" + i, output);
             }
             i++;
         }
 
-        String body = null;
         JSONObject jsonObject = null;
-        HttpEntity<MultiValueMap<String, String>> subjectRequest = new HttpEntity<MultiValueMap<String, String>>(subjectMap, headers);
 
         try {
-            response = rest.exchange(randomiseUrl, HttpMethod.POST, subjectRequest, String.class);
-            body = response.getBody();
+            String body = api.apiRandomisePost(subjectMap);
             jsonObject = new JSONObject(body);
 
         } catch (Exception e) {
