@@ -1,4 +1,4 @@
-package org.akaza.openclinica.controller.openrosa.exception;
+package org.akaza.openclinica.service.clinical.exception;
 
 public class ClinicalWorkflowException extends RuntimeException {
     public ClinicalWorkflowException(String message) {

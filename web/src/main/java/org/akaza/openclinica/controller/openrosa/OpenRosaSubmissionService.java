@@ -1,4 +1,5 @@
 package org.akaza.openclinica.controller.openrosa;
+import org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,9 @@ public class OpenRosaSubmissionService {
     @Autowired
     NotificationOutboxDao notificationOutboxDao;
     
+    @Autowired
+    UnifiedWorkflowEnforcementService unifiedWorkflowEnforcementService;
+
     @Transactional
     public void processRequest(Study study, HashMap<String,String> subjectContext, String requestBody, Errors errors, Locale locale, ArrayList <HashMap> listOfUploadFilePaths) throws Exception {
         // Execute save as Hibernate transaction to avoid partial imports
@@ -54,7 +58,13 @@ public class OpenRosaSubmissionService {
     private void runAsTransaction(Study study, String requestBody, HashMap<String, String> subjectContext, Errors errors, Locale locale,ArrayList <HashMap> listOfUploadFilePaths) throws Exception{
 
         SubmissionContainer container = new SubmissionContainer(study,requestBody,subjectContext,errors,locale ,listOfUploadFilePaths);
-        submissionProcessorChain.processSubmission(container);
+        try {
+            submissionProcessorChain.processSubmission(container);
+        } finally {
+            if (container.getEventCrf() != null) {
+                unifiedWorkflowEnforcementService.unlock(container.getEventCrf());
+            }
+        }
 
     }
 

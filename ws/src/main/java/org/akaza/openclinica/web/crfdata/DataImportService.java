@@ -210,7 +210,9 @@ public class DataImportService {
     public ArrayList<String> submitData(ODMContainer odmContainer, DataSource dataSource, StudyBean studyBean, UserAccountBean userBean,
             List<DisplayItemBeanWrapper> displayItemBeanWrappers, Map<Integer, String> importedCRFStatuses) throws Exception {
 
-        boolean discNotesGenerated = false;
+        java.util.Set<Integer> lockedCrfIds = new java.util.HashSet<Integer>();
+        try {
+            boolean discNotesGenerated = false;
 
         ItemDataDAO itemDataDao = new ItemDataDAO(dataSource);
         itemDataDao.setFormatDates(false);
@@ -241,6 +243,17 @@ public class DataImportService {
                 for (DisplayItemBean displayItemBean : wrapper.getDisplayItemBeans()) {
                     eventCrfBeanId = displayItemBean.getData().getEventCRFId();
                     eventCrfBean = (EventCRFBean) eventCrfDao.findByPK(eventCrfBeanId);
+                    
+                    try {
+                        org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService unifiedService = 
+                            org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext()
+                            .getBean(org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService.class);
+                        unifiedService.validateLock(eventCrfBeanId, userBean.getId());
+                        lockedCrfIds.add(eventCrfBeanId);
+                    } catch (org.akaza.openclinica.service.clinical.exception.CRFLockedException | org.akaza.openclinica.service.clinical.exception.ClinicalWorkflowException e) {
+                        return getReturnList("fail", "", "CRF or Study Event is locked/signed and cannot be modified via API.");
+                    }
+
                     logger.debug("found value here: " + displayItemBean.getData().getValue());
                     logger.debug("found status here: " + eventCrfBean.getStatus().getName());
                     
@@ -259,6 +272,18 @@ public class DataImportService {
                      }
       			    
                     boolean localResetSDV = itemDataHibernateDao.saveOrUpdateFromBean(displayItemBean.getData(), userBean, wrapper.isOverwrite());
+                    
+                    try {
+                        org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService unifiedService = 
+                            org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext()
+                            .getBean(org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService.class);
+                        if (displayItemBean.getData().getId() > 0 && eventCrfBean != null) {
+                            unifiedService.captureReasonForChange(displayItemBean.getData().getId(), eventCrfBean.getId(), studyBean.getId(), userBean.getId(), eventCrfBean.getStudySubjectId());
+                        }
+                    } catch (Exception e) {
+                        logger.error("Failed to capture reason for change: ", e);
+                    }
+
                     if (localResetSDV) {
                         resetSDV = true;
                     }
@@ -314,6 +339,18 @@ public class DataImportService {
             return getReturnList("success", "", auditMsg.toString());
         } else {
             return getReturnList("warn", "", auditMsg.toString());
+        }
+        } finally {
+            try {
+                org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService unifiedService = 
+                    org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext()
+                    .getBean(org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService.class);
+                for (Integer lockedCrfId : lockedCrfIds) {
+                    unifiedService.unlock(lockedCrfId);
+                }
+            } catch (Exception e) {
+                logger.error("Error unlocking CRFs during SOAP data import", e);
+            }
         }
     }
 

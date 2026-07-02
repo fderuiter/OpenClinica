@@ -1,4 +1,4 @@
-package org.akaza.openclinica.controller.openrosa.exception;
+package org.akaza.openclinica.service.clinical.exception;
 
 public class CRFLockedException extends RuntimeException {
     public CRFLockedException(String message) {
