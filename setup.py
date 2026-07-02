@@ -77,6 +77,15 @@ def main():
     file_path = input("File Path for data (default: /app/data): ").strip() or "/app/data"
     env_vars["FILE_PATH"] = file_path
 
+    seed_clinical = input("Enable clinical data seeding? (y/N): ").strip().lower() == 'y'
+    env_vars["SEED_CLINICAL_DATA"] = "true" if seed_clinical else "false"
+    if seed_clinical:
+        template_path = input("Path to local Excel template: ").strip()
+        if not os.path.isfile(template_path):
+            print(f"Error: Template file not found at {template_path}")
+            sys.exit(1)
+        env_vars["CLINICAL_TEMPLATE_PATH"] = template_path
+
     # Directory structures
     os.makedirs(file_path, exist_ok=True)
     print(f"Created directory structure: {file_path}")

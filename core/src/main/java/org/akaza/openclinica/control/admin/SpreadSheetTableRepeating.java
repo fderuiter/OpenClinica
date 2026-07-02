@@ -35,7 +35,7 @@ import org.akaza.openclinica.dao.submit.ItemFormMetadataDAO;
 import org.akaza.openclinica.dao.submit.ItemGroupDAO;
 import org.akaza.openclinica.exception.CRFReadingException;
 import org.akaza.openclinica.logic.score.ScoreValidator;
-import org.akaza.openclinica.web.SQLInitServlet;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -141,7 +141,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
 
     public NewCRFBean toNewCRF(javax.sql.DataSource ds, ResourceBundle resPageMsg) throws IOException, CRFReadingException {
 
-        String dbName = SQLInitServlet.getDBName();
+        String dbName = org.akaza.openclinica.dao.core.CoreResources.getDBName();
 
         NewCRFBean ncrf = new NewCRFBean(ds, crfId);
 
