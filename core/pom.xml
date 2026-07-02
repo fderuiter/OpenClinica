@@ -238,11 +238,92 @@
 		    <groupId>org.quartz-scheduler</groupId>
 		    <artifactId>quartz-oracle</artifactId>
 		</dependency>
+        <!-- OpenAPI Generator Dependencies -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>1.3.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+        </dependency>
 	</dependencies>
 	<!-- @pgawade 16-NOV-2010 unit tests through maven -->
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.0.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-randomize-sdk</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/randomize-api.yaml</inputSpec>
+                            <generatorName>java</generatorName>
+                            <library>native</library>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <apiPackage>org.akaza.openclinica.randomize.api</apiPackage>
+                            <modelPackage>org.akaza.openclinica.randomize.model</modelPackage>
+                            <configOptions>
+                                <ignoreUnknownJacksonAnnotation>true</ignoreUnknownJacksonAnnotation>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.4.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/openapi/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-plugin</artifactId>
