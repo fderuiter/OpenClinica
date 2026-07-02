@@ -326,6 +326,34 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>2.2.15</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.ws.rs</groupId>
+                        <artifactId>javax.ws.rs-api</artifactId>
+                        <version>2.1.1</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <outputFileName>legacy-openapi</outputFileName>
+                    <outputPath>${project.build.directory}/generated-docs</outputPath>
+                    <outputFormat>JSON</outputFormat>
+                    <resourcePackages>
+                        <resourcePackage>org.akaza.openclinica.web.restful</resourcePackage>
+                    </resourcePackages>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>resolve</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>com.github.kongchen</groupId>
                 <artifactId>swagger-maven-plugin</artifactId>
                 <version>3.1.8</version>

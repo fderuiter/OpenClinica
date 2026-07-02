@@ -1,0 +1,98 @@
+openapi: 3.0.3
+info:
+  title: Randomization API
+  version: 1.0.0
+paths:
+  /api/randomisation:
+    get:
+      operationId: getRandomisation
+      parameters:
+        - name: identifier
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  error:
+                    type: string
+  /api/sites:
+    post:
+      operationId: addSite
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                siteIdentifier:
+                  type: string
+                name:
+                  type: string
+                timezone:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /api/randomise:
+    post:
+      operationId: randomiseSubject
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                identifier:
+                  type: string
+                siteIdentifier:
+                  type: string
+                user:
+                  type: string
+                question1:
+                  type: string
+                question2:
+                  type: string
+                question3:
+                  type: string
+                question4:
+                  type: string
+                question5:
+                  type: string
+                question6:
+                  type: string
+                question7:
+                  type: string
+                question8:
+                  type: string
+                question9:
+                  type: string
+                question10:
+                  type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  error:
+                    type: string
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+security:
+  - basicAuth: []
