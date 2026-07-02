@@ -323,6 +323,19 @@ public abstract class DataEntryServlet extends CoreSecureController {
         EventCRFDAO ecdao = null;
         FormProcessor fp = new FormProcessor(request);
         logMe("Enterting DataEntry Servlet"+System.currentTimeMillis());
+        
+        try {
+            org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService unifiedService = 
+                org.akaza.openclinica.control.SpringServletAccess.getApplicationContext(request.getSession().getServletContext())
+                .getBean(org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService.class);
+            if (ecb != null && ecb.getId() > 0) {
+                unifiedService.validateLock(ecb.getId());
+            }
+        } catch (org.akaza.openclinica.service.clinical.exception.CRFLockedException | org.akaza.openclinica.service.clinical.exception.ClinicalWorkflowException e) {
+            addPageMessage(e.getMessage(), request);
+            forwardPage(Page.LIST_STUDY_SUBJECTS_SERVLET, request, response);
+            return;
+        }
         EventDefinitionCRFDAO  edcdao = new EventDefinitionCRFDAO(getDataSource());
 
         FormDiscrepancyNotes discNotes;
@@ -3155,6 +3168,17 @@ public abstract class DataEntryServlet extends CoreSecureController {
 //                }
            // }
 
+        }
+
+        try {
+            org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService unifiedService = 
+                org.akaza.openclinica.control.SpringServletAccess.getApplicationContext(request.getSession().getServletContext())
+                .getBean(org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService.class);
+            if (idb.getId() > 0 && ecb != null) {
+                unifiedService.captureReasonForChange(idb.getId(), ecb.getId(), currentStudy.getId(), ub.getId(), ecb.getStudySubjectId());
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to capture reason for change: ", e);
         }
 
         return idb.isActive();

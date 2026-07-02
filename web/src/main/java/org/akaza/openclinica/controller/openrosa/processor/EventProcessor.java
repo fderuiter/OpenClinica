@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.akaza.openclinica.controller.openrosa.SubmissionContainer;
-import org.akaza.openclinica.controller.openrosa.UnifiedWorkflowEnforcementService;
+import org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService;
 import org.akaza.openclinica.dao.hibernate.CompletionStatusDao;
 import org.akaza.openclinica.dao.hibernate.CrfVersionDao;
 import org.akaza.openclinica.dao.hibernate.EventCrfDao;
@@ -84,7 +84,7 @@ public class EventProcessor implements Processor, Ordered {
         if (container.getSubjectContext().get("studyOID") != null)
             study = studyDao.findByOcOID(container.getSubjectContext().get("studyOID"));
         else study = container.getStudy();
-        unifiedWorkflowEnforcementService.validateLock(container.getEventCrf());
+        unifiedWorkflowEnforcementService.validateLock(container.getEventCrf(), container.getUser().getId());
         unifiedWorkflowEnforcementService.verifyDDEStatus(studyEventDefinition.getStudyEventDefinitionId(), container.getEventCrf().getCrfVersion().getCrf().getCrfId());
 
         container.setEventCrf(updateEventCrf(container.getEventCrf(), study, studySubject, container.getUser(), isAnonymous));

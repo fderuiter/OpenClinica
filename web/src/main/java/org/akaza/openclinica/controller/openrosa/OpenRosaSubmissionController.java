@@ -126,12 +126,14 @@ public class OpenRosaSubmissionController {
             // Execute save as Hibernate transaction to avoid partial imports
             openRosaSubmissionService.processRequest(study, subjectContext, requestBody, errors, locale , listOfUploadFilePaths);
 
-        } catch (org.akaza.openclinica.controller.openrosa.exception.CRFLockedException e) {
+        } catch (org.akaza.openclinica.service.clinical.exception.CRFLockedException e) {
             logger.info("Submission rejected due to CRF lock.");
-            return new ResponseEntity<String>(org.springframework.http.HttpStatus.LOCKED);
-        } catch (org.akaza.openclinica.controller.openrosa.exception.ClinicalWorkflowException e) {
+            String responseMessage = "<OpenRosaResponse xmlns=\"http://openrosa.org/http/response\">" + "<message>" + e.getMessage() + "</message>" + "</OpenRosaResponse>";
+            return new ResponseEntity<String>(responseMessage, org.springframework.http.HttpStatus.LOCKED);
+        } catch (org.akaza.openclinica.service.clinical.exception.ClinicalWorkflowException e) {
             logger.info("Submission blocked by clinical workflow rules.");
-            return new ResponseEntity<String>(org.springframework.http.HttpStatus.LOCKED);
+            String responseMessage = "<OpenRosaResponse xmlns=\"http://openrosa.org/http/response\">" + "<message>" + e.getMessage() + "</message>" + "</OpenRosaResponse>";
+            return new ResponseEntity<String>(responseMessage, org.springframework.http.HttpStatus.LOCKED);
         } catch (Exception e) {
             logger.error("Exception while processing xform submission.");
             logger.error(e.getMessage());
@@ -140,7 +142,8 @@ public class OpenRosaSubmissionController {
             if (!errors.hasErrors()) {
                 // Send a failure response
                 logger.info("Submission caused internal error.  Sending error response.");
-                return new ResponseEntity<String>(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR);
+                String responseMessage = "<OpenRosaResponse xmlns=\"http://openrosa.org/http/response\">" + "<message>Internal Server Error</message>" + "</OpenRosaResponse>";
+                return new ResponseEntity<String>(responseMessage, org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
 
@@ -150,7 +153,12 @@ public class OpenRosaSubmissionController {
             return new ResponseEntity<String>(responseMessage, org.springframework.http.HttpStatus.CREATED);
         } else {
             logger.info("Submission contained errors. Sending error response");
-            return new ResponseEntity<String>(org.springframework.http.HttpStatus.NOT_ACCEPTABLE);
+            StringBuilder errorStr = new StringBuilder();
+            for (org.springframework.validation.ObjectError err : errors.getAllErrors()) {
+                errorStr.append(err.getDefaultMessage()).append(" ");
+            }
+            String responseMessage = "<OpenRosaResponse xmlns=\"http://openrosa.org/http/response\">" + "<message>" + errorStr.toString().trim() + "</message>" + "</OpenRosaResponse>";
+            return new ResponseEntity<String>(responseMessage, org.springframework.http.HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

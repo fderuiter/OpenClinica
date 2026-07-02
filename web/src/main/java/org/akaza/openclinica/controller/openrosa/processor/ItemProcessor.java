@@ -17,7 +17,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.akaza.openclinica.controller.openrosa.ItemItemDataContainer;
 import org.akaza.openclinica.controller.openrosa.PformValidator;
 import org.akaza.openclinica.controller.openrosa.SubmissionContainer;
-import org.akaza.openclinica.controller.openrosa.UnifiedWorkflowEnforcementService;
+import org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService;
 import org.akaza.openclinica.dao.hibernate.CrfVersionDao;
 import org.akaza.openclinica.dao.hibernate.DiscrepancyNoteDao;
 import org.akaza.openclinica.dao.hibernate.DiscrepancyNoteTypeDao;
@@ -225,6 +225,9 @@ public class ItemProcessor implements Processor, Ordered {
                         }
                         // Delete rows that have been removed
                         removeDeletedRows(groupOrdinalMapping,eventCrf,crfVersion,container.getStudy(),container.getSubject(), container.getLocale(), container.getUser());
+                        
+                        // Execute Rules Engine at the CRF level (Requirement 3)
+                        unifiedWorkflowEnforcementService.executeRulesAndMetadata(eventCrf, container.getStudy(), container.getUser());
                     }
                 }
             }

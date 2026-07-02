@@ -1,4 +1,4 @@
-package org.akaza.openclinica.controller.openrosa;
+package org.akaza.openclinica.service.clinical;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -17,8 +17,8 @@ import org.akaza.openclinica.bean.submit.CRFVersionBean;
 import org.akaza.openclinica.dao.submit.CRFVersionDAO;
 import org.akaza.openclinica.bean.submit.EventCRFBean;
 import org.akaza.openclinica.dao.submit.EventCRFDAO;
-import org.akaza.openclinica.controller.openrosa.exception.CRFLockedException;
-import org.akaza.openclinica.controller.openrosa.exception.ClinicalWorkflowException;
+import org.akaza.openclinica.service.clinical.exception.CRFLockedException;
+import org.akaza.openclinica.service.clinical.exception.ClinicalWorkflowException;
 import org.akaza.openclinica.core.CRFLocker;
 import org.akaza.openclinica.dao.hibernate.DiscrepancyNoteDao;
 import org.akaza.openclinica.dao.hibernate.DiscrepancyNoteTypeDao;
@@ -88,11 +88,62 @@ public class UnifiedWorkflowEnforcementService {
     @Autowired
     private StudyEventDao studyEventDao;
 
+    @Autowired
+    private org.akaza.openclinica.dao.hibernate.StudyDao studyDao;
+
+    @Autowired
+    private org.akaza.openclinica.dao.hibernate.UserAccountDao userAccountDao;
+
+    @Autowired
+    private org.akaza.openclinica.dao.hibernate.StudySubjectDao studySubjectDao;
+
+    public void validateLock(int eventCrfId) {
+        EventCrf eventCrf = eventCrfDao.findById(eventCrfId);
+        validateLock(eventCrf, null);
+    }
+
+    public void validateLock(int eventCrfId, Integer userId) {
+        EventCrf eventCrf = eventCrfDao.findById(eventCrfId);
+        validateLock(eventCrf, userId);
+    }
+
     public void validateLock(EventCrf eventCrf) {
+        validateLock(eventCrf, null);
+    }
+
+    public void validateLock(EventCrf eventCrf, Integer userId) {
         if (eventCrf != null && eventCrf.getEventCrfId() != 0) {
-            if (crfLocker.isLocked(eventCrf.getEventCrfId())) {
-                throw new CRFLockedException("Record is locked by a web user.");
+            if (eventCrf.getStatusId() == Status.LOCKED.getCode() || eventCrf.getStatusId() == Status.SIGNED.getCode()) {
+                throw new ClinicalWorkflowException("CRF is locked or signed.");
             }
+            if (eventCrf.getStudyEvent() != null) {
+                int subjectEventStatusId = eventCrf.getStudyEvent().getSubjectEventStatusId();
+                if (subjectEventStatusId == 7 || subjectEventStatusId == 8) {
+                    throw new ClinicalWorkflowException("Study Event is locked or signed.");
+                }
+            }
+
+            if (userId != null) {
+                if (!crfLocker.lock(eventCrf.getEventCrfId(), userId)) {
+                    throw new CRFLockedException("Record is locked by a web user.");
+                }
+            } else {
+                if (crfLocker.isLocked(eventCrf.getEventCrfId())) {
+                    throw new CRFLockedException("Record is locked by a web user.");
+                }
+            }
+        }
+    }
+
+    public void unlock(EventCrf eventCrf) {
+        if (eventCrf != null && eventCrf.getEventCrfId() != 0) {
+            crfLocker.unlock(eventCrf.getEventCrfId());
+        }
+    }
+
+    public void unlock(int eventCrfId) {
+        if (eventCrfId != 0) {
+            crfLocker.unlock(eventCrfId);
         }
     }
 
@@ -119,10 +170,21 @@ public class UnifiedWorkflowEnforcementService {
             createReasonForChangeNote(savedData, study, user, studySubject);
         }
 
-        // Trigger dynamic metadata updates and rules execution
-        executeRulesAndMetadata(eventCrf, study, user);
-
         return savedData;
+    }
+
+    @Transactional
+    public void captureReasonForChange(int itemDataId, int eventCrfId, int studyId, int userId, int studySubjectId) {
+        ItemData itemData = itemDataDao.findById(itemDataId);
+        EventCrf eventCrf = eventCrfDao.findById(eventCrfId);
+        Study study = studyDao.findById(studyId);
+        UserAccount user = userAccountDao.findById(userId);
+        StudySubject studySubject = studySubjectDao.findById(studySubjectId);
+        
+        boolean requiresRfc = (eventCrf.getStatusId() == Status.UNAVAILABLE.getCode() && itemData != null && itemData.getItemDataId() != 0);
+        if (requiresRfc) {
+            createReasonForChangeNote(itemData, study, user, studySubject);
+        }
     }
 
     private void createReasonForChangeNote(ItemData itemData, Study study, UserAccount user, StudySubject studySubject) {
@@ -153,7 +215,7 @@ public class UnifiedWorkflowEnforcementService {
         dnItemDataMapDao.saveOrUpdate(mapping);
     }
 
-    private void executeRulesAndMetadata(EventCrf eventCrf, Study study, UserAccount user) {
+    public void executeRulesAndMetadata(EventCrf eventCrf, Study study, UserAccount user) {
         try {
             EventCRFDAO ecdao = new EventCRFDAO(dataSource);
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(eventCrf.getEventCrfId());
