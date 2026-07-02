@@ -33,6 +33,7 @@ public class OpenClinicaSecurityContextLogoutHandler extends SecurityContextLogo
     UserAccountDAO userAccountDao;
     DataSource dataSource;
     AuditLogEventDao auditLogEventDao;
+    org.akaza.openclinica.core.CRFLocker crfLocker;
 
     // ~ Methods ========================================================================================================
 
@@ -57,6 +58,9 @@ public class OpenClinicaSecurityContextLogoutHandler extends SecurityContextLogo
     void auditLogout(String username) {
         ResourceBundleProvider.updateLocale(new Locale("en_US"));
         UserAccountBean userAccount = (UserAccountBean) getUserAccountDao().findByUserName(username);
+        if (userAccount != null && crfLocker != null) {
+            crfLocker.unlockAllForUser(userAccount.getId());
+        }
         AuditUserLoginBean auditUserLogin = new AuditUserLoginBean();
         auditUserLogin.setUserName(username);
         auditUserLogin.setLoginStatus(LoginStatus.SUCCESSFUL_LOGOUT);
@@ -109,6 +113,10 @@ public class OpenClinicaSecurityContextLogoutHandler extends SecurityContextLogo
 
     public void setAuditLogEventDao(AuditLogEventDao auditLogEventDao) {
         this.auditLogEventDao = auditLogEventDao;
+    }
+
+    public void setCrfLocker(org.akaza.openclinica.core.CRFLocker crfLocker) {
+        this.crfLocker = crfLocker;
     }
 
 }
