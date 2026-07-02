@@ -2,7 +2,7 @@ package org.akaza.openclinica.web.filter;
 
 import org.akaza.openclinica.bean.api.ApiError;
 import org.akaza.openclinica.bean.api.ApiResponse;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +45,7 @@ public class ApiResponseWrapperFilter implements Filter {
                             String contentType = wrapper.getContentType();
                             if (contentType != null && contentType.contains("application/json")) {
                                 // Parse JSON and wrap
-                                org.codehaus.jackson.JsonNode jsonNode = mapper.readTree(new java.io.ByteArrayInputStream(responseData));
+                                com.fasterxml.jackson.databind.JsonNode jsonNode = mapper.readTree(new java.io.ByteArrayInputStream(responseData));
                                 // Avoid double wrapping if it already has "data" or "errors"
                                 if (jsonNode.isObject() && (jsonNode.has("data") || jsonNode.has("errors"))) {
                                     writeToOriginal(res, responseData);
@@ -70,7 +70,7 @@ public class ApiResponseWrapperFilter implements Filter {
                             // It's an error status but they wrote directly to the output stream (didn't use sendError)
                             String contentType = wrapper.getContentType();
                             if (contentType != null && contentType.contains("application/json")) {
-                                org.codehaus.jackson.JsonNode jsonNode = mapper.readTree(new java.io.ByteArrayInputStream(responseData));
+                                com.fasterxml.jackson.databind.JsonNode jsonNode = mapper.readTree(new java.io.ByteArrayInputStream(responseData));
                                 if (jsonNode.isObject() && (jsonNode.has("data") || jsonNode.has("errors"))) {
                                     writeToOriginal(res, responseData);
                                 } else {

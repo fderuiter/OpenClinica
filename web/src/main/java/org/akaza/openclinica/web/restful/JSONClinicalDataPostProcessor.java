@@ -1,8 +1,7 @@
 package org.akaza.openclinica.web.restful;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,11 +59,11 @@ public class JSONClinicalDataPostProcessor {
      *
      * @param json JSON object to be processed
      */
-    public void process(JSON json) {
+    public void process(Object json) {
         processJSONFields(json);
     }
 
-    private void processJSONFields(JSON json) {
+    private void processJSONFields(Object json) {
         if (json instanceof JSONArray) {
             processJSONArray((JSONArray) json);
         } else if (json instanceof JSONObject) {
@@ -72,23 +71,23 @@ public class JSONClinicalDataPostProcessor {
         }
     }
 
-    private JSON processJSONArray(JSONArray jsonArray) {
+    private Object processJSONArray(JSONArray jsonArray) {
 
-        for (int i = 0; i < jsonArray.size(); i++) {
+        for (int i = 0; i < jsonArray.length(); i++) {
             Object elem = jsonArray.get(i);
             if (elem instanceof JSONArray) {
                 processJSONArray((JSONArray) elem);
             } else if (elem instanceof JSONObject) {
                 processJSONObject((JSONObject) elem);
             } else if (elem instanceof String) {
-                jsonArray.set(i, processString((String) elem));
+                jsonArray.put(i, processString((String) elem));
             }
         }
         return jsonArray;
     }
 
-    private JSON processJSONObject(JSONObject jsonObject) {
-        for (Object key : jsonObject.keySet()) {
+    private Object processJSONObject(JSONObject jsonObject) {
+        for (String key : jsonObject.keySet()) {
             Object elem = jsonObject.get(key);
             if (elem instanceof JSONArray) {
                 processJSONArray((JSONArray) elem);

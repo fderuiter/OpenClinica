@@ -12,9 +12,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
-import net.sf.json.xml.XMLSerializer;
+import org.json.JSONObject;
+
+import org.json.XML;
 
 import org.akaza.openclinica.bean.extract.odm.FullReportBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -125,7 +125,6 @@ public class ODMClinicaDataResource {
 		if(includeDns.equalsIgnoreCase("yes")||includeDns.equalsIgnoreCase("y")) includeDN=true;
 		if(includeAudits.equalsIgnoreCase("yes")||includeAudits.equalsIgnoreCase("y")) includeAudit=true;
 		int userId = ((UserAccountBean)request.getSession().getAttribute("userBean")).getId();
-		XMLSerializer xmlSerializer = new XMLSerializer();
 		FullReportBean report = getMetadataCollectorResource().collectODMMetadataForClinicalData(studyOID,
 						formVersionOID,
 						getClinicalDataCollectorResource()
@@ -137,15 +136,10 @@ public class ODMClinicaDataResource {
 			report.getOdmBean().setFileType("Transactional");
 		}
 		report.createOdmXml(true);
-		//xmlSerializer.setForceTopLevelObject(true);
-		xmlSerializer.setTypeHintsEnabled(true);
-		JSON json = xmlSerializer.read(report.getXmlOutput().toString().trim());
+		JSONObject json = XML.toJSONObject(report.getXmlOutput().toString().trim());
 
 		JSONClinicalDataPostProcessor processor = new JSONClinicalDataPostProcessor(request.getLocale());
-        processor.process((JSONObject) json);
-
-//        JSONClinicalDataPostProcessor processor = new JSONClinicalDataPostProcessor(LocaleResolver.getLocale(request));
-//        processor.process(json);
+        processor.process(json);
 
 		return json.toString(INDENT_LEVEL);
 	}
