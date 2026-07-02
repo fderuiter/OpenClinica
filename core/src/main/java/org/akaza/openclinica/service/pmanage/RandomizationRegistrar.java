@@ -50,7 +50,7 @@ public class RandomizationRegistrar {
 
         try {
             SeRandomizationDTO response = rest.getForObject(randomizationUrl, SeRandomizationDTO.class);
-            if (response.getStudyOid() != null) {
+            if (response != null && response.getStudyOid() != null) {
                 return response;
             } else {
                 return null;
