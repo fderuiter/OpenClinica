@@ -32,9 +32,17 @@ files.forEach(file => {
         // Convert :param to {param}
         const pathParams = [];
         apiPath = apiPath.replace(/:([a-zA-Z0-9_]+)/g, (m, p1) => {
-            pathParams.push(p1);
+            if (!pathParams.includes(p1)) pathParams.push(p1);
             return `{${p1}}`;
         });
+        
+        let paramMatch;
+        const braceRegex = /\{([a-zA-Z0-9_]+)\}/g;
+        while ((paramMatch = braceRegex.exec(apiPath)) !== null) {
+            if (!pathParams.includes(paramMatch[1])) {
+                pathParams.push(paramMatch[1]);
+            }
+        }
         
         if (!openapi.paths[apiPath]) openapi.paths[apiPath] = {};
         openapi.paths[apiPath][method] = {
