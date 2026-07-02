@@ -1122,21 +1122,31 @@ public class SystemController {
 
     public String sendEmail(JavaMailSenderImpl mailSender, String emailSubject, String message) throws OpenClinicaSystemException {
 
-        logger.info("Sending email...");
+        logger.info("Checking email connection...");
+        javax.mail.Transport transport = null;
         try {
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-            helper.setFrom(EmailEngine.getAdminEmail());
-            helper.setTo("oc123@openclinica.com");
-            helper.setSubject(emailSubject);
-            helper.setText(message);
-
-            mailSender.send(mimeMessage);
+            javax.mail.Session session = mailSender.getSession();
+            String protocol = mailSender.getProtocol();
+            if (protocol == null || protocol.trim().isEmpty()) {
+                protocol = "smtp";
+            }
+            transport = session.getTransport(protocol);
+            transport.connect(mailSender.getHost(), mailSender.getPort(), mailSender.getUsername(), mailSender.getPassword());
             return "ACTIVE";
-        } catch (MailException me) {
+        } catch (javax.mail.AuthenticationFailedException afe) {
+            logger.error("Authentication failed during email connection check", afe);
             return "INACTIVE";
         } catch (MessagingException me) {
+            logger.error("Messaging exception during email connection check", me);
             return "INACTIVE";
+        } finally {
+            if (transport != null) {
+                try {
+                    transport.close();
+                } catch (MessagingException e) {
+                    logger.error("Error closing transport", e);
+                }
+            }
         }
     }
 
