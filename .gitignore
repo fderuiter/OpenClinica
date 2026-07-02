@@ -35,3 +35,5 @@ site/
 docs/api/
 docs/frontend-api/
 docs/project-info.md
+docs/openapi.json
+docs/soap.md

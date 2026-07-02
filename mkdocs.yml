@@ -26,4 +26,5 @@ nav:
   - Frontend Architecture:
     - Architecture Guide: frontend/architecture.md
     - React Components API: frontend-api/modules.md
-  - API Documentation: api/index.html
+  - Interactive REST API: api.md
+  - SOAP API Documentation: soap.md
