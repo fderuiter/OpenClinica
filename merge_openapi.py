@@ -25,6 +25,7 @@ def merge_specs():
     specs_to_merge = [
         'core/external-api.json',
         'core/src/main/resources/randomize-api.yaml',
+        'web/target/generated-docs/legacy-openapi.json',
         'modern/src/test/resources/established-contract.json'
     ]
 
