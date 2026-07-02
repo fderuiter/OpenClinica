@@ -249,13 +249,6 @@
 		    <artifactId>quartz-oracle</artifactId>
 		</dependency>
 
-		<!-- XML serializer-->
-    	<dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-        </dependency>
         <dependency>
             <groupId>xom</groupId>
             <artifactId>xom</artifactId>
@@ -328,18 +321,6 @@
             <version>4.11.0</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-    <groupId>org.codehaus.jackson</groupId>
-    <artifactId>jackson-core-lgpl</artifactId>
-    <version>1.8.1</version>
-</dependency>
-
-<dependency>
-    <groupId>org.codehaus.jackson</groupId>
-    <artifactId>jackson-mapper-lgpl</artifactId>
-    <version>1.8.1</version>
-</dependency>
     </dependencies>
 
     <build>

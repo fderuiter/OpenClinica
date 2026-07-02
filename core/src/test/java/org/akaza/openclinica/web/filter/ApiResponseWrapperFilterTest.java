@@ -1,7 +1,7 @@
 package org.akaza.openclinica.web.filter;
 
 import org.akaza.openclinica.bean.api.ApiResponse;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockFilterChain;

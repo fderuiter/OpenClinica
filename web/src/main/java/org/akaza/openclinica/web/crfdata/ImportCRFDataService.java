@@ -86,126 +86,139 @@ public class ImportCRFDataService {
      * purpose: look up EventCRFBeans by the following: Study Subject, Study Event, CRF Version, using the
      * findByEventSubjectVersion method in EventCRFDAO. May return more than one, hmm.
      */
-    public List<EventCRFBean> fetchEventCRFBeans(ODMContainer odmContainer, UserAccountBean ub) {
-        ArrayList<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
-        ArrayList<Integer> eventCRFBeanIds = new ArrayList<Integer>();
-        EventCRFDAO eventCrfDAO = new EventCRFDAO(ds);
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(ds);
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(ds);
-        StudyDAO studyDAO = new StudyDAO(ds);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(ds);
-        UpsertOnBean upsert = odmContainer.getCrfDataPostImportContainer().getUpsertOn();
-        // If Upsert bean is not present, create one with default settings
-        if (upsert == null)
-            upsert = new UpsertOnBean();
-        String studyOID = odmContainer.getCrfDataPostImportContainer().getStudyOID();
-        StudyBean studyBean = studyDAO.findByOid(studyOID);
-        ArrayList<SubjectDataBean> subjectDataBeans = odmContainer.getCrfDataPostImportContainer().getSubjectData();
-        for (SubjectDataBean subjectDataBean : subjectDataBeans) {
-            ArrayList<StudyEventDataBean> studyEventDataBeans = subjectDataBean.getStudyEventData();
+    public List<EventCRFBean> fetchEventCRFBeans(final ODMContainer odmContainer, final UserAccountBean ub) {
+        org.springframework.transaction.support.TransactionTemplate transactionTemplate = 
+            (org.springframework.transaction.support.TransactionTemplate) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("sharedTransactionTemplate");
+        
+        return transactionTemplate.execute(new org.springframework.transaction.support.TransactionCallback<List<EventCRFBean>>() {
+            @Override
+            public List<EventCRFBean> doInTransaction(org.springframework.transaction.TransactionStatus status) {
+                try {
+                    ArrayList<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
+                    ArrayList<Integer> eventCRFBeanIds = new ArrayList<Integer>();
+                    EventCRFDAO eventCrfDAO = new EventCRFDAO(ds);
+                    StudySubjectDAO studySubjectDAO = new StudySubjectDAO(ds);
+                    StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(ds);
+                    StudyDAO studyDAO = new StudyDAO(ds);
+                    StudyEventDAO studyEventDAO = new StudyEventDAO(ds);
+                    UpsertOnBean upsert = odmContainer.getCrfDataPostImportContainer().getUpsertOn();
+                    // If Upsert bean is not present, create one with default settings
+                    if (upsert == null)
+                        upsert = new UpsertOnBean();
+                    String studyOID = odmContainer.getCrfDataPostImportContainer().getStudyOID();
+                    StudyBean studyBean = studyDAO.findByOid(studyOID);
+                    ArrayList<SubjectDataBean> subjectDataBeans = odmContainer.getCrfDataPostImportContainer().getSubjectData();
+                    for (SubjectDataBean subjectDataBean : subjectDataBeans) {
+                        ArrayList<StudyEventDataBean> studyEventDataBeans = subjectDataBean.getStudyEventData();
 
-            StudySubjectBean studySubjectBean = studySubjectDAO.findByOidAndStudy(subjectDataBean.getSubjectOID(), studyBean.getId());
-            for (StudyEventDataBean studyEventDataBean : studyEventDataBeans) {
-                ArrayList<FormDataBean> formDataBeans = studyEventDataBean.getFormData();
+                        StudySubjectBean studySubjectBean = studySubjectDAO.findByOidAndStudy(subjectDataBean.getSubjectOID(), studyBean.getId());
+                        for (StudyEventDataBean studyEventDataBean : studyEventDataBeans) {
+                            ArrayList<FormDataBean> formDataBeans = studyEventDataBean.getFormData();
 
-                String sampleOrdinal = studyEventDataBean.getStudyEventRepeatKey() == null ? "1" : studyEventDataBean.getStudyEventRepeatKey();
+                            String sampleOrdinal = studyEventDataBean.getStudyEventRepeatKey() == null ? "1" : studyEventDataBean.getStudyEventRepeatKey();
 
-                StudyEventDefinitionBean studyEventDefinitionBean = studyEventDefinitionDAO.findByOidAndStudy(studyEventDataBean.getStudyEventOID(),
-                        studyBean.getId(), studyBean.getParentStudyId());
-                logger.info("find all by def and subject " + studyEventDefinitionBean.getName() + " study subject " + studySubjectBean.getName());
+                            StudyEventDefinitionBean studyEventDefinitionBean = studyEventDefinitionDAO.findByOidAndStudy(studyEventDataBean.getStudyEventOID(),
+                                    studyBean.getId(), studyBean.getParentStudyId());
+                            logger.info("find all by def and subject " + studyEventDefinitionBean.getName() + " study subject " + studySubjectBean.getName());
 
-                StudyEventBean studyEventBean = (StudyEventBean) studyEventDAO.findByStudySubjectIdAndDefinitionIdAndOrdinal(studySubjectBean.getId(),
-                        studyEventDefinitionBean.getId(), Integer.parseInt(sampleOrdinal));
-                // @pgawade 16-March-2011 Do not allow the data import
-                // if event status is one of the - stopped, signed,
-                // locked
-                if (studyEventBean.getSubjectEventStatus().equals(SubjectEventStatus.LOCKED)
-                        || studyEventBean.getSubjectEventStatus().equals(SubjectEventStatus.SIGNED)
-                        || studyEventBean.getSubjectEventStatus().equals(SubjectEventStatus.STOPPED)) {
-                    return null;
-                }
-                for (FormDataBean formDataBean : formDataBeans) {
+                            StudyEventBean studyEventBean = (StudyEventBean) studyEventDAO.findByStudySubjectIdAndDefinitionIdAndOrdinal(studySubjectBean.getId(),
+                                    studyEventDefinitionBean.getId(), Integer.parseInt(sampleOrdinal));
+                            // @pgawade 16-March-2011 Do not allow the data import
+                            // if event status is one of the - stopped, signed,
+                            // locked
+                            if (studyEventBean.getSubjectEventStatus().equals(SubjectEventStatus.LOCKED)
+                                    || studyEventBean.getSubjectEventStatus().equals(SubjectEventStatus.SIGNED)
+                                    || studyEventBean.getSubjectEventStatus().equals(SubjectEventStatus.STOPPED)) {
+                                return null;
+                            }
+                            for (FormDataBean formDataBean : formDataBeans) {
 
-                    CRFVersionDAO crfVersionDAO = new CRFVersionDAO(ds);
+                                CRFVersionDAO crfVersionDAO = new CRFVersionDAO(ds);
 
-                    ArrayList<CRFVersionBean> crfVersionBeans = crfVersionDAO.findAllByOid(formDataBean.getFormOID());
-                    for (CRFVersionBean crfVersionBean : crfVersionBeans) {
+                                ArrayList<CRFVersionBean> crfVersionBeans = crfVersionDAO.findAllByOid(formDataBean.getFormOID());
+                                for (CRFVersionBean crfVersionBean : crfVersionBeans) {
 
-                        ArrayList<EventCRFBean> eventCrfBeans = eventCrfDAO.findByEventSubjectVersion(studyEventBean, studySubjectBean, crfVersionBean);
-                        
-                        /**
-                         *  OC-8255
-                         *  need to check :
-                         *  If another user already entered a different version of the same CRF for the same Study Event & Subject
-                         *  migrate to new crf version passed in xml file
-                         */
-                         if (eventCrfBeans.isEmpty()) {
-                        	eventCrfBeans = eventCrfDAO.findByEventSubjectCRFid(studyEventBean, studySubjectBean, crfVersionBean);
+                                    ArrayList<EventCRFBean> eventCrfBeans = eventCrfDAO.findByEventSubjectVersion(studyEventBean, studySubjectBean, crfVersionBean);
+                                    
+                                    /**
+                                     *  OC-8255
+                                     *  need to check :
+                                     *  If another user already entered a different version of the same CRF for the same Study Event & Subject
+                                     *  migrate to new crf version passed in xml file
+                                     */
+                                     if (eventCrfBeans.isEmpty()) {
+                                        eventCrfBeans = eventCrfDAO.findByEventSubjectCRFid(studyEventBean, studySubjectBean, crfVersionBean);
 
-                        	if(!(eventCrfBeans.isEmpty())) {
-                        		  for (EventCRFBean ecb : eventCrfBeans) {
-                        			  int newCRFVersionId = crfVersionBean.getId();
-                        			  ecb.setCRFVersionId(newCRFVersionId);
+                                        if(!(eventCrfBeans.isEmpty())) {
+                                              for (EventCRFBean ecb : eventCrfBeans) {
+                                                  int newCRFVersionId = crfVersionBean.getId();
+                                                  ecb.setCRFVersionId(newCRFVersionId);
 
-                        		  }
-                        	}
-                          }
+                                              }
+                                        }
+                                      }
 
-                        
-                        // what if we have begun with creating a study
-                        // event, but haven't entered data yet? this would
-                        // have us with a study event, but no corresponding
-                        // event crf, yet.
-                        if (eventCrfBeans.isEmpty()) {
-                            logger.debug("   found no event crfs from Study Event id " + studyEventBean.getId() + ", location " + studyEventBean.getLocation());
-                            // spell out criteria and create a bean if
-                            // necessary, avoiding false-positives
-                            if ((studyEventBean.getSubjectEventStatus().equals(SubjectEventStatus.SCHEDULED)
-                                    || studyEventBean.getSubjectEventStatus().equals(SubjectEventStatus.DATA_ENTRY_STARTED) || studyEventBean
-                                    .getSubjectEventStatus().equals(SubjectEventStatus.COMPLETED)) && upsert.isNotStarted()) {
-                                EventCRFBean newEventCrfBean = new EventCRFBean();
-                                newEventCrfBean.setStudyEventId(studyEventBean.getId());
-                                newEventCrfBean.setStudySubjectId(studySubjectBean.getId());
-                                newEventCrfBean.setCRFVersionId(crfVersionBean.getId());
-                                newEventCrfBean.setDateInterviewed(new Date());
-                                newEventCrfBean.setOwner(ub);
-                                newEventCrfBean.setInterviewerName(ub.getName());
-                                newEventCrfBean.setCompletionStatusId(1);// place
-                                // filler
-                                newEventCrfBean.setStatus(Status.AVAILABLE);
-                                newEventCrfBean.setStage(DataEntryStage.INITIAL_DATA_ENTRY);
-                                // these will be updated later in the
-                                // workflow
-                                newEventCrfBean = (EventCRFBean) eventCrfDAO.create(newEventCrfBean);
-                                // eventCrfBeans.add(newEventCrfBean);
-                                logger.debug("   created and added new event crf");
+                                    
+                                    // what if we have begun with creating a study
+                                    // event, but haven't entered data yet? this would
+                                    // have us with a study event, but no corresponding
+                                    // event crf, yet.
+                                    if (eventCrfBeans.isEmpty()) {
+                                        logger.debug("   found no event crfs from Study Event id " + studyEventBean.getId() + ", location " + studyEventBean.getLocation());
+                                        // spell out criteria and create a bean if
+                                        // necessary, avoiding false-positives
+                                        if ((studyEventBean.getSubjectEventStatus().equals(SubjectEventStatus.SCHEDULED)
+                                                || studyEventBean.getSubjectEventStatus().equals(SubjectEventStatus.DATA_ENTRY_STARTED) || studyEventBean
+                                                .getSubjectEventStatus().equals(SubjectEventStatus.COMPLETED)) && upsert.isNotStarted()) {
+                                            EventCRFBean newEventCrfBean = new EventCRFBean();
+                                            newEventCrfBean.setStudyEventId(studyEventBean.getId());
+                                            newEventCrfBean.setStudySubjectId(studySubjectBean.getId());
+                                            newEventCrfBean.setCRFVersionId(crfVersionBean.getId());
+                                            newEventCrfBean.setDateInterviewed(new Date());
+                                            newEventCrfBean.setOwner(ub);
+                                            newEventCrfBean.setInterviewerName(ub.getName());
+                                            newEventCrfBean.setCompletionStatusId(1);// place
+                                            // filler
+                                            newEventCrfBean.setStatus(Status.AVAILABLE);
+                                            newEventCrfBean.setStage(DataEntryStage.INITIAL_DATA_ENTRY);
+                                            // these will be updated later in the
+                                            // workflow
+                                            newEventCrfBean = (EventCRFBean) eventCrfDAO.create(newEventCrfBean);
+                                            // eventCrfBeans.add(newEventCrfBean);
+                                            logger.debug("   created and added new event crf");
 
-                                if (!eventCRFBeanIds.contains(newEventCrfBean.getId())) {
-                                    eventCRFBeans.add(newEventCrfBean);
-                                    eventCRFBeanIds.add(newEventCrfBean.getId());
+                                            if (!eventCRFBeanIds.contains(newEventCrfBean.getId())) {
+                                                eventCRFBeans.add(newEventCrfBean);
+                                                eventCRFBeanIds.add(newEventCrfBean.getId());
+                                            }
+
+                                        }
+                                    }
+
+                                    // below to prevent duplicates
+
+                                    for (EventCRFBean ecb : eventCrfBeans) {
+                                        Integer ecbId = new Integer(ecb.getId());
+                                        if ((upsert.isDataEntryStarted() && ecb.getStage().equals(DataEntryStage.INITIAL_DATA_ENTRY))
+                                                || (upsert.isDataEntryComplete() && ecb.getStage().equals(DataEntryStage.DOUBLE_DATA_ENTRY_COMPLETE)))
+                                            if (!eventCRFBeanIds.contains(ecbId)) {
+                                                eventCRFBeans.add(ecb);
+                                                eventCRFBeanIds.add(ecbId);
+                                            }
+                                    }
                                 }
-
                             }
                         }
-
-                        // below to prevent duplicates
-
-                        for (EventCRFBean ecb : eventCrfBeans) {
-                            Integer ecbId = new Integer(ecb.getId());
-                            if ((upsert.isDataEntryStarted() && ecb.getStage().equals(DataEntryStage.INITIAL_DATA_ENTRY))
-                                    || (upsert.isDataEntryComplete() && ecb.getStage().equals(DataEntryStage.DOUBLE_DATA_ENTRY_COMPLETE)))
-                                if (!eventCRFBeanIds.contains(ecbId)) {
-                                    eventCRFBeans.add(ecb);
-                                    eventCRFBeanIds.add(ecbId);
-                                }
-                        }
                     }
+                    // if it's null, throw an error, since they should be existing beans for
+                    // iteration one
+                    return eventCRFBeans;
+                } catch (Exception e) {
+                    status.setRollbackOnly();
+                    throw new RuntimeException("Transaction was rolled back: " + e.getMessage(), e);
                 }
             }
-        }
-        // if it's null, throw an error, since they should be existing beans for
-        // iteration one
-        return eventCRFBeans;
+        });
     }
 
     /*
