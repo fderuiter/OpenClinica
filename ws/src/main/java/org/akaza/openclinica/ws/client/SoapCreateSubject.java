@@ -74,7 +74,7 @@ public class SoapCreateSubject extends WebServiceGatewaySupport implements Subje
 
     public boolean validate(SubjectTransferBean subjectTransferBean) {
         if (subjectTransferBean == null) return false;
-        if (subjectTransferBean.getSubjectId() == null || subjectTransferBean.getSubjectId().trim().isEmpty()) return false;
+        if (subjectTransferBean.getStudySubjectId() == null || subjectTransferBean.getStudySubjectId().trim().isEmpty()) return false;
         if (subjectTransferBean.getStudyOid() == null || subjectTransferBean.getStudyOid().trim().isEmpty()) return false;
         return true;
     }
