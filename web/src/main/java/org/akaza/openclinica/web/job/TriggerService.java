@@ -268,10 +268,11 @@ public class TriggerService {
 
     public String generateHardValidationErrorMessage(ArrayList<SubjectDataBean> subjectData, HashMap<String, String> hardValidationErrors, boolean isValid) {
         StringBuffer sb = new StringBuffer();
-        String studyEventRepeatKey = "1";
-        String groupRepeatKey = "1";
+        String[] studyEventRepeatKey = {"1"};
+        String[] groupRepeatKey = {"1"};
         sb.append("<table border=\'0\' cellpadding=\'0\' cellspacing=\'0\' width=\'100%\'>");
-        for (SubjectDataBean subjectDataBean : subjectData) {
+        org.akaza.openclinica.logic.importdata.SubjectDataProcessor.process(subjectData, new org.akaza.openclinica.logic.importdata.SubjectDataProcessor<Object>() {
+public void process(SubjectDataBean subjectDataBean) {
             sb.append("<tr valign=\'top\'> <td class=\'table_header_row\' colspan=\'4\'>Study Subject: " + subjectDataBean.getSubjectOID() + "</td> </tr>");
             // next step here
             ArrayList<StudyEventDataBean> studyEventDataBeans = subjectDataBean.getStudyEventData();
@@ -280,11 +281,11 @@ public class TriggerService {
                 sb.append("</tr> <tr valign=\'top\'> <td class=\'table_cell_left\'>");
                 sb.append(studyEventDataBean.getStudyEventOID());
                 if (studyEventDataBean.getStudyEventRepeatKey() != null) {
-                    studyEventRepeatKey = studyEventDataBean.getStudyEventRepeatKey();
+                    studyEventRepeatKey[0] = studyEventDataBean.getStudyEventRepeatKey();
                     sb.append(" (Repeat key " + studyEventDataBean.getStudyEventRepeatKey() + ")");
                 } else {
                     // reset
-                    studyEventRepeatKey = "1";
+                    studyEventRepeatKey[0] = "1";
                 }
                 sb.append("</td> <td class=\'table_cell\' colspan=\'3\'></td> </tr>");
                 ArrayList<FormDataBean> formDataBeans = studyEventDataBean.getFormData();
@@ -300,15 +301,15 @@ public class TriggerService {
                         sb.append("<td class=\'table_header_row\'></td> <td class=\'table_header_row\' colspan=\'2\'>");
                         sb.append(itemGroupDataBean.getItemGroupOID());
                         if (itemGroupDataBean.getItemGroupRepeatKey() != null) {
-                            groupRepeatKey = itemGroupDataBean.getItemGroupRepeatKey();
+                            groupRepeatKey[0] = itemGroupDataBean.getItemGroupRepeatKey();
                             sb.append(" (Repeat key " + itemGroupDataBean.getItemGroupRepeatKey() + ")");
                         } else {
-                            groupRepeatKey = "1";
+                            groupRepeatKey[0] = "1";
                         }
                         sb.append("</td></tr>");
                         ArrayList<ImportItemDataBean> itemDataBeans = itemGroupDataBean.getItemData();
                         for (ImportItemDataBean itemDataBean : itemDataBeans) {
-                            String oidKey = itemDataBean.getItemOID() + "_" + studyEventRepeatKey + "_" + groupRepeatKey + "_"
+                            String oidKey = itemDataBean.getItemOID() + "_" + studyEventRepeatKey[0] + "_" + groupRepeatKey[0] + "_"
                                     + subjectDataBean.getSubjectOID();
                             if (!isValid) {
                                 if (hardValidationErrors.containsKey(oidKey)) {
@@ -342,6 +343,8 @@ public class TriggerService {
                 }
             }
         }
+});
+
         sb.append("</table>");
         return sb.toString();
     }

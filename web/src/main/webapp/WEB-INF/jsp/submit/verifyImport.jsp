@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.openclinica.com/jsp/tld/oc" prefix="oc" %>
 
 <fmt:setBundle basename="org.akaza.openclinica.i18n.notes" var="restext"/>
 <fmt:setBundle basename="org.akaza.openclinica.i18n.words" var="resword"/>
@@ -172,7 +173,7 @@
 	<div class="textbox_center">
 	<table border="0" cellpadding="0" cellspacing="0" width="90%">
 
-		<c:forEach var="subjectDataBean" items="${subjectData}" >
+		<oc:forEachSubject var="subjectDataBean" items="${subjectData}" >
 			<tr valign="top">
 				<td class="table_header_row" colspan="4"><fmt:message key="study_subject" bundle="${resword}"/>: <c:out value="${subjectDataBean.subjectOID}"/></td>
 			</tr>
@@ -245,7 +246,7 @@
 					</c:forEach>
 				</c:forEach>
 			</c:forEach>
-		</c:forEach>
+		</oc:forEachSubject>
 
 
 
@@ -304,7 +305,7 @@
 			<div class="textbox_center">
 			<table border="0" cellpadding="0" cellspacing="0" width="100%">
 
-				<c:forEach var="subjectDataBean" items="${subjectData}">
+				<oc:forEachSubject var="subjectDataBean" items="${subjectData}">
                     <c:set var="currSubjectMap" value="${importCrfInfo.importCRFMap[subjectDataBean.subjectOID]}"/>
                     <c:if test="${currSubjectMap != null}">
 					<tr valign="top">
@@ -394,7 +395,7 @@
                         </c:if>
 					</c:forEach>
                     </c:if>
-				</c:forEach>
+				</oc:forEachSubject>
 
 
 
@@ -430,7 +431,7 @@
 			<div class="textbox_center">
 			<table border="0" cellpadding="0" cellspacing="0" width="100%">
 
-				<c:forEach var="subjectDataBean" items="${subjectData}">
+				<oc:forEachSubject var="subjectDataBean" items="${subjectData}">
                     <c:set var="currSubjectMap" value="${importCrfInfo.importCRFMap[subjectDataBean.subjectOID]}"/>
                     <c:if test="${currSubjectMap != null}">
 					<tr valign="top">
@@ -522,7 +523,7 @@
 						</c:if>
 					</c:forEach>
 					</c:if>
-				</c:forEach>
+				</oc:forEachSubject>
 
 
 

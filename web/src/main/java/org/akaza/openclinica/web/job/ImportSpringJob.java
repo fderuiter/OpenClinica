@@ -827,13 +827,16 @@ public class ImportSpringJob extends QuartzJobBean {
         if (odmContainer != null) {
             ArrayList<SubjectDataBean> subjectDataBeans = odmContainer.getCrfDataPostImportContainer().getSubjectData();
             if (ruleSetService.getCountByStudy(studyBean) > 0) {
-                ImportDataRuleRunnerContainer container;
-                for (SubjectDataBean subjectDataBean : subjectDataBeans) {
-                    container = new ImportDataRuleRunnerContainer();
+                
+                org.akaza.openclinica.logic.importdata.SubjectDataProcessor.process(subjectDataBeans, new org.akaza.openclinica.logic.importdata.SubjectDataProcessor<Object>() {
+public void process(SubjectDataBean subjectDataBean) {
+                    ImportDataRuleRunnerContainer container = new ImportDataRuleRunnerContainer();
                     container.initRuleSetsAndTargets(dataSource, studyBean, subjectDataBean, ruleSetService);
                     if (container.getShouldRunRules())
                         containers.add(container);
                 }
+});
+
                 if (containers != null && !containers.isEmpty())
                     ruleSetService.runRulesInImportData(containers, studyBean, userBean, ExecutionMode.DRY_RUN);
             }

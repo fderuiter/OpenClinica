@@ -26,4 +26,20 @@
         </attribute>
     </tag>
 
+    <tag>
+        <name>forEachSubject</name>
+        <tag-class>org.akaza.openclinica.view.tags.SubjectDataForEachTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>items</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
+
 </taglib>
