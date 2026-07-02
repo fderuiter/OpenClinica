@@ -40,6 +40,8 @@ import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.akaza.openclinica.service.ParticipantEventService;
 import org.akaza.openclinica.service.pmanage.ParticipantPortalRegistrar;
 import org.akaza.openclinica.web.pform.PFormCache;
+import org.akaza.openclinica.service.audit.AuditService;
+import org.akaza.openclinica.bean.admin.AuditEventBean;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.cdisc.ns.odm.v130_api.ODM;
@@ -224,7 +226,7 @@ public class OdmController {
         return getODM(studyOid, studySubjectOid);
     }
 
-    private ODM getODM(String studyOID, String subjectKey) {
+    private ODM getODM(String studyOID, String subjectKey) throws Exception {
         ODM odm = new ODM();
         String ssoid = subjectKey;
         if (ssoid == null) {
@@ -283,6 +285,21 @@ public class OdmController {
         } catch (Exception e) {
             logger.error(e.getMessage());
             logger.error(ExceptionUtils.getStackTrace(e));
+            
+            try {
+                AuditService auditService = new AuditService(dataSource);
+                AuditEventBean auditEvent = new AuditEventBean();
+                auditEvent.setAuditTable("export");
+                auditEvent.setEntityId(0);
+                String msg = e.getMessage() != null ? e.getMessage() : e.getClass().getName();
+                auditEvent.setReasonForChange("Export failed: " + msg);
+                auditEvent.setActionMessage("Export failed");
+                auditService.logEvent(auditEvent, null);
+            } catch (Exception auditEx) {
+                logger.error("Failed to log export error to audit trail", auditEx);
+            }
+            
+            throw e;
         }
 
         return odm;

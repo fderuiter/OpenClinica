@@ -20,6 +20,8 @@ import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.akaza.openclinica.service.extract.ExtractUtils;
 import org.akaza.openclinica.service.extract.XsltTriggerService;
 import org.akaza.openclinica.web.SQLInitServlet;
+import org.akaza.openclinica.service.audit.AuditService;
+import org.akaza.openclinica.bean.admin.AuditEventBean;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -67,12 +69,13 @@ public class ExtractController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public ModelMap processSubmit(@RequestParam("id") String id,
-                                  @RequestParam("datasetId") String datasetId, HttpServletRequest request, HttpServletResponse response)  {
+                                  @RequestParam("datasetId") String datasetId, HttpServletRequest request, HttpServletResponse response) throws Exception {
         if(!mayProceed(request)){
             try{
                 response.sendRedirect(request.getContextPath() + "/MainMenu?message=authentication_failed");
             }catch (Exception e){
                 e.printStackTrace();
+                throw e;
             }
             return null;
         }
@@ -175,6 +178,22 @@ public class ExtractController {
 
         } catch (SchedulerException se) {
             se.printStackTrace();
+            try {
+                AuditService auditService = new AuditService(dataSource);
+                AuditEventBean auditEvent = new AuditEventBean();
+                auditEvent.setAuditTable("dataset");
+                auditEvent.setEntityId(dsBean.getId());
+                String msg = se.getMessage() != null ? se.getMessage() : se.getClass().getName();
+                auditEvent.setReasonForChange("Export failed: " + msg);
+                auditEvent.setActionMessage("Export failed");
+                if (userBean != null) {
+                    auditEvent.setUserId(userBean.getId());
+                }
+                auditService.logEvent(auditEvent, null);
+            } catch (Exception auditEx) {
+                logger.error("Failed to log export error to audit trail", auditEx);
+            }
+            throw se;
         }
 
         request.setAttribute("datasetId", datasetId);
