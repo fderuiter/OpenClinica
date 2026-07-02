@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean;
 import org.akaza.openclinica.bean.odmbeans.AuditLogsBean;
 import org.akaza.openclinica.bean.odmbeans.DiscrepancyNotesBean;
-import org.akaza.openclinica.domain.datamap.StudyEventDefinition;
+
 
 @XmlRootElement(name="StudyEventData")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -21,7 +21,7 @@ public class StudyEventDataBean {
     private String studyEventRepeatKey;
     private AuditLogsBean auditLogs;
     private DiscrepancyNotesBean discrepancyNotes;
-    private StudyEventDefinition studyEventDefinition;
+    private Object studyEventDefinition;
 
     public StudyEventDataBean() {
         formData = new ArrayList<FormDataBean>();
@@ -69,11 +69,11 @@ public class StudyEventDataBean {
         this.discrepancyNotes = discrepancyNotes;
     }
 
-	public StudyEventDefinition getStudyEventDefinition() {
+	public Object getStudyEventDefinition() {
 	return studyEventDefinition;
 }
 
-    public void setStudyEventDefinition(StudyEventDefinition studyEventDefinition) {
+    public void setStudyEventDefinition(Object studyEventDefinition) {
 	this.studyEventDefinition = studyEventDefinition;
 }
 

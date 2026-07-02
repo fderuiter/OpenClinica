@@ -1,22 +1,22 @@
 package org.akaza.openclinica.patterns.ocobserver;
 
-import org.akaza.openclinica.domain.datamap.StudyEvent;
+
 
 public class StudyEventContainer {
-	private StudyEvent event = null;
+	private Object event = null;
 	private StudyEventChangeDetails changeDetails = null;
 	
-	public StudyEventContainer(StudyEvent event, StudyEventChangeDetails changeDetails)
+	public StudyEventContainer(Object event, StudyEventChangeDetails changeDetails)
 	{
 		this.event = event;
 		this.changeDetails = changeDetails;
 	}
 
-	public StudyEvent getEvent() {
+	public Object getEvent() {
 		return event;
 	}
 
-	public void setEvent(StudyEvent event) {
+	public void setEvent(Object event) {
 		this.event = event;
 	}
 

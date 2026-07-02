@@ -9,6 +9,7 @@
 	<description>OpenClinica</description>
 
 	<modules>
+		<module>domain</module>
 		<module>core</module>
 		<module>web</module>
 		<module>ws</module>

@@ -33,7 +33,7 @@ public class RuleSetListenerService implements ApplicationListener<OnStudyEventU
 		LOGGER.debug("listening");
 	if (event.getContainer().getChangeDetails().getStartDateChanged() || event.getContainer().getChangeDetails().getStatusChanged()){ 
        
-		StudyEvent studyEvent = event.getContainer().getEvent();
+		StudyEvent studyEvent = (StudyEvent) event.getContainer().getEvent();
 		
 		Integer studyEventDefId = studyEvent.getStudyEventDefinition().getStudyEventDefinitionId();
 		Integer studyEventOrdinal = studyEvent.getSampleOrdinal();

@@ -10,7 +10,7 @@
 package org.akaza.openclinica.bean.odmbeans;
 
 import org.akaza.openclinica.bean.managestudy.StudyBean;
-import org.akaza.openclinica.domain.rule.RuleSetRuleBean;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class MetaDataVersionBean extends ElementOIDBean {
     private List<StudyGroupClassListBean> studyGroupClassLists;
     private List<MultiSelectListBean> multiSelectLists;
     private StudyBean study;
-    private List<RuleSetRuleBean> ruleSetRules;
+    private List<Object> ruleSetRules;
     
     //
     String cvIds;
@@ -54,7 +54,7 @@ public class MetaDataVersionBean extends ElementOIDBean {
         studyGroupClassLists = new ArrayList<StudyGroupClassListBean>();
         multiSelectLists = new ArrayList<MultiSelectListBean>();
         study = new StudyBean();
-        ruleSetRules = new ArrayList<RuleSetRuleBean>();
+        ruleSetRules = new ArrayList<Object>();
     }
 
     public void setName(String metadataVersionName) {
@@ -177,11 +177,11 @@ public class MetaDataVersionBean extends ElementOIDBean {
         this.study = study;
     }
 
-    public List<RuleSetRuleBean> getRuleSetRules() {
+    public List<Object> getRuleSetRules() {
         return ruleSetRules;
     }
 
-    public void setRuleSetRules(List<RuleSetRuleBean> ruleSetRules) {
+    public void setRuleSetRules(List<Object> ruleSetRules) {
         this.ruleSetRules = ruleSetRules;
     }
 }

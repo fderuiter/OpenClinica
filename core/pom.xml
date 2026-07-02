@@ -9,6 +9,11 @@
         <version>3.18-SNAPSHOT</version>
     </parent>
     <dependencies>
+        <dependency>
+            <groupId>org.akaza.openclinica</groupId>
+            <artifactId>domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>javax.transaction</groupId>
 			<artifactId>transaction-api</artifactId>

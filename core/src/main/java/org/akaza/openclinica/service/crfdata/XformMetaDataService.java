@@ -197,7 +197,7 @@ public class XformMetaDataService {
         }
 
         if (hasFiles) {
-            String dir = Utils.getCrfMediaFilePath(crf, version);
+            String dir = Utils.getCrfMediaFilePath(crf.getOcOid(), version.getOcOid());
             // Save any media files
             for (FileItem item : items) {
                 if (!item.isFormField()) {
