@@ -192,7 +192,12 @@ public class LoggerStartupListener extends ContextAwareBase implements
 		String webAppName = null;
 		if (null != servletCtxRealPath) {
 			String[] tokens = servletCtxRealPath.split("/");
-			webAppName = tokens[(tokens.length - 3)].trim();
+			if (tokens.length >= 3) {
+			    webAppName = tokens[(tokens.length - 3)].trim();
+			}
+		}
+		if (webAppName == null || webAppName.isEmpty()) {
+		    webAppName = "openclinica";
 		}
 		return webAppName;
 	}
@@ -205,11 +210,14 @@ public class LoggerStartupListener extends ContextAwareBase implements
 		 
 		try {
 		 		inpStream = this.getClass().getClassLoader().getResourceAsStream(fileProps);
-		 		p.load(inpStream);
+		 		if (inpStream != null) {
+		 		    p.load(inpStream);
+		 		}
 		        return p;
 		} finally {
-		 
-		inpStream.close();
+		    if (inpStream != null) {
+			    inpStream.close();
+		    }
 		}
 		 
 		}
