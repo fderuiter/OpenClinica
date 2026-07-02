@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>OpenClinica-core</artifactId>
@@ -19,7 +20,7 @@
 			<artifactId>transaction-api</artifactId>
 			<version>1.1</version>
 		</dependency>
-		<!--@pgawade 16-NOV-2010 spring security dependency for unit tests -->
+		
 		<dependency>
              <groupId>commons-httpclient</groupId>
               <artifactId>commons-httpclient</artifactId>
@@ -69,7 +70,7 @@
 			<version>2.1.2</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- end servlet tests -->
+		
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -98,7 +99,7 @@
 			<version>20160212</version>
 		</dependency>
 
-		<!--  Needed by commons-validator -->
+		
 		<dependency>
 			<groupId>oro</groupId>
 			<artifactId>oro</artifactId>
@@ -189,21 +190,15 @@
 			<version>2.6.10</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- Postgres JDBC driver -->
+		
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.1-901-1.jdbc4</version>
 			<scope>runtime</scope>
 		</dependency>
-        <!-- Oracle JDBC driver -->
-		<!--
-		<dependency>
-    		<groupId>oracle.ojdbc14</groupId>
-    		<artifactId>ojdbc14</artifactId>
-    		<version>10g</version>
-		</dependency>
-		-->
+        
+		
         
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -212,7 +207,7 @@
         </dependency>
         
         
-        <!-- @pgawade 16-NOV-2010 jmesa library for unit tests -->
+        
 		<dependency>
 			<groupId>org.jmesa</groupId>
 			<artifactId>jmesa</artifactId>
@@ -240,7 +235,7 @@
 		    <groupId>org.quartz-scheduler</groupId>
 		    <artifactId>quartz-oracle</artifactId>
 		</dependency>
-        <!-- OpenAPI Generator Dependencies -->
+        
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -277,8 +272,124 @@
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
         </dependency>
-	</dependencies>
-	<!-- @pgawade 16-NOV-2010 unit tests through maven -->
+	<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>3.2.10.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-ldap</artifactId>
+			<version>3.2.10.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>3.2.10.RELEASE</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security.oauth</groupId>
+			<artifactId>spring-security-oauth2</artifactId>
+			<version>2.0.19.RELEASE</version>
+			
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.0.2.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>3.5.1-Final</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.1.0</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.ehcache-spring-annotations</groupId>
+			<artifactId>ehcache-spring-annotations</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.5.1-Final</version>
+		</dependency>
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist </artifactId>
+			<version>3.8.0.GA</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency><groupId>javax.xml.bind</groupId><artifactId>jaxb-api</artifactId><version>2.3.1</version></dependency></dependencies>
+	
 
     <build>
         <plugins>
@@ -359,9 +470,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <replace file="${project.build.directory}/generated-sources/openapi/src/main/java/org/akaza/openclinica/sdk/JSON.java"
-                                         token="FAIL_ON_UNKNOWN_PROPERTIES, true"
-                                         value="FAIL_ON_UNKNOWN_PROPERTIES, false" />
+                                <replace file="${project.build.directory}/generated-sources/openapi/src/main/java/org/akaza/openclinica/sdk/JSON.java" token="FAIL_ON_UNKNOWN_PROPERTIES, true" value="FAIL_ON_UNKNOWN_PROPERTIES, false" />
                             </target>
                         </configuration>
                     </execution>
