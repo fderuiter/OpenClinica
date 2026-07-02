@@ -107,7 +107,7 @@
         <sequence>
             <element name="oid" type="beans:customStringType"/>
             <element name="name" type="beans:customStringType"/>
-            <element name="eventDefinitionCrfs" type="beans:crfsType"/>
+            <element name="eventDefinitionCrfs" type="beans:eventDefinitionCrfsType"/>
         </sequence>
     </complexType>
     
@@ -127,7 +127,7 @@
             <element name="allowAnonymousSubmission" type="boolean"/>
             <element name="submissionUrl" type="beans:customStringType"/>
             <element name="offline" type="boolean"/>
-            <element name="sourceDataVerificaiton" type="beans:customStringType"/>
+            <element name="sourceDataVerification" type="beans:customStringType"/>
             <element name="crf" type="beans:crfObjType" minOccurs="1"/>
             <element name="defaultCrfVersion" type="beans:crfVersionType" minOccurs="1"/>
         </sequence>
