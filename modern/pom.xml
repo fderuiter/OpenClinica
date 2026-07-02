@@ -219,7 +219,35 @@
                         </goals>
                         <configuration>
                             <scripts>
-                                <script>file:///tmp/merge_script.groovy</script>
+                                <script>
+                                    import groovy.json.JsonSlurper
+                                    import groovy.json.JsonBuilder
+
+                                    def slurper = new JsonSlurper()
+                                    def legacyFile = new File(project.basedir, "../web/target/generated-docs/legacy-openapi.json")
+                                    def modernFile = new File(project.basedir, "target/generated-docs/modern-openapi.json")
+
+                                    if (!legacyFile.exists() || !modernFile.exists()) {
+                                        println "Specs not found!"
+                                        return
+                                    }
+
+                                    def legacy = slurper.parse(legacyFile)
+                                    def modern = slurper.parse(modernFile)
+
+                                    if (!modern.paths) modern.paths = [:]
+                                    if (legacy.paths) modern.paths.putAll(legacy.paths)
+
+                                    if (!modern.components) modern.components = [:]
+                                    if (!modern.components.schemas) modern.components.schemas = [:]
+                                    if (legacy.components &amp;&amp; legacy.components.schemas) {
+                                        modern.components.schemas.putAll(legacy.components.schemas)
+                                    }
+
+                                    def outFile = new File(project.basedir, "target/generated-docs/openclinica-openapi.json")
+                                    outFile.text = new JsonBuilder(modern).toPrettyString()
+                                    println "Merged spec created at " + outFile.absolutePath
+                                </script>
                             </scripts>
                         </configuration>
                     </execution>

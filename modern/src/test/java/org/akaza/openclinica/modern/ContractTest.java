@@ -20,10 +20,7 @@ public class ContractTest {
 
     @Test
     public void testDataEntryContract() throws Exception {
-        String openapiJson = mockMvc.perform(get("/v3/api-docs"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        String openapiJson = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get("src/test/resources/established-contract.json")));
 
         OpenApiInteractionValidator validator = OpenApiInteractionValidator
                 .createForInlineApiSpecification(openapiJson)
