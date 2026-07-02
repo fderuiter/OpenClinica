@@ -1,3 +1,5 @@
+# Tomcat Initialization Script
+```bash
 #!/bin/bash
 #
 # tomcat        
@@ -96,4 +98,4 @@ case "$1" in
         ;;
 esac
 
-exit $RETVAL
+exit $RETVAL```

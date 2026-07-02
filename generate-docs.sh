@@ -43,3 +43,18 @@ awk -v content="$GENERATED_CONTENT" '
     }
 ' README.md > README.md.tmp && mv README.md.tmp README.md
 
+# Install MkDocs if not present
+if ! command -v mkdocs &> /dev/null; then
+    python3 -m pip install mkdocs mkdocs-material
+fi
+
+# Ensure docs directory has the latest README
+cp README.md docs/project-info.md
+
+# Generate REST API docs
+npx apidoc -i web/src/main/java -o docs/api
+
+# Build the documentation site
+mkdocs build
+
+
