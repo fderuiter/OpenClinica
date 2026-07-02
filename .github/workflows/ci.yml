@@ -9,6 +9,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: openclinica-TEST-3.12
+          POSTGRES_USER: clinica
+          POSTGRES_PASSWORD: clinica
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U clinica"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
@@ -19,5 +34,5 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B clean install -DskipTests
-    - name: Run modern module tests
-      run: mvn -B test -pl modern
+    - name: Run tests (core, web, modern)
+      run: mvn -B test -pl core,web,modern -Ddb.test=localhost
