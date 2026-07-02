@@ -185,5 +185,22 @@
                              columnNames="item_id, event_crf_id, ordinal"/>
     </changeSet>
 
+    <changeSet author="modernization" id="create_subject_label_sequence_table">
+        <createTable tableName="subject_label_sequence">
+            <column name="label_value" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <insert tableName="subject_label_sequence">
+            <column name="label_value" valueNumeric="0"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="modernization" id="enforce_unique_study_subject_label">
+        <addUniqueConstraint constraintName="uc_study_subject_label"
+                             tableName="study_subject"
+                             columnNames="study_id, label"/>
+    </changeSet>
+
     <include file="migration/modernization_indexes.xml"/>
 </databaseChangeLog>

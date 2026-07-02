@@ -36,8 +36,13 @@
         <constructor-arg ref="dataSource"/>
     </bean>
 
+    <bean id="enrollmentManager" class="org.akaza.openclinica.service.subject.EnrollmentManager">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
     <bean id="subjectService" class="org.akaza.openclinica.service.subject.SubjectService">
         <constructor-arg ref="dataSource"/>
+        <property name="enrollmentManager" ref="enrollmentManager"/>
     </bean>
 
     <bean id="eventService" class="org.akaza.openclinica.service.EventService">

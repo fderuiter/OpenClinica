@@ -25,6 +25,11 @@ public class SubjectService implements SubjectServiceInterface {
     StudyParameterValueDAO studyParameterValueDAO;
     UserAccountDAO userAccountDao;
     DataSource dataSource;
+    EnrollmentManager enrollmentManager;
+
+    public void setEnrollmentManager(EnrollmentManager enrollmentManager) {
+        this.enrollmentManager = enrollmentManager;
+    }
 
     public SubjectService(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -45,23 +50,14 @@ public class SubjectService implements SubjectServiceInterface {
      * org.akaza.openclinica.bean.managestudy.StudyBean)
      */
     public String createSubject(SubjectBean subjectBean, StudyBean studyBean, Date enrollmentDate, String secondaryId) {
-        if (subjectBean.getUniqueIdentifier() != null && subjectBean.getUniqueIdentifier().trim().length()> 0 && 
-        		getUnifiedRepository().getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier()).getId() != 0) {
-        	//we need to keep the label to transfer it to the StudySubjectBean later
-        	String label = subjectBean.getLabel();
-        	subjectBean = getUnifiedRepository().getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier());
-        	subjectBean.setLabel(label);
-        } else {
-            subjectBean.setStatus(Status.AVAILABLE);
-            subjectBean = getUnifiedRepository().createSubjectBean(subjectBean);
+        if (this.enrollmentManager == null) {
+            this.enrollmentManager = new EnrollmentManager(dataSource);
         }
-        
-        StudySubjectBean studySubject = createStudySubject(subjectBean, studyBean, enrollmentDate, secondaryId);
-        getUnifiedRepository().createStudySubjectBean(studySubject);
-        return studySubject.getLabel();
+        return this.enrollmentManager.enrollSubject(subjectBean, studyBean, enrollmentDate, secondaryId);
     }
 
     private StudySubjectBean createStudySubject(SubjectBean subject, StudyBean studyBean, Date enrollmentDate, String secondaryId) {
+        // Obsolete, left here just in case internal legacy code calls it, though it shouldn't
         StudySubjectBean studySubject = new StudySubjectBean();
         studySubject.setSecondaryLabel(secondaryId);
         studySubject.setOwner(subject.getOwner());
@@ -74,8 +70,6 @@ public class SubjectService implements SubjectServiceInterface {
         StudyParameterValueBean subjectIdGenerationParameter = getStudyParameterValueDAO().findByHandleAndStudy(handleStudyId, "subjectIdGeneration");
         String idSetting = subjectIdGenerationParameter.getValue();
         if (idSetting.equals("auto editable") || idSetting.equals("auto non-editable")) {
-        	// Warning: Here we have a race condition. 
-        	// At least, a uniqueness constraint should be set on the database! Better provide an atomic method which stores a new label in the database and returns it.  
             int nextLabel = getUnifiedRepository().findTheGreatestStudySubjectLabel() + 1;
             studySubject.setLabel(Integer.toString(nextLabel));
         } else {
@@ -84,20 +78,13 @@ public class SubjectService implements SubjectServiceInterface {
         }
         
         return studySubject;
-
     }
 
-
     public String generateSubjectId(StudyBean studyBean) {
-        int handleStudyId = studyBean.getParentStudyId() > 0 ? studyBean.getParentStudyId() : studyBean.getId();
-        StudyParameterValueBean subjectIdGenerationParameter = getStudyParameterValueDAO().findByHandleAndStudy(handleStudyId, "subjectIdGeneration");
-        String idSetting = subjectIdGenerationParameter.getValue();
-        if (idSetting.equals("auto editable") || idSetting.equals("auto non-editable")) {
-            int nextLabel = getUnifiedRepository().findTheGreatestStudySubjectLabel() + 1;
-            return Integer.toString(nextLabel);
-        } else {
-            return null;
+        if (this.enrollmentManager == null) {
+            this.enrollmentManager = new EnrollmentManager(dataSource);
         }
+        return this.enrollmentManager.generateSubjectId(studyBean);
     }
 
     public void validateSubjectTransfer(SubjectTransferBean subjectTransferBean) {
