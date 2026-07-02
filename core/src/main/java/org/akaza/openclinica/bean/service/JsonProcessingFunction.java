@@ -2,8 +2,8 @@ package org.akaza.openclinica.bean.service;
 
 import java.io.*;
 import javax.xml.stream.*;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 public class JsonProcessingFunction extends ProcessingFunction {
 

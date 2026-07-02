@@ -5,8 +5,8 @@ import java.util.LinkedHashMap;
 
 import javax.sql.DataSource;
 
-import net.sf.json.JSON;
-import net.sf.json.xml.XMLSerializer;
+import org.json.JSONObject;
+import org.json.XML;
 
 import org.akaza.openclinica.bean.extract.odm.ClinicalDataReportBean;
 import org.akaza.openclinica.bean.extract.odm.FullReportBean;
@@ -145,23 +145,20 @@ public void setRuleSetRuleDao(RuleSetRuleDao ruleSetRuleDao) {
 	
 	
 	public String collectODMMetadataJson(String studyOID){
-		net.sf.json.xml.XMLSerializer xmlserializer = new XMLSerializer();
-		JSON json = xmlserializer.read(collectODMMetadata(studyOID));
+		JSONObject json = XML.toJSONObject(collectODMMetadata(studyOID));
 		return json.toString(INDENT_LEVEL);
 		
 	}
 
 
 	
-	public JSON collectODMMetadataJson(String studyOID,String formVersionOID){
-		net.sf.json.xml.XMLSerializer xmlserializer = new XMLSerializer();
-		JSON json = xmlserializer.read(collectODMMetadataForForm(studyOID,formVersionOID));
+	public JSONObject collectODMMetadataJson(String studyOID,String formVersionOID){
+		JSONObject json = XML.toJSONObject(collectODMMetadataForForm(studyOID,formVersionOID));
 		return json;
 	}
 	
 	public String collectODMMetadataJsonString(String studyOID,String formVersionOID){
-		net.sf.json.xml.XMLSerializer xmlserializer = new XMLSerializer();
-		JSON json = xmlserializer.read(collectODMMetadataForForm(studyOID,formVersionOID));
+		JSONObject json = XML.toJSONObject(collectODMMetadataForForm(studyOID,formVersionOID));
 		return json.toString(INDENT_LEVEL);
 	}
 
