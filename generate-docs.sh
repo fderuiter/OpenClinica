@@ -44,8 +44,8 @@ awk -v content="$GENERATED_CONTENT" '
 ' README.md > README.md.tmp && mv README.md.tmp README.md
 
 # Install MkDocs if not present
-if ! command -v mkdocs &> /dev/null; then
-    python3 -m pip install mkdocs mkdocs-material --break-system-packages || python3 -m pip install mkdocs mkdocs-material
+if ! python3 -m mkdocs --version &> /dev/null; then
+    python3 -m pip install mkdocs mkdocs-material pyyaml --break-system-packages || python3 -m pip install mkdocs mkdocs-material pyyaml
 fi
 
 # Ensure docs directory has the latest README
@@ -58,6 +58,6 @@ python3 merge_openapi.py
 python3 extract_soap.py
 
 # Build the documentation site
-mkdocs build
+python3 -m mkdocs build
 
 
