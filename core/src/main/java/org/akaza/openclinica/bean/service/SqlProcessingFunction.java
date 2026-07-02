@@ -61,20 +61,9 @@ public class SqlProcessingFunction extends ProcessingFunction implements Seriali
             File sqlFile = new File(getTransformFileName());
             // String[] statements = getFileContents(sqlFile);
 
-            ScriptRunner runner = new ScriptRunner(conn, true, false);
+            ScriptRunner runner = new ScriptRunner(conn, false, true);
             runner.runScript(new BufferedReader(new FileReader(sqlFile)));
 
-            /*
-             * stmt = conn.createStatement(); for (String statement :
-             * statements) {
-             * 
-             * // and then execute the statement here // convert the translated
-             * file to a string and then tries an execute
-             * 
-               * stmt.executeUpdate(statement); //stmt.close();
-             * 
-             * } // stmt.executeBatch();
-             */
             if (conn != null) {
                 conn.commit();
                 conn.setAutoCommit(true);
@@ -82,6 +71,13 @@ public class SqlProcessingFunction extends ProcessingFunction implements Seriali
             }
         } catch (Exception e) {
             e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+            }
             resultError = ProcessingResultType.FAIL;
             resultError.setUrl(""); // no url required
             resultError.setArchiveMessage("Failure thrown: " + e.getMessage());
@@ -93,10 +89,7 @@ public class SqlProcessingFunction extends ProcessingFunction implements Seriali
             try {
                 if (stmt != null)
                     stmt.close();
-                if (conn != null) {
-                    conn.commit();
-                    conn.setAutoCommit(true);
-
+                if (conn != null && !conn.isClosed()) {
                     conn.close();
                 }
                 if (resultError != null)
