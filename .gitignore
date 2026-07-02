@@ -30,3 +30,7 @@ nb-configuration.xml
 .env
 web/node/
 node_modules/
+
+site/
+docs/api/
+docs/project-info.md

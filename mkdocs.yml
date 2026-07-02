@@ -1,0 +1,25 @@
+site_name: OpenClinica Documentation Portal
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Project Information: project-info.md
+  - Installation:
+    - Windows Installation: installation/windows-install.md
+    - Windows Upgrade: installation/windows-upgrade.md
+    - Linux Installation: installation/linux-install.md
+    - Linux Upgrade: installation/linux-upgrade.md
+    - Tomcat Initialization: installation/tomcat.md
+  - Configuration:
+    - Build Study: configuration/build_study.md
+    - Participate Setup: configuration/participate_setup.md
+    - Randomize Setup: configuration/randomize_setup.md
+    - Rules XML Reference: configuration/rules.md
+  - Maintenance:
+    - Import Data: maintenance/import_data.md
+    - Verify Import Rule: maintenance/verify_import_rule.md
+    - Test Rules: maintenance/test_rules.md
+    - Extract Selection Guide: maintenance/extract_select_crf_and_group.md
+    - Generate Dataset HTML: maintenance/generate_dataset_html.md
+    - Staged Batch Persistence: maintenance/staged_batch_persistence.md
+  - API Documentation: api/index.html
