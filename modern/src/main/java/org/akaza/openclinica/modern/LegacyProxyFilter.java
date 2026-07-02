@@ -42,7 +42,7 @@ public class LegacyProxyFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         String uri = req.getRequestURI();
 
-        if (uri.startsWith("/DataEntry") || uri.startsWith("/interop")) {
+        if (uri.startsWith("/DataEntry") || uri.startsWith("/interop") || uri.startsWith("/ListUserAccounts") || uri.startsWith("/CreateUserAccount") || uri.startsWith("/EditUserAccount") || uri.startsWith("/ViewUserAccount") || uri.startsWith("/DeleteUser")) {
             chain.doFilter(request, response);
             return;
         }
