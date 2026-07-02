@@ -34,3 +34,5 @@ node_modules/
 site/
 docs/api/
 docs/project-info.md
+docs/openapi.json
+docs/soap.md

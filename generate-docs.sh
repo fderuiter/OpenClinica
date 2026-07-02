@@ -51,8 +51,11 @@ fi
 # Ensure docs directory has the latest README
 cp README.md docs/project-info.md
 
-# Generate REST API docs
-npx apidoc -i web/src/main/java -o docs/api
+# Generate REST API docs (Unified OpenAPI)
+python3 merge_openapi.py
+
+# Extract static SOAP definitions
+python3 extract_soap.py
 
 # Build the documentation site
 mkdocs build
