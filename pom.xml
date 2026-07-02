@@ -14,6 +14,7 @@
 		<module>web</module>
 		<module>ws</module>
 		<module>modern</module>
+		<module>visual-tests</module>
 	</modules>
 
 	<properties>

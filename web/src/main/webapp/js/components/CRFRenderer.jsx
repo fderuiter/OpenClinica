@@ -52,6 +52,13 @@ export default function CRFRenderer() {
           </tr>
         </tbody>
       </table>
+
+      {/* Investigator Signature Block */}
+      <div className="investigator-signature" style={{ marginTop: '40px', borderTop: '1px solid #000', paddingTop: '10px' }}>
+        <p><strong>{window.app_investigatorLabel || 'Investigator'}:</strong> _________________________</p>
+        <p><strong>{window.app_investigatorSignatureLabel || 'Investigator Signature'}:</strong> _________________________</p>
+        <p><em>{window.app_meaning_of_signatureLabel || 'Meaning of Signature'}:</em> I attest that the data is accurate.</p>
+      </div>
     </div>
   );
 }

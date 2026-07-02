@@ -20,8 +20,6 @@ services:
     - JAVA_OPTS=-Xmx1024m
     env_file:
     - .env
-volumes:
-  db-data: null
   modern:
     build:
       context: .
@@ -34,3 +32,5 @@ volumes:
     - spring.datasource.url=jdbc:postgresql://db:5432/clinica
     - spring.datasource.username=clinica
     - spring.datasource.password=clinica
+volumes:
+  db-data: null

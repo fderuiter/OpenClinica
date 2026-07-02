@@ -1,10 +1,8 @@
 import 'prototype-js-core';
 import 'scriptaculous-js';
-import jQuery from 'jquery';
-import _ from 'underscore';
-import dateFormat from 'dateformat';
+import './setup-globals.js';
+
 import 'headjs/dist/1.0.0/head.min.js';
-import { UAParser } from 'ua-parser-js';
 import '@phagento/jquery-tmpl';
 import 'jquery-migrate';
 import 'jquery-blockui';
@@ -12,11 +10,6 @@ import 'jquery-blockui';
 // Initialize the reactive store
 import { store } from './store.js';
 
-// Setup globals for legacy scripts
-window.jQuery = window.$ = jQuery;
-window._ = _;
-window.dateFormat = dateFormat;
-window.UAParser = UAParser;
 import 'json3';
 import 'jmesa';
 import 'new_cal';
