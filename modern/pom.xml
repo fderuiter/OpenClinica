@@ -84,6 +84,12 @@
             <groupId>org.akaza.openclinica</groupId>
             <artifactId>OpenClinica-core</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>bouncycastle</groupId>
+                    <artifactId>bcprov-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.akaza.openclinica</groupId>
@@ -194,6 +200,25 @@
             <version>2.39.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>3.1.10</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.4.11</version>
         </dependency>
     </dependencies>
 
@@ -217,6 +242,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
+                <configuration>
+                    <profiles>
+                        <profile>build</profile>
+                    </profiles>
+                </configuration>
                 <executions>
                     <execution>
                         <id>pre-integration-test</id>
@@ -350,6 +380,7 @@
                         </goals>
                         <configuration>
                             <nodeVersion>v22.13.0</nodeVersion>
+                            <npmVersion>9.6.7</npmVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -370,9 +401,6 @@
                         </goals>
                         <configuration>
                             <arguments>run build</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
                         </configuration>
                     </execution>
                 </executions>
