@@ -45,7 +45,7 @@ awk -v content="$GENERATED_CONTENT" '
 
 # Install MkDocs if not present
 if ! command -v mkdocs &> /dev/null; then
-    python3 -m pip install mkdocs mkdocs-material
+    python3 -m pip install mkdocs mkdocs-material --break-system-packages || python3 -m pip install mkdocs mkdocs-material
 fi
 
 # Ensure docs directory has the latest README
@@ -56,12 +56,6 @@ python3 merge_openapi.py
 
 # Extract static SOAP definitions
 python3 extract_soap.py
-
-# Generate React Components API docs
-cd web
-npm install
-npm run docs
-cd ..
 
 # Build the documentation site
 mkdocs build
