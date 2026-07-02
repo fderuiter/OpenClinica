@@ -37,9 +37,9 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
-            .securityMatcher("/api/**")
+            .securityMatcher("/api/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/auth/token").permitAll()
+                .requestMatchers("/api/auth/token", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))

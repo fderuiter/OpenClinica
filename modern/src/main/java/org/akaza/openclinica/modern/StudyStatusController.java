@@ -1,5 +1,7 @@
 package org.akaza.openclinica.modern;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.akaza.openclinica.bean.login.StudyStatusTransitionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/studies")
+@Tag(name = "Study Status", description = "Operations pertaining to Study Status in OpenClinica Modern API")
 public class StudyStatusController {
 
     @Autowired
@@ -21,6 +24,7 @@ public class StudyStatusController {
 
     @PutMapping("/{uniqueProtocolID}/status")
     @Transactional
+    @Operation(summary = "Update Study Status", description = "Safely executes relational updates across study, study_event, and item_data tables.")
     public ResponseEntity<Object> updateStatus(
             @PathVariable("uniqueProtocolID") String uniqueProtocolID,
             @Validated @RequestBody StudyStatusTransitionDTO statusDTO) {
