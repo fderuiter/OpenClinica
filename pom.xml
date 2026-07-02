@@ -30,7 +30,7 @@
 		<config.file>src/main/resources/datainfo.properties</config.file>
 
 		<!-- Library Versions -->
-		<spring.version>3.2.18.RELEASE</spring.version>
+		<spring.version>6.1.20</spring.version>
 		<db.test>localhost</db.test>
 		
 		<!-- Core Sane Defaults for All Environments -->
@@ -183,7 +183,7 @@
 			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
 				<artifactId>quartz</artifactId>
-				<version>1.8.6</version>
+				<version>2.3.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
@@ -212,7 +212,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>4.13.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -257,12 +257,12 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>1.1.2</version>
+			<version>1.5.33</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.2</version>
+			<version>1.2.13</version>
 		</dependency>
 		<!-- @pgawade 22-Nov-2010 Added the logback access; it will be needed to
 			get the web application usage pattern data -->
@@ -322,7 +322,7 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>3.2.10.RELEASE</version>
+			<version>6.2.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -362,12 +362,12 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>4.0.2.GA</version>
+			<version>6.2.0.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>3.5.1-Final</version>
+			<version>6.0.0.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
@@ -413,7 +413,7 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>4.3.5</version>
+			<version>4.8.0</version>
 		</dependency>
 		<!-- Explicitly defining dependencies versions for Maven 3 -->
 		<dependency>
