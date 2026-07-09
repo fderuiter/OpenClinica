@@ -63,6 +63,13 @@ public class ConfigurationDaoTest {
             }
         }).when(mockEntityManager).persist(any(ConfigurationBean.class));
 
+        when(mockEntityManager.merge(any(ConfigurationBean.class))).thenAnswer(new Answer<ConfigurationBean>() {
+            @Override
+            public ConfigurationBean answer(InvocationOnMock invocation) throws Throwable {
+                return (ConfigurationBean) invocation.getArguments()[0];
+            }
+        });
+
         configurationBean = configurationDao.saveOrUpdate(configurationBean);
 
         assertNotNull("Persistant id is null", configurationBean.getId());
@@ -91,7 +98,7 @@ public class ConfigurationDaoTest {
 
         when(mockEntityManager.createQuery(anyString())).thenReturn(mockQuery);
         when(mockQuery.setParameter(eq("key"), eq("test.test"))).thenReturn(mockQuery);
-        when(mockQuery.getSingleResult()).thenReturn(mockBean);
+        when(mockQuery.getResultList()).thenReturn(java.util.Collections.singletonList(mockBean));
 
         ConfigurationBean configurationBean = configurationDao.findByKey("test.test");
 

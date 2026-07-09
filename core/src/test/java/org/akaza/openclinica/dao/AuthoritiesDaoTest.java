@@ -53,14 +53,12 @@ public class AuthoritiesDaoTest {
         authorities.setAuthority("ROLE_USER");
         authorities.setId(-1);
 
-        doAnswer(new Answer<Void>() {
+        when(mockEntityManager.merge(any(AuthoritiesBean.class))).thenAnswer(new Answer<AuthoritiesBean>() {
             @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                AuthoritiesBean bean = (AuthoritiesBean) invocation.getArguments()[0];
-                bean.setId(1); // Set some persisted ID
-                return null;
+            public AuthoritiesBean answer(InvocationOnMock invocation) throws Throwable {
+                return (AuthoritiesBean) invocation.getArguments()[0];
             }
-        }).when(mockEntityManager).persist(any(AuthoritiesBean.class));
+        });
 
         authorities = authoritiesDao.saveOrUpdate(authorities);
 
@@ -91,7 +89,7 @@ public class AuthoritiesDaoTest {
 
         when(mockEntityManager.createQuery(anyString())).thenReturn(mockQuery);
         when(mockQuery.setParameter(eq("username"), eq("root"))).thenReturn(mockQuery);
-        when(mockQuery.getSingleResult()).thenReturn(mockBean);
+        when(mockQuery.getResultList()).thenReturn(java.util.Collections.singletonList(mockBean));
 
         AuthoritiesBean authorities = authoritiesDao.findByUsername("root");
 

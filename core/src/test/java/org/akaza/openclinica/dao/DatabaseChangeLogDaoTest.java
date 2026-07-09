@@ -20,21 +20,21 @@ public class DatabaseChangeLogDaoTest {
     private DatabaseChangeLogDao databaseChangeLogDao;
 
     @Mock
-    private EntityManager mockEntityManager;
+    private org.hibernate.Session mockSession;
     @Mock
     private SessionFactory mockSessionFactory;
 
     
 
     @Mock
-    private Query mockQuery;
+    private org.hibernate.query.Query mockQuery;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         databaseChangeLogDao = new DatabaseChangeLogDao();
         databaseChangeLogDao.setSessionFactory(mockSessionFactory);
-
+        when(mockSessionFactory.getCurrentSession()).thenReturn(mockSession);
         
     }
 
@@ -45,11 +45,11 @@ public class DatabaseChangeLogDaoTest {
         mockBean.setAuthor("pgawade (generated)");
         mockBean.setFileName("migration/2.5/changeLogCreateTables.xml");
 
-        when(mockEntityManager.createQuery(anyString())).thenReturn(mockQuery);
+        when(mockSession.createQuery(anyString())).thenReturn(mockQuery);
         when(mockQuery.setParameter(eq("id"), eq("1235684743487-1"))).thenReturn(mockQuery);
         when(mockQuery.setParameter(eq("author"), eq("pgawade (generated)"))).thenReturn(mockQuery);
         when(mockQuery.setParameter(eq("fileName"), eq("migration/2.5/changeLogCreateTables.xml"))).thenReturn(mockQuery);
-        when(mockQuery.getSingleResult()).thenReturn(mockBean);
+        when(mockQuery.getResultList()).thenReturn(java.util.Collections.singletonList(mockBean));
 
         DatabaseChangeLogBean result = databaseChangeLogDao.findById("1235684743487-1", "pgawade (generated)", "migration/2.5/changeLogCreateTables.xml");
 
