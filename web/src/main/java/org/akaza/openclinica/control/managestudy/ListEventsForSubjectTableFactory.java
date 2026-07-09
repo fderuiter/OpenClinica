@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ListEventsForSubjectTableFactory extends AbstractTableFactory {
 

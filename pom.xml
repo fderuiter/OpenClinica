@@ -164,8 +164,15 @@
 		</profile>
 	</profiles>
 
-	<dependencyManagement>
+<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>3.1.5</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.jmesa</groupId>
 				<artifactId>jmesa</artifactId>
@@ -179,12 +186,12 @@
 			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
 				<artifactId>quartz</artifactId>
-				<version>1.8.6</version>
+				<version>2.3.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
 				<artifactId>quartz-oracle</artifactId>
-				<version>1.8.6</version>
+				<version>2.1.7</version>
 			</dependency>
 
 		</dependencies>
@@ -616,6 +623,10 @@
 	</scm>
 
 	<repositories>
+		<repository>
+			<id>shibboleth</id>
+			<url>https://build.shibboleth.net/nexus/content/repositories/releases/</url>
+		</repository>
         <repository>
             <snapshots>
                 <enabled>false</enabled>
@@ -624,33 +635,10 @@
             <name>openclinica.jfrog.io-libs-release</name>
             <url>https://openclinica.jfrog.io/openclinica/libs-release</url>
         </repository>
-		<repository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss Public Repository Group</name>
-			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
+
 	</repositories>
 	<pluginRepositories>
-		<pluginRepository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss Public Repository Group</name>
-			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
+
 	</pluginRepositories>
 
 	<distributionManagement>

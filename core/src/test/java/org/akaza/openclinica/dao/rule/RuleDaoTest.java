@@ -1,14 +1,14 @@
 package org.akaza.openclinica.dao.rule;
 
 import org.akaza.openclinica.dao.hibernate.RuleDao;
-import org.hibernate.Query;
-import org.hibernate.classic.Session;
+import jakarta.persistence.Query;
+
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import jakarta.persistence.EntityManager;
 import static org.mockito.Mockito.*;
 
 public class RuleDaoTest {
@@ -16,13 +16,12 @@ public class RuleDaoTest {
     private RuleDao ruleDao;
 
     @Mock
-    private HibernateTemplate mockHibernateTemplate;
+    private EntityManager mockEntityManager;
 
     @Mock
     private SessionFactory mockSessionFactory;
 
-    @Mock
-    private Session mockSession;
+    
 
     @Mock
     private Query mockQuery;
@@ -31,9 +30,9 @@ public class RuleDaoTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         ruleDao = new RuleDao();
-        ruleDao.setHibernateTemplate(mockHibernateTemplate);
-        when(mockHibernateTemplate.getSessionFactory()).thenReturn(mockSessionFactory);
-        when(mockSessionFactory.getCurrentSession()).thenReturn(mockSession);
+        ruleDao.setEntityManager(mockEntityManager);
+        
+        
     }
 
     @Test

@@ -3,8 +3,8 @@ package org.akaza.openclinica.dao;
 import org.akaza.openclinica.dao.hibernate.AuditUserLoginDao;
 import org.akaza.openclinica.domain.technicaladmin.AuditUserLoginBean;
 import org.akaza.openclinica.domain.technicaladmin.LoginStatus;
-import org.hibernate.Query;
-import org.hibernate.classic.Session;
+import jakarta.persistence.Query;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.junit.Before;
@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import jakarta.persistence.EntityManager;
 
 import java.util.Date;
 
@@ -26,13 +26,12 @@ public class AuditUserLoginDaoTest {
     private AuditUserLoginDao auditUserLoginDao;
 
     @Mock
-    private HibernateTemplate mockHibernateTemplate;
+    private EntityManager mockEntityManager;
 
     @Mock
     private SessionFactory mockSessionFactory;
 
-    @Mock
-    private Session mockSession;
+    
 
     @Mock
     private Statistics mockStatistics;
@@ -44,10 +43,10 @@ public class AuditUserLoginDaoTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         auditUserLoginDao = new AuditUserLoginDao();
-        auditUserLoginDao.setHibernateTemplate(mockHibernateTemplate);
+        auditUserLoginDao.setEntityManager(mockEntityManager);
 
-        when(mockHibernateTemplate.getSessionFactory()).thenReturn(mockSessionFactory);
-        when(mockSessionFactory.getCurrentSession()).thenReturn(mockSession);
+        
+        
         when(mockSessionFactory.getStatistics()).thenReturn(mockStatistics);
     }
 
@@ -65,7 +64,7 @@ public class AuditUserLoginDaoTest {
                 bean.setId(1);
                 return null;
             }
-        }).when(mockSession).saveOrUpdate(any(AuditUserLoginBean.class));
+        }).when(mockEntityManager).persist(any(AuditUserLoginBean.class));
 
         AuditUserLoginBean result = auditUserLoginDao.saveOrUpdate(auditUserLoginBean);
 
@@ -79,9 +78,9 @@ public class AuditUserLoginDaoTest {
         mockBean.setId(-1);
         mockBean.setUserName("testUser");
 
-        when(mockSession.createQuery(anyString())).thenReturn(mockQuery);
-        when(mockQuery.setInteger(eq("id"), eq(-1))).thenReturn(mockQuery);
-        when(mockQuery.uniqueResult()).thenReturn(mockBean);
+        when(mockEntityManager.createQuery(anyString())).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("id"), eq(-1))).thenReturn(mockQuery);
+        when(mockQuery.getSingleResult()).thenReturn(mockBean);
 
         AuditUserLoginBean result = auditUserLoginDao.findById(-1);
 

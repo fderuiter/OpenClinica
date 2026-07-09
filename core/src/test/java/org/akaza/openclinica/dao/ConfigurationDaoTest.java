@@ -2,8 +2,8 @@ package org.akaza.openclinica.dao;
 
 import org.akaza.openclinica.dao.hibernate.ConfigurationDao;
 import org.akaza.openclinica.domain.technicaladmin.ConfigurationBean;
-import org.hibernate.Query;
-import org.hibernate.classic.Session;
+import jakarta.persistence.Query;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.junit.Before;
@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import jakarta.persistence.EntityManager;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,13 +23,12 @@ public class ConfigurationDaoTest {
     private ConfigurationDao configurationDao;
 
     @Mock
-    private HibernateTemplate mockHibernateTemplate;
+    private EntityManager mockEntityManager;
 
     @Mock
     private SessionFactory mockSessionFactory;
 
-    @Mock
-    private Session mockSession;
+    
 
     @Mock
     private Statistics mockStatistics;
@@ -41,10 +40,10 @@ public class ConfigurationDaoTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         configurationDao = new ConfigurationDao();
-        configurationDao.setHibernateTemplate(mockHibernateTemplate);
+        configurationDao.setEntityManager(mockEntityManager);
 
-        when(mockHibernateTemplate.getSessionFactory()).thenReturn(mockSessionFactory);
-        when(mockSessionFactory.getCurrentSession()).thenReturn(mockSession);
+        
+        
         when(mockSessionFactory.getStatistics()).thenReturn(mockStatistics);
     }
 
@@ -62,7 +61,14 @@ public class ConfigurationDaoTest {
                 bean.setId(1);
                 return null;
             }
-        }).when(mockSession).saveOrUpdate(any(ConfigurationBean.class));
+        }).when(mockEntityManager).persist(any(ConfigurationBean.class));
+
+        when(mockEntityManager.merge(any(ConfigurationBean.class))).thenAnswer(new Answer<ConfigurationBean>() {
+            @Override
+            public ConfigurationBean answer(InvocationOnMock invocation) throws Throwable {
+                return (ConfigurationBean) invocation.getArguments()[0];
+            }
+        });
 
         configurationBean = configurationDao.saveOrUpdate(configurationBean);
 
@@ -75,9 +81,9 @@ public class ConfigurationDaoTest {
         mockBean.setId(-1);
         mockBean.setKey("test.test");
 
-        when(mockSession.createQuery(anyString())).thenReturn(mockQuery);
-        when(mockQuery.setInteger(eq("id"), eq(-1))).thenReturn(mockQuery);
-        when(mockQuery.uniqueResult()).thenReturn(mockBean);
+        when(mockEntityManager.createQuery(anyString())).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("id"), eq(-1))).thenReturn(mockQuery);
+        when(mockQuery.getSingleResult()).thenReturn(mockBean);
 
         ConfigurationBean configurationBean = configurationDao.findById(-1);
 
@@ -90,9 +96,9 @@ public class ConfigurationDaoTest {
         mockBean.setId(1);
         mockBean.setKey("test.test");
 
-        when(mockSession.createQuery(anyString())).thenReturn(mockQuery);
-        when(mockQuery.setString(eq("key"), eq("test.test"))).thenReturn(mockQuery);
-        when(mockQuery.uniqueResult()).thenReturn(mockBean);
+        when(mockEntityManager.createQuery(anyString())).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("key"), eq("test.test"))).thenReturn(mockQuery);
+        when(mockQuery.getResultList()).thenReturn(java.util.Collections.singletonList(mockBean));
 
         ConfigurationBean configurationBean = configurationDao.findByKey("test.test");
 

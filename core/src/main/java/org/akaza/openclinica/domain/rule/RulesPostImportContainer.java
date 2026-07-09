@@ -7,7 +7,7 @@
  */
 package org.akaza.openclinica.domain.rule;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 import org.akaza.openclinica.domain.rule.action.RuleActionComparator;
 

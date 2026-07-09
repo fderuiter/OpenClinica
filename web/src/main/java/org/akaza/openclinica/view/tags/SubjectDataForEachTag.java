@@ -2,8 +2,8 @@ package org.akaza.openclinica.view.tags;
 
 import org.akaza.openclinica.bean.submit.crfdata.SubjectDataBean;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 
 public class SubjectDataForEachTag extends SimpleTagSupport {

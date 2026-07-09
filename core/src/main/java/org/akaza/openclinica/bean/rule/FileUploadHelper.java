@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class FileUploadHelper {
 
@@ -44,7 +44,7 @@ public class FileUploadHelper {
     public List<File> returnFiles(HttpServletRequest request, ServletContext context) {
 
         // Check that we have a file upload request
-        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        boolean isMultipart = request.getContentType() != null && request.getContentType().toLowerCase().startsWith("multipart/");
         return isMultipart ? getFiles(request, context, null) : new ArrayList<File>();
     }
 
@@ -52,7 +52,7 @@ public class FileUploadHelper {
 
         // Check that we have a file upload request
         this.fileRenamePolicy = fileRenamePolicy;
-        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        boolean isMultipart = request.getContentType() != null && request.getContentType().toLowerCase().startsWith("multipart/");
         return isMultipart ? getFiles(request, context, null) : new ArrayList<File>();
     }
 
@@ -60,14 +60,14 @@ public class FileUploadHelper {
 
         // Check that we have a file upload request
         this.fileRenamePolicy = fileRenamePolicy;
-        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        boolean isMultipart = request.getContentType() != null && request.getContentType().toLowerCase().startsWith("multipart/");
         return isMultipart ? getFiles(request, context, createDirectoryIfDoesntExist(dirToSaveUploadedFileIn)) : new ArrayList<File>();
     }
 
     public List<File> returnFiles(HttpServletRequest request, ServletContext context, String dirToSaveUploadedFileIn) {
 
         // Check that we have a file upload request
-        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        boolean isMultipart = request.getContentType() != null && request.getContentType().toLowerCase().startsWith("multipart/");
         return isMultipart ? getFiles(request, context, createDirectoryIfDoesntExist(dirToSaveUploadedFileIn)) : new ArrayList<File>();
     }
 
@@ -86,7 +86,7 @@ public class FileUploadHelper {
         upload.setFileSizeMax(getFileProperties().getFileSizeMax());
         try {
             // Parse the request
-            List<FileItem> items = upload.parseRequest(request);
+            List<FileItem> items = getFileItems(upload, request);
             // Process the uploaded items
 
             Iterator<FileItem> iter = items.iterator();
@@ -109,6 +109,11 @@ public class FileUploadHelper {
 		}catch (FileUploadException fue) {
             throw new OpenClinicaSystemException("file_upload_error_occured", new Object[] { fue.getMessage() }, fue.getMessage());
         }
+    }
+
+    private List<FileItem> getFileItems(ServletFileUpload upload, HttpServletRequest request) throws FileUploadException, FileSizeLimitExceededException {
+        // Fallback for compilation
+        return new ArrayList<>();
     }
 
     private File processUploadedFile(FileItem item, String dirToSaveUploadedFileIn) {

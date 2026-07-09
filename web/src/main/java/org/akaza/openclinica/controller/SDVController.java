@@ -42,9 +42,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 
@@ -513,7 +513,7 @@ public class SDVController {
             totalRowCount = items.size();
         }
 
-        TableFacade tableFacade = createTableFacade("sdv", request);
+        TableFacade tableFacade = createTableFacade("sdv", org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
         //The default display for the JMesa Limit select widget is 1,50,100 rows
         //We'll change this if the subject has more than one row, and have the last choice
         //set to the total row count

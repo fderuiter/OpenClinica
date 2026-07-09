@@ -1,7 +1,6 @@
 package org.akaza.openclinica.core;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class OpenClinicaPasswordEncoder implements PasswordEncoder {
 
@@ -11,17 +10,14 @@ public class OpenClinicaPasswordEncoder implements PasswordEncoder {
     public OpenClinicaPasswordEncoder() {
     }
 
-    public String encodePassword(String rawPass, Object salt) throws DataAccessException {
-        return currentPasswordEncoder.encodePassword(rawPass, salt);
+    @Override
+    public String encode(CharSequence rawPassword) {
+        return currentPasswordEncoder.encode(rawPassword);
     }
 
-    public boolean isPasswordValid(String encPass, String rawPass, Object salt) throws DataAccessException {
-
-        boolean result = false;
-        if (currentPasswordEncoder.isPasswordValid(encPass, rawPass, salt) || oldPasswordEncoder.isPasswordValid(encPass, rawPass, salt)) {
-            result = true;
-        }
-        return result;
+    @Override
+    public boolean matches(CharSequence rawPassword, String encodedPassword) {
+        return currentPasswordEncoder.matches(rawPassword, encodedPassword) || oldPasswordEncoder.matches(rawPassword, encodedPassword);
     }
 
     public PasswordEncoder getCurrentPasswordEncoder() {

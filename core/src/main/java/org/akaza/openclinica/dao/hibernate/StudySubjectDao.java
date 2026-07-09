@@ -1,13 +1,27 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.akaza.openclinica.bean.oid.OidGenerator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.bean.oid.StudySubjectOidGenerator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.datamap.Study;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.datamap.StudyEvent;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.datamap.StudySubject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class StudySubjectDao extends AbstractDomainDao<StudySubject> {
 
@@ -20,54 +34,54 @@ public class StudySubjectDao extends AbstractDomainDao<StudySubject> {
     @SuppressWarnings("unchecked")
     public List<StudySubject> findAllByStudy(Integer studyId) {
         String query = "from " + getDomainClassName() + " do where do.study.studyId = :studyid";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("studyid", studyId);
-        return (List<StudySubject>) q.list();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("studyid", studyId);
+        return (List<StudySubject>) q.getResultList();
       
     }
 
     public StudySubject findByOcOID(String OCOID) {
-        getSessionFactory().getStatistics().logSummary();
+        
         String query = "from " + getDomainClassName() + " do  where do.ocOid = :OCOID";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setString("OCOID", OCOID);
-        return (StudySubject) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("OCOID", OCOID);
+        return (StudySubject) q.getResultList().stream().findFirst().orElse(null);
     }
 
     public StudySubject findByLabelAndStudy(String embeddedStudySubjectId, Study study) {
-        getSessionFactory().getStatistics().logSummary();
+        
         String query = "from " + getDomainClassName() + " do  where do.study.studyId = :studyid and do.label = :label";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("studyid", study.getStudyId());
-        q.setString("label", embeddedStudySubjectId);
-        return (StudySubject) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("studyid", study.getStudyId());
+        q.setParameter("label", embeddedStudySubjectId);
+        return (StudySubject) q.getResultList().stream().findFirst().orElse(null);
     }
 
     public StudySubject findByLabelAndStudyOrParentStudy(String embeddedStudySubjectId, Study study) {
-        getSessionFactory().getStatistics().logSummary();
+        
         String query = "from " + getDomainClassName() + " do  where (do.study.studyId = :studyid or do.study.study.studyId = :studyid) and do.label = :label";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("studyid", study.getStudyId());
-        q.setString("label", embeddedStudySubjectId);
-        return (StudySubject) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("studyid", study.getStudyId());
+        q.setParameter("label", embeddedStudySubjectId);
+        return (StudySubject) q.getResultList().stream().findFirst().orElse(null);
     }
 
     public ArrayList<StudySubject> findByLabelAndParentStudy(String embeddedStudySubjectId, Study parentStudy) {
-        getSessionFactory().getStatistics().logSummary();
+        
         String query = "from " + getDomainClassName() + " do  where do.study.study.studyId = :studyid and do.label = :label";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("studyid", parentStudy.getStudyId());
-        q.setString("label", embeddedStudySubjectId);
-        return (ArrayList<StudySubject>) q.list();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("studyid", parentStudy.getStudyId());
+        q.setParameter("label", embeddedStudySubjectId);
+        return (ArrayList<StudySubject>) q.getResultList();
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public ArrayList<StudyEvent> fetchListSEs(String id) {
         String query = " from StudyEvent se where se.studySubject.ocOid = :id order by se.studyEventDefinition.ordinal,se.sampleOrdinal";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setString("id", id.toString());
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("id", id.toString());
 
-        return (ArrayList<StudyEvent>) q.list();
+        return (ArrayList<StudyEvent>) q.getResultList();
 
     }
     public String getValidOid(StudySubject studySubject, ArrayList<String> oidList) {
@@ -92,12 +106,12 @@ public class StudySubjectDao extends AbstractDomainDao<StudySubject> {
     }
 
     public int findTheGreatestLabelByStudy(Integer studyId) {
-        getSessionFactory().getStatistics().logSummary();
+        
         String query = "from " + getDomainClassName() + " do  where (do.study.studyId = :studyid or do.study.study.studyId = :studyid)";
 
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("studyid", studyId);
-        List<StudySubject> allStudySubjects = (ArrayList<StudySubject>) q.list();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("studyid", studyId);
+        List<StudySubject> allStudySubjects = (ArrayList<StudySubject>) q.getResultList();
         
         int greatestLabel = 0;
         for (StudySubject subject:allStudySubjects) {

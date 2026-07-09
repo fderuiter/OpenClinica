@@ -1,6 +1,8 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.domain.datamap.Subject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class SubjectDao extends AbstractDomainDao<Subject> {
 
@@ -12,15 +14,15 @@ public class SubjectDao extends AbstractDomainDao<Subject> {
     
     public Subject findBySubjectId(Integer subjectId) {
         String query = "from " + getDomainClassName() + " do  where do.subjectId = :subject_id ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("subject_id", subjectId);
-        return (Subject) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("subject_id", subjectId);
+        return (Subject) q.getResultList().stream().findFirst().orElse(null);
     }
 
     public Subject findByUniqueIdentifier(String uniqueIdentifier) {
         String query = "from " + getDomainClassName() + " do  where do.uniqueIdentifier = :unique_identifier ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setString("unique_identifier", uniqueIdentifier);
-        return (Subject) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("unique_identifier", uniqueIdentifier);
+        return (Subject) q.getResultList().stream().findFirst().orElse(null);
     }
 }

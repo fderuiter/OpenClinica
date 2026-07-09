@@ -45,7 +45,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.CommonsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 //import org.springframework.security.oauth2.common.json.JSONException;
 //import org.springframework.security.oauth2.common.json.JSONObject;
 import org.json.JSONObject;
@@ -70,7 +70,7 @@ public class RandomizeService extends RandomizationRegistrar {
     private StudyEventDAO studyEventDAO;
     private EventDefinitionCRFDAO eventDefinitionCRFDAO;
     private ExpressionService expressionService;
-    CommonsClientHttpRequestFactory requestFactory = new CommonsClientHttpRequestFactory();
+    SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
     public static final int RANDOMIZATION_READ_TIMEOUT = 10000;
     StudyDAO sdao=null;
 

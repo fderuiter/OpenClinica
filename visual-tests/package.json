@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "playwright install chromium",
     "test": "playwright test"
   },
   "keywords": [],

@@ -7,14 +7,14 @@
  */
 package org.akaza.openclinica.domain.rule.expression;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 import org.akaza.openclinica.domain.AbstractAuditableMutableDomainObject;
 import org.hibernate.annotations.Cache;
@@ -49,7 +49,6 @@ public class ExpressionBean extends AbstractAuditableMutableDomainObject impleme
         this.value = value;
     }
 
-    @Type(type = "ruleContext")
     @Column(name = "context")
     public Context getContext() {
         return context;

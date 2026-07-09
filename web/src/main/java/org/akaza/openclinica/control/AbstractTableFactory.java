@@ -7,9 +7,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import org.akaza.openclinica.i18n.core.LocaleResolver;
 import org.jmesa.facade.TableFacade;
@@ -48,7 +48,7 @@ public abstract class AbstractTableFactory {
     }
 
     public TableFacade getTableFacadeImpl(HttpServletRequest request, HttpServletResponse response) {
-        return new TableFacadeImpl(getTableName(), request);
+        return new TableFacadeImpl(getTableName(), org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
     }
 
     public abstract void setDataAndLimitVariables(TableFacade tableFacade);
@@ -131,7 +131,7 @@ public abstract class AbstractTableFactory {
     }
 
     public void configureTableFacade(HttpServletResponse response, TableFacade tableFacade) {
-        tableFacade.setExportTypes(response, getExportTypes());
+        tableFacade.setExportTypes(org.akaza.openclinica.web.filter.HttpServletResponseAdapter.adapt(response), getExportTypes());
     }
 
     public int[] getMaxRowIncrements() {

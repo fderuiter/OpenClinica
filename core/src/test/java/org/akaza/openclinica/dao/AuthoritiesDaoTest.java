@@ -2,8 +2,8 @@ package org.akaza.openclinica.dao;
 
 import org.akaza.openclinica.dao.hibernate.AuthoritiesDao;
 import org.akaza.openclinica.domain.user.AuthoritiesBean;
-import org.hibernate.Query;
-import org.hibernate.classic.Session;
+import jakarta.persistence.Query;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.junit.Before;
@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import jakarta.persistence.EntityManager;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -22,13 +22,12 @@ public class AuthoritiesDaoTest {
     private AuthoritiesDao authoritiesDao;
 
     @Mock
-    private HibernateTemplate mockHibernateTemplate;
+    private EntityManager mockEntityManager;
 
     @Mock
     private SessionFactory mockSessionFactory;
 
-    @Mock
-    private Session mockSession;
+    
 
     @Mock
     private Statistics mockStatistics;
@@ -40,10 +39,10 @@ public class AuthoritiesDaoTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         authoritiesDao = new AuthoritiesDao();
-        authoritiesDao.setHibernateTemplate(mockHibernateTemplate);
+        authoritiesDao.setEntityManager(mockEntityManager);
 
-        when(mockHibernateTemplate.getSessionFactory()).thenReturn(mockSessionFactory);
-        when(mockSessionFactory.getCurrentSession()).thenReturn(mockSession);
+        
+        
         when(mockSessionFactory.getStatistics()).thenReturn(mockStatistics);
     }
 
@@ -54,14 +53,12 @@ public class AuthoritiesDaoTest {
         authorities.setAuthority("ROLE_USER");
         authorities.setId(-1);
 
-        doAnswer(new Answer<Void>() {
+        when(mockEntityManager.merge(any(AuthoritiesBean.class))).thenAnswer(new Answer<AuthoritiesBean>() {
             @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                AuthoritiesBean bean = (AuthoritiesBean) invocation.getArguments()[0];
-                bean.setId(1); // Set some persisted ID
-                return null;
+            public AuthoritiesBean answer(InvocationOnMock invocation) throws Throwable {
+                return (AuthoritiesBean) invocation.getArguments()[0];
             }
-        }).when(mockSession).saveOrUpdate(any(AuthoritiesBean.class));
+        });
 
         authorities = authoritiesDao.saveOrUpdate(authorities);
 
@@ -74,9 +71,9 @@ public class AuthoritiesDaoTest {
         mockBean.setId(-1);
         mockBean.setUsername("root");
 
-        when(mockSession.createQuery(anyString())).thenReturn(mockQuery);
-        when(mockQuery.setInteger(eq("id"), eq(-1))).thenReturn(mockQuery);
-        when(mockQuery.uniqueResult()).thenReturn(mockBean);
+        when(mockEntityManager.createQuery(anyString())).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("id"), eq(-1))).thenReturn(mockQuery);
+        when(mockQuery.getSingleResult()).thenReturn(mockBean);
 
         AuthoritiesBean authorities = authoritiesDao.findById(-1);
 
@@ -90,9 +87,9 @@ public class AuthoritiesDaoTest {
         mockBean.setId(-1);
         mockBean.setUsername("root");
 
-        when(mockSession.createQuery(anyString())).thenReturn(mockQuery);
-        when(mockQuery.setString(eq("username"), eq("root"))).thenReturn(mockQuery);
-        when(mockQuery.uniqueResult()).thenReturn(mockBean);
+        when(mockEntityManager.createQuery(anyString())).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("username"), eq("root"))).thenReturn(mockQuery);
+        when(mockQuery.getResultList()).thenReturn(java.util.Collections.singletonList(mockBean));
 
         AuthoritiesBean authorities = authoritiesDao.findByUsername("root");
 

@@ -55,4 +55,6 @@ public class UserPermissionInterceptor implements EndpointInterceptor {
         return true;
     }
 
+
+    public void afterCompletion(org.springframework.ws.context.MessageContext messageContext, Object endpoint, Exception ex) throws Exception {}
 }

@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.managestudy.StudySubjectBean;
@@ -96,13 +96,13 @@ public class OpenRosaSubmissionController {
                 logger.info("Submissions to the study not allowed.  Aborting submission.");
                 return new ResponseEntity<String>(org.springframework.http.HttpStatus.NOT_ACCEPTABLE);
             }
-            if (ServletFileUpload.isMultipartContent(request)) {
+            if (ServletFileUpload.isMultipartContent(org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request))) {
                 String dir = getAttachedFilePath(studyOID);
                 FileProperties fileProperties= new FileProperties();
                 DiskFileItemFactory factory = new DiskFileItemFactory();
                 ServletFileUpload upload = new ServletFileUpload(factory);
                 upload.setFileSizeMax(fileProperties.getFileSizeMax());
-                List<FileItem> items = upload.parseRequest(request);              
+                List<FileItem> items = upload.parseRequest(org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));              
                 for (FileItem item : items) {
                     if (item.getContentType() != null && !item.getFieldName().equals("xml_submission_file") ) {
                         if (!new File(dir).exists()) new File(dir).mkdirs();

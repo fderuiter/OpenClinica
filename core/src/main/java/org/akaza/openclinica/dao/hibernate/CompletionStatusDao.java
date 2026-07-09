@@ -1,6 +1,8 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.domain.datamap.CompletionStatus;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class CompletionStatusDao extends AbstractDomainDao<CompletionStatus> {
 
@@ -12,9 +14,9 @@ public class CompletionStatusDao extends AbstractDomainDao<CompletionStatus> {
 
     public CompletionStatus findByCompletionStatusId(int completion_status_id) {
         String query = "from " + getDomainClassName() + " completion_status  where completion_status.completionStatusId = :completionstatusid ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("completionstatusid", completion_status_id);
-        return (CompletionStatus) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("completionstatusid", completion_status_id);
+        return (CompletionStatus) q.getResultList().stream().findFirst().orElse(null);
     }
 
 

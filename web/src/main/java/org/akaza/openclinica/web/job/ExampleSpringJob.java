@@ -36,7 +36,7 @@ import org.quartz.SimpleTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.quartz.JobDetailBean;
+import org.quartz.impl.JobDetailImpl;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 public class ExampleSpringJob extends QuartzJobBean {
@@ -73,7 +73,7 @@ public class ExampleSpringJob extends QuartzJobBean {
     private DataSource dataSource;
     private GenerateExtractFileService generateFileService;
     private UserAccountBean userBean;
-    private JobDetailBean jobDetailBean;
+    private JobDetailImpl jobDetailBean;
     private CoreResources coreResources;
     private RuleSetRuleDao ruleSetRuleDao;
 
@@ -88,7 +88,7 @@ public class ExampleSpringJob extends QuartzJobBean {
         // logger.debug("-- executing a job " + message + " at " + new
         // java.util.Date().toString());
         JobDataMap dataMap = context.getMergedJobDataMap();
-        SimpleTrigger trigger = (SimpleTrigger) context.getTrigger();
+        org.quartz.impl.triggers.SimpleTriggerImpl trigger = (org.quartz.impl.triggers.SimpleTriggerImpl) context.getTrigger();
         try {
             ApplicationContext appContext = (ApplicationContext) context.getScheduler().getContext().get("applicationContext");
             String studySubjectNumber = ((CoreResources) appContext.getBean("coreResources")).getField("extract.number");
@@ -353,13 +353,13 @@ public class ExampleSpringJob extends QuartzJobBean {
                 TriggerBean triggerBean = new TriggerBean();
                 triggerBean.setDataset(datasetBean);
                 triggerBean.setUserAccount(userBean);
-                triggerBean.setFullName(trigger.getName());
+                triggerBean.setFullName(trigger.getKey().getName());
                 auditEventDAO.createRowForExtractDataJobSuccess(triggerBean, auditMessage.toString());
             } else {
                 TriggerBean triggerBean = new TriggerBean();
                 // triggerBean.setDataset(datasetBean);
                 triggerBean.setUserAccount(userBean);
-                triggerBean.setFullName(trigger.getName());
+                triggerBean.setFullName(trigger.getKey().getName());
                 auditEventDAO.createRowForExtractDataJobFailure(triggerBean);
                 // logger.debug("-- made it here for some reason, ds id: "
                 // + dsId);

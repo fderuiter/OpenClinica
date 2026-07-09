@@ -24,13 +24,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import javax.naming.Context;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.akaza.openclinica.bean.extract.ExtractPropertyBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -1123,9 +1123,9 @@ public class SystemController {
     public String sendEmail(JavaMailSenderImpl mailSender, String emailSubject, String message) throws OpenClinicaSystemException {
 
         logger.info("Checking email connection...");
-        javax.mail.Transport transport = null;
+        jakarta.mail.Transport transport = null;
         try {
-            javax.mail.Session session = mailSender.getSession();
+            jakarta.mail.Session session = mailSender.getSession();
             String protocol = mailSender.getProtocol();
             if (protocol == null || protocol.trim().isEmpty()) {
                 protocol = "smtp";
@@ -1133,7 +1133,7 @@ public class SystemController {
             transport = session.getTransport(protocol);
             transport.connect(mailSender.getHost(), mailSender.getPort(), mailSender.getUsername(), mailSender.getPassword());
             return "ACTIVE";
-        } catch (javax.mail.AuthenticationFailedException afe) {
+        } catch (jakarta.mail.AuthenticationFailedException afe) {
             logger.error("Authentication failed during email connection check", afe);
             return "INACTIVE";
         } catch (MessagingException me) {

@@ -141,11 +141,11 @@ public class ImportSpringJob extends QuartzJobBean {
         triggerService = new TriggerService();
 
         JobDataMap dataMap = context.getMergedJobDataMap();
-        SimpleTrigger trigger = (SimpleTrigger) context.getTrigger();
+        org.quartz.impl.triggers.SimpleTriggerImpl trigger = (org.quartz.impl.triggers.SimpleTriggerImpl) context.getTrigger();
         TriggerBean triggerBean = new TriggerBean();
-        triggerBean.setFullName(trigger.getName());
+        triggerBean.setFullName(trigger.getKey().getName());
         String contactEmail = dataMap.getString(EMAIL);
-        logger.debug("=== starting to run trigger " + trigger.getName() + " ===");
+        logger.debug("=== starting to run trigger " + trigger.getKey().getName() + " ===");
         try {
             ApplicationContext appContext = (ApplicationContext) context.getScheduler().getContext().get("applicationContext");
             dataSource = (DataSource) appContext.getBean("dataSource");
@@ -659,8 +659,8 @@ public class ImportSpringJob extends QuartzJobBean {
                             }
                             
                             if (++itemDataCount % 50 == 0) {
-                                itemDataHibernateDao.getCurrentSession().flush();
-                                itemDataHibernateDao.getCurrentSession().clear();
+                                itemDataHibernateDao.getEntityManager().flush();
+                                itemDataHibernateDao.getEntityManager().clear();
                             }
                             ItemDAO idao = new ItemDAO(dataSource);
                             ItemBean ibean = (ItemBean) idao.findByPK(displayItemBean.getData().getItemId());

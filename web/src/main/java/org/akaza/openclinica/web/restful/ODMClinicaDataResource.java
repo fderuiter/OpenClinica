@@ -1,16 +1,16 @@
 package org.akaza.openclinica.web.restful;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 
 import org.json.JSONObject;
 
@@ -115,7 +115,7 @@ public class ODMClinicaDataResource {
 			try {
 				modifiedSinceDate = java.util.Date.from(java.time.Instant.parse(modifiedSince));
 			} catch (Exception e) {
-				throw new javax.ws.rs.WebApplicationException(javax.ws.rs.core.Response.status(400).entity("Invalid date format").build());
+				throw new jakarta.ws.rs.WebApplicationException(jakarta.ws.rs.core.Response.status(400).entity("Invalid date format").build());
 			}
 		}
 		boolean includeDN=false;
@@ -230,7 +230,7 @@ public class ODMClinicaDataResource {
 			try {
 				modifiedSinceDate = java.util.Date.from(java.time.Instant.parse(modifiedSince));
 			} catch (Exception e) {
-				throw new javax.ws.rs.WebApplicationException(javax.ws.rs.core.Response.status(400).entity("Invalid date format").build());
+				throw new jakarta.ws.rs.WebApplicationException(jakarta.ws.rs.core.Response.status(400).entity("Invalid date format").build());
 			}
 		}
 		boolean includeDN=false;

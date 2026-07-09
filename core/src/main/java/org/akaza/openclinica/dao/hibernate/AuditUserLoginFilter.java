@@ -1,8 +1,11 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.domain.technicaladmin.LoginStatus;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
+import org.akaza.openclinica.domain.technicaladmin.AuditUserLoginBean;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.joda.time.DateTime;
 
 import java.text.DateFormat;
@@ -11,99 +14,108 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class AuditUserLoginFilter implements CriteriaCommand {
+public class AuditUserLoginFilter {
 
-    List<Filter> filters = new ArrayList<Filter>();
+    List<Filter> filters = new ArrayList<>();
 
     public void addFilter(String property, Object value) {
         filters.add(new Filter(property, value));
     }
 
-    public Criteria execute(Criteria criteria) {
+    public void execute(CriteriaBuilder cb, CriteriaQuery<?> cq, Root<AuditUserLoginBean> root) {
+        List<Predicate> predicates = new ArrayList<>();
         for (Filter filter : filters) {
-            buildCriteria(criteria, filter.getProperty(), filter.getValue());
+            Predicate p = buildPredicate(cb, root, filter.getProperty(), filter.getValue());
+            if (p != null) predicates.add(p);
         }
-
-        return criteria;
+        if (!predicates.isEmpty()) {
+            cq.where(cb.and(predicates.toArray(new Predicate[0])));
+        }
     }
 
-    private void buildCriteria(Criteria criteria, String property, Object value) {
+    private Predicate buildPredicate(CriteriaBuilder cb, Root<AuditUserLoginBean> root, String property, Object value) {
         if (value != null) {
             if (property.equals("loginStatus")) {
-                criteria.add(Restrictions.eq(property, LoginStatus.getByName((String) value)));
+                return cb.equal(root.get(property), LoginStatus.getByName((String) value));
             } else if (property.equals("loginAttemptDate")) {
-                onlyYearAndMonthAndDayAndHourAndMinute(String.valueOf(value), criteria);
-                onlyYearAndMonthAndDayAndHour(String.valueOf(value), criteria);
-                onlyYearAndMonthAndDay(String.valueOf(value), criteria);
-                onlyYearAndMonth(String.valueOf(value), criteria);
-                onlyYear(String.valueOf(value), criteria);
-            } else
-                criteria.add(Restrictions.like(property, "%" + value + "%").ignoreCase());
+                Predicate p = onlyYearAndMonthAndDayAndHourAndMinute(cb, root, String.valueOf(value));
+                if (p != null) return p;
+                p = onlyYearAndMonthAndDayAndHour(cb, root, String.valueOf(value));
+                if (p != null) return p;
+                p = onlyYearAndMonthAndDay(cb, root, String.valueOf(value));
+                if (p != null) return p;
+                p = onlyYearAndMonth(cb, root, String.valueOf(value));
+                if (p != null) return p;
+                return onlyYear(cb, root, String.valueOf(value));
+            } else {
+                return cb.like(cb.lower(root.get(property)), "%" + value.toString().toLowerCase() + "%");
+            }
         }
+        return null;
     }
 
-    private void onlyYear(String value, Criteria criteria) {
+    private Predicate onlyYear(CriteriaBuilder cb, Root<AuditUserLoginBean> root, String value) {
         try {
             DateFormat format = new SimpleDateFormat("yyyy");
             Date startDate = format.parse(value);
             DateTime dt = new DateTime(startDate.getTime());
             dt = dt.plusYears(1);
             Date endDate = dt.toDate();
-            criteria.add(Restrictions.between("loginAttemptDate", startDate, endDate));
+            return cb.between(root.get("loginAttemptDate"), startDate, endDate);
         } catch (Exception e) {
-            // Do nothing
+            return null;
         }
     }
 
-    private void onlyYearAndMonth(String value, Criteria criteria) {
+    private Predicate onlyYearAndMonth(CriteriaBuilder cb, Root<AuditUserLoginBean> root, String value) {
         try {
             DateFormat format = new SimpleDateFormat("yyyy-MM");
             Date startDate = format.parse(value);
             DateTime dt = new DateTime(startDate.getTime());
             dt = dt.plusMonths(1);
             Date endDate = dt.toDate();
-            criteria.add(Restrictions.between("loginAttemptDate", startDate, endDate));
+            return cb.between(root.get("loginAttemptDate"), startDate, endDate);
         } catch (Exception e) {
-            // Do nothing
+            return null;
         }
     }
 
-    private void onlyYearAndMonthAndDay(String value, Criteria criteria) {
+    private Predicate onlyYearAndMonthAndDay(CriteriaBuilder cb, Root<AuditUserLoginBean> root, String value) {
         try {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             Date startDate = format.parse(value);
             DateTime dt = new DateTime(startDate.getTime());
             dt = dt.plusDays(1);
             Date endDate = dt.toDate();
-            criteria.add(Restrictions.between("loginAttemptDate", startDate, endDate));
+            return cb.between(root.get("loginAttemptDate"), startDate, endDate);
         } catch (Exception e) {
-            // Do nothing
+            return null;
         }
     }
 
-    private void onlyYearAndMonthAndDayAndHour(String value, Criteria criteria) {
+    private Predicate onlyYearAndMonthAndDayAndHour(CriteriaBuilder cb, Root<AuditUserLoginBean> root, String value) {
         try {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
             Date startDate = format.parse(value);
             DateTime dt = new DateTime(startDate.getTime());
             dt = dt.plusHours(1);
             Date endDate = dt.toDate();
-            criteria.add(Restrictions.between("loginAttemptDate", startDate, endDate));
+            return cb.between(root.get("loginAttemptDate"), startDate, endDate);
         } catch (Exception e) {
-            // Do nothing
+            return null;
         }
     }
 
-    private void onlyYearAndMonthAndDayAndHourAndMinute(String value, Criteria criteria) {
+    private Predicate onlyYearAndMonthAndDayAndHourAndMinute(CriteriaBuilder cb, Root<AuditUserLoginBean> root, String value) {
         try {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             Date startDate = format.parse(value);
             DateTime dt = new DateTime(startDate.getTime());
             dt = dt.plusMinutes(1);
             Date endDate = dt.toDate();
-            criteria.add(Restrictions.between("loginAttemptDate", startDate, endDate));
+            return cb.between(root.get("loginAttemptDate"), startDate, endDate);
         } catch (Exception e) {
-            // Do nothing
+            return null;
         }
     }
 

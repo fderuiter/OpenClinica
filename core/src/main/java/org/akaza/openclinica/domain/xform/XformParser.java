@@ -1,9 +1,9 @@
 package org.akaza.openclinica.domain.xform;
 
 import java.io.Reader;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.Marshaller;
 import java.io.StringReader;
 import java.io.StringWriter;
 import javax.xml.parsers.SAXParserFactory;

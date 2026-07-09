@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.akaza.openclinica.bean.extract.DatasetBean;
 import org.akaza.openclinica.bean.extract.ExtractPropertyBean;
@@ -31,7 +31,7 @@ import org.akaza.openclinica.web.job.TriggerService;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdScheduler;
-import org.springframework.scheduling.quartz.JobDetailBean;
+import org.quartz.impl.JobDetailImpl;
 
 /**
  *
@@ -55,7 +55,7 @@ public class CreateJobExportServlet extends SecureController {
     // captures the scheduler?
     private StdScheduler scheduler;
 
-    // private SimpleTrigger trigger;
+    // private org.quartz.impl.triggers.SimpleTriggerImpl trigger;
     // private JobDataMap jobDataMap;
 
     // private FormProcessor fp;
@@ -138,7 +138,7 @@ public class CreateJobExportServlet extends SecureController {
             forwardPage(Page.CREATE_JOB_EXPORT);
         } else if ("confirmall".equalsIgnoreCase(action)) {
             // collect form information
-            HashMap errors = validateForm(fp, request, scheduler.getTriggerNames(XsltTriggerService.TRIGGER_GROUP_NAME), "");
+            HashMap errors = validateForm(fp, request, scheduler.getTriggerKeys(org.quartz.impl.matchers.GroupMatcher.triggerGroupEquals(XsltTriggerService.TRIGGER_GROUP_NAME)).stream().map(org.quartz.TriggerKey::getName).toArray(String[]::new), "");
 
             if (!errors.isEmpty()) {
                 // set errors to request
@@ -217,9 +217,9 @@ public class CreateJobExportServlet extends SecureController {
                     epBean.setPostProcLocation(prePocLoc);
                 }
                 extractUtils.setAllProps(epBean, dsBean, sdfDir, datasetFilePath);
-                SimpleTrigger trigger = null;
+                org.quartz.impl.triggers.SimpleTriggerImpl trigger = null;
 
-                trigger = xsltService.generateXsltTrigger(xsltPath,
+                trigger = (org.quartz.impl.triggers.SimpleTriggerImpl) xsltService.generateXsltTrigger(xsltPath,
                         generalFileDir, // xml_file_path
                         endFilePath + File.separator,
                         exportFileName,
@@ -234,7 +234,7 @@ public class CreateJobExportServlet extends SecureController {
 
                 trigger.setStartTime(startDateTime);
                 trigger.setName(jobName);// + datasetId);
-                trigger.setMisfireInstruction(SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_EXISTING_COUNT);
+                trigger.setMisfireInstruction(org.quartz.SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_EXISTING_COUNT);
                 trigger.getJobDataMap().put(XsltTriggerService.EMAIL, email);
                 trigger.getJobDataMap().put(XsltTriggerService.PERIOD, period);
                 trigger.getJobDataMap().put(XsltTriggerService.EXPORT_FORMAT, epBean.getFiledescription());
@@ -242,13 +242,12 @@ public class CreateJobExportServlet extends SecureController {
                 trigger.getJobDataMap().put(XsltTriggerService.JOB_NAME, jobName);
 				trigger.getJobDataMap().put("job_type", "exportJob");
 
-                JobDetailBean jobDetailBean = new JobDetailBean();
+                JobDetailImpl jobDetailBean = new JobDetailImpl();
                 jobDetailBean.setGroup(xsltService.getTriggerGroupNameForExportJobs());
-                jobDetailBean.setName(trigger.getName());
+                jobDetailBean.setName(trigger.getKey().getName());
                 jobDetailBean.setJobClass(org.akaza.openclinica.job.XsltStatefulJob.class);
                 jobDetailBean.setJobDataMap(trigger.getJobDataMap());
                 jobDetailBean.setDurability(true); // need durability?
-                jobDetailBean.setVolatility(false);
 
                 // set to the scheduler
                 try {

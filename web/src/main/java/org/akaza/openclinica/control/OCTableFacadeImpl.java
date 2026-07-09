@@ -8,8 +8,8 @@ import org.jmesa.view.View;
 import org.jmesa.view.csv.CsvViewExporter;
 import org.jmesa.view.excel.ExcelViewExporter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class OCTableFacadeImpl extends TableFacadeImpl {
 
@@ -18,7 +18,7 @@ public class OCTableFacadeImpl extends TableFacadeImpl {
     private final String fileName;
 
     public OCTableFacadeImpl(String id, HttpServletRequest request, HttpServletResponse response, String fileName) {
-        super(id, request);
+        super(id, org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
         this.response = response;
         this.fileName = fileName + System.currentTimeMillis();
         this.request = request;
@@ -42,9 +42,9 @@ public class OCTableFacadeImpl extends TableFacadeImpl {
 
             if (exportType == ExportType.CSV) {
 //                new OCCsvViewExporter(view, cc, response, fileName).export();
-                 new CsvViewExporter(view, cc, response, fileName + ".txt").export();
+                 new CsvViewExporter(view, cc, org.akaza.openclinica.web.filter.HttpServletResponseAdapter.adapt(response), fileName + ".txt").export();
             } else if (exportType == ExportType.EXCEL) {
-                new ExcelViewExporter(view, cc, response, fileName + ".xls").export();
+                new ExcelViewExporter(view, cc, org.akaza.openclinica.web.filter.HttpServletResponseAdapter.adapt(response), fileName + ".xls").export();
             } else if (exportType == ExportType.PDF) {
                 new XmlViewExporter(view, cc, request, response).export();
             } else {

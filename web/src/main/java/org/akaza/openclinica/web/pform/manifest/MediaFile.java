@@ -1,6 +1,6 @@
 package org.akaza.openclinica.web.pform.manifest;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 @XmlRootElement(name="mediafile")
 @XmlAccessorType(XmlAccessType.FIELD)

@@ -1,18 +1,35 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import java.io.Serializable;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.akaza.openclinica.domain.CompositeIdDomainObject;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public abstract class CompositeIdAbstractDomainDao<T extends CompositeIdDomainObject> {
 
-    private HibernateTemplate hibernateTemplate;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     abstract Class<T> domainClass();
 
@@ -23,59 +40,52 @@ public abstract class CompositeIdAbstractDomainDao<T extends CompositeIdDomainOb
     @SuppressWarnings("unchecked")
     @Transactional
     public ArrayList<T> findAll() {
-        getSessionFactory().getStatistics().logSummary();
         String query = "from " + getDomainClassName() + " do";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        return (ArrayList<T>) q.list();
+        Query q = getEntityManager().createQuery(query);
+        return new ArrayList<T>((List<T>) q.getResultList());
     }
     
     @Transactional
     public T saveOrUpdate(T domainObject) {
-        getSessionFactory().getStatistics().logSummary();
-        getCurrentSession().saveOrUpdate(domainObject);
-        return domainObject;
+        if (domainObject.getId() == null) {
+            getEntityManager().persist(domainObject);
+            return domainObject;
+        } else {
+            return getEntityManager().merge(domainObject);
+        }
     }
 
     @Transactional
     public Serializable save(T domainObject) {
-        getSessionFactory().getStatistics().logSummary();
-        Serializable id = getCurrentSession().save(domainObject);
-        return id;
+        getEntityManager().persist(domainObject);
+        return (Serializable) domainObject.getId();
     }
 
-    
-
+    @SuppressWarnings("unchecked")
     @Transactional
     public T findByColumnName(Object id,String key) {
-    String query = "from " + getDomainClassName() + " do where do."+key +"= ?";
-    org.hibernate.Query q = getCurrentSession().createQuery(query);
-    q.setParameter(0, id);
-    return (T) q.uniqueResult();
+        String query = "from " + getDomainClassName() + " do where do."+key +"= :param0";
+        Query q = getEntityManager().createQuery(query);
+        q.setParameter("param0", id);
+        List<T> results = q.getResultList();
+        if (results.isEmpty()) return null;
+        return results.get(0);
     } 
     
     public Long count() {
-        return (Long) getCurrentSession().createQuery("select count(*) from " + domainClass().getName()).uniqueResult();
+        return (Long) getEntityManager().createQuery("select count(do) from " + domainClass().getName() + " do").getSingleResult();
     }
 
-    public SessionFactory getSessionFactory() {
-        return hibernateTemplate.getSessionFactory();
+    public org.hibernate.Criteria createCriteria(Class clazz) {
+        return new org.hibernate.impl.CriteriaImpl(getEntityManager(), clazz);
     }
 
-    /**
-     * @return Session Object
-     */
-    public Session getCurrentSession() {
-        return getSessionFactory().getCurrentSession();
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 
-    public HibernateTemplate getHibernateTemplate() {
-        return hibernateTemplate;
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
-
-    public void setHibernateTemplate(HibernateTemplate hibernateTemplate) {
-        this.hibernateTemplate = hibernateTemplate;
-    }
-
-
 
 }

@@ -1,10 +1,18 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.dao.managestudy.CriteriaCommand;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.HashMap;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class ViewRuleAssignmentSort implements CriteriaCommand {
     List<Sort> sorts = new ArrayList<Sort>();

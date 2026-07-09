@@ -1,7 +1,11 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.domain.managestudy.StudyModuleStatus;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.rule.RuleBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 /**
  * @author: Shamim
@@ -16,9 +20,9 @@ public class StudyModuleStatusDao extends AbstractDomainDao<StudyModuleStatus> {
 
     public StudyModuleStatus findByStudyId(int studyId) {
         String query = "from " + getDomainClassName() + " sms  where sms.studyId = :studyId ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("studyId", studyId);
-        return (StudyModuleStatus) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("studyId", studyId);
+        return (StudyModuleStatus) q.getResultList().stream().findFirst().orElse(null);
     }
 
 }

@@ -1,6 +1,8 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.domain.datamap.ResolutionStatus;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class ResolutionStatusDao extends AbstractDomainDao<ResolutionStatus> {
 
@@ -10,9 +12,9 @@ public class ResolutionStatusDao extends AbstractDomainDao<ResolutionStatus> {
     }
     public ResolutionStatus findByResolutionStatusId(Integer resolutionStatusId) {
         String query = "from " + getDomainClassName() + " do  where do.resolutionStatusId = :resolutionstatusid";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("resolutionstatusid", resolutionStatusId);
-        return (ResolutionStatus) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("resolutionstatusid", resolutionStatusId);
+        return (ResolutionStatus) q.getResultList().stream().findFirst().orElse(null);
     }
 
 }

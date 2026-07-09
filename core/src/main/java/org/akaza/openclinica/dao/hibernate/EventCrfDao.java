@@ -1,8 +1,12 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.akaza.openclinica.domain.datamap.EventCrf;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class EventCrfDao extends AbstractDomainDao<EventCrf> {
 
@@ -16,22 +20,22 @@ public class EventCrfDao extends AbstractDomainDao<EventCrf> {
         String query = "from "
                 + getDomainClassName()
                 + " event_crf where event_crf.crfVersion.crfVersionId = :crfversionid and event_crf.studyEvent.studyEventId = :studyeventid and event_crf.studySubject.studySubjectId= :studysubjectid";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("studyeventid", study_event_id);
-        q.setInteger("studysubjectid", study_subject_id);
-        q.setInteger("crfversionid", crf_version_id);
-        return (EventCrf) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("studyeventid", study_event_id);
+        q.setParameter("studysubjectid", study_subject_id);
+        q.setParameter("crfversionid", crf_version_id);
+        return (EventCrf) q.getResultList().stream().findFirst().orElse(null);
     }
 
     public EventCrf findByStudyEventIdStudySubjectIdCrfId(int study_event_id, int study_subject_id, int crf_id) {
         String query = "from "
                 + getDomainClassName()
                 + " event_crf where event_crf.crfVersion.crf.crfId = :crfid and event_crf.studyEvent.studyEventId = :studyeventid and event_crf.studySubject.studySubjectId= :studysubjectid";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("studyeventid", study_event_id);
-        q.setInteger("studysubjectid", study_subject_id);
-        q.setInteger("crfid", crf_id);
-        return (EventCrf) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("studyeventid", study_event_id);
+        q.setParameter("studysubjectid", study_subject_id);
+        q.setParameter("crfid", crf_id);
+        return (EventCrf) q.getResultList().stream().findFirst().orElse(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -39,10 +43,10 @@ public class EventCrfDao extends AbstractDomainDao<EventCrf> {
         String query = "from "
                 + getDomainClassName()
                 + " event_crf where event_crf.studyEvent.studyEventId = :studyeventid and event_crf.studySubject.ocOid= :studysubjectoid";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("studyeventid", studyEventId);
-        q.setString("studysubjectoid", studySubjectOid);
-        return q.list();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("studyeventid", studyEventId);
+        q.setParameter("studysubjectoid", studySubjectOid);
+        return q.getResultList();
 	}
     
     @SuppressWarnings("unchecked")
@@ -50,10 +54,10 @@ public class EventCrfDao extends AbstractDomainDao<EventCrf> {
         String query = "from "
                 + getDomainClassName()
                 + " event_crf where event_crf.studyEvent.studyEventId = :studyeventid and event_crf.statusId = :statusid";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("studyeventid", studyEventId);
-        q.setInteger("statusid", statusCode);
-        return q.list();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("studyeventid", studyEventId);
+        q.setParameter("statusid", statusCode);
+        return q.getResultList();
     }
     
         

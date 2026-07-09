@@ -1,9 +1,15 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
-import org.hibernate.Query;
+import jakarta.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 /**
  * Utility operations for Hibernate manipulation
@@ -26,7 +32,7 @@ public class HibernateUtil {
 
         // queryResult may contain Int, Long or BigDecimal
         @SuppressWarnings("rawtypes")
-        List queryResult = query.list();
+        List queryResult = query.getResultList();
 
         List<Integer> result = new ArrayList<Integer>(queryResult.size());
         for (Object o: queryResult) {

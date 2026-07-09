@@ -1,6 +1,6 @@
 package org.akaza.openclinica.domain.xform.dto;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;

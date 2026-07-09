@@ -1,6 +1,6 @@
 package org.akaza.openclinica.web.pform.formlist;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

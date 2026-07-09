@@ -1,14 +1,28 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import static java.util.Arrays.asList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import java.util.HashMap;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.Map;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.akaza.openclinica.domain.technicaladmin.ConfigurationBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.slf4j.Logger;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.slf4j.LoggerFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class PasswordRequirementsDao {
 	public static final String

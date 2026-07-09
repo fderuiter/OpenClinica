@@ -4,17 +4,39 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import java.sql.Timestamp;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.text.ParseException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.text.SimpleDateFormat;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.Date;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.HashMap;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.Map;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.akaza.openclinica.domain.usageStats.LogUsageStatsBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.service.usageStats.LogUsageStatsService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 /**
  * @author pgawade
@@ -36,9 +58,9 @@ public class UsageStatsServiceDAO extends AbstractDomainDao<LogUsageStatsBean> {
 
         List<LogUsageStatsBean> logUsageStatsBeanLst = new ArrayList<LogUsageStatsBean>();
         LogUsageStatsBean logUsageStatsBeanRet = new LogUsageStatsBean();
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setString("param_key", param_key);
-        logUsageStatsBeanLst = q.list();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("param_key", param_key);
+        logUsageStatsBeanLst = q.getResultList();
         if ((null != logUsageStatsBeanLst) && (logUsageStatsBeanLst.size() != 0)) {
             logUsageStatsBeanRet = logUsageStatsBeanLst.get(0);
         }
