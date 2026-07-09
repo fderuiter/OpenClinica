@@ -60,13 +60,13 @@ public class ViewImportJobServlet extends SecureController {
         scheduler = getScheduler();
         // then we pull all the triggers that are specifically named
         // IMPORT_TRIGGER.
-        String[] triggerNames = scheduler.getTriggerNames(IMPORT_TRIGGER);
+        String[] triggerNames = scheduler.getTriggerKeys(org.quartz.impl.matchers.GroupMatcher.triggerGroupEquals(IMPORT_TRIGGER)).stream().map(org.quartz.TriggerKey::getName).toArray(String[]::new);
 
         // the next bit goes out and processes all the triggers
         ArrayList triggerBeans = new ArrayList<TriggerBean>();
 
         for (String triggerName : triggerNames) {
-            Trigger trigger = scheduler.getTrigger(triggerName, IMPORT_TRIGGER);
+            Trigger trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, IMPORT_TRIGGER)));
             logger.debug("found trigger, full name: " + trigger.getFullName());
             try {
                 logger.debug("prev fire time " + trigger.getPreviousFireTime().toString());
@@ -96,7 +96,7 @@ public class ViewImportJobServlet extends SecureController {
 
             // this next bit of code looks to see if the trigger is paused
             logger.debug("Trigger Priority: " + trigger.getName() + " " + trigger.getPriority());
-            if (scheduler.getTriggerState(triggerName, IMPORT_TRIGGER) == Trigger.STATE_PAUSED) {
+            if (scheduler.getTriggerState(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, IMPORT_TRIGGER))) == org.quartz.Trigger.TriggerState.PAUSED.ordinal()) {
                 triggerBean.setActive(false);
                 logger.debug("setting active to false for trigger: " + trigger.getName());
             } else {

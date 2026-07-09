@@ -1,6 +1,6 @@
 package org.akaza.openclinica.web.pform.dto;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 @XmlRootElement(name="input")
 @XmlAccessorType(XmlAccessType.FIELD)

@@ -16,13 +16,13 @@ import org.hibernate.annotations.Type;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "rule_set_rule_audit")
@@ -53,7 +53,6 @@ public class RuleSetRuleAuditBean extends AbstractMutableDomainObject {
         this.ruleSetRuleBean = ruleSetRuleBean;
     }
 
-    @Type(type = "status")
     @Column(name = "status_id")
     public Status getStatus() {
         if (status != null) {

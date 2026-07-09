@@ -4,9 +4,9 @@ import org.jmesa.core.CoreContext;
 import org.jmesa.view.AbstractViewExporter;
 import org.jmesa.view.View;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @since 2.0
@@ -17,12 +17,12 @@ public class XmlViewExporter extends AbstractViewExporter {
     private final HttpServletRequest request;
 
     public XmlViewExporter(View view, CoreContext coreContext, HttpServletRequest request, HttpServletResponse response) {
-        super(view, coreContext, response, null);
+        super(view, coreContext, org.akaza.openclinica.web.filter.HttpServletResponseAdapter.adapt(response), null);
         this.request = request;
     }
 
     public XmlViewExporter(View view, CoreContext coreContext, HttpServletRequest request, HttpServletResponse response, String fileName) {
-        super(view, coreContext, response, fileName);
+        super(view, coreContext, org.akaza.openclinica.web.filter.HttpServletResponseAdapter.adapt(response), fileName);
         this.request = request;
     }
 
@@ -30,7 +30,7 @@ public class XmlViewExporter extends AbstractViewExporter {
         //responseHeaders(getResponse());
         //String viewData = (String) getView().render();
         //byte[] contents = (viewData).getBytes();
-        //getResponse().getOutputStream().write(contents);
+        //((jakarta.servlet.http.HttpServletResponse)getResponse()).getOutputStream().write(contents);
         RequestDispatcher dispatcher = request.getRequestDispatcher("DownloadRuleSetXml?ruleSetRuleIds=" + (String) getView().render());
         dispatcher.forward(request, getResponse());
     }

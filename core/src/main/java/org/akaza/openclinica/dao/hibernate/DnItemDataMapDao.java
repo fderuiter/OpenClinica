@@ -1,8 +1,12 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.akaza.openclinica.domain.datamap.DnItemDataMap;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class DnItemDataMapDao extends AbstractDomainDao<DnItemDataMap> {
 
@@ -13,8 +17,8 @@ public class DnItemDataMapDao extends AbstractDomainDao<DnItemDataMap> {
 
     public List<DnItemDataMap> findByItemData(Integer itemDataId) {
         String query = "from " + getDomainClassName() + " do where do.itemData.itemDataId = :itemdataid ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("itemdataid", itemDataId);
-        return (List<DnItemDataMap>) q.list();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("itemdataid", itemDataId);
+        return (List<DnItemDataMap>) q.getResultList();
     }
 }

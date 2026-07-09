@@ -1,10 +1,18 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.akaza.openclinica.domain.datamap.IdtView;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.datamap.ItemData;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class IdtViewDao extends AbstractDomainDao<IdtView> {
 
@@ -37,10 +45,10 @@ public class IdtViewDao extends AbstractDomainDao<IdtView> {
  
         query = query + " order by itemDataId";
        
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
         q.setMaxResults(per_page); // limit
         q.setFirstResult((page - 1) * per_page); // offset
-        return (List<IdtView>) q.list();
+        return (List<IdtView>) q.getResultList();
     }
 
     

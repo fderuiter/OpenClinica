@@ -18,7 +18,7 @@ import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.impl.StdScheduler;
-import org.springframework.scheduling.quartz.JobDetailBean;
+import org.quartz.impl.JobDetailImpl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class UpdateJobImportServlet extends SecureController {
     private static String SCHEDULER = "schedulerFactoryBean";
     private static String TRIGGER_IMPORT_GROUP = "importTrigger";
     private StdScheduler scheduler;
-    private SimpleTrigger trigger;
+    private org.quartz.impl.triggers.SimpleTriggerImpl trigger;
     private JobDataMap dataMap;
     private static final String IMPORT_DIR = SQLInitServlet.getField("filePath") + CreateJobImportServlet.DIR_PATH + File.separator;
 
@@ -120,7 +120,7 @@ public class UpdateJobImportServlet extends SecureController {
         String triggerName = fp.getString("tname");
         scheduler = getScheduler();
         logger.debug("found trigger name " + triggerName);
-        Trigger trigger = scheduler.getTrigger(triggerName, TRIGGER_IMPORT_GROUP);
+        Trigger trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, TRIGGER_IMPORT_GROUP)));
         //System.out.println("found trigger from the other side " + trigger.getFullName());
         if (StringUtil.isBlank(action)) {
             setUpServlet(trigger);
@@ -140,16 +140,15 @@ public class UpdateJobImportServlet extends SecureController {
                 Date startDate = trigger.getStartTime();
                 trigger = triggerService.generateImportTrigger(fp, sm.getUserBean(), study, startDate, LocaleResolver.getLocale(request).getLanguage());
                 // scheduler = getScheduler();
-                JobDetailBean jobDetailBean = new JobDetailBean();
+                JobDetailImpl jobDetailBean = new JobDetailImpl();
                 jobDetailBean.setGroup(TRIGGER_IMPORT_GROUP);
                 jobDetailBean.setName(trigger.getName());
                 jobDetailBean.setJobClass(org.akaza.openclinica.web.job.ImportStatefulJob.class);
                 jobDetailBean.setJobDataMap(trigger.getJobDataMap());
                 jobDetailBean.setDurability(true); // need durability?
-                jobDetailBean.setVolatility(false);
 
                 try {
-                    scheduler.deleteJob(triggerName, TRIGGER_IMPORT_GROUP);
+                    scheduler.deleteJob(org.quartz.JobKey.jobKey(org.quartz.JobKey.jobKey(triggerName, TRIGGER_IMPORT_GROUP)));
                     Date dateStart = scheduler.scheduleJob(jobDetailBean, trigger);
 
                     addPageMessage("Your job has been successfully modified.");

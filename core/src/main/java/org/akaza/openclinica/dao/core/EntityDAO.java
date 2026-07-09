@@ -31,7 +31,6 @@ import org.akaza.openclinica.dao.cache.EhCacheWrapper;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 
 /**
  * <p/>
@@ -68,8 +67,8 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
 
     /* Here is the cache reference */
     protected EhCacheWrapper cache;
-    // protected EhCacheWrapper cache = new EhCacheWrapper();
-    protected EhCacheManagerFactoryBean cacheManager;
+    // //protected EhCacheWrapper cache = new EhCacheWrapper();
+    //protected EhCacheManagerFactoryBean cacheManager;
 
     // set the types we expect from the database
 
@@ -106,7 +105,7 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
     protected String oc_df_string = "";
     protected String local_df_string = "";
 
-    protected EhCacheWrapper ehCacheWrapper;
+    //protected EhCacheWrapper ehCacheWrapper;
 
     public EntityDAO(DataSource ds) {
         this.ds = ds;
@@ -289,11 +288,11 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
 
             psf.generate(ps);// enter variables here!
             key = (K) ps.toString();
-            if ((results = (V) cache.get(key)) == null) {
+            if (true) {
                 try (ResultSet rs = ps.executeQuery()) {
                     results = this.processResultRows(rs);
                     if (results != null) {
-                        cache.put(key, results);
+                        
                     }
                 }
             }

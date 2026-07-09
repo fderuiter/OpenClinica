@@ -4,7 +4,6 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.EnhancedUserType;
 import org.hibernate.usertype.ParameterizedType;
-import org.hibernate.util.ReflectHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +36,7 @@ public class CodedEnumType implements EnhancedUserType, ParameterizedType {
     public void setParameterValues(Properties parameters) {
         String enumClassName = parameters.getProperty("enumClassname");
         try {
-            enumClass = ReflectHelper.classForName(enumClassName);
+            enumClass = (Class<CodedEnum>) Class.forName(enumClassName);
         } catch (ClassNotFoundException cnfe) {
             throw new HibernateException("Enum class not found", cnfe);
         }
@@ -56,8 +55,12 @@ public class CodedEnumType implements EnhancedUserType, ParameterizedType {
      * @see org.hibernate.usertype.UserType#sqlTypes()
      * 
      */
+    public int getSqlType() {
+        return java.sql.Types.VARCHAR;
+    }
+
     public int[] sqlTypes() {
-        return new int[] { Hibernate.INTEGER.sqlType() };
+        return new int[] { java.sql.Types.INTEGER };
     }
 
     /* 
@@ -128,8 +131,8 @@ public class CodedEnumType implements EnhancedUserType, ParameterizedType {
      * if you need it for the conversion.
      * @see org.hibernate.usertype.UserType#nullSafeGet(java.sql.ResultSet, java.lang.String[], java.lang.Object)
      */
-    public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws SQLException {
-        String key = rs.getString(names[0]);
+    public Object nullSafeGet(ResultSet rs, int position, org.hibernate.engine.spi.SharedSessionContractImplementor session, Object owner) throws SQLException {
+        String key = rs.getString(position);
         return rs.wasNull() ? null : getByCode(key);
     }
 
@@ -137,9 +140,9 @@ public class CodedEnumType implements EnhancedUserType, ParameterizedType {
      * This method writes the property value to the JDBC Prepared-Statement.
      * @see org.hibernate.usertype.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)
      */
-    public void nullSafeSet(PreparedStatement st, Object value, int index) throws SQLException {
+    public void nullSafeSet(PreparedStatement st, Object value, int index, org.hibernate.engine.spi.SharedSessionContractImplementor session) throws SQLException {
         if (value == null) {
-            st.setNull(index, Hibernate.INTEGER.sqlType());
+            st.setNull(index, java.sql.Types.INTEGER);
         } else {
             Integer code = getCode(value);
             logger.debug("Binding '{}' to parameter: {}", code, index);
@@ -180,4 +183,16 @@ public class CodedEnumType implements EnhancedUserType, ParameterizedType {
         return value;
     }
 
+
+    public Object fromStringValue(CharSequence sequence) {
+        return fromXMLString(sequence.toString());
+    }
+
+    public String toSqlLiteral(Object value) {
+        return toXMLString(value);
+    }
+
+    public String toString(Object value) {
+        return toXMLString(value);
+}
 }

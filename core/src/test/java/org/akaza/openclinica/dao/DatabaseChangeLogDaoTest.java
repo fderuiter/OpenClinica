@@ -2,8 +2,9 @@ package org.akaza.openclinica.dao;
 
 import org.akaza.openclinica.dao.hibernate.DatabaseChangeLogDao;
 import org.akaza.openclinica.domain.technicaladmin.DatabaseChangeLogBean;
-import org.hibernate.Query;
-import org.hibernate.classic.Session;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +20,11 @@ public class DatabaseChangeLogDaoTest {
     private DatabaseChangeLogDao databaseChangeLogDao;
 
     @Mock
+    private EntityManager mockEntityManager;
+    @Mock
     private SessionFactory mockSessionFactory;
 
-    @Mock
-    private Session mockSession;
+    
 
     @Mock
     private Query mockQuery;
@@ -33,7 +35,7 @@ public class DatabaseChangeLogDaoTest {
         databaseChangeLogDao = new DatabaseChangeLogDao();
         databaseChangeLogDao.setSessionFactory(mockSessionFactory);
 
-        when(mockSessionFactory.getCurrentSession()).thenReturn(mockSession);
+        
     }
 
     @Test
@@ -43,11 +45,11 @@ public class DatabaseChangeLogDaoTest {
         mockBean.setAuthor("pgawade (generated)");
         mockBean.setFileName("migration/2.5/changeLogCreateTables.xml");
 
-        when(mockSession.createQuery(anyString())).thenReturn(mockQuery);
-        when(mockQuery.setString(eq("id"), eq("1235684743487-1"))).thenReturn(mockQuery);
-        when(mockQuery.setString(eq("author"), eq("pgawade (generated)"))).thenReturn(mockQuery);
-        when(mockQuery.setString(eq("fileName"), eq("migration/2.5/changeLogCreateTables.xml"))).thenReturn(mockQuery);
-        when(mockQuery.uniqueResult()).thenReturn(mockBean);
+        when(mockEntityManager.createQuery(anyString())).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("id"), eq("1235684743487-1"))).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("author"), eq("pgawade (generated)"))).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("fileName"), eq("migration/2.5/changeLogCreateTables.xml"))).thenReturn(mockQuery);
+        when(mockQuery.getSingleResult()).thenReturn(mockBean);
 
         DatabaseChangeLogBean result = databaseChangeLogDao.findById("1235684743487-1", "pgawade (generated)", "migration/2.5/changeLogCreateTables.xml");
 

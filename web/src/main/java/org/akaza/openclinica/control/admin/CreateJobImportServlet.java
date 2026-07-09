@@ -16,7 +16,7 @@ import org.akaza.openclinica.web.job.TriggerService;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdScheduler;
-import org.springframework.scheduling.quartz.JobDetailBean;
+import org.quartz.impl.JobDetailImpl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class CreateJobImportServlet extends SecureController {
 
     private StdScheduler scheduler;
 
-    // private SimpleTrigger trigger;
+    // private org.quartz.impl.triggers.SimpleTriggerImpl trigger;
     // private JobDataMap jobDataMap;
 
     @Override
@@ -129,7 +129,7 @@ public class CreateJobImportServlet extends SecureController {
             forwardPage(Page.CREATE_JOB_IMPORT);
         } else if ("confirmall".equalsIgnoreCase(action)) {
             // collect form information
-            HashMap errors = triggerService.validateImportJobForm(fp, request, scheduler.getTriggerNames(IMPORT_TRIGGER));
+            HashMap errors = triggerService.validateImportJobForm(fp, request, scheduler.getTriggerKeys(org.quartz.impl.matchers.GroupMatcher.triggerGroupEquals(IMPORT_TRIGGER)).stream().map(org.quartz.TriggerKey::getName).toArray(String[]::new));
 
             if (!errors.isEmpty()) {
                 // set errors to request
@@ -143,16 +143,15 @@ public class CreateJobImportServlet extends SecureController {
                 int studyId = fp.getInt(STUDY_ID);
                 StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
                 StudyBean studyBean = (StudyBean) studyDAO.findByPK(studyId);
-                SimpleTrigger trigger = triggerService.generateImportTrigger(fp, sm.getUserBean(), studyBean, LocaleResolver.getLocale(request).getLanguage());
+                org.quartz.impl.triggers.SimpleTriggerImpl trigger = triggerService.generateImportTrigger(fp, sm.getUserBean(), studyBean, LocaleResolver.getLocale(request).getLanguage());
 
-                // SimpleTrigger trigger = new SimpleTrigger();
-                JobDetailBean jobDetailBean = new JobDetailBean();
+                // org.quartz.impl.triggers.SimpleTriggerImpl trigger = new org.quartz.impl.triggers.SimpleTriggerImpl();
+                JobDetailImpl jobDetailBean = new JobDetailImpl();
                 jobDetailBean.setGroup(IMPORT_TRIGGER);
                 jobDetailBean.setName(trigger.getName());
                 jobDetailBean.setJobClass(org.akaza.openclinica.web.job.ImportStatefulJob.class);
                 jobDetailBean.setJobDataMap(trigger.getJobDataMap());
                 jobDetailBean.setDurability(true); // need durability?
-                jobDetailBean.setVolatility(false);
 
                 // set to the scheduler
                 try {

@@ -52,7 +52,7 @@ import org.akaza.openclinica.web.job.XalanTriggerService;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdScheduler;
-import org.springframework.scheduling.quartz.JobDetailBean;
+import org.quartz.impl.JobDetailImpl;
 
 /**
  * Take a dataset and show it in different formats,<BR/> Detect whether or not
@@ -251,13 +251,12 @@ public class ExportDatasetServlet extends SecureController {
                                     SimpleTrigger simpleTrigger = xts.generateXalanTrigger(propertiesPath + File.separator + "ODMReportStylesheet.xsl",
                                             ODMXMLFileName, generalFileDir + "output.sql", fDb.getId());
                                     StdScheduler sched = getScheduler();
-                                    org.springframework.scheduling.quartz.JobDetailBean jobDetailBean = new org.springframework.scheduling.quartz.JobDetailBean();
+                                    org.quartz.impl.JobDetailImpl jobDetailBean = new org.quartz.impl.JobDetailImpl();
                                     jobDetailBean.setGroup(xts.TRIGGER_GROUP_NAME);
                                     jobDetailBean.setName(simpleTrigger.getName());
                                     jobDetailBean.setJobClass(org.akaza.openclinica.web.job.XalanStatefulJob.class);
                                     jobDetailBean.setJobDataMap(simpleTrigger.getJobDataMap());
                                     jobDetailBean.setDurability(true);
-                                    jobDetailBean.setVolatility(false);
                                     sched.scheduleJob(jobDetailBean, simpleTrigger);
                                 }
                             } else if ("txt".equalsIgnoreCase(fAction)) {

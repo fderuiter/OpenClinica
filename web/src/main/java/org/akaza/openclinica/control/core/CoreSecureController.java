@@ -13,16 +13,16 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import org.akaza.openclinica.bean.core.Role;
@@ -225,9 +225,9 @@ public abstract class CoreSecureController extends HttpServlet {
         try {
             if (jobName != null && groupName != null) {
                 LOGGER.debug("trying to retrieve status on " + jobName + " " + groupName);
-                int state = getScheduler(request).getTriggerState(jobName, groupName);
+                int state = getScheduler(request).getTriggerState(org.quartz.TriggerKey.triggerKey(jobName, groupName));
                 LOGGER.debug("found state: " + state);
-                org.quartz.JobDetail details = getScheduler(request).getJobDetail(jobName, groupName);
+                org.quartz.JobDetail details = getScheduler(request).getJobDetail(org.quartz.JobKey.jobKey(jobName, groupName));
                 List contexts = getScheduler(request).getCurrentlyExecutingJobs();
                 org.quartz.JobDataMap dataMap = details.getJobDataMap();
                 String failMessage = dataMap.getString("failMessage");

@@ -46,13 +46,13 @@ public class JobTriggerListener extends TriggerListenerSupport {
     }
 
     @Override
-    public void triggerComplete(Trigger trigger, JobExecutionContext context, int triggerInstructionCode) {
-        super.triggerComplete(trigger, context, triggerInstructionCode);
+    public void triggerComplete(Trigger trigger, JobExecutionContext context, org.quartz.Trigger.CompletedExecutionInstruction triggerInstructionCode) {
+        //super.triggerComplete(trigger, context, triggerInstructionCode);
         logTriggerInfo(trigger, "Trigger {} complete");
     }
 
     private void logTriggerInfo(Trigger trigger, String message) {
-        LOG.debug(message, trigger.getName());
+        LOG.debug(message, trigger.getKey().getName());
     }
 
 

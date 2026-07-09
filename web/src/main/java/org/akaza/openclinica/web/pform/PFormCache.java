@@ -2,9 +2,9 @@ package org.akaza.openclinica.web.pform;
 
 import java.util.HashMap;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+import org.apache.commons.codec.digest.DigestUtils;
 
 public class PFormCache {
     
@@ -100,8 +100,7 @@ public class PFormCache {
         contextMap.put("crfVersionOID", crfVersionOID);
         
         String hashString = studySubjectOID + "." + studyEventDefinitionID + "." + studyEventOrdinal + "." + crfVersionOID;
-        ShaPasswordEncoder encoder = new ShaPasswordEncoder(256);
-        String hashOutput = encoder.encodePassword(hashString,null);
+        String hashOutput = DigestUtils.sha256Hex(hashString);
         subjectContextCache.put(hashOutput, contextMap);
         return hashOutput;
     }
@@ -115,8 +114,7 @@ public class PFormCache {
         contextMap.put("studyEventOrdinal", "1");
         
         String hashString = studyOID + "." + crfVersionOID;
-        ShaPasswordEncoder encoder = new ShaPasswordEncoder(256);
-        String hashOutput = encoder.encodePassword(hashString,null);
+        String hashOutput = DigestUtils.sha256Hex(hashString);
         subjectContextCache.put(hashOutput, contextMap);
         return hashOutput;
     }

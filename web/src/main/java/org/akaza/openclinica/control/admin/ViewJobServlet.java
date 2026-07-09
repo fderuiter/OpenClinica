@@ -72,7 +72,10 @@ public class ViewJobServlet extends SecureController {
         XsltTriggerService xsltTriggerSrvc = new XsltTriggerService();
         // Scheduler sched = sfb.getScheduler();
 
-     String[] triggerNames = scheduler.getTriggerNames(xsltTriggerSrvc.getTriggerGroupNameForExportJobs());
+     java.util.Set<org.quartz.TriggerKey> keys = scheduler.getTriggerKeys(org.quartz.impl.matchers.GroupMatcher.triggerGroupEquals(xsltTriggerSrvc.getTriggerGroupNameForExportJobs()));
+        String[] triggerNames = new String[keys.size()];
+        int _idx = 0; for(org.quartz.TriggerKey k : keys) { triggerNames[_idx++] = k.getName(); }
+
   //      String[]    triggerNames          =           scheduler.getJobNames(XsltTriggerService.TRIGGER_GROUP_NAME);
         // logger.info("trigger list: "+triggerNames.length);
         // logger.info("trigger names: "+triggerNames.toString());
@@ -80,7 +83,7 @@ public class ViewJobServlet extends SecureController {
 
         ArrayList triggerBeans = new ArrayList();
         for (String triggerName : triggerNames) {
-            Trigger trigger = scheduler.getTrigger(triggerName, xsltTriggerSrvc.getTriggerGroupNameForExportJobs());
+            Trigger trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(triggerName, xsltTriggerSrvc.getTriggerGroupNameForExportJobs()));
             try {
                 logger.debug("prev fire time " + trigger.getPreviousFireTime().toString());
                 logger.debug("next fire time " + trigger.getNextFireTime().toString());
@@ -115,7 +118,7 @@ public class ViewJobServlet extends SecureController {
                 // triggerBean.setStudyName(dataMap.getString(ExampleSpringJob.STUDY_NAME));
             }
             logger.debug("Trigger Priority: " + trigger.getName() + " " + trigger.getPriority());
-            if (scheduler.getTriggerState(triggerName, XsltTriggerService.TRIGGER_GROUP_NAME) == Trigger.STATE_PAUSED) {
+            if (scheduler.getTriggerState(org.quartz.TriggerKey.triggerKey(triggerName, XsltTriggerService.TRIGGER_GROUP_NAME)) == org.quartz.Trigger.TriggerState.PAUSED) {
                 triggerBean.setActive(false);
                 logger.debug("setting active to false for trigger: " + trigger.getName());
             } else {

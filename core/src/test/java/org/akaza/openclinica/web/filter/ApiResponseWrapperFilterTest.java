@@ -8,7 +8,7 @@ import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
@@ -30,7 +30,7 @@ public class ApiResponseWrapperFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain chain = new MockFilterChain() {
             @Override
-            public void doFilter(javax.servlet.ServletRequest req, javax.servlet.ServletResponse res) throws IOException, ServletException {
+            public void doFilter(jakarta.servlet.ServletRequest req, jakarta.servlet.ServletResponse res) throws IOException, ServletException {
                 res.setContentType("application/json");
                 res.getWriter().write("{\"message\":\"success\"}");
             }
@@ -48,7 +48,7 @@ public class ApiResponseWrapperFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain chain = new MockFilterChain() {
             @Override
-            public void doFilter(javax.servlet.ServletRequest req, javax.servlet.ServletResponse res) throws IOException, ServletException {
+            public void doFilter(jakarta.servlet.ServletRequest req, jakarta.servlet.ServletResponse res) throws IOException, ServletException {
                 throw new RuntimeException("Test Exception");
             }
         };
@@ -67,8 +67,8 @@ public class ApiResponseWrapperFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain chain = new MockFilterChain() {
             @Override
-            public void doFilter(javax.servlet.ServletRequest req, javax.servlet.ServletResponse res) throws IOException, ServletException {
-                ((javax.servlet.http.HttpServletResponse) res).sendError(404, "Not Found");
+            public void doFilter(jakarta.servlet.ServletRequest req, jakarta.servlet.ServletResponse res) throws IOException, ServletException {
+                ((jakarta.servlet.http.HttpServletResponse) res).sendError(404, "Not Found");
             }
         };
 

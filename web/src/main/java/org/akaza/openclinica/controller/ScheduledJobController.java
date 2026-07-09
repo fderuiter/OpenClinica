@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.akaza.openclinica.bean.extract.ExtractPropertyBean;
 import org.akaza.openclinica.i18n.core.LocaleResolver;
@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.quartz.JobDetailBean;
+import org.quartz.impl.JobDetailImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,7 +89,7 @@ public class ScheduledJobController {
         List<String> currentJobList = new ArrayList<String>();
         while(itCurrentJobs.hasNext()){
             JobExecutionContext temp = itCurrentJobs.next();
-            currentJobList.add(temp.getTrigger().getJobName()+temp.getTrigger().getGroup());
+            currentJobList.add(temp.getTrigger().getJobName()+temp.getTrigger().getKey().getGroup());
         }
 
         String[] triggerGroups =  scheduler.getTriggerGroupNames();
@@ -102,7 +102,7 @@ public class ScheduledJobController {
             for (String triggerName : triggerNames) {
              int state = scheduler.getTriggerState(triggerName, triggerGroup);
                logger.debug("- " + triggerName);
-               if (state != Trigger.STATE_PAUSED) {
+               if (state != org.quartz.Trigger.TriggerState.PAUSED.ordinal()) {
                simpleTriggers.add(index1,(SimpleTrigger) scheduler.getTrigger(triggerName, triggerGroup));
                  index1++;
                }
@@ -200,7 +200,6 @@ public class ScheduledJobController {
         newTrigger.setJobName(theJobName);
         newTrigger.setJobGroup(theJobGroupName);
         newTrigger.setJobDataMap(oldTrigger.getJobDataMap());
-        newTrigger.setVolatility(false);
         newTrigger.setRepeatCount(oldTrigger.getRepeatCount());
         newTrigger.setRepeatInterval(oldTrigger.getRepeatInterval());
         newTrigger.setMisfireInstruction(SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_REMAINING_COUNT);
@@ -220,15 +219,14 @@ public class ScheduledJobController {
         else if(triggerGroupName.equals(XsltTriggerService.TRIGGER_GROUP_NAME))
         {
 
-            JobDetailBean jobDetailBean = new JobDetailBean();
+            JobDetailImpl jobDetailBean = new JobDetailImpl();
             jobDetailBean.setGroup(XsltTriggerService.TRIGGER_GROUP_NAME);
             jobDetailBean.setName(newTrigger.getName());
             jobDetailBean.setJobClass(org.akaza.openclinica.job.XsltStatefulJob.class);
             jobDetailBean.setJobDataMap(newTrigger.getJobDataMap());
             jobDetailBean.setDurability(true); // need durability?
-            jobDetailBean.setVolatility(false);
 
-           scheduler.deleteJob(theJobName, theJobGroupName);
+           scheduler.deleteJob(org.quartz.JobKey.jobKey(theJobName, theJobGroupName));
            scheduler.scheduleJob(jobDetailBean, newTrigger);
            pageMessages.add("The Job "+theJobName+"  has been rescheduled");
         }

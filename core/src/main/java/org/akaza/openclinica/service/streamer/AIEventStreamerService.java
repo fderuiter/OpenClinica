@@ -5,7 +5,7 @@ import org.akaza.openclinica.dao.submit.ItemDataDAO;
 import org.akaza.openclinica.core.ApplicationContextProvider;
 import org.akaza.openclinica.dao.core.CoreResources;
 import org.springframework.stereotype.Service;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.sql.DataSource;
 import java.util.*;
 import java.util.concurrent.*;
@@ -14,7 +14,7 @@ import java.net.URL;
 import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 @Service("aiEventStreamerService")
 public class AIEventStreamerService {

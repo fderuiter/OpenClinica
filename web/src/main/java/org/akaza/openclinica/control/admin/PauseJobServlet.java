@@ -27,7 +27,7 @@ public class PauseJobServlet extends SecureController {
     private static String groupImportName = "importTrigger";
     private StdScheduler scheduler;
 
-    // private SimpleTrigger trigger;
+    // private org.quartz.impl.triggers.SimpleTriggerImpl trigger;
 
     @Override
     protected void mayProceed() throws InsufficientPermissionException {
@@ -65,16 +65,16 @@ public class PauseJobServlet extends SecureController {
         }
         String deleteMe = fp.getString("del");
         scheduler = getScheduler();
-        Trigger trigger = scheduler.getTrigger(triggerName, finalGroupName);
+        Trigger trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, finalGroupName)));
         try {
              if (("y".equals(deleteMe)) && (ub.isSysAdmin())) {
-                scheduler.deleteJob(triggerName, finalGroupName);
+                scheduler.deleteJob(org.quartz.JobKey.jobKey(org.quartz.JobKey.jobKey(triggerName, finalGroupName)));
                 // set return message here
                 logger.debug("deleted job: " + triggerName);
                 addPageMessage("The following job " + triggerName + " and its corresponding Trigger have been deleted from the system.");
             } else {
 
-                if (scheduler.getTriggerState(triggerName, finalGroupName) == Trigger.STATE_PAUSED) {
+                if (scheduler.getTriggerState(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, finalGroupName))) == org.quartz.Trigger.TriggerState.PAUSED.ordinal()) {
                     scheduler.resumeTrigger(triggerName, finalGroupName);
                     // trigger.setPriority(Trigger.DEFAULT_PRIORITY);
                     logger.debug("-- resuming trigger! " + triggerName + " " + finalGroupName);
@@ -82,7 +82,7 @@ public class PauseJobServlet extends SecureController {
                     // set message here
                 } else {
                     scheduler.pauseTrigger(triggerName, finalGroupName);
-                    // trigger.setPriority(Trigger.STATE_PAUSED);
+                    // trigger.setPriority(org.quartz.Trigger.TriggerState.PAUSED.ordinal());
                     logger.debug("-- pausing trigger! " + triggerName + " " + finalGroupName);
                     addPageMessage("This trigger " + triggerName + " has been paused, and will not run again until it is restored.");
                     // set message here

@@ -1,8 +1,12 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.akaza.openclinica.domain.datamap.ItemData;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class ItemDataDao extends AbstractDomainDao<ItemData> {
 
@@ -13,18 +17,18 @@ public class ItemDataDao extends AbstractDomainDao<ItemData> {
     public ItemData findByItemEventCrfOrdinal(Integer itemId, Integer eventCrfId, Integer ordinal) {
         String query = "from " + getDomainClassName()
                 + " item_data where item_data.item.itemId = :itemid and item_data.eventCrf.eventCrfId = :eventcrfid and item_data.ordinal = :ordinal";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("itemid", itemId);
-        q.setInteger("eventcrfid", eventCrfId);
-        q.setInteger("ordinal", ordinal);
-        return (ItemData) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("itemid", itemId);
+        q.setParameter("eventcrfid", eventCrfId);
+        q.setParameter("ordinal", ordinal);
+        return (ItemData) q.getResultList().stream().findFirst().orElse(null);
     }
 
     public List<ItemData> findAllByEventCrf(Integer eventCrfId) {
         String query = "select * from item_data where event_crf_id = " + eventCrfId;
-        org.hibernate.Query q = getCurrentSession().createSQLQuery(query).addEntity(ItemData.class);
+        jakarta.persistence.Query q = getEntityManager().createNativeQuery(query, ItemData.class);
         
-        return (List<ItemData>) q.list();
+        return (List<ItemData>) q.getResultList();
       
     }
 
@@ -36,24 +40,24 @@ public class ItemDataDao extends AbstractDomainDao<ItemData> {
             "join item_group_metadata igm on i.item_id=igm.item_id and igm.crf_version_id = ec.crf_version_id " + 
             "where id.event_crf_id = " + eventCrfId + " and igm.item_group_id = " + itemGroupId + " " + 
             "order by id.ordinal, igm.ordinal";
-        org.hibernate.Query q = getCurrentSession().createSQLQuery(query).addEntity(ItemData.class);
+        jakarta.persistence.Query q = getEntityManager().createNativeQuery(query, ItemData.class);
         
-        return (List<ItemData>) q.list();
+        return (List<ItemData>) q.getResultList();
       
     }
     
     public List<ItemData> findByEventCrfId(Integer eventCrfId) {
         String query = "from " + getDomainClassName() + " item_data where item_data.eventCrf.eventCrfId = :eventcrfid";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("eventcrfid", eventCrfId);
-        return (List<ItemData>) q.list();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("eventcrfid", eventCrfId);
+        return (List<ItemData>) q.getResultList();
       
     }
     
     public int getMaxGroupRepeat(Integer eventCrfId, Integer itemId) {
         String query = "select max(ordinal) from item_data where event_crf_id = " + eventCrfId + " and item_id = " + itemId;
-        org.hibernate.Query q = getCurrentSession().createSQLQuery(query);
-        Number result = (Number) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createNativeQuery(query);
+        Number result = (Number) q.getResultList().stream().findFirst().orElse(null);
         if (result == null) return 0;
         else return result.intValue();
     }
@@ -69,7 +73,7 @@ public class ItemDataDao extends AbstractDomainDao<ItemData> {
             idData.setUpdateId(ub.getId());
             idData.setValue(itemDataBean.getValue());
             if (itemDataBean.getStatus() != null) {
-                idData.setStatus((org.akaza.openclinica.domain.Status) getCurrentSession().load(org.akaza.openclinica.domain.Status.class, itemDataBean.getStatus().getId()));
+                idData.setStatus((org.akaza.openclinica.domain.Status) getEntityManager().getReference(org.akaza.openclinica.domain.Status.class, itemDataBean.getStatus().getId()));
             }
             saveOrUpdate(idData);
             itemDataBean.setId(idData.getItemDataId());
@@ -77,13 +81,13 @@ public class ItemDataDao extends AbstractDomainDao<ItemData> {
             resetSDV = true;
             idData = new ItemData();
             idData.setDateCreated(new java.util.Date());
-            idData.setItem((org.akaza.openclinica.domain.datamap.Item) getCurrentSession().load(org.akaza.openclinica.domain.datamap.Item.class, itemDataBean.getItemId()));
-            idData.setEventCrf((org.akaza.openclinica.domain.datamap.EventCrf) getCurrentSession().load(org.akaza.openclinica.domain.datamap.EventCrf.class, itemDataBean.getEventCRFId()));
-            idData.setUserAccount((org.akaza.openclinica.domain.user.UserAccount) getCurrentSession().load(org.akaza.openclinica.domain.user.UserAccount.class, ub.getId()));
+            idData.setItem((org.akaza.openclinica.domain.datamap.Item) getEntityManager().getReference(org.akaza.openclinica.domain.datamap.Item.class, itemDataBean.getItemId()));
+            idData.setEventCrf((org.akaza.openclinica.domain.datamap.EventCrf) getEntityManager().getReference(org.akaza.openclinica.domain.datamap.EventCrf.class, itemDataBean.getEventCRFId()));
+            idData.setUserAccount((org.akaza.openclinica.domain.user.UserAccount) getEntityManager().getReference(org.akaza.openclinica.domain.user.UserAccount.class, ub.getId()));
             idData.setValue(itemDataBean.getValue());
             idData.setOrdinal(itemDataBean.getOrdinal());
             int statusId = (itemDataBean.getStatus() != null) ? itemDataBean.getStatus().getId() : 1;
-            idData.setStatus((org.akaza.openclinica.domain.Status) getCurrentSession().load(org.akaza.openclinica.domain.Status.class, statusId));
+            idData.setStatus((org.akaza.openclinica.domain.Status) getEntityManager().getReference(org.akaza.openclinica.domain.Status.class, statusId));
             saveOrUpdate(idData);
             itemDataBean.setId(idData.getItemDataId());
         }

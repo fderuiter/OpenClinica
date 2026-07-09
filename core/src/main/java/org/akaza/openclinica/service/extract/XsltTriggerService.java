@@ -49,12 +49,12 @@ public class XsltTriggerService {
         if(triggerGroupName!=null)
             TRIGGER_GROUP_NAME = triggerGroupName;
 
-        SimpleTrigger trigger = new SimpleTrigger(jobName, triggerGroupName);
+        org.quartz.impl.triggers.SimpleTriggerImpl trigger = new org.quartz.impl.triggers.SimpleTriggerImpl(jobName, triggerGroupName);
 
         trigger.setStartTime(startDateTime);
         trigger.setName(jobName);// + datasetId);
         trigger.setGroup(triggerGroupName);// + datasetId);
-        trigger.setMisfireInstruction(SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
+        trigger.setMisfireInstruction(org.quartz.SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
         // set job data map
         JobDataMap jobDataMap = new JobDataMap();
 
@@ -85,7 +85,6 @@ public class XsltTriggerService {
         jobDataMap.put(EP_BEAN, epBean);
 
         trigger.setJobDataMap(jobDataMap);
-        trigger.setVolatility(false);
 
         return trigger;
     }

@@ -1,22 +1,54 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.akaza.openclinica.bean.managestudy.StudyBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.dao.core.CoreResources;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.rule.RuleBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.rule.RuleSetBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.rule.RuleSetRuleBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.rule.action.EventActionBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.rule.action.HideActionBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.rule.action.InsertActionBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.rule.action.RandomizeActionBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.rule.action.RuleActionBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.rule.action.ShowActionBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.hibernate.stat.Statistics;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.slf4j.Logger;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.slf4j.LoggerFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class RuleSetRuleDao extends AbstractDomainDao<RuleSetRuleBean> {
 
@@ -32,10 +64,10 @@ public class RuleSetRuleDao extends AbstractDomainDao<RuleSetRuleBean> {
     @SuppressWarnings("unchecked")
     public ArrayList<RuleSetRuleBean> findByRuleSetBeanAndRuleBean(RuleSetBean ruleSetBean, RuleBean ruleBean) {
         String query = "from " + getDomainClassName() + " ruleSetRule  where ruleSetRule.ruleSetBean = :ruleSetBean" + " AND ruleSetRule.ruleBean = :ruleBean ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
         q.setParameter("ruleSetBean", ruleSetBean);
         q.setParameter("ruleBean", ruleBean);
-        return (ArrayList<RuleSetRuleBean>) q.list();
+        return (ArrayList<RuleSetRuleBean>) q.getResultList();
     }
     
     /**
@@ -48,26 +80,21 @@ public class RuleSetRuleDao extends AbstractDomainDao<RuleSetRuleBean> {
     @Transactional
     public ArrayList<RuleSetRuleBean> findByRuleSetStudyIdAndStatusAvail(Integer studyId) {
         String query = "from " + getDomainClassName() + " ruleSetRule  where ruleSetRule.ruleSetBean.studyId = :studyId and status = :status ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
         
         
         
-        q.setInteger("studyId", studyId);
+        q.setParameter("studyId", studyId);
         q.setParameter("status", org.akaza.openclinica.domain.Status.AVAILABLE);
         
-        q.setCacheable(true);
-        q.setCacheRegion(getDomainClassName());
+        
         //JN: enabling statistics for hibernate queries etc... to monitor the performance
         
-        Statistics stats = getSessionFactory().getStatistics();
-        logger.info("EntityRuleSet"+ stats.getEntityInsertCount());
-        logger.info(stats.getQueryExecutionMaxTimeQueryString());
-        logger.info("hit count"+stats.getSecondLevelCacheHitCount());
-        stats.logSummary();
+        
         
  
         
-        ArrayList<RuleSetRuleBean> ruleSetRules = (ArrayList<RuleSetRuleBean>) q.list();
+        ArrayList<RuleSetRuleBean> ruleSetRules = (ArrayList<RuleSetRuleBean>) q.getResultList();
         // Forcing eager fetch of actions & their properties
         for (RuleSetRuleBean ruleSetRuleBean : ruleSetRules) {
             for (RuleActionBean action : ruleSetRuleBean.getActions()) {
@@ -104,9 +131,9 @@ public class RuleSetRuleDao extends AbstractDomainDao<RuleSetRuleBean> {
                 + " join rule_expression rer on r.rule_expression_id = rer.id " + " join rule_action ra on ra.rule_set_rule_id = rsr.id " + " where ";
 
         query += filter.execute("");
-        org.hibernate.Query q = getCurrentSession().createSQLQuery(query);
+        jakarta.persistence.Query q = getEntityManager().createNativeQuery(query);
 
-        return ((Number) q.uniqueResult()).intValue();
+        return ((Number) q.getResultList().stream().findFirst().orElse(null)).intValue();
     }
 
     @SuppressWarnings("unchecked")
@@ -130,10 +157,10 @@ public class RuleSetRuleDao extends AbstractDomainDao<RuleSetRuleBean> {
 
         query += filter.execute("");
         query += sort.execute("");
-        org.hibernate.Query q = getCurrentSession().createSQLQuery(query).addEntity(domainClass());
+        jakarta.persistence.Query q = getEntityManager().createNativeQuery(query, domainClass());
         q.setFirstResult(rowStart);
         q.setMaxResults(rowEnd - rowStart);
-        return (ArrayList<RuleSetRuleBean>) q.list();
+        return (ArrayList<RuleSetRuleBean>) q.getResultList();
     }
 
     public int getCountByStudy(StudyBean study) {
@@ -145,8 +172,8 @@ public class RuleSetRuleDao extends AbstractDomainDao<RuleSetRuleBean> {
                 + " join rule_expression re on rs.rule_expression_id = re.id " + " join rule r on r.id = rsr.rule_id "
                 + " join rule_expression rer on r.rule_expression_id = rer.id " + " join rule_action ra on ra.rule_set_rule_id = rsr.id " + " where rs.study_id = " + study.getId() + "  AND  rsr.status_id = 1";
 
-        org.hibernate.Query q = getCurrentSession().createSQLQuery(query);
-        return ((Number) q.uniqueResult()).intValue();
+        jakarta.persistence.Query q = getEntityManager().createNativeQuery(query);
+        return ((Number) q.getResultList().stream().findFirst().orElse(null)).intValue();
     }
 
 

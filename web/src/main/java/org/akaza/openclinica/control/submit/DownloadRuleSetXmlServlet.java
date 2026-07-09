@@ -7,9 +7,9 @@
 package org.akaza.openclinica.control.submit;
 
 import org.akaza.openclinica.bean.core.Role;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import javax.xml.transform.stream.StreamSource;
 import org.akaza.openclinica.control.SpringServletAccess;
@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletOutputStream;
+import jakarta.servlet.ServletOutputStream;
 
 public class DownloadRuleSetXmlServlet extends SecureController {
 
@@ -70,7 +70,7 @@ public class DownloadRuleSetXmlServlet extends SecureController {
             marshaller.marshal(rpic, writer);
             return writer;
 
-        } catch (javax.xml.bind.JAXBException e) {
+        } catch (jakarta.xml.bind.JAXBException e) {
             throw new OpenClinicaSystemException(e.getMessage(), e.getCause());
         } catch (Exception e) {
             throw new OpenClinicaSystemException(e.getMessage(), e.getCause());

@@ -1,12 +1,24 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.akaza.openclinica.bean.oid.ItemOidGenerator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.bean.oid.OidGenerator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.datamap.Item;
-import org.hibernate.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class ItemDao extends AbstractDomainDao<Item> {
 
@@ -18,16 +30,16 @@ public class ItemDao extends AbstractDomainDao<Item> {
 
     public Item findByOcOID(String OCOID) {
         String query = "from " + getDomainClassName() + " item  where item.ocOid = :ocoid ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setString("ocoid", OCOID);
-        return (Item) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("ocoid", OCOID);
+        return (Item) q.getResultList().stream().findFirst().orElse(null);
     }
 
     public Item findByNameCrfId(String name, Integer crfId) {
         String query = "select distinct i.* from item i, item_form_metadata ifm,crf_version cv " + "where i.name= '" + name + "' and i.item_id= ifm.item_id "
                 + "and ifm.crf_version_id=cv.crf_version_id " + "and cv.crf_id=" + crfId;
-        org.hibernate.Query q = getCurrentSession().createSQLQuery(query).addEntity(Item.class);
-        return ((Item) q.uniqueResult());
+        jakarta.persistence.Query q = getEntityManager().createNativeQuery(query, Item.class);
+        return ((Item) q.getResultList().stream().findFirst().orElse(null));
     }
     
   public static final String findAllByCrfVersionIdQuery = "select distinct i.* from item i, item_form_metadata ifm " + "where i.item_id= ifm.item_id "
@@ -35,15 +47,15 @@ public class ItemDao extends AbstractDomainDao<Item> {
 
   @SuppressWarnings("unchecked")
   public List<Item> findAllByCrfVersionId(Integer crfVersionId) {
-      Query q = getCurrentSession().createSQLQuery(findAllByCrfVersionIdQuery).addEntity(Item.class);
-      q.setInteger("crfversionid", crfVersionId.intValue());
-      return (List<Item>) q.list();
+      Query q = getEntityManager().createNativeQuery(findAllByCrfVersionIdQuery, Item.class);
+      q.setParameter("crfversionid", crfVersionId.intValue());
+      return (List<Item>) q.getResultList();
   }
 
     public int getItemDataTypeId(Item item) {
         String query = "select item_data_type_id from item where item_id = " + item.getItemId();
-        org.hibernate.Query q = getCurrentSession().createSQLQuery(query);
-        return ((Number) q.uniqueResult()).intValue();
+        jakarta.persistence.Query q = getEntityManager().createNativeQuery(query);
+        return ((Number) q.getResultList().stream().findFirst().orElse(null)).intValue();
     }
 
     @SuppressWarnings("unchecked")
@@ -51,8 +63,8 @@ public class ItemDao extends AbstractDomainDao<Item> {
         String query = "select distinct i.* from item i, item_group fg, item_group_metadata fgim " + " where fg.item_group_id= " + String.valueOf(itemGroupId)
                 + " and fg.item_group_id=fgim.item_group_id and fgim.crf_version_id= " + String.valueOf(crfVersionId)
                 + " and fgim.item_id=i.item_id order by i.item_id";
-        org.hibernate.Query q = getCurrentSession().createSQLQuery(query).addEntity(Item.class);
-        return (ArrayList<Item>) q.list();
+        jakarta.persistence.Query q = getEntityManager().createNativeQuery(query, Item.class);
+        return (ArrayList<Item>) q.getResultList();
     }
 
     public String getValidOid(Item item, String crfName, String itemLabel, ArrayList<String> oidList) {

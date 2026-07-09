@@ -1,9 +1,11 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.domain.technicaladmin.AuditUserLoginBean;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 
 public class AuditUserLoginDao extends AbstractDomainDao<AuditUserLoginBean> {
@@ -16,26 +18,32 @@ public class AuditUserLoginDao extends AbstractDomainDao<AuditUserLoginBean> {
     @SuppressWarnings("unchecked")
     public ArrayList<AuditUserLoginBean> findAll() {
         String query = "from " + getDomainClassName() + " aul order by aul.loginAttemptDate desc ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        return (ArrayList<AuditUserLoginBean>) q.list();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        return (ArrayList<AuditUserLoginBean>) q.getResultList();
     }
 
     public int getCountWithFilter(final AuditUserLoginFilter filter) {
-        Criteria criteria = getCurrentSession().createCriteria(domainClass());
-        criteria = filter.execute(criteria);
-        criteria.setProjection(Projections.rowCount()).uniqueResult();
-        return ((Long) criteria.uniqueResult()).intValue();
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<AuditUserLoginBean> root = cq.from(domainClass());
+        cq.select(cb.count(root));
+        filter.execute(cb, cq, root);
+        Long count = getEntityManager().createQuery(cq).getResultList().stream().findFirst().orElse(0L);
+        return count.intValue();
     }
 
     @SuppressWarnings("unchecked")
     public ArrayList<AuditUserLoginBean> getWithFilterAndSort(final AuditUserLoginFilter filter, final AuditUserLoginSort sort, final int rowStart,
             final int rowEnd) {
-        Criteria criteria = getCurrentSession().createCriteria(domainClass());
-        criteria = filter.execute(criteria);
-        criteria = sort.execute(criteria);
-        criteria.setFirstResult(rowStart);
-        criteria.setMaxResults(rowEnd - rowStart);
-        return (ArrayList<AuditUserLoginBean>) criteria.list();
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<AuditUserLoginBean> cq = cb.createQuery(domainClass());
+        Root<AuditUserLoginBean> root = cq.from(domainClass());
+        cq.select(root);
+        filter.execute(cb, cq, root);
+        sort.execute(cb, cq, root);
+        Query query = getEntityManager().createQuery(cq);
+        query.setFirstResult(rowStart);
+        query.setMaxResults(rowEnd - rowStart);
+        return (ArrayList<AuditUserLoginBean>) query.getResultList();
     }
-
 }

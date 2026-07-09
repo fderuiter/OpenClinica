@@ -73,7 +73,7 @@ public class ViewSingleJobServlet extends SecureController {
         }
         // << tbh 09/03/2009 #4143
         scheduler = getScheduler();
-        Trigger trigger = scheduler.getTrigger(triggerName, groupName);
+        Trigger trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, groupName)));
 
         // trigger bean is a wrapper for the trigger, to serve as a link btw
         // quartz classes and oc classes
@@ -81,7 +81,7 @@ public class ViewSingleJobServlet extends SecureController {
 
         if (trigger == null) {
             groupName = XsltTriggerService.TRIGGER_GROUP_NAME;
-            trigger = scheduler.getTrigger(triggerName.trim(), groupName);
+            trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName.trim(), groupName)));
         }
         // << tbh 09/03/2009 #4143
         // above is a hack, if we add more trigger groups this will have
@@ -97,7 +97,7 @@ public class ViewSingleJobServlet extends SecureController {
             triggerBean.setPreviousDate(trigger.getPreviousFireTime());
             triggerBean.setNextDate(trigger.getNextFireTime());
             // >> set active here, tbh 10/08/2009
-            if (scheduler.getTriggerState(triggerName, groupName) == Trigger.STATE_PAUSED) {
+            if (scheduler.getTriggerState(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, groupName))) == org.quartz.Trigger.TriggerState.PAUSED.ordinal()) {
                 triggerBean.setActive(false);
                 logger.debug("setting active to false for trigger: " + trigger.getName());
             } else {

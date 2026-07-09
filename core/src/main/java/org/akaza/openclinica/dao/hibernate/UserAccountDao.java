@@ -1,6 +1,8 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.domain.user.UserAccount;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class UserAccountDao extends AbstractDomainDao<UserAccount> {
 	
@@ -10,19 +12,19 @@ public class UserAccountDao extends AbstractDomainDao<UserAccount> {
     }
     
     public UserAccount findByUserName(String userName) {
-        getSessionFactory().getStatistics().logSummary();
+        
         String query = "from " + getDomainClassName() + " do  where do.userName = :user_name";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setString("user_name", userName);
-        return (UserAccount) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("user_name", userName);
+        return (UserAccount) q.getResultList().stream().findFirst().orElse(null);
     }
 
     public UserAccount findByUserId(Integer userId) {
-        getSessionFactory().getStatistics().logSummary();
+        
         String query = "from " + getDomainClassName() + " do  where do.userId = :user_id";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("user_id", userId);
-        return (UserAccount) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("user_id", userId);
+        return (UserAccount) q.getResultList().stream().findFirst().orElse(null);
     }
 
 }

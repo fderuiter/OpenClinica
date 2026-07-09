@@ -36,7 +36,7 @@ import org.quartz.SimpleTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.quartz.JobDetailBean;
+import org.quartz.impl.JobDetailImpl;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 public class ExampleSpringJob extends QuartzJobBean {
@@ -73,7 +73,7 @@ public class ExampleSpringJob extends QuartzJobBean {
     private DataSource dataSource;
     private GenerateExtractFileService generateFileService;
     private UserAccountBean userBean;
-    private JobDetailBean jobDetailBean;
+    private JobDetailImpl jobDetailBean;
     private CoreResources coreResources;
     private RuleSetRuleDao ruleSetRuleDao;
 

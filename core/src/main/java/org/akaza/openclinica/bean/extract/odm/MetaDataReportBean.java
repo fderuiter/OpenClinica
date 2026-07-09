@@ -8,9 +8,9 @@
 package org.akaza.openclinica.bean.extract.odm;
 
 import org.akaza.openclinica.bean.managestudy.StudyBean;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import javax.xml.transform.stream.StreamSource;
 import org.akaza.openclinica.bean.odmbeans.BasicDefinitionsBean;
@@ -140,7 +140,7 @@ public class MetaDataReportBean extends OdmXmlReportBean {
             String newResult = result;
             return newResult;
 
-        } catch (javax.xml.bind.JAXBException e) {
+        } catch (jakarta.xml.bind.JAXBException e) {
             throw new OpenClinicaSystemException(e.getMessage(), e.getCause());
         } catch (Exception e) {
             throw new OpenClinicaSystemException(e.getMessage(), e.getCause());

@@ -1,13 +1,16 @@
 package org.akaza.openclinica.dao.hibernate;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
+import org.akaza.openclinica.domain.technicaladmin.AuditUserLoginBean;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Order;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuditUserLoginSort implements CriteriaCommand {
-    List<Sort> sorts = new ArrayList<Sort>();
+public class AuditUserLoginSort {
+    List<Sort> sorts = new ArrayList<>();
 
     public void addSort(String property, String order) {
         sorts.add(new Sort(property, order));
@@ -17,23 +20,21 @@ public class AuditUserLoginSort implements CriteriaCommand {
         return sorts;
     }
 
-    public Criteria execute(Criteria criteria) {
+    public void execute(CriteriaBuilder cb, CriteriaQuery<?> cq, Root<AuditUserLoginBean> root) {
+        List<Order> orders = new ArrayList<>();
         for (Sort sort : sorts) {
-            buildCriteria(criteria, sort.getProperty(), sort.getOrder());
+            if (sort.getOrder().equals(Sort.ASC)) {
+                orders.add(cb.asc(root.get(sort.getProperty())));
+            } else if (sort.getOrder().equals(Sort.DESC)) {
+                orders.add(cb.desc(root.get(sort.getProperty())));
+            }
         }
-
-        return criteria;
-    }
-
-    private void buildCriteria(Criteria criteria, String property, String order) {
-        if (order.equals(Sort.ASC)) {
-            criteria.addOrder(Order.asc(property));
-        } else if (order.equals(Sort.DESC)) {
-            criteria.addOrder(Order.desc(property));
+        if (!orders.isEmpty()) {
+            cq.orderBy(orders);
         }
     }
 
-    private static class Sort {
+    public static class Sort {
         public final static String ASC = "asc";
         public final static String DESC = "desc";
 

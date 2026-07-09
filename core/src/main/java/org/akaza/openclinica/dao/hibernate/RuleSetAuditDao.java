@@ -1,9 +1,15 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.domain.rule.RuleSetAuditBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.rule.RuleSetBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class RuleSetAuditDao extends AbstractDomainDao<RuleSetAuditBean> {
 
@@ -15,8 +21,8 @@ public class RuleSetAuditDao extends AbstractDomainDao<RuleSetAuditBean> {
     @SuppressWarnings("unchecked")
     public ArrayList<RuleSetAuditBean> findAllByRuleSet(RuleSetBean ruleSet) {
         String query = "from " + getDomainClassName() + " ruleSetAudit  where ruleSetAudit.ruleSetBean = :ruleSet  ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
         q.setParameter("ruleSet", ruleSet);
-        return (ArrayList<RuleSetAuditBean>) q.list();
+        return (ArrayList<RuleSetAuditBean>) q.getResultList();
     }
 }

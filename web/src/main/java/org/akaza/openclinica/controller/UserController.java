@@ -3,7 +3,7 @@ package org.akaza.openclinica.controller;
 import java.util.List;
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -55,7 +55,7 @@ public class UserController {
             throw new org.akaza.openclinica.exception.OpenClinicaSystemException("error.user.not.found", new Object[]{userId}, "User not found");
         }
 
-        map.addObject(userList);
+        map.addAttribute(userList);
         return map;
     }
 

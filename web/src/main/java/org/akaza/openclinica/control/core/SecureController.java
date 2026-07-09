@@ -32,14 +32,14 @@ import java.util.StringTokenizer;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.SingleThreadModel;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.SingleThreadModel;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import org.akaza.openclinica.bean.admin.CRFBean;
@@ -149,7 +149,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  *
  * @author ssachs
  */
-public abstract class SecureController extends HttpServlet implements SingleThreadModel {
+public abstract class SecureController extends HttpServlet {
     protected ServletContext context;
     protected SessionManager sm;
     // protected final Logger logger =
@@ -289,15 +289,15 @@ public abstract class SecureController extends HttpServlet implements SingleThre
         Integer datasetId = (Integer) request.getSession().getAttribute("datasetId");
         try {
             if (jobName != null && groupName != null) {
-                int state = getScheduler(request).getTriggerState(jobName, groupName);
-                org.quartz.JobDetail details = getScheduler(request).getJobDetail(jobName, groupName);
+                int state = getScheduler(request).getTriggerState(org.quartz.TriggerKey.triggerKey(jobName, groupName)).ordinal();
+                org.quartz.JobDetail details = getScheduler(request).getJobDetail(org.quartz.JobKey.jobKey(jobName, groupName));
                 List contexts = getScheduler(request).getCurrentlyExecutingJobs();
                 // will we get the above, even if its completed running?
                 // ProcessingResultType message = null;
                 // for (int i = 0; i < contexts.size(); i++) {
                 // org.quartz.JobExecutionContext context = (org.quartz.JobExecutionContext) contexts.get(i);
-                // if (context.getJobDetail().getName().equals(jobName) &&
-                // context.getJobDetail().getGroup().equals(groupName)) {
+                // if (context.getJobDetail().getKey().getName().equals(jobName) &&
+                // context.getJobDetail().getKey().getGroup().equals(groupName)) {
                 // message = (ProcessingResultType) context.getResult();
                 // System.out.println("found message " + message.getDescription());
                 // }
@@ -305,7 +305,7 @@ public abstract class SecureController extends HttpServlet implements SingleThre
                 // ProcessingResultType message = (ProcessingResultType) details.getResult();
                 org.quartz.JobDataMap dataMap = details.getJobDataMap();
                 String failMessage = dataMap.getString("failMessage");
-                if (state == Trigger.STATE_NONE || state== Trigger.STATE_COMPLETE) {
+                if (state == Trigger.STATE_NONE || state== org.quartz.Trigger.TriggerState.COMPLETE.ordinal()) {
                     // add the message here that your export is done
                     // TODO make absolute paths in the message, for example a link from /pages/* would break
                     // TODO i18n

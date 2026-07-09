@@ -1,8 +1,11 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.domain.datamap.AuditLogEvent;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.hibernate.Filter;
-import org.hibernate.impl.FilterImpl;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class AuditLogEventDao extends AbstractDomainDao<AuditLogEvent> {
 
@@ -13,7 +16,7 @@ public class AuditLogEventDao extends AbstractDomainDao<AuditLogEvent> {
 	 
 	 @SuppressWarnings("unchecked")
 	public <T> T findByParam(AuditLogEvent auditLogEvent, String anotherAuditTable){
-		   getSessionFactory().getStatistics().logSummary();
+		   
 		   String query = "from " + getDomainClassName();
 		   String buildQuery = "";
 	       if(auditLogEvent.getEntityId()!=null && auditLogEvent.getAuditTable()!=null && anotherAuditTable==null)
@@ -29,17 +32,17 @@ public class AuditLogEventDao extends AbstractDomainDao<AuditLogEvent> {
 		    query = "from " + getDomainClassName() +  " do  where "+buildQuery;
 	       else
 	    	   query = "from " + getDomainClassName()  ;
-	       org.hibernate.Query q = getCurrentSession().createQuery(query);
+	       jakarta.persistence.Query q = getEntityManager().createQuery(query);
 	       if(auditLogEvent.getEntityId()!=null && auditLogEvent.getAuditTable()!=null && anotherAuditTable==null)
-	       {  q.setInteger("entity_id", auditLogEvent.getEntityId());
-	        	   q.setString("audit_table", auditLogEvent.getAuditTable());
+	       {  q.setParameter("entity_id", auditLogEvent.getEntityId());
+	        	   q.setParameter("audit_table", auditLogEvent.getAuditTable());
 	       }
 	       else if(auditLogEvent.getEntityId()!=null && auditLogEvent.getAuditTable()!=null && anotherAuditTable!=null)
 	       {
-	    	   q.setInteger("entity_id", auditLogEvent.getEntityId());
-        	   q.setString("audit_table", auditLogEvent.getAuditTable());
-        	   q.setString("anotherAuditTable", anotherAuditTable);
+	    	   q.setParameter("entity_id", auditLogEvent.getEntityId());
+        	   q.setParameter("audit_table", auditLogEvent.getAuditTable());
+        	   q.setParameter("anotherAuditTable", anotherAuditTable);
 	       }
-	        	   return (T) q.list();
+	        	   return (T) q.getResultList();
 	 }
 }

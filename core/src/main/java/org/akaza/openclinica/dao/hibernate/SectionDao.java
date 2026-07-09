@@ -1,6 +1,8 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.domain.datamap.Section;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class SectionDao extends AbstractDomainDao<Section> {
 
@@ -12,16 +14,15 @@ public class SectionDao extends AbstractDomainDao<Section> {
 
     public Section findByCrfVersionOrdinal(int crfVersionId, int ordinal) {
         // String query = "from " + getDomainClassName() + " section  where section.crfVersionId = :crfversionid ";
-        // org.hibernate.Query q = getCurrentSession().createQuery(query);
-        // q.set.setInteger("crfversionid", crf_version_id);
-        // return (Section) q.uniqueResult();
+        // jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        // q.set.setParameter("crfversionid", crf_version_id);
+        // return (Section) q.getResultList().stream().findFirst().orElse(null);
 
         String query = " select s.* from section s where s.crf_version_id = :crfVersionId and ordinal = :ordinal ";
-        org.hibernate.Query q = getCurrentSession().createSQLQuery(query).addEntity(domainClass());
-        q.setInteger("crfVersionId", crfVersionId);
-        q.setInteger("ordinal", ordinal);
-        q.setCacheable(true);
-        return (Section) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createNativeQuery(query, domainClass());
+        q.setParameter("crfVersionId", crfVersionId);
+        q.setParameter("ordinal", ordinal);
+        return (Section) q.getResultList().stream().findFirst().orElse(null);
     }
 
 }

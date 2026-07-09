@@ -1,8 +1,14 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import org.akaza.openclinica.bean.oid.CrfOidGenerator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.bean.oid.OidGenerator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.akaza.openclinica.domain.datamap.CrfBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class CrfDao extends AbstractDomainDao<CrfBean> {
 
@@ -14,24 +20,24 @@ public class CrfDao extends AbstractDomainDao<CrfBean> {
 
     public CrfBean findByName(String crfName) {
         String query = "from " + getDomainClassName() + " crf  where crf.name = :crfName ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setString("crfName", crfName);
-        return (CrfBean) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("crfName", crfName);
+        return (CrfBean) q.getResultList().stream().findFirst().orElse(null);
     }
 
     public CrfBean findByOcOID(String OCOID) {
-        getSessionFactory().getStatistics().logSummary();
+        
         String query = "from " + getDomainClassName() + " do  where do.ocOid = :OCOID";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setString("OCOID", OCOID);
-        return (CrfBean) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("OCOID", OCOID);
+        return (CrfBean) q.getResultList().stream().findFirst().orElse(null);
     }
 
     public CrfBean findByCrfId(Integer crfId) {
         String query = "from " + getDomainClassName() + " crf  where crf.crfId = :crfId ";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        q.setInteger("crfId", crfId);
-        return (CrfBean) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        q.setParameter("crfId", crfId);
+        return (CrfBean) q.getResultList().stream().findFirst().orElse(null);
     }
     
     private String getOid(CrfBean crf, String crfName) {

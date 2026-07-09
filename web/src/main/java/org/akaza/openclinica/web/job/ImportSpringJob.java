@@ -659,8 +659,8 @@ public class ImportSpringJob extends QuartzJobBean {
                             }
                             
                             if (++itemDataCount % 50 == 0) {
-                                itemDataHibernateDao.getCurrentSession().flush();
-                                itemDataHibernateDao.getCurrentSession().clear();
+                                itemDataHibernateDao.getEntityManager().flush();
+                                itemDataHibernateDao.getEntityManager().clear();
                             }
                             ItemDAO idao = new ItemDAO(dataSource);
                             ItemBean ibean = (ItemBean) idao.findByPK(displayItemBean.getData().getItemId());

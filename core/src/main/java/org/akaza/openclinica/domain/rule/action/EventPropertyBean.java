@@ -1,6 +1,6 @@
 package org.akaza.openclinica.domain.rule.action;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 @XmlRootElement(name="EventPropertyBean")
 @XmlAccessorType(XmlAccessType.FIELD)

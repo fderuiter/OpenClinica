@@ -4,9 +4,15 @@
 package org.akaza.openclinica.dao.hibernate;
 
 import java.sql.Timestamp;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.akaza.openclinica.domain.OpenClinicaVersionBean;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 /**
  * @author pgawade
@@ -23,8 +29,8 @@ public class OpenClinicaVersionDAO extends AbstractDomainDao<OpenClinicaVersionB
     @Transactional
     public OpenClinicaVersionBean findDefault() {
         String query = "from " + getDomainClassName() + " ocVersion";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
-        return (OpenClinicaVersionBean) q.uniqueResult();
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
+        return (OpenClinicaVersionBean) q.getResultList().stream().findFirst().orElse(null);
     }
 
     @Transactional
@@ -45,7 +51,7 @@ public class OpenClinicaVersionDAO extends AbstractDomainDao<OpenClinicaVersionB
     @Transactional
     public int deleteDefault() {
         String query = "delete from " + getDomainClassName() + " ocVersion";
-        org.hibernate.Query q = getCurrentSession().createQuery(query);
+        jakarta.persistence.Query q = getEntityManager().createQuery(query);
         return q.executeUpdate();
     }
 

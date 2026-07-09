@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -78,7 +78,7 @@ public class TriggerService {
         }
         // set up and commit job here
 
-        SimpleTrigger trigger = new SimpleTrigger(jobName, "DEFAULT", 64000, interval.longValue());
+        org.quartz.impl.triggers.SimpleTriggerImpl trigger = new org.quartz.impl.triggers.SimpleTriggerImpl(jobName, "DEFAULT", 64000, interval.longValue());
 
         // set the job detail name,
         // based on our choice of format above
@@ -119,7 +119,6 @@ public class TriggerService {
         trigger.setJobDataMap(jobDataMap);
         // trigger.setRepeatInterval(interval.longValue());
         // System.out.println("default for volatile: " + trigger.isVolatile());
-        trigger.setVolatility(false);
         return trigger;
     }
 
@@ -148,7 +147,7 @@ public class TriggerService {
             long minutesInt = minutes * 60000;
             interval = interval + minutesInt;
         }
-        SimpleTrigger trigger = new SimpleTrigger(jobName, IMPORT_TRIGGER, 64000, interval);
+        org.quartz.impl.triggers.SimpleTriggerImpl trigger = new org.quartz.impl.triggers.SimpleTriggerImpl(jobName, IMPORT_TRIGGER, 64000, interval);
         trigger.setDescription(jobDesc);
         // set just the start date
         trigger.setStartTime(startDateTime);
@@ -168,7 +167,6 @@ public class TriggerService {
         jobDataMap.put("minutes", minutes);
 
         trigger.setJobDataMap(jobDataMap);
-        trigger.setVolatility(false);
         return trigger;
     }
 
