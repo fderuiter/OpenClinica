@@ -25,7 +25,7 @@ public class PauseJobServlet extends SecureController {
     private static String SCHEDULER = "schedulerFactoryBean";
     private static String groupName = "DEFAULT";
     private static String groupImportName = "importTrigger";
-    private StdScheduler scheduler;
+    private org.quartz.Scheduler scheduler;
 
     // private org.quartz.impl.triggers.SimpleTriggerImpl trigger;
 
@@ -46,8 +46,8 @@ public class PauseJobServlet extends SecureController {
 
     }
 
-    private StdScheduler getScheduler() {
-        scheduler = this.scheduler != null ? scheduler : (StdScheduler) SpringServletAccess.getApplicationContext(context).getBean(SCHEDULER);
+    private org.quartz.Scheduler getScheduler() {
+        scheduler = this.scheduler != null ? scheduler : (org.quartz.Scheduler) SpringServletAccess.getApplicationContext(context).getBean(SCHEDULER);
         return scheduler;
     }// also perhaps DRY, tbh
 
@@ -65,23 +65,23 @@ public class PauseJobServlet extends SecureController {
         }
         String deleteMe = fp.getString("del");
         scheduler = getScheduler();
-        Trigger trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, finalGroupName)));
+        Trigger trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(triggerName, finalGroupName));
         try {
              if (("y".equals(deleteMe)) && (ub.isSysAdmin())) {
-                scheduler.deleteJob(org.quartz.JobKey.jobKey(org.quartz.JobKey.jobKey(triggerName, finalGroupName)));
+                scheduler.deleteJob(org.quartz.JobKey.jobKey(triggerName, finalGroupName));
                 // set return message here
                 logger.debug("deleted job: " + triggerName);
                 addPageMessage("The following job " + triggerName + " and its corresponding Trigger have been deleted from the system.");
             } else {
 
-                if (scheduler.getTriggerState(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, finalGroupName))) == org.quartz.Trigger.TriggerState.PAUSED.ordinal()) {
-                    scheduler.resumeTrigger(triggerName, finalGroupName);
+                if (scheduler.getTriggerState(org.quartz.TriggerKey.triggerKey(triggerName, finalGroupName)).ordinal() == org.quartz.Trigger.TriggerState.PAUSED.ordinal()) {
+                    scheduler.resumeTrigger(org.quartz.TriggerKey.triggerKey(triggerName, finalGroupName));
                     // trigger.setPriority(Trigger.DEFAULT_PRIORITY);
                     logger.debug("-- resuming trigger! " + triggerName + " " + finalGroupName);
                     addPageMessage("This trigger " + triggerName + " has been resumed and will continue to run until paused or deleted.");
                     // set message here
                 } else {
-                    scheduler.pauseTrigger(triggerName, finalGroupName);
+                    scheduler.pauseTrigger(org.quartz.TriggerKey.triggerKey(triggerName, finalGroupName));
                     // trigger.setPriority(org.quartz.Trigger.TriggerState.PAUSED.ordinal());
                     logger.debug("-- pausing trigger! " + triggerName + " " + finalGroupName);
                     addPageMessage("This trigger " + triggerName + " has been paused, and will not run again until it is restored.");

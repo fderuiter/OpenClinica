@@ -95,7 +95,7 @@ public class ViewJobServlet extends SecureController {
             // logger.info(trigger.getDescription());
             // logger.info("");//getJobDataMap()
             TriggerBean triggerBean = new TriggerBean();
-            triggerBean.setFullName(trigger.getName());
+            triggerBean.setFullName(trigger.getKey().getName());
             triggerBean.setPreviousDate(trigger.getPreviousFireTime());
             triggerBean.setNextDate(trigger.getNextFireTime());
             if (trigger.getDescription() != null) {
@@ -117,13 +117,13 @@ public class ViewJobServlet extends SecureController {
                 triggerBean.setStudyName(study.getName());
                 // triggerBean.setStudyName(dataMap.getString(ExampleSpringJob.STUDY_NAME));
             }
-            logger.debug("Trigger Priority: " + trigger.getName() + " " + trigger.getPriority());
+            logger.debug("Trigger Priority: " + trigger.getKey().getName() + " " + trigger.getPriority());
             if (scheduler.getTriggerState(org.quartz.TriggerKey.triggerKey(triggerName, XsltTriggerService.TRIGGER_GROUP_NAME)) == org.quartz.Trigger.TriggerState.PAUSED) {
                 triggerBean.setActive(false);
-                logger.debug("setting active to false for trigger: " + trigger.getName());
+                logger.debug("setting active to false for trigger: " + trigger.getKey().getName());
             } else {
                 triggerBean.setActive(true);
-                logger.debug("setting active to TRUE for trigger: " + trigger.getName());
+                logger.debug("setting active to TRUE for trigger: " + trigger.getKey().getName());
             }
             triggerBeans.add(triggerBean);
             // our wrapper to show triggers

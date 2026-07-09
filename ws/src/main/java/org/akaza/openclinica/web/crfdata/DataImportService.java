@@ -295,8 +295,8 @@ public class DataImportService {
                     }
                     
                     if (++itemDataCount % 50 == 0) {
-                        itemDataHibernateDao.getCurrentSession().flush();
-                        itemDataHibernateDao.getCurrentSession().clear();
+                        itemDataHibernateDao.getEntityManager().flush();
+                        itemDataHibernateDao.getEntityManager().clear();
                     }
                 }
 

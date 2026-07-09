@@ -31,7 +31,7 @@ public class OCCsvViewExporter extends AbstractViewExporter {
         //responseHeaders(getResponse());
         String viewData = (String) getView().render();
         byte[] contents = (viewData).getBytes();
-        //ServletOutputStream outputStream = getResponse().getOutputStream();
+        //ServletOutputStream outputStream = ((jakarta.servlet.http.HttpServletResponse)getResponse()).getOutputStream();
         File f = new File(fileName);
         FileOutputStream fos = new FileOutputStream(f, true);
         fos.write(contents);

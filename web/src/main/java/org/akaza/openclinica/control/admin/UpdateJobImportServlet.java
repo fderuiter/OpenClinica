@@ -56,7 +56,7 @@ public class UpdateJobImportServlet extends SecureController {
     private void setUpServlet(Trigger trigger) throws Exception {
         FormProcessor fp2 = new FormProcessor(request);
 
-        request.setAttribute(CreateJobImportServlet.JOB_NAME, trigger.getName());
+        request.setAttribute(CreateJobImportServlet.JOB_NAME, trigger.getKey().getName());
         request.setAttribute(CreateJobImportServlet.JOB_DESC, trigger.getDescription());
 
         dataMap = trigger.getJobDataMap();
@@ -120,13 +120,13 @@ public class UpdateJobImportServlet extends SecureController {
         String triggerName = fp.getString("tname");
         scheduler = getScheduler();
         logger.debug("found trigger name " + triggerName);
-        Trigger trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, TRIGGER_IMPORT_GROUP)));
+        Trigger trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(triggerName, TRIGGER_IMPORT_GROUP));
         //System.out.println("found trigger from the other side " + trigger.getFullName());
         if (StringUtil.isBlank(action)) {
             setUpServlet(trigger);
             forwardPage(Page.UPDATE_JOB_IMPORT);
         } else if ("confirmall".equalsIgnoreCase(action)) {
-            HashMap errors = triggerService.validateImportJobForm(fp, request, scheduler.getTriggerNames("DEFAULT"), trigger.getName());
+            HashMap errors = triggerService.validateImportJobForm(fp, request, scheduler.getTriggerKeys(org.quartz.impl.matchers.GroupMatcher.triggerGroupEquals("DEFAULT")).stream().map(org.quartz.TriggerKey::getName).toArray(String[]::new), trigger.getKey().getName());
             if (!errors.isEmpty()) {
                 // send back
                 addPageMessage("Your modifications caused an error, please see the messages for more information.");
@@ -142,13 +142,13 @@ public class UpdateJobImportServlet extends SecureController {
                 // scheduler = getScheduler();
                 JobDetailImpl jobDetailBean = new JobDetailImpl();
                 jobDetailBean.setGroup(TRIGGER_IMPORT_GROUP);
-                jobDetailBean.setName(trigger.getName());
+                jobDetailBean.setName(trigger.getKey().getName());
                 jobDetailBean.setJobClass(org.akaza.openclinica.web.job.ImportStatefulJob.class);
                 jobDetailBean.setJobDataMap(trigger.getJobDataMap());
                 jobDetailBean.setDurability(true); // need durability?
 
                 try {
-                    scheduler.deleteJob(org.quartz.JobKey.jobKey(org.quartz.JobKey.jobKey(triggerName, TRIGGER_IMPORT_GROUP)));
+                    scheduler.deleteJob(org.quartz.JobKey.jobKey(triggerName, TRIGGER_IMPORT_GROUP));
                     Date dateStart = scheduler.scheduleJob(jobDetailBean, trigger);
 
                     addPageMessage("Your job has been successfully modified.");

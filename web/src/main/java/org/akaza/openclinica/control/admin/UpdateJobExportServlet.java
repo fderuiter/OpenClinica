@@ -83,7 +83,7 @@ public class UpdateJobExportServlet extends SecureController {
         Collection dsList = dsdao.findAllOrderByStudyIdAndName();
         // TODO will have to dress this up to allow for sites then datasets
         request.setAttribute("datasets", dsList);
-        request.setAttribute(CreateJobExportServlet.JOB_NAME, trigger.getName());
+        request.setAttribute(CreateJobExportServlet.JOB_NAME, trigger.getKey().getName());
         request.setAttribute(CreateJobExportServlet.JOB_DESC, trigger.getDescription());
 
         dataMap = trigger.getJobDataMap();
@@ -129,7 +129,7 @@ public class UpdateJobExportServlet extends SecureController {
         String triggerName = fp.getString("tname");
         scheduler = getScheduler();
         ExtractUtils extractUtils = new ExtractUtils();
-        Trigger updatingTrigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName.trim(), XsltTriggerService.TRIGGER_GROUP_NAME)));
+        org.quartz.impl.triggers.SimpleTriggerImpl updatingTrigger = (org.quartz.impl.triggers.SimpleTriggerImpl) scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(triggerName.trim(), XsltTriggerService.TRIGGER_GROUP_NAME));
         if (StringUtil.isBlank(action)) {
             setUpServlet(updatingTrigger);
             forwardPage(Page.UPDATE_JOB_EXPORT);
@@ -201,7 +201,7 @@ public class UpdateJobExportServlet extends SecureController {
                 extractUtils.setAllProps(epBean, dsBean, sdfDir, datasetFilePath);
                 org.quartz.impl.triggers.SimpleTriggerImpl trigger = null;
 
-                trigger = xsltService.generateXsltTrigger(xsltPath,
+                trigger = (org.quartz.impl.triggers.SimpleTriggerImpl) xsltService.generateXsltTrigger(xsltPath,
                         generalFileDir, // xml_file_path
                         endFilePath + File.separator,
                         exportFileName,
@@ -224,13 +224,13 @@ public class UpdateJobExportServlet extends SecureController {
 
                 JobDetailImpl jobDetailBean = new JobDetailImpl();
                 jobDetailBean.setGroup(xsltService.TRIGGER_GROUP_NAME);
-                jobDetailBean.setName(trigger.getName());
+                jobDetailBean.setName(trigger.getKey().getName());
                 jobDetailBean.setJobClass(org.akaza.openclinica.job.XsltStatefulJob.class);
                 jobDetailBean.setJobDataMap(trigger.getJobDataMap());
                 jobDetailBean.setDurability(true); // need durability?
                 try {
                     // scheduler.unscheduleJob(triggerName, "DEFAULT");
-                    scheduler.deleteJob(org.quartz.JobKey.jobKey(org.quartz.JobKey.jobKey(triggerName, XsltTriggerService.TRIGGER_GROUP_NAME)));
+                    scheduler.deleteJob(org.quartz.JobKey.jobKey(triggerName, XsltTriggerService.TRIGGER_GROUP_NAME));
                     Date dataStart = scheduler.scheduleJob(jobDetailBean, trigger);
                     // Date dateStart = scheduler.rescheduleJob(triggerName,
                     // "DEFAULT", trigger);

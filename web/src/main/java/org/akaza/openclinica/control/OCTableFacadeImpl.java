@@ -18,7 +18,7 @@ public class OCTableFacadeImpl extends TableFacadeImpl {
     private final String fileName;
 
     public OCTableFacadeImpl(String id, HttpServletRequest request, HttpServletResponse response, String fileName) {
-        super(id, request);
+        super(id, org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
         this.response = response;
         this.fileName = fileName + System.currentTimeMillis();
         this.request = request;

@@ -248,7 +248,7 @@ public class ExportDatasetServlet extends SecureController {
                                     XalanTriggerService xts = new XalanTriggerService();
                                     String propertiesPath = SQLInitServlet.getField("filePath");
                                     openZipFile(generalFileDir + ODMXMLFileName + ".zip");
-                                    SimpleTrigger simpleTrigger = xts.generateXalanTrigger(propertiesPath + File.separator + "ODMReportStylesheet.xsl",
+                                    org.quartz.impl.triggers.SimpleTriggerImpl simpleTrigger = (org.quartz.impl.triggers.SimpleTriggerImpl) xts.generateXalanTrigger(propertiesPath + File.separator + "ODMReportStylesheet.xsl",
                                             ODMXMLFileName, generalFileDir + "output.sql", fDb.getId());
                                     StdScheduler sched = getScheduler();
                                     org.quartz.impl.JobDetailImpl jobDetailBean = new org.quartz.impl.JobDetailImpl();

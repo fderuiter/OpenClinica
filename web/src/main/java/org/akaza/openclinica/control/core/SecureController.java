@@ -29,13 +29,13 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.SingleThreadModel;
+
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -305,7 +305,7 @@ public abstract class SecureController extends HttpServlet {
                 // ProcessingResultType message = (ProcessingResultType) details.getResult();
                 org.quartz.JobDataMap dataMap = details.getJobDataMap();
                 String failMessage = dataMap.getString("failMessage");
-                if (state == Trigger.STATE_NONE || state== org.quartz.Trigger.TriggerState.COMPLETE.ordinal()) {
+                if (state == org.quartz.Trigger.TriggerState.NONE.ordinal() || state== org.quartz.Trigger.TriggerState.COMPLETE.ordinal()) {
                     // add the message here that your export is done
                     // TODO make absolute paths in the message, for example a link from /pages/* would break
                     // TODO i18n

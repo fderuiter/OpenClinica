@@ -219,7 +219,7 @@ public class CreateJobExportServlet extends SecureController {
                 extractUtils.setAllProps(epBean, dsBean, sdfDir, datasetFilePath);
                 org.quartz.impl.triggers.SimpleTriggerImpl trigger = null;
 
-                trigger = xsltService.generateXsltTrigger(xsltPath,
+                trigger = (org.quartz.impl.triggers.SimpleTriggerImpl) xsltService.generateXsltTrigger(xsltPath,
                         generalFileDir, // xml_file_path
                         endFilePath + File.separator,
                         exportFileName,
@@ -244,7 +244,7 @@ public class CreateJobExportServlet extends SecureController {
 
                 JobDetailImpl jobDetailBean = new JobDetailImpl();
                 jobDetailBean.setGroup(xsltService.getTriggerGroupNameForExportJobs());
-                jobDetailBean.setName(trigger.getName());
+                jobDetailBean.setName(trigger.getKey().getName());
                 jobDetailBean.setJobClass(org.akaza.openclinica.job.XsltStatefulJob.class);
                 jobDetailBean.setJobDataMap(trigger.getJobDataMap());
                 jobDetailBean.setDurability(true); // need durability?

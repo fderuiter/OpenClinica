@@ -225,13 +225,13 @@ public abstract class CoreSecureController extends HttpServlet {
         try {
             if (jobName != null && groupName != null) {
                 LOGGER.debug("trying to retrieve status on " + jobName + " " + groupName);
-                int state = getScheduler(request).getTriggerState(org.quartz.TriggerKey.triggerKey(jobName, groupName));
+                org.quartz.Trigger.TriggerState state = getScheduler(request).getTriggerState(org.quartz.TriggerKey.triggerKey(jobName, groupName));
                 LOGGER.debug("found state: " + state);
                 org.quartz.JobDetail details = getScheduler(request).getJobDetail(org.quartz.JobKey.jobKey(jobName, groupName));
                 List contexts = getScheduler(request).getCurrentlyExecutingJobs();
                 org.quartz.JobDataMap dataMap = details.getJobDataMap();
                 String failMessage = dataMap.getString("failMessage");
-                if (state == Trigger.STATE_NONE) {
+                if (state == org.quartz.Trigger.TriggerState.NONE) {
                     // add the message here that your export is done
                     // TODO make absolute paths in the message, for example a
                     // link from /pages/* would break

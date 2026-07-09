@@ -69,7 +69,7 @@ public class AuditDatabaseServlet extends SecureController {
     private String renderAuditDatabaseTable(List<DatabaseChangeLogBean> databaseChangeLogs) {
 
         // Collection<StudyRowContainer> items = getStudyRows(studyBeans);
-        TableFacade tableFacade = createTableFacade("databaseChangeLogs", request);
+        TableFacade tableFacade = createTableFacade("databaseChangeLogs", org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
         tableFacade.setColumnProperties("id", "author", "fileName", "dataExecuted", "md5Sum", "description", "comments", "tag", "liquibase");
 
         tableFacade.setItems(databaseChangeLogs);

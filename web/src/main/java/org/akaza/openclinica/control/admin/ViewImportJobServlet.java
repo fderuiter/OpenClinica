@@ -66,18 +66,18 @@ public class ViewImportJobServlet extends SecureController {
         ArrayList triggerBeans = new ArrayList<TriggerBean>();
 
         for (String triggerName : triggerNames) {
-            Trigger trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, IMPORT_TRIGGER)));
-            logger.debug("found trigger, full name: " + trigger.getFullName());
+            Trigger trigger = scheduler.getTrigger(org.quartz.TriggerKey.triggerKey(triggerName, IMPORT_TRIGGER));
+            logger.debug("found trigger, full name: " + trigger.getKey().getName());
             try {
                 logger.debug("prev fire time " + trigger.getPreviousFireTime().toString());
                 logger.debug("next fire time " + trigger.getNextFireTime().toString());
-                logger.debug("final fire time: " + trigger.getFinalFireTime().toString());
+                logger.debug("final fire time: " + trigger.getNextFireTime().toString());
             } catch (NullPointerException npe) {
                 // could be nulls in the dates, etc
             }
 
             TriggerBean triggerBean = new TriggerBean();
-            triggerBean.setFullName(trigger.getName());
+            triggerBean.setFullName(trigger.getKey().getName());
             triggerBean.setPreviousDate(trigger.getPreviousFireTime());
             triggerBean.setNextDate(trigger.getNextFireTime());
             if (trigger.getDescription() != null) {
@@ -95,13 +95,13 @@ public class ViewImportJobServlet extends SecureController {
             }
 
             // this next bit of code looks to see if the trigger is paused
-            logger.debug("Trigger Priority: " + trigger.getName() + " " + trigger.getPriority());
-            if (scheduler.getTriggerState(org.quartz.TriggerKey.triggerKey(org.quartz.TriggerKey.triggerKey(triggerName, IMPORT_TRIGGER))) == org.quartz.Trigger.TriggerState.PAUSED.ordinal()) {
+            logger.debug("Trigger Priority: " + trigger.getKey().getName() + " " + trigger.getPriority());
+            if (scheduler.getTriggerState(org.quartz.TriggerKey.triggerKey(triggerName, IMPORT_TRIGGER)).ordinal() == org.quartz.Trigger.TriggerState.PAUSED.ordinal()) {
                 triggerBean.setActive(false);
-                logger.debug("setting active to false for trigger: " + trigger.getName());
+                logger.debug("setting active to false for trigger: " + trigger.getKey().getName());
             } else {
                 triggerBean.setActive(true);
-                logger.debug("setting active to TRUE for trigger: " + trigger.getName());
+                logger.debug("setting active to TRUE for trigger: " + trigger.getKey().getName());
             }
             triggerBeans.add(triggerBean);
             // our wrapper to show triggers

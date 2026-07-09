@@ -143,12 +143,12 @@ public class CreateJobImportServlet extends SecureController {
                 int studyId = fp.getInt(STUDY_ID);
                 StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
                 StudyBean studyBean = (StudyBean) studyDAO.findByPK(studyId);
-                org.quartz.impl.triggers.SimpleTriggerImpl trigger = triggerService.generateImportTrigger(fp, sm.getUserBean(), studyBean, LocaleResolver.getLocale(request).getLanguage());
+                org.quartz.impl.triggers.SimpleTriggerImpl trigger = (org.quartz.impl.triggers.SimpleTriggerImpl) triggerService.generateImportTrigger(fp, sm.getUserBean(), studyBean, LocaleResolver.getLocale(request).getLanguage());
 
                 // org.quartz.impl.triggers.SimpleTriggerImpl trigger = new org.quartz.impl.triggers.SimpleTriggerImpl();
                 JobDetailImpl jobDetailBean = new JobDetailImpl();
                 jobDetailBean.setGroup(IMPORT_TRIGGER);
-                jobDetailBean.setName(trigger.getName());
+                jobDetailBean.setName(trigger.getKey().getName());
                 jobDetailBean.setJobClass(org.akaza.openclinica.web.job.ImportStatefulJob.class);
                 jobDetailBean.setJobDataMap(trigger.getJobDataMap());
                 jobDetailBean.setDurability(true); // need durability?
@@ -158,7 +158,7 @@ public class CreateJobImportServlet extends SecureController {
                     Date dateStart = scheduler.scheduleJob(jobDetailBean, trigger);
                     logger.debug("== found job date: " + dateStart.toString());
                     // set a success message here
-                    addPageMessage("You have successfully created a new job: " + trigger.getName() + " which is now set to run at the time you specified.");
+                    addPageMessage("You have successfully created a new job: " + trigger.getKey().getName() + " which is now set to run at the time you specified.");
                     forwardPage(Page.VIEW_IMPORT_JOB_SERVLET);
                 } catch (SchedulerException se) {
                     se.printStackTrace();

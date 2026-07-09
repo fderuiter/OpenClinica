@@ -102,7 +102,7 @@ public class ExtractController {
         int fileSize = files.length;
         int  cnt = 0;
         JobDetailImpl jobDetailBean = new JobDetailImpl();
-        SimpleTrigger simpleTrigger = null;
+        org.quartz.impl.triggers.SimpleTriggerImpl simpleTrigger = null;
         //TODO: if files and export names size is not same... throw an error
         dsBean.setName(dsBean.getName().replaceAll(" ", "_"));
     	String[] exportFiles= epBean.getExportFileName();
@@ -155,7 +155,7 @@ public class ExtractController {
         logger.debug("found xslt file name " + xsltPath);
 
         // String xmlFilePath = generalFileDir + ODMXMLFileName;
-         simpleTrigger = xsltService.generateXsltTrigger(xsltPath,
+         simpleTrigger = (org.quartz.impl.triggers.SimpleTriggerImpl) xsltService.generateXsltTrigger(xsltPath,
         		 generalFileDir, // xml_file_path
                 endFilePath + File.separator,
                 exportFileName,
