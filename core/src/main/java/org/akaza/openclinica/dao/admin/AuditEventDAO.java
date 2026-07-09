@@ -241,33 +241,24 @@ public class AuditEventDAO extends AuditableEntityDAO {
      */
     public void createAuditEventDiscrepancyNoteLink(int auditId, int discrepancyNoteId) {
         String sql = "INSERT INTO audit_event_discrepancy_note (audit_id, discrepancy_note_id) VALUES (?, ?)";
-        HashMap<Integer, Object> variables = new HashMap<Integer, Object>();
-        variables.put(new Integer(1), new Integer(auditId));
-        variables.put(new Integer(2), new Integer(discrepancyNoteId));
-        this.execute(sql, variables);
+        org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(ds);
+        jdbcTemplate.update(sql, auditId, discrepancyNoteId);
     }
 
     public EntityBean create(EntityBean eb) {
         AuditEventBean sb = (AuditEventBean) eb;
-        HashMap<Integer, Object> variables = new HashMap<Integer, Object>();
-        // INSERT INTO audit_event
-        // (AUDIT_DATE,AUDIT_TABLE,USER_ID,ENTITY_ID,REASON_FOR_CHANGE,
-        // ACTION_MESSAGE)
-        // VALUES (NOW(),?,?,?,?,?)
-        // needs to change, tbh 02/2009
-        // new query needs to be
-        // INSERT INTO audit_log_event(audit_id, audit_log_event_type_id,
-        // audit_date, user_id, audit_table, entity_id, entity_name, old_value,
-        // new_value)
-        // VALUES (pk, ?, now(), NEW.update_id, ?, ?, ?, ?, ?);
-        variables.put(new Integer(1), sb.getAuditTable());
-        variables.put(new Integer(2), new Integer(sb.getUserId()));
-        variables.put(new Integer(3), new Integer(sb.getEntityId()));
-        variables.put(new Integer(4), sb.getReasonForChangeKey());
-        variables.put(new Integer(5), sb.getActionMessageKey());
+        org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(ds);
 
-        this.executeWithPK(digester.getQuery("create"), variables, new HashMap());
-        sb.setId(this.getLatestPK());
+        jdbcTemplate.update(digester.getQuery("create"),
+            sb.getAuditTable(),
+            sb.getUserId(),
+            sb.getEntityId(),
+            sb.getReasonForChangeKey(),
+            sb.getActionMessageKey()
+        );
+
+        Integer id = jdbcTemplate.queryForObject(digester.getQuery(getCurrentPKName), Integer.class);
+        sb.setId(id != null ? id : 0);
 
         return sb;
     }

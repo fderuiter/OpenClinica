@@ -29,7 +29,7 @@ public class AuditService {
         
         AuditEventBean createdEvent = (AuditEventBean) auditEventDAO.create(auditEvent);
         
-        if (note != null && note.getId() > 0 && createdEvent.getId() > 0) {
+        if (note != null && note.getId() > 0) {
             auditEventDAO.createAuditEventDiscrepancyNoteLink(createdEvent.getId(), note.getId());
         }
         
