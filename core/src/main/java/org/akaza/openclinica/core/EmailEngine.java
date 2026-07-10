@@ -46,19 +46,23 @@ public class EmailEngine {
 
     /** Creates a new instance of emailEngine */
     public EmailEngine(String smtphost, String connectionTimeout) {
-        Integer.parseInt(connectionTimeout);
-        props.put("mail.smtp.host", smtphost);
-        props.put("mail.smtp.connectiontimeout", connectionTimeout);
-        s = Session.getDefaultInstance(props);
+        org.springframework.mail.javamail.JavaMailSenderImpl sender = new org.akaza.openclinica.core.config.EmailConfiguration().mailSender();
+        if (smtphost != null && !smtphost.isEmpty()) {
+            sender.setHost(smtphost);
+        }
+        if (connectionTimeout != null && !connectionTimeout.isEmpty()) {
+            sender.getJavaMailProperties().setProperty("mail.smtp.connectiontimeout", connectionTimeout);
+        }
+        s = sender.getSession();
         message = new MimeMessage(s);
     }
 
     public EmailEngine(String smtphost) {
-        props.put("mail.smtp.host", smtphost);
-        // YW 07-26-2007 << avoid infinite timeout hanging up process.
-        props.put("mail.smtp.connectiontimeout", "90000");
-        // YW >>
-        s = Session.getDefaultInstance(props);
+        org.springframework.mail.javamail.JavaMailSenderImpl sender = new org.akaza.openclinica.core.config.EmailConfiguration().mailSender();
+        if (smtphost != null && !smtphost.isEmpty()) {
+            sender.setHost(smtphost);
+        }
+        s = sender.getSession();
         message = new MimeMessage(s);
     }
 
