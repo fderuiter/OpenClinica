@@ -20,13 +20,7 @@
         <security:authentication-provider ref="ldapAuthenticationProvider"/>
     </security:authentication-manager>
 
-    <bean id="shaPasswordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder"/>
-    <bean id="md5PasswordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
-
-    <bean id="openClinicaPasswordEncoder" class="org.akaza.openclinica.core.OpenClinicaPasswordEncoder">
-        <property name="currentPasswordEncoder" ref="shaPasswordEncoder"/>
-        <property name="oldPasswordEncoder" ref="md5PasswordEncoder"/>
-    </bean>
+    <bean id="openClinicaPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 
     <bean id="securityManager" class="org.akaza.openclinica.core.SecurityManager">
         <property name="encoder" ref="openClinicaPasswordEncoder"/>

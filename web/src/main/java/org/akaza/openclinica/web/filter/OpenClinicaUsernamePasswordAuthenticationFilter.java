@@ -153,6 +153,18 @@ public class OpenClinicaUsernamePasswordAuthenticationFilter extends AbstractAut
             if (userAccountBean == null) {
                 throw new BadCredentialsException("Bad Credentials");
             }
+            
+            // Intercept legacy password hash
+            if (userAccountBean.getPasswd() != null && !userAccountBean.getPasswd().startsWith("$2")) {
+                auditUserLogin(username, LoginStatus.FAILED_LOGIN, userAccountBean, "Legacy Password Hash Detected");
+                try {
+                    response.sendRedirect(request.getContextPath() + "/RequestPassword?action=legacyHash");
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                }
+                return null;
+            }
+
             // Manually Checking if the user is locked which should be thrown by authenticate. Mantis Issue: 9016
             // ToDo somebody should find why getAuthenticationManager().authenticate is not working!
             if (userAccountBean != null && userAccountBean.getStatus().isLocked()) {
