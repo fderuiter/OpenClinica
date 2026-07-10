@@ -6,13 +6,20 @@ import ca.uhn.hl7v2.DefaultHapiContext;
 import ca.uhn.hl7v2.HapiContext;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.parser.PipeParser;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hl7.fhir.r4.model.Patient;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.akaza.openclinica.modern.dto.ApiResponse;
+import org.akaza.openclinica.modern.service.ConfigurationDraftService;
+import org.akaza.openclinica.modern.model.ConfigurationDraft;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import jakarta.annotation.PostConstruct;
 import java.util.Map;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,12 +28,38 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/interop")
 public class InteropController {
 
+    private static final Logger log = LoggerFactory.getLogger(InteropController.class);
+    private static final String MAPPINGS_ID = "field-mappings-singleton";
+    private static final String MAPPINGS_DRAFT_TYPE = "FIELD_MAPPINGS";
+
     private FhirContext fhirContext = FhirContext.forR4();
     private HapiContext hl7Context = new DefaultHapiContext();
     private Map<String, String> mappings = new ConcurrentHashMap<>();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private InteropService interopService;
+
+    @Autowired
+    private ConfigurationDraftService draftService;
+
+    @PostConstruct
+    public void init() {
+        try {
+            ConfigurationDraft draft = draftService.getDraft(MAPPINGS_ID);
+            if (draft != null && draft.getDraftData() != null) {
+                Map<String, String> loaded = objectMapper.readValue(draft.getDraftData(), new TypeReference<Map<String, String>>() {});
+                mappings.putAll(loaded);
+                log.info("Loaded field mapping configurations from configuration_drafts");
+            }
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            log.info("No existing field mapping configurations found");
+        } catch (org.springframework.jdbc.BadSqlGrammarException e) {
+            log.warn("Table configuration_drafts not found. Skipping field mappings initialization.");
+        } catch (Exception e) {
+            log.error("Failed to load field mappings", e);
+        }
+    }
 
     @PostMapping("/fhir")
     public ResponseEntity<ApiResponse<String>> ingestFhir(@RequestBody String payload) {
@@ -34,6 +67,7 @@ public class InteropController {
             IParser parser = fhirContext.newJsonParser();
             Patient patient = parser.parseResource(Patient.class, payload);
             interopService.validate(patient.getIdBase(), payload);
+            log.info("Ingestion action: FHIR R4 resource received by user 'system', recordId: {}", patient.getIdBase());
             return ResponseEntity.ok(new ApiResponse<>("FHIR R4 resource received: " + patient.getIdBase()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>("Invalid FHIR payload"));
@@ -46,6 +80,7 @@ public class InteropController {
             PipeParser parser = hl7Context.getPipeParser();
             Message message = parser.parse(payload);
             interopService.validate(message.getName(), payload);
+            log.info("Ingestion action: HL7 v2 message parsed by user 'system', recordId: {}", message.getName());
             return ResponseEntity.ok(new ApiResponse<>("HL7 v2 message parsed: " + message.getName()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>("Invalid HL7 payload"));
@@ -60,6 +95,13 @@ public class InteropController {
     @PostMapping("/mapping/data")
     public ResponseEntity<ApiResponse<String>> saveMapping(@RequestBody Map<String, String> newMappings) {
         mappings.putAll(newMappings);
+        try {
+            String json = objectMapper.writeValueAsString(mappings);
+            draftService.saveDraftWithId(MAPPINGS_ID, "system", MAPPINGS_DRAFT_TYPE, json);
+            log.info("Mapping change action: user 'system' updated field mappings");
+        } catch (Exception e) {
+            log.error("Failed to persist field mappings", e);
+        }
         return ResponseEntity.ok(new ApiResponse<>("Mapping saved"));
     }
     
@@ -71,6 +113,7 @@ public class InteropController {
     @PostMapping("/pipeline/commit")
     public ResponseEntity<ApiResponse<String>> pipelineCommit(@RequestParam String recordId) {
         interopService.commit(recordId);
+        log.info("Commit action: user 'system' committed recordId: {}", recordId);
         return ResponseEntity.ok(new ApiResponse<>("Data committed"));
     }
 }
