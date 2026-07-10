@@ -74,8 +74,9 @@ def main():
             if not verify_connection(l_host, l_port, "LDAP"):
                 sys.exit(1)
 
-    file_path = input("File Path for data (default: /app/data): ").strip() or "/app/data"
-    env_vars["FILE_PATH"] = file_path
+    host_file_path = input("File Path for data (default: /app/data): ").strip() or "/app/data"
+    env_vars["HOST_FILE_PATH"] = os.path.abspath(host_file_path)
+    env_vars["FILE_PATH"] = "/opt/clinica/data/"
 
     seed_clinical = input("Enable clinical data seeding? (y/N): ").strip().lower() == 'y'
     env_vars["SEED_CLINICAL_DATA"] = "true" if seed_clinical else "false"
@@ -84,11 +85,18 @@ def main():
         if not os.path.isfile(template_path):
             print(f"Error: Template file not found at {template_path}")
             sys.exit(1)
-        env_vars["CLINICAL_TEMPLATE_PATH"] = template_path
+        env_vars["HOST_CLINICAL_TEMPLATE_PATH"] = os.path.abspath(template_path)
+        env_vars["CLINICAL_TEMPLATE_PATH"] = "/opt/clinica/template.xlsx"
+    else:
+        dummy_path = os.path.abspath("dummy_template.xlsx")
+        with open(dummy_path, "w") as f:
+            pass
+        env_vars["HOST_CLINICAL_TEMPLATE_PATH"] = dummy_path
+        env_vars["CLINICAL_TEMPLATE_PATH"] = ""
 
     # Directory structures
-    os.makedirs(file_path, exist_ok=True)
-    print(f"Created directory structure: {file_path}")
+    os.makedirs(host_file_path, exist_ok=True)
+    print(f"Created directory structure: {host_file_path}")
 
     with open(".env", "w") as f:
         for k, v in env_vars.items():
