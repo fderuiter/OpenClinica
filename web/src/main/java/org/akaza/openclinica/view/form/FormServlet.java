@@ -3,11 +3,10 @@ package org.akaza.openclinica.view.form;
 import org.akaza.openclinica.bean.submit.DisplayItemGroupBean;
 import org.akaza.openclinica.control.admin.SpreadsheetPreviewNw;
 import org.akaza.openclinica.control.managestudy.BeanFactory;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import java.io.File;
 import java.io.FileInputStream;
+import org.apache.poi.ss.usermodel.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -33,8 +32,7 @@ public class FormServlet extends HttpServlet {
         BeanFactory beanFactory = new BeanFactory();
         ServletContext context = this.getServletContext();
         String path = context.getRealPath("/");
-        POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(new File(path + "group_demo_nw.xls")));
-        HSSFWorkbook wb = new HSSFWorkbook(fs);
+        Workbook wb = WorkbookFactory.create(new FileInputStream(new File(path + "group_demo_nw.xls")));
         Map<String, Map> allMap = spnw.createCrfMetaObject(wb);
         /*
          * Map gmap = spnw.createGroupsMap(wb); Map map2 =

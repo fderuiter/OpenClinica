@@ -36,14 +36,12 @@ import org.akaza.openclinica.dao.submit.ItemGroupDAO;
 import org.akaza.openclinica.exception.CRFReadingException;
 import org.akaza.openclinica.logic.score.ScoreValidator;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -77,7 +75,7 @@ import java.util.regex.PatternSyntaxException;
 
 public class SpreadSheetTableRepeating implements SpreadSheetTable {
 
-    private POIFSFileSystem fs = null;
+    private Workbook wb = null;
 
     private UserAccountBean ub = null;
 
@@ -112,16 +110,17 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
     public SpreadSheetTableRepeating(FileInputStream parseStream, UserAccountBean ub, String versionName, Locale locale, int studyId) throws IOException {
         // super();
 
-        this.fs = new POIFSFileSystem(parseStream);
+        this.wb = WorkbookFactory.create(parseStream);
         this.ub = ub;
         this.versionName = versionName;
         this.locale = locale;
         this.studyId = studyId;
-        HSSFWorkbook wb = new HSSFWorkbook(fs);
+        
+        Workbook wb = this.wb;
         int numSheets = wb.getNumberOfSheets();
         for (int j = 0; j < numSheets; j++) {
-            HSSFSheet sheet = wb.getSheetAt(j);// sheetIndex);
-            String sheetName = wb.getSheetName(j);
+            Sheet sheet = this.wb.getSheetAt(j);// sheetIndex);
+            String sheetName = this.wb.getSheetName(j);
             if (sheetName.equalsIgnoreCase("groups")) {
                 isRepeating = true;
             }
@@ -148,7 +147,8 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
         ncrf.setCrfId(crfId);// set crf id
 
         StringBuffer buf = new StringBuffer();
-        HSSFWorkbook wb = new HSSFWorkbook(fs);
+        
+        Workbook wb = this.wb;
         int numSheets = wb.getNumberOfSheets();
         ArrayList queries = new ArrayList();
         // ArrayList groupItemMapQueries = new ArrayList();
@@ -187,8 +187,8 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
 
         int validSheetNum = 0;
         for (int j = 0; j < numSheets; j++) {
-            HSSFSheet sheet = wb.getSheetAt(j);// sheetIndex);
-            String sheetName = wb.getSheetName(j);
+            Sheet sheet = this.wb.getSheetAt(j);// sheetIndex);
+            String sheetName = this.wb.getSheetName(j);
             if (sheetName.equalsIgnoreCase("CRF") || sheetName.equalsIgnoreCase("Sections") || sheetName.equalsIgnoreCase("Items")) {
                 validSheetNum++;
             }
@@ -198,14 +198,14 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                     .add("The excel spreadsheet doesn't have required valid worksheets. Please check whether it contains"
                         + " sheets of CRF, Sections and Items.");
         }
-        HSSFSheet sheet = wb.getSheetAt(4);
-        HSSFCell insCell = sheet.getRow(1).getCell((short) 0);
+        Sheet sheet = this.wb.getSheetAt(4);
+        Cell insCell = sheet.getRow(1).getCell((short) 0);
         String versionNo = insCell.toString();
         // check to see if questions are referencing a valid section name, tbh
         // 7/30
         for (int j = 0; j < numSheets; j++) {
-            sheet = wb.getSheetAt(j);// sheetIndex);
-            String sheetName = wb.getSheetName(j);
+            sheet = this.wb.getSheetAt(j);// sheetIndex);
+            String sheetName = this.wb.getSheetName(j);
             if (sheetName.equalsIgnoreCase("Instructions")) {
                 // totally ignore instructions
             } else {
@@ -263,7 +263,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                         }
                         int cellIndex = 0;
                        
-                        HSSFCell cell = sheet.getRow(k).getCell((short) 0);
+                        Cell cell = sheet.getRow(k).getCell((short) 0);
                         item_from_row =  new SpreadSheetItemUtil();
                         row_items.add( item_from_row);
                   	    item_from_row.setItemName(getValue(cell));
@@ -997,7 +997,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                         } else
                         // throws NPE, so added the guard clause above, tbh
                         // 06/07
-                        if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+                        if (cell.getCellType() == CellType.NUMERIC) {
                             double dphi = cell.getNumericCellValue();
                             if ((dphi - (int) dphi) * 1000 == 0) {
                                 phi = (int) dphi + "";
@@ -1026,7 +1026,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                         // added to stop NPEs, tbh 06/04/2007
                         if (StringUtil.isBlank(required)) {
                             required = "0";
-                        } else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+                        } else if (cell.getCellType() == CellType.NUMERIC) {
                             double dr = cell.getNumericCellValue();
                             if ((dr - (int) dr) * 1000 == 0) {
                                 required = (int) dr + "";
@@ -1989,7 +1989,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                             }
                             continue;
                         }
-                        HSSFCell cell = sheet.getRow(gk).getCell((short) 0);
+                        Cell cell = sheet.getRow(gk).getCell((short) 0);
                         String groupLabel = getValue(cell);
                         groupLabel = groupLabel.replaceAll("<[^>]*>", "");
 
@@ -2051,7 +2051,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                         } else {
                             if (StringUtil.isBlank(groupRepeatNumber)) {
                                 groupRepeatNumber = "1";
-                            } else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+                            } else if (cell.getCellType() == CellType.NUMERIC) {
                                 double dr = cell.getNumericCellValue();
                                 if ((dr - (int) dr) * 1000 == 0) {
                                     groupRepeatNumber = (int) dr + "";
@@ -2074,7 +2074,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                         } else {
                             if (StringUtil.isBlank(groupRepeatMax)) {
                                 groupRepeatMax = "40";// problem, tbh
-                            } else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+                            } else if (cell.getCellType() == CellType.NUMERIC) {
                                 double dr = cell.getNumericCellValue();
                                 if ((dr - (int) dr) * 1000 == 0) {
                                     groupRepeatMax = (int) dr + "";
@@ -2298,7 +2298,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                             blankRowCount++;
                             continue;
                         }
-                        HSSFCell cell = sheet.getRow(k).getCell((short) 0);
+                        Cell cell = sheet.getRow(k).getCell((short) 0);
                         String secLabel = getValue(cell);
                         secLabel = secLabel.replaceAll("<[^>]*>", "");
 
@@ -2437,7 +2437,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                     if (sheet == null || sheet.getRow(1) == null || sheet.getRow(1).getCell((short) 0) == null) {
                         throw new CRFReadingException("Blank row found in sheet CRF.");
                     }
-                    HSSFCell cell = sheet.getRow(1).getCell((short) 0);
+                    Cell cell = sheet.getRow(1).getCell((short) 0);
                     crfName = getValue(cell);
                     crfName = crfName.replaceAll("<[^>]*>", "");
 
@@ -2716,7 +2716,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
 
                 buf.append("<div class=\"textbox_center\">");
                 buf.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"");
-                buf.append("caption=\"" + wb.getSheetName(j) + "\"" + ">");
+                buf.append("caption=\"" + this.wb.getSheetName(j) + "\"" + ">");
 
                 for (int i = 0; i < numRows; i++) {
                     buf.append("<tr>");
@@ -2728,26 +2728,26 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                     int numCells = sheet.getRow(i).getLastCellNum();
 
                     for (int y = 0; y < numCells; y++) {
-                        HSSFCell cell = sheet.getRow(i).getCell((short) y);
-                        int cellType = 0;
+                        Cell cell = sheet.getRow(i).getCell((short) y);
+                        CellType cellType = CellType.BLANK;
                         String error = "&nbsp;";
                         String errorKey = j + "," + i + "," + y;
                         if (htmlErrors.containsKey(errorKey)) {
                             error = "<span class=\"alert\">" + htmlErrors.get(errorKey) + "</span>";
                         }
                         if (cell == null) {
-                            cellType = HSSFCell.CELL_TYPE_BLANK;
+                            cellType = CellType.BLANK;
                         } else {
                             cellType = cell.getCellType();
                         }
                         switch (cellType) {
-                        case HSSFCell.CELL_TYPE_BLANK:
+                        case BLANK:
                             buf.append("<td class=\"table_cell\">" + error + "</td>");
                             break;
-                        case HSSFCell.CELL_TYPE_NUMERIC:
+                        case NUMERIC:
                             buf.append("<td class=\"table_cell\">" + cell.getNumericCellValue() + " " + error + "</td>");
                             break;
-                        case HSSFCell.CELL_TYPE_STRING:
+                        case STRING:
                             buf.append("<td class=\"table_cell\">" + cell.getStringCellValue() + " " + error + "</td>");
                             break;
                         default:
@@ -2805,20 +2805,20 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
         return returnme;
     }
 
-    public String getValue(HSSFCell cell) {
+    public String getValue(Cell cell) {
         String val = null;
-        int cellType = 0;
+        CellType cellType = CellType.BLANK;
         if (cell == null) {
-            cellType = HSSFCell.CELL_TYPE_BLANK;
+            cellType = CellType.BLANK;
         } else {
             cellType = cell.getCellType();
         }
 
         switch (cellType) {
-        case HSSFCell.CELL_TYPE_BLANK:
+        case BLANK:
             val = "";
             break;
-        case HSSFCell.CELL_TYPE_NUMERIC:
+        case NUMERIC:
             // YW << Modify code so that floating number alone can be used for
             // CRF version. Before it must use, e.g. v1.1
             // Meanwhile modification has been done for read PHI cell and
@@ -2835,7 +2835,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
             }
             // logger.debug("found a numeric cell after transfer: "+val);
             break;
-        case HSSFCell.CELL_TYPE_STRING:
+        case STRING:
             val = cell.getStringCellValue();
             if (val.matches("'")) {
                 // logger.debug("Found single quote! "+val);
@@ -2845,7 +2845,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
             // cell.getStringCellValue()
             // + "</font></td>");
             break;
-        case HSSFCell.CELL_TYPE_BOOLEAN:
+        case BOOLEAN:
             boolean val2 = cell.getBooleanCellValue();
             if (val2) {
                 val = "true";
@@ -2862,14 +2862,15 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
 
     public String toHTML(int sheetIndex) throws IOException {
         StringBuffer buf = new StringBuffer();
-        HSSFWorkbook wb = new HSSFWorkbook(fs);
+        
+        Workbook wb = this.wb;
         int numSheets = wb.getNumberOfSheets();
         for (int j = 0; j < numSheets; j++) {
-            HSSFSheet sheet = wb.getSheetAt(j);// sheetIndex);
-            String sheetName = wb.getSheetName(j);
+            Sheet sheet = this.wb.getSheetAt(j);// sheetIndex);
+            String sheetName = this.wb.getSheetName(j);
             buf.append(sheetName + "<br>");
             buf.append("<table border=\"2\"");
-            buf.append("caption=\"" + wb.getSheetName(sheetIndex) + "\"" + ">");
+            buf.append("caption=\"" + this.wb.getSheetName(sheetIndex) + "\"" + ">");
             int numCols = sheet.getPhysicalNumberOfRows();
 
             for (int i = 0; i < numCols; i++) {
@@ -2883,22 +2884,22 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
 
                 for (int y = 0; y < numCells; y++) {
 
-                    HSSFCell cell = sheet.getRow(i).getCell((short) y);
-                    int cellType = 0;
+                    Cell cell = sheet.getRow(i).getCell((short) y);
+                    CellType cellType = CellType.BLANK;
                     if (cell == null) {
-                        cellType = HSSFCell.CELL_TYPE_BLANK;
+                        cellType = CellType.BLANK;
                     } else {
                         cellType = cell.getCellType();
                     }
 
                     switch (cellType) {
-                    case HSSFCell.CELL_TYPE_BLANK:
+                    case BLANK:
                         buf.append("<td> </td>");
                         break;
-                    case HSSFCell.CELL_TYPE_NUMERIC:
+                    case NUMERIC:
                         buf.append("<td>" + cell.getNumericCellValue() + "</td>");
                         break;
-                    case HSSFCell.CELL_TYPE_STRING:
+                    case STRING:
                         buf.append("<td>" + cell.getStringCellValue() + "</td>");
                         break;
                     default:

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.admin.NewCRFBean;
 import org.akaza.openclinica.bean.core.Role;
@@ -40,6 +42,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.BufferedInputStream;
+import org.apache.poi.poifs.filesystem.FileMagic;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -403,13 +407,26 @@ public class CreateCRFVersionServlet extends SecureController {
                 Validator.addError(errors, "excel_file", resword.getString("you_have_to_provide_spreadsheet"));
                 session.setAttribute("version", version);
                 return tempFile;
-            } else if (f.getName().indexOf(".xls") < 0 && f.getName().indexOf(".XLS") < 0) {
+            } else {
+            String fname = f.getName().toLowerCase();
+            if (!fname.endsWith(".xls") && !fname.endsWith(".xlsx")) {
                 logger.debug("file name:" + f.getName());
                 Validator.addError(errors, "excel_file", respage.getString("file_you_uploaded_not_seem_excel_spreadsheet"));
                 session.setAttribute("version", version);
                 return tempFile;
-
-            } else {
+            }
+            try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(new File(theDir + f.getName())))) {
+                FileMagic fm = FileMagic.valueOf(bis);
+                if (fm != FileMagic.OLE2 && fm != FileMagic.OOXML) {
+                    Validator.addError(errors, "excel_file", respage.getString("file_you_uploaded_not_seem_excel_spreadsheet"));
+                    session.setAttribute("version", version);
+                    return tempFile;
+                }
+            } catch (Exception e) {
+                Validator.addError(errors, "excel_file", respage.getString("file_you_uploaded_not_seem_excel_spreadsheet"));
+                session.setAttribute("version", version);
+                return tempFile;
+            }
                 logger.debug("file name:" + f.getName());
                 tempFile = f.getName();
                 // create the inputstream here, so that it can be enclosed in a
@@ -458,11 +475,11 @@ public class CreateCRFVersionServlet extends SecureController {
                     // This object is created to pull preview information out of
                     // the
                     // spreadsheet
-                    HSSFWorkbook workbook = null;
+                    Workbook workbook = null;
                     FileInputStream inputStream = null;
                     try {
                         inputStream = new FileInputStream(theDir + tempFile);
-                        workbook = new HSSFWorkbook(inputStream);
+                        workbook = WorkbookFactory.create(inputStream);
                         // Store the Sections, Items, Groups, and CRF name and
                         // version information
                         // so they can be displayed in a preview. The Map
