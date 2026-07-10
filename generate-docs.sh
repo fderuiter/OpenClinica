@@ -28,20 +28,29 @@ GENERATED_CONTENT="<!-- BEGIN GENERATED REQUIREMENTS -->
 For non-technical user guides and comprehensive documentation, please visit the [OpenClinica Documentation Portal](https://docs.openclinica.com).
 <!-- END GENERATED REQUIREMENTS -->"
 
-awk -v content="$GENERATED_CONTENT" '
-    /<!-- BEGIN GENERATED REQUIREMENTS -->/ {
-        print content
-        skip = 1
-        next
-    }
-    /<!-- END GENERATED REQUIREMENTS -->/ {
-        skip = 0
-        next
-    }
-    !skip {
-        print
-    }
-' README.md > README.md.tmp && mv README.md.tmp README.md
+# Check if README.md exists and if it was modified manually
+if [ -f "README.md" ]; then
+    STORED_CHECKSUM=$(tail -n 1 README.md | grep -oP '(?<=<!-- CHECKSUM: )[a-f0-9]+(?= -->)' || echo "")
+    if [ ! -z "$STORED_CHECKSUM" ]; then
+        ACTUAL_CHECKSUM=$(head -n -1 README.md | md5sum | awk '{print $1}')
+        if [ "$STORED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]; then
+            echo "Error: README.md was modified manually! Please edit README.template.md instead."
+            exit 1
+        fi
+    else
+        echo "Warning: README.md lacks a checksum. It may have been manually modified or created from an older version. Overwriting."
+    fi
+fi
+
+awk -v content="$GENERATED_CONTENT" '{
+    gsub(/\{\{GENERATED_REQUIREMENTS\}\}/, content)
+    print
+}' README.template.md > README.md.tmp
+
+NEW_CHECKSUM=$(md5sum README.md.tmp | awk '{print $1}')
+cat README.md.tmp > README.md
+echo "<!-- CHECKSUM: $NEW_CHECKSUM -->" >> README.md
+rm README.md.tmp
 
 # Install MkDocs if not present
 if ! python3 -m mkdocs --version &> /dev/null; then
