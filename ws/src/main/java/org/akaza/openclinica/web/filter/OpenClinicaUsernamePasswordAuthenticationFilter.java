@@ -119,6 +119,17 @@ public class OpenClinicaUsernamePasswordAuthenticationFilter extends AbstractAut
         try {
             EntityBean eb = getUserAccountDao().findByUserName(username);
             userAccountBean = eb.getId() != 0 ? (UserAccountBean) eb : null;
+            
+            // Intercept legacy password hash
+            if (userAccountBean != null && userAccountBean.getPasswd() != null && !userAccountBean.getPasswd().startsWith("$2")) {
+                auditUserLogin(username, LoginStatus.FAILED_LOGIN, userAccountBean);
+                try {
+                    response.sendRedirect(request.getContextPath() + "/RequestPassword?action=legacyHash");
+                } catch (java.io.IOException e) {
+                }
+                return null;
+            }
+
             authentication = this.getAuthenticationManager().authenticate(authRequest);
             auditUserLogin(username, LoginStatus.SUCCESSFUL_LOGIN, userAccountBean);
             resetLockCounter(username, LoginStatus.SUCCESSFUL_LOGIN, userAccountBean);

@@ -49,6 +49,10 @@ public class RequestPasswordServlet extends SecureController {
         if (StringUtil.isBlank(action)) {
             request.setAttribute("userBean1", new UserAccountBean());
             forwardPage(Page.REQUEST_PWD);
+        } else if ("legacyHash".equalsIgnoreCase(action)) {
+            addPageMessage("Security upgrades require a password reset. Please request a new password.");
+            request.setAttribute("userBean1", new UserAccountBean());
+            forwardPage(Page.REQUEST_PWD);
         } else {
             if ("confirm".equalsIgnoreCase(action)) {
                 confirmPassword();
