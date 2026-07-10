@@ -151,18 +151,19 @@ public class RuleSetRuleAuditDAO extends EntityDAO {
         // INSERT INTO rule_set_rule_audit (rule_set_rule_id, status_id,updater_id,date_updated) VALUES (?,?,?,?,?)
         RuleSetRuleBean ruleSetRuleBean = (RuleSetRuleBean) eb;
         RuleSetRuleAuditBean ruleSetRuleAudit = new RuleSetRuleAuditBean();
-        HashMap<Integer, Object> variables = new HashMap<Integer, Object>();
-        variables.put(1, ruleSetRuleBean.getId());
-        variables.put(2, ruleSetRuleBean.getStatus().getId());
-        variables.put(3, ub.getId());
 
-        this.execute(digester.getQuery("create"), variables);
-        if (isQuerySuccessful()) {
-            ruleSetRuleAudit.setRuleSetRuleBean(ruleSetRuleBean);
-            ruleSetRuleAudit.setId(getCurrentPK());
-            ruleSetRuleAudit.setStatus(ruleSetRuleBean.getStatus());
-            ruleSetRuleAudit.setUpdater(ub);
-        }
+        org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(ds);
+        jdbcTemplate.update(digester.getQuery("create"),
+            ruleSetRuleBean.getId(),
+            ruleSetRuleBean.getStatus().getId(),
+            ub.getId()
+        );
+
+        ruleSetRuleAudit.setRuleSetRuleBean(ruleSetRuleBean);
+        ruleSetRuleAudit.setId(getCurrentPK());
+        ruleSetRuleAudit.setStatus(ruleSetRuleBean.getStatus());
+        ruleSetRuleAudit.setUpdater(ub);
+
         return ruleSetRuleAudit;
     }
 

@@ -145,18 +145,19 @@ public class RuleSetAuditDAO extends EntityDAO {
         // INSERT INTO rule_set_audit (rule_set_audit_id,rule_set_id, status_id,updater_id,date_updated) VALUES (?,?,?,?,?)
         RuleSetBean ruleSetBean = (RuleSetBean) eb;
         RuleSetAuditBean ruleSetAudit = new RuleSetAuditBean();
-        HashMap<Integer, Object> variables = new HashMap<Integer, Object>();
-        variables.put(1, ruleSetBean.getId());
-        variables.put(2, ruleSetBean.getStatus().getId());
-        variables.put(3, ub.getId());
 
-        this.execute(digester.getQuery("create"), variables);
-        if (isQuerySuccessful()) {
-            ruleSetAudit.setRuleSetBean(ruleSetBean);
-            ruleSetAudit.setId(getCurrentPK());
-            ruleSetAudit.setStatus(ruleSetBean.getStatus());
-            ruleSetAudit.setUpdater(ub);
-        }
+        org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(ds);
+        jdbcTemplate.update(digester.getQuery("create"),
+            ruleSetBean.getId(),
+            ruleSetBean.getStatus().getId(),
+            ub.getId()
+        );
+
+        ruleSetAudit.setRuleSetBean(ruleSetBean);
+        ruleSetAudit.setId(getCurrentPK());
+        ruleSetAudit.setStatus(ruleSetBean.getStatus());
+        ruleSetAudit.setUpdater(ub);
+
         return ruleSetAudit;
     }
 
