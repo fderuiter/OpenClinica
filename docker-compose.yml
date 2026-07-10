@@ -20,6 +20,9 @@ services:
     - JAVA_OPTS=-Xmx1024m
     env_file:
     - .env
+    volumes:
+    - ${HOST_FILE_PATH}:/opt/clinica/data
+    - ${HOST_CLINICAL_TEMPLATE_PATH}:/opt/clinica/template.xlsx:ro
   modern:
     build:
       context: .
