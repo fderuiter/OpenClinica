@@ -45,17 +45,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import jxl.CellView;
-import jxl.Workbook;
-import jxl.WorkbookSettings;
-import jxl.format.Colour;
-import jxl.format.UnderlineStyle;
-import jxl.write.WritableCellFormat;
-import jxl.write.WritableFont;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import jxl.write.Label;
 
 /**
  * @author jsampson
@@ -214,26 +206,23 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 
         }    	
     	    	
-    	try {
-    	
-		WritableFont headerFormat = new WritableFont(WritableFont.ARIAL, 8, WritableFont.BOLD,false, UnderlineStyle.NO_UNDERLINE, Colour.BLUE2);
-		WritableCellFormat cellFormat = new WritableCellFormat();
-		cellFormat.setFont(headerFormat);
-    	
-        response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", 
-        	    "attachment; filename=export.xls");
+    	try {        Workbook workbook = new XSSFWorkbook();
+        CellStyle cellFormat = workbook.createCellStyle();
+        Font headerFont = workbook.createFont();
+        headerFont.setFontName("Arial");
+        headerFont.setFontHeightInPoints((short) 8);
+        headerFont.setBold(true);
+        headerFont.setColor(IndexedColors.BLUE.getIndex());
+        cellFormat.setFont(headerFont);
         
-		WorkbookSettings wbSettings = new WorkbookSettings();
-		wbSettings.setLocale(new Locale("en", "EN"));
-		WritableWorkbook workbook = Workbook.createWorkbook(
-				response.getOutputStream(), wbSettings);
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=export.xlsx");
 		
 		int row = 0;
 		
 		// Subject Information
-		workbook.createSheet("Subject Information", 0);
-		WritableSheet excelSheet = workbook.getSheet(0);
+		workbook.createSheet("Subject Information");
+		Sheet excelSheet = workbook.getSheetAt(0);
 		//Subject Summary
 		String[] excelRow = new String[] {
 				"study_subject_ID", 
@@ -243,8 +232,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 				"created_by", 
 				"status"};
 		for (int i = 0; i < excelRow.length; i++) {
-			Label label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-			excelSheet.addCell(label);
+			addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 		}
 		row++;
 		
@@ -257,8 +245,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 				studySubject.getStatus().getName() 
 			};
 		for (int i = 0; i < excelRow.length; i++) {
-			Label label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-			excelSheet.addCell(label);
+			addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 		}
 		row++;
 		row++;
@@ -272,8 +259,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 				"old", 
 				"new"};
 		for (int i = 0; i < excelRow.length; i++) {
-			Label label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-			excelSheet.addCell(label);
+			addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 		}
 		row++;
 		
@@ -288,8 +274,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 					audit.getNewValue()
 				};
 			for (int i = 0; i < excelRow.length; i++) {
-				Label label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-				excelSheet.addCell(label);
+				addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 			}
 			row++;
 		}
@@ -303,8 +288,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 				"occurrence_number"
 				};
 		for (int i = 0; i < excelRow.length; i++) {
-			Label label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-			excelSheet.addCell(label);
+			addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 		}
 		row++;
 		
@@ -325,8 +309,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 					Integer.toString(event.getSampleOrdinal())};
 				}
 			for (int i = 0; i < excelRow.length; i++) {
-				Label label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-				excelSheet.addCell(label);
+				addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 			}
 			row++;
 		}
@@ -340,41 +323,36 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 			row = 0;
 			sheet++;
 			StudyEventBean event = (StudyEventBean) events.get(eventCount);
-			workbook.createSheet(event.getStudyEventDefinition().getName().replace("/",".") + "_" + event.getSampleOrdinal(), sheet);
-			excelSheet = workbook.getSheet(sheet);
+			workbook.createSheet(event.getStudyEventDefinition().getName().replace("/",".") + "_" + event.getSampleOrdinal());
+			excelSheet = workbook.getSheetAt(sheet);
 			
-			Label label = null;
+			
 			
 			//Header
-			label = new Label(0, row, ResourceBundleProvider.getResWord("name"), cellFormat);
-			excelSheet.addCell(label);
-			label = new Label(1, row, event.getStudyEventDefinition().getName(), cellFormat);
-			excelSheet.addCell(label);
+			addCell(excelSheet, 0, row, ResourceBundleProvider.getResWord("name"), cellFormat);
+			addCell(excelSheet, 1, row, event.getStudyEventDefinition().getName(), cellFormat);
 			row++;
-			label = new Label(0, row, "Location");
-			excelSheet.addCell(label);
-			label = new Label(1, row, event.getLocation());
-			excelSheet.addCell(label);
+			addCell(excelSheet, 0, row, "Location", null);
+			addCell(excelSheet, 1, row, event.getLocation(), null);
+			
 			row++;
-			label = new Label(0, row, "Start Date");
-			excelSheet.addCell(label);
+			addCell(excelSheet, 0, row, "Start Date", null);
 			if(event.getStartTimeFlag()) {
-				label = new Label(1, row, dateTimeFormat(event.getDateStarted()));
+				addCell(excelSheet, 1, row, dateTimeFormat(event.getDateStarted()), null);
 			}
 			else {
-				label = new Label(1, row, dateFormat(event.getDateStarted()));
+				addCell(excelSheet, 1, row, dateFormat(event.getDateStarted()), null);
 			}
-			excelSheet.addCell(label);
+			
 			row++;
-			label = new Label(0, row, "Status");
-			excelSheet.addCell(label);
-			label = new Label(1, row, event.getSubjectEventStatus().getName());
-			excelSheet.addCell(label);
+			addCell(excelSheet, 0, row, "Status", null);
+			addCell(excelSheet, 1, row, event.getSubjectEventStatus().getName(), null);
+			
 			row++;
-			label = new Label(0, row, ResourceBundleProvider.getResWord("occurrence_number"));
-			excelSheet.addCell(label);
-			label = new Label(1, row, Integer.toString(event.getSampleOrdinal()));
-			excelSheet.addCell(label);
+			addCell(excelSheet, 0, row, ResourceBundleProvider.getResWord("occurrence_number"), null);
+			
+			addCell(excelSheet, 1, row, Integer.toString(event.getSampleOrdinal()), null);
+			
 			row++;
 			row++;
 			//End Header
@@ -387,8 +365,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 					"delete_date"
 				};
 			for (int i = 0; i < excelRow.length; i++) {
-				label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-				excelSheet.addCell(label);
+				addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 			}
 			row++;
 			
@@ -402,8 +379,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 						dateFormat(deletedEventCRF.getDeletedDate())
 					};
 				for (int i = 0; i < excelRow.length; i++) {
-					label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-					excelSheet.addCell(label);
+					addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 				}
 				row++;
 				}
@@ -421,8 +397,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 					"new"
 				};
 			for (int i = 0; i < excelRow.length; i++) {
-				label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-				excelSheet.addCell(label);
+				addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 			}
 			row++;
 			
@@ -487,8 +462,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 						newValue						
 					};
 					for (int i = 0; i < excelRow.length; i++) {
-						label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-						excelSheet.addCell(label);
+						addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 					}
 				row++;
 				}
@@ -515,8 +489,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 					};
 				
 				for (int i = 0; i < excelRow.length; i++) {
-					label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-					excelSheet.addCell(label);
+					addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 				}
 				row++;
 				
@@ -528,8 +501,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
                        auditBean.getUserName()
 					};
 				for (int i = 0; i < excelRow.length; i++) {
-					label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-					excelSheet.addCell(label);
+					addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 				}
 				row++;
 				row++;
@@ -543,8 +515,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 						"new"
 					};
 				for (int i = 0; i < excelRow.length; i++) {
-					label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-					excelSheet.addCell(label);
+					addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 				}
 				row++;
 				row++;
@@ -644,8 +615,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 								newValue
 							};
 							for (int i = 0; i < excelRow.length; i++) {
-								label = new Label(i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
-								excelSheet.addCell(label);
+								addCell(excelSheet, i, row, ResourceBundleProvider.getResWord(excelRow[i]), cellFormat);
 							}
 						row++;
 						row++;
@@ -663,7 +633,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 		
 		
 		
-		workbook.write();
+		workbook.write(response.getOutputStream());
 		workbook.close();
 		request.setAttribute("subject", null);
 		request.setAttribute("study", null);
@@ -692,6 +662,20 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
         }
     }
     
+    private void addCell(Sheet sheet, int col, int rowIdx, String text, CellStyle style) {
+        Row r = sheet.getRow(rowIdx);
+        if (r == null) {
+            r = sheet.createRow(rowIdx);
+        }
+        Cell c = r.createCell(col);
+        if (text != null) {
+            c.setCellValue(text);
+        }
+        if (style != null) {
+            c.setCellStyle(style);
+        }
+    }
+
     private String dateFormat(Date date) {
     	if(date == null) {
     		return "";
@@ -712,13 +696,9 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
     	}
     }
 
-    private void autoSizeColumns(WritableSheet sheet) {
-    	for(int x=0;x<6;x++)
-    	{
-    	    CellView cell=sheet.getColumnView(x);
-    	    cell.setAutosize(true);
-    	    sheet.setColumnView(x, cell);
-    	}
+    private void autoSizeColumns(Sheet sheet) {
+        for(int x=0; x<6; x++) {
+            sheet.autoSizeColumn(x);
+        }
     }
-
 }
