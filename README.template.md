@@ -49,16 +49,7 @@ The application prioritizes environment variables over file-based properties. Th
 
 ## Technical Requirements
 
-<!-- BEGIN GENERATED REQUIREMENTS -->
-> **Note:** The following technical requirements are programmatically generated from the build configuration. Manual modifications will be overwritten.
-
-- **Project Version:** 3.18-SNAPSHOT
-- **JDK Version:** 17
-- **Database:** PostgreSQL 15
-- **Application Server:** Tomcat 9.0.83
-
-For non-technical user guides and comprehensive documentation, please visit the [OpenClinica Documentation Portal](https://docs.openclinica.com).
-<!-- END GENERATED REQUIREMENTS -->
+{{GENERATED_REQUIREMENTS}}
 
 ## Request a feature
 
