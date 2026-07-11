@@ -487,12 +487,37 @@ public class EventCRFDAO<K extends String, V extends ArrayList> extends Auditabl
     }
 
     public void delete(int eventCRFId) {
-        HashMap variables = new HashMap();
-        variables.put(new Integer(1), new Integer(eventCRFId));
-
-        this.execute(digester.getQuery("delete"), variables);
-        return;
-
+        org.akaza.openclinica.bean.submit.EventCRFBean ecb = (org.akaza.openclinica.bean.submit.EventCRFBean) this.findByPK(eventCRFId);
+        try (java.sql.Connection con = ds.getConnection()) {
+            boolean originalAutoCommit = con.getAutoCommit();
+            con.setAutoCommit(false);
+            try {
+                if (ecb != null) {
+                    try (java.sql.PreparedStatement ps = con.prepareStatement(
+                            "INSERT INTO audit_log_event (audit_log_event_type_id, audit_date, user_id, audit_table, entity_id, entity_name, old_value, event_crf_id) VALUES (10, now(), ?, 'event_crf', ?, 'EventCRF', 'deleted', ?)")) {
+                        ps.setInt(1, ecb.getUpdaterId() != 0 ? ecb.getUpdaterId() : (ecb.getOwnerId() != 0 ? ecb.getOwnerId() : 1));
+                        ps.setInt(2, ecb.getId());
+                        ps.setInt(3, ecb.getId());
+                        ps.executeUpdate();
+                    }
+                }
+                
+                HashMap variables = new HashMap();
+                variables.put(new Integer(1), new Integer(eventCRFId));
+                this.execute(digester.getQuery("delete"), variables, con);
+                if (!this.isQuerySuccessful()) {
+                    throw new RuntimeException("Deletion of EventCRF failed");
+                }
+                con.commit();
+            } catch (Exception e) {
+                con.rollback();
+                throw new RuntimeException("Error executing deletion audit", e);
+            } finally {
+                con.setAutoCommit(originalAutoCommit);
+            }
+        } catch (java.sql.SQLException e) {
+            throw new RuntimeException("Database connection error during deletion audit", e);
+        }
     }
 
     public void setSDVStatus(boolean sdvStatus, int userId, int eventCRFId) {
