@@ -24,11 +24,3 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 COPY --from=build /app/web/target/OpenClinica-web-*.war /usr/local/tomcat/webapps/ROOT.war
 EXPOSE 8080
 CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
-# Stage 3: Run Modern
-FROM ubuntu:22.04 AS modern
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y openjdk-17-jre
-WORKDIR /app
-COPY --from=build /app/modern/target/OpenClinica-modern-*.jar /app/modern.jar
-EXPOSE 8080
-CMD ["java", "-jar", "modern.jar"]
