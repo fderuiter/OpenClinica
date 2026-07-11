@@ -206,10 +206,13 @@ public class RandomizeService extends RandomizationRegistrar {
             }
         }
         
-        org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
+        org.akaza.openclinica.sdk.randomize.ApiClient randClient = new org.akaza.openclinica.sdk.randomize.ApiClient();
+        randClient.updateBaseUri(client.getBaseUri());
+        randClient.setRequestInterceptor(client.getRequestInterceptor());
+        org.akaza.openclinica.sdk.randomize.api.DefaultApi api = new org.akaza.openclinica.sdk.randomize.api.DefaultApi(randClient);
 
         try {
-            Object response = api.apiRandomisationGet(studySubject.getOid());
+            Object response = api.getRandomisation(studySubject.getOid());
             if (response != null) {
                 // response is usually a Map from Jackson
                 return new JSONObject(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(response));
@@ -262,7 +265,10 @@ public class RandomizeService extends RandomizationRegistrar {
                 requestBuilder.header("Authorization", authHeader);
             });
         }
-        org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
+                org.akaza.openclinica.sdk.randomize.ApiClient randClient = new org.akaza.openclinica.sdk.randomize.ApiClient();
+        randClient.updateBaseUri(client.getBaseUri());
+        randClient.setRequestInterceptor(client.getRequestInterceptor());
+        org.akaza.openclinica.sdk.randomize.api.DefaultApi api = new org.akaza.openclinica.sdk.randomize.api.DefaultApi(randClient);
 
         java.util.Map<String, Object> subjectMap = new java.util.HashMap<>();
         subjectMap.put("identifier", String.valueOf(studySubject.getOid()));
@@ -284,8 +290,22 @@ public class RandomizeService extends RandomizationRegistrar {
         JSONObject jsonObject = null;
 
         try {
-            String body = api.apiRandomisePost(subjectMap);
-            jsonObject = new JSONObject(body);
+            org.akaza.openclinica.sdk.randomize.model.GetRandomisation200Response responseObj = api.randomiseSubject(
+                (String) subjectMap.get("identifier"),
+                (String) subjectMap.get("siteIdentifier"),
+                (String) subjectMap.get("user"),
+                (String) subjectMap.get("question1"),
+                (String) subjectMap.get("question2"),
+                (String) subjectMap.get("question3"),
+                (String) subjectMap.get("question4"),
+                (String) subjectMap.get("question5"),
+                (String) subjectMap.get("question6"),
+                (String) subjectMap.get("question7"),
+                (String) subjectMap.get("question8"),
+                (String) subjectMap.get("question9"),
+                (String) subjectMap.get("question10")
+            );
+            jsonObject = new JSONObject(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(responseObj));
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
