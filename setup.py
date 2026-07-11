@@ -2,6 +2,7 @@ import sys
 import subprocess
 import socket
 import os
+import re
 from urllib.parse import urlparse
 
 def check_command(cmd, name):
@@ -18,6 +19,50 @@ def check_command(cmd, name):
             print(f"Error: {name} is missing or not executable.")
             sys.exit(1)
 
+def check_java_version():
+    try:
+        result = subprocess.run(["java", "-version"], capture_output=True, text=True, check=True)
+        output = result.stderr + result.stdout
+    except Exception:
+        print("Error: Java is missing or not executable.")
+        sys.exit(1)
+        
+    match = re.search(r'version "([^"]+)"', output)
+    if not match:
+        print("Error: Could not parse Java version. Please install Java 17.")
+        sys.exit(1)
+    
+    version_str = match.group(1)
+    
+    if version_str.startswith("1."):
+        major_version = int(version_str.split(".")[1])
+    else:
+        major_version = int(version_str.split(".")[0])
+        
+    if major_version < 17:
+        print(f"Error: Installed Java version is {version_str}. Please upgrade to Java 17.")
+        sys.exit(1)
+
+def check_maven_version():
+    try:
+        result = subprocess.run(["mvn", "--version"], capture_output=True, text=True, check=True)
+        output = result.stdout + result.stderr
+    except Exception:
+        print("Error: Maven is missing or not executable.")
+        sys.exit(1)
+        
+    match = re.search(r'Apache Maven (\d+)\.(\d+)\.(\d+)', output)
+    if not match:
+        print("Error: Could not parse Maven version. Please install Maven >= 3.6.3.")
+        sys.exit(1)
+        
+    major, minor, patch = map(int, match.groups())
+    
+    if (major < 3) or (major == 3 and minor < 6) or (major == 3 and minor == 6 and patch < 3):
+        version_str = f"{major}.{minor}.{patch}"
+        print(f"Error: Installed Maven version is {version_str}. Please upgrade to Maven >= 3.6.3.")
+        sys.exit(1)
+
 def verify_connection(host, port, service_name):
     try:
         port = int(port)
@@ -30,8 +75,8 @@ def verify_connection(host, port, service_name):
 
 def main():
     print("Welcome to the Guided Developer Setup!")
-    check_command("java", "Java")
-    check_command("mvn", "Maven")
+    check_java_version()
+    check_maven_version()
     check_command("docker", "Docker")
 
     print("\nLet's configure your environment.")

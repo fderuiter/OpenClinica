@@ -204,11 +204,7 @@ public class ScriptRunner {
 					}
 
 					command = null;
-					try {
-						statement.close();
-					} catch (Exception e) {
-						// Ignore to workaround a bug in Jakarta DBCP
-					}
+					statement.close();
 					Thread.yield();
 				} else {
 					command.append(line);

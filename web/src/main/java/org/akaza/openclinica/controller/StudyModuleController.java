@@ -37,7 +37,7 @@ import org.akaza.openclinica.service.pmanage.RandomizationRegistrar;
 import org.akaza.openclinica.service.pmanage.SeRandomizationDTO;
 import org.akaza.openclinica.service.rule.RuleSetServiceInterface;
 import org.akaza.openclinica.view.StudyInfoPanel;
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +77,7 @@ public class StudyModuleController {
 
     @Autowired
     @Qualifier("dataSource")
-    private BasicDataSource dataSource;
+    private DataSource dataSource;
 
     private EventDefinitionCRFDAO eventDefinitionCRFDao;
     private StudyEventDefinitionDAO studyEventDefinitionDao;
@@ -567,7 +567,7 @@ public class StudyModuleController {
         return studyModuleStatusDao;
     }
 
-    public BasicDataSource getDataSource() {
+    public DataSource getDataSource() {
         return dataSource;
     }
 

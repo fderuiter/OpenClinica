@@ -50,7 +50,7 @@ import org.akaza.openclinica.service.pmanage.ParticipantPortalRegistrar;
 import org.akaza.openclinica.web.pform.EnketoAPI;
 import org.akaza.openclinica.web.pform.EnketoCredentials;
 import org.akaza.openclinica.web.pform.PFormCache;
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +71,7 @@ public class EditFormController {
 
     @Autowired
     @Qualifier("dataSource")
-    private BasicDataSource dataSource;
+    private DataSource dataSource;
 
     @Autowired
     ServletContext context;

@@ -7,7 +7,7 @@ import java.util.TimeZone;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.akaza.openclinica.service.rule.RuleSetService;
 import org.akaza.openclinica.service.rule.expression.ExpressionService;
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class ReportController {
 	// Add in Spring Cor files /healthcheck path to avoid firewall
 	@Autowired
 	@Qualifier("dataSource")
-	private BasicDataSource dataSource;
+	private DataSource dataSource;
 
 	@Autowired
 	ExpressionService expressionService;

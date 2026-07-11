@@ -61,7 +61,7 @@
    //-->
 </script>
 <h1><span class="title_manage">
-<fmt:message key="update_study_details_continue" bundle="${resword}"/>
+<fmt:message key="update_study_details_continue" bundle="${resword}"/> <a href="javascript:openDocWindow('study_design_help')"><img src="images/bt_Help_Manage.gif" border="0" alt="<fmt:message key='help' bundle="${resword}"/>" title="<fmt:message key='help' bundle="${resword}"/>"></a>
 </span></h1>
 
 <form action="UpdateStudy" method="post">
