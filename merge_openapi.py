@@ -1,14 +1,7 @@
 import json
 import yaml
 import os
-
-def merge_dicts(dict1, dict2):
-    for k, v in dict2.items():
-        if isinstance(v, dict) and k in dict1 and isinstance(dict1[k], dict):
-            merge_dicts(dict1[k], v)
-        else:
-            dict1[k] = v
-    return dict1
+import sys
 
 def merge_specs():
     base_spec = {
@@ -40,8 +33,20 @@ def merge_specs():
             else:
                 spec = json.load(f)
                 
-            merge_dicts(base_spec['paths'], spec.get('paths', {}))
-            merge_dicts(base_spec['components'], spec.get('components', {}))
+            for path_key, path_val in spec.get('paths', {}).items():
+                if path_key in base_spec['paths']:
+                    print(f"Error: Duplicate path '{path_key}' found in '{spec_path}'.")
+                    sys.exit(1)
+                base_spec['paths'][path_key] = path_val
+                
+            for comp_type, comp_dict in spec.get('components', {}).items():
+                if comp_type not in base_spec['components']:
+                    base_spec['components'][comp_type] = {}
+                for comp_key, comp_val in comp_dict.items():
+                    if comp_key in base_spec['components'][comp_type]:
+                        print(f"Error: Duplicate component '{comp_key}' found in components/{comp_type} in '{spec_path}'.")
+                        sys.exit(1)
+                    base_spec['components'][comp_type][comp_key] = comp_val
 
     os.makedirs('docs', exist_ok=True)
     with open('docs/openapi.json', 'w') as f:

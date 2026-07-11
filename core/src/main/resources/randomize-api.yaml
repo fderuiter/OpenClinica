@@ -24,24 +24,6 @@ paths:
                     type: string
                   error:
                     type: string
-  /api/sites:
-    post:
-      operationId: addSite
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                siteIdentifier:
-                  type: string
-                name:
-                  type: string
-                timezone:
-                  type: string
-      responses:
-        '200':
-          description: OK
   /api/randomise:
     post:
       operationId: randomiseSubject

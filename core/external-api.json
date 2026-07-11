@@ -141,32 +141,6 @@
         }
       }
     },
-    "/api/randomisation": {
-      "get": {
-        "parameters": [
-          {
-            "name": "identifier",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/sites": {
       "post": {
         "requestBody": {
@@ -174,31 +148,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/SiteForm"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/randomise": {
-      "post": {
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
               }
             }
           }
@@ -432,21 +381,6 @@
             "type": "string"
           }
         }
-      },
-      "RandomiseForm": {
-        "type": "object",
-        "properties": {
-          "identifier": {
-            "type": "string"
-          },
-          "siteIdentifier": {
-            "type": "string"
-          },
-          "user": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": true
       },
       "SeRandomizationDTO": {
         "type": "object",
