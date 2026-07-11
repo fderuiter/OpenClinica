@@ -3,7 +3,6 @@
 set -e
 
 # Configuration Paths
-PROPERTIES_DIR="/app/core/src/main/resources/properties"
 BACKUP_DIR="/tmp/deployment_backup"
 APP_DIR="/app/modern"
 BINARY_NAME="OpenClinica-modern.jar"
@@ -14,9 +13,8 @@ SLEEP_SECS=5
 echo "Starting automated deployment lifecycle..."
 
 # 1. Backup Phase
-echo "[1/4] Backing up configuration properties and binaries..."
-mkdir -p "$BACKUP_DIR/properties_backup"
-cp -r "$PROPERTIES_DIR/"* "$BACKUP_DIR/properties_backup/"
+echo "[1/4] Backing up binaries..."
+mkdir -p "$BACKUP_DIR"
 
 if [ -f "$APP_DIR/target/$BINARY_NAME" ]; then
     cp "$APP_DIR/target/$BINARY_NAME" "$BACKUP_DIR/$BINARY_NAME.bak"
@@ -70,11 +68,6 @@ else
         echo "Restoring previous application binary..."
         cp "$BACKUP_DIR/$BINARY_NAME.bak" "$APP_DIR/target/$BINARY_NAME"
     fi
-    
-    # Revert Configuration Properties
-    echo "Restoring previous configuration properties..."
-    rm -rf "$PROPERTIES_DIR/"*
-    cp -r "$BACKUP_DIR/properties_backup/"* "$PROPERTIES_DIR/"
     
     # Revert Database Migrations
     echo "Reverting database schema changes..."

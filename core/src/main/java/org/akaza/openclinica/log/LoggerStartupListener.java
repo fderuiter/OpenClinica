@@ -153,12 +153,24 @@ public class LoggerStartupListener extends ContextAwareBase implements
 		return value == null ? "" : value;
 	}
 
+	private static String getExtConfigDirectory() {
+		String dir = System.getenv("OPENCLINICA_CONF_DIR");
+		if (dir == null) dir = System.getProperty("OPENCLINICA_CONF_DIR");
+		if (dir == null) {
+			dir = "$catalina.home/$WEBAPP.lower.config";
+			dir = replaceWebapp(dir);
+			dir = replaceCatHome(dir);
+		}
+		File f = new File(dir);
+		if (!f.exists() || !f.isDirectory()) {
+			System.err.println("CRITICAL ERROR: External configuration directory is missing or invalid: " + dir);
+		}
+		return dir;
+	}
+
 	public void getPropertiesSource() {
 		try {
-			String filePath = "$catalina.home/$WEBAPP.lower.config";
-
-			filePath = replaceWebapp(filePath);
-			filePath = replaceCatHome(filePath);
+			String filePath = getExtConfigDirectory();
 
 			String dataInfoPropFileName = filePath + "/datainfo.properties";
 
