@@ -48,7 +48,7 @@ public abstract class AbstractTableFactory {
     }
 
     public TableFacade getTableFacadeImpl(HttpServletRequest request, HttpServletResponse response) {
-        return new TableFacadeImpl(getTableName(), org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
+        return new TableFacadeImpl(getTableName(), (javax.servlet.http.HttpServletRequest)(Object)request);
     }
 
     public abstract void setDataAndLimitVariables(TableFacade tableFacade);
@@ -131,7 +131,7 @@ public abstract class AbstractTableFactory {
     }
 
     public void configureTableFacade(HttpServletResponse response, TableFacade tableFacade) {
-        tableFacade.setExportTypes(org.akaza.openclinica.web.filter.HttpServletResponseAdapter.adapt(response), getExportTypes());
+        tableFacade.setExportTypes((javax.servlet.http.HttpServletResponse)(Object)response, getExportTypes());
     }
 
     public int[] getMaxRowIncrements() {

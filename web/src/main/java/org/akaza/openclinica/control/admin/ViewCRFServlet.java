@@ -181,7 +181,7 @@ public class ViewCRFServlet extends SecureController {
     private String renderStudiesTable(List<StudyBean> studyBeans) {
 
         Collection<StudyRowContainer> items = getStudyRows(studyBeans);
-        TableFacade tableFacade = createTableFacade("studies", org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
+        TableFacade tableFacade = createTableFacade("studies", (javax.servlet.http.HttpServletRequest)(Object)request);
         tableFacade.setColumnProperties("name", "uniqueProtocolid", "actions");
 
         tableFacade.setItems(items);

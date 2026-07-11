@@ -457,7 +457,34 @@
                     </webResources>
                 </configuration>
             </plugin>
+            
             <plugin>
+                <groupId>org.eclipse.transformer</groupId>
+                <artifactId>transformer-maven-plugin</artifactId>
+                <version>0.5.0</version>
+                <executions>
+                    <execution>
+                        <id>transform-artifacts</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <rules>
+                                <jakartaDefaults>true</jakartaDefaults>
+                            </rules>
+                            <transformZipEntries>
+                                <!-- we exclude our already migrated custom code from transformation to bypass overhead -->
+                                <transformZipEntry>
+                                    <name>WEB-INF/classes/</name>
+                                    <action>skip</action>
+                                </transformZipEntry>
+                            </transformZipEntries>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+<plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>
             </plugin>

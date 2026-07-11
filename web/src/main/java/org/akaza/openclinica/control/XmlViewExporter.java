@@ -18,13 +18,13 @@ public class XmlViewExporter extends AbstractViewExporter {
     private final HttpServletResponse response;
 
     public XmlViewExporter(View view, CoreContext coreContext, HttpServletRequest request, HttpServletResponse response) {
-        super(view, coreContext, org.akaza.openclinica.web.filter.HttpServletResponseAdapter.adapt(response), null);
+        super(view, coreContext, (javax.servlet.http.HttpServletResponse)(Object)response, null);
         this.request = request;
         this.response = response;
     }
 
     public XmlViewExporter(View view, CoreContext coreContext, HttpServletRequest request, HttpServletResponse response, String fileName) {
-        super(view, coreContext, org.akaza.openclinica.web.filter.HttpServletResponseAdapter.adapt(response), fileName);
+        super(view, coreContext, (javax.servlet.http.HttpServletResponse)(Object)response, fileName);
         this.request = request;
         this.response = response;
     }
