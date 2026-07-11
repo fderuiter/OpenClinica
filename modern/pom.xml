@@ -194,7 +194,7 @@
                 <version>3.2.5</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <OPENCLINICA_CONF_DIR>/app/config</OPENCLINICA_CONF_DIR>
+                        <OPENCLINICA_CONF_DIR>${maven.multiModuleProjectDirectory}/config</OPENCLINICA_CONF_DIR>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -215,7 +215,7 @@
                         <profile>build</profile>
                     </profiles>
                     <systemPropertyVariables>
-                        <OPENCLINICA_CONF_DIR>/app/config</OPENCLINICA_CONF_DIR>
+                        <OPENCLINICA_CONF_DIR>${maven.multiModuleProjectDirectory}/config</OPENCLINICA_CONF_DIR>
                     </systemPropertyVariables>
                 </configuration>
                 <executions>
