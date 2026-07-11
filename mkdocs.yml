@@ -11,17 +11,17 @@ nav:
     - Linux Upgrade: installation/linux-upgrade.md
     - Tomcat Initialization: installation/tomcat.md
   - Configuration:
-    - Build Study: configuration/build_study.md
-    - Participate Setup: configuration/participate_setup.md
-    - Randomize Setup: configuration/randomize_setup.md
-    - Rules XML Reference: configuration/rules.md
+    - Build Study: diataxis/tutorials/build_study.md
+    - Participate Setup: diataxis/tutorials/participate_setup.md
+    - Randomize Setup: diataxis/tutorials/randomize_setup.md
+    - Rules XML Reference: diataxis/references/rules.md
     - Lifecycle Management: configuration/lifecycle_management.md
   - Maintenance:
-    - Import Data: maintenance/import_data.md
-    - Verify Import Rule: maintenance/verify_import_rule.md
-    - Test Rules: maintenance/test_rules.md
-    - Extract Selection Guide: maintenance/extract_select_crf_and_group.md
-    - Generate Dataset HTML: maintenance/generate_dataset_html.md
+    - Import Data: diataxis/how-to/import_data.md
+    - Verify Import Rule: diataxis/how-to/verify_import_rule.md
+    - Test Rules: diataxis/how-to/test_rules.md
+    - Extract Selection Guide: diataxis/how-to/extract_select_crf_and_group.md
+    - Generate Dataset HTML: diataxis/how-to/generate_dataset_html.md
     - Staged Batch Persistence: maintenance/staged_batch_persistence.md
   - Frontend Architecture:
     - Architecture Guide: frontend/architecture.md
