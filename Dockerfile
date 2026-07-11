@@ -22,6 +22,8 @@ RUN wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.83/bin/apache-tomc
     rm apache-tomcat-9.0.83.tar.gz
 RUN rm -rf /usr/local/tomcat/webapps/*
 COPY --from=build /app/web/target/OpenClinica-web-*.war /usr/local/tomcat/webapps/ROOT.war
+RUN mkdir -p /opt/clinica && chown -R 1001:1001 /opt/clinica
+COPY --from=build /app/core/src/main/resources/properties/CRF_Design_Template_v3.10.xls /opt/clinica/fallback_template.xls
 EXPOSE 8080
 CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
 # Stage 3: Run Modern

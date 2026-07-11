@@ -2,7 +2,45 @@ import sys
 import subprocess
 import socket
 import os
+import signal
+import re
 from urllib.parse import urlparse
+
+def signal_handler(sig, frame):
+    print("\nSetup cancelled. Cleaning up partial configuration...")
+    if os.path.exists(".env"):
+        os.remove(".env")
+    if os.path.exists("docker-compose.override.yml"):
+        os.remove("docker-compose.override.yml")
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+def check_python_version():
+    if sys.version_info < (3, 6):
+        print("Error: Python 3.6 or higher is required.")
+        sys.exit(1)
+
+def check_java_version():
+    try:
+        output = subprocess.check_output(["java", "-version"], stderr=subprocess.STDOUT, text=True)
+        match = re.search(r'version "(\d+)', output)
+        if match:
+            major = int(match.group(1))
+            if major == 1:
+                match_minor = re.search(r'version "1\.(\d+)', output)
+                if match_minor:
+                    major = int(match_minor.group(1))
+            if major < 17:
+                print("Error: Java 17 or higher is required.")
+                sys.exit(1)
+        else:
+            print("Error: Could not determine Java version.")
+            sys.exit(1)
+    except Exception as e:
+        print(f"Error checking Java version: {e}")
+        sys.exit(1)
+
 
 def check_command(cmd, name):
     try:
@@ -29,8 +67,10 @@ def verify_connection(host, port, service_name):
         return False
 
 def main():
+    check_python_version()
     print("Welcome to the Guided Developer Setup!")
     check_command("java", "Java")
+    check_java_version()
     check_command("mvn", "Maven")
     check_command("docker", "Docker")
 
@@ -87,12 +127,12 @@ def main():
             sys.exit(1)
         env_vars["HOST_CLINICAL_TEMPLATE_PATH"] = os.path.abspath(template_path)
         env_vars["CLINICAL_TEMPLATE_PATH"] = "/opt/clinica/template.xlsx"
+        with open("docker-compose.override.yml", "w") as f:
+            f.write(f"version: '3.8'\nservices:\n  web:\n    volumes:\n    - {env_vars['HOST_CLINICAL_TEMPLATE_PATH']}:/opt/clinica/template.xlsx:ro\n")
     else:
-        dummy_path = os.path.abspath("dummy_template.xlsx")
-        with open(dummy_path, "w") as f:
-            pass
-        env_vars["HOST_CLINICAL_TEMPLATE_PATH"] = dummy_path
-        env_vars["CLINICAL_TEMPLATE_PATH"] = ""
+        env_vars["CLINICAL_TEMPLATE_PATH"] = "/opt/clinica/fallback_template.xls"
+        if os.path.exists("docker-compose.override.yml"):
+            os.remove("docker-compose.override.yml")
 
     # Directory structures
     os.makedirs(host_file_path, exist_ok=True)

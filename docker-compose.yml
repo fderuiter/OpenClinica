@@ -22,7 +22,6 @@ services:
     - .env
     volumes:
     - ${HOST_FILE_PATH}:/opt/clinica/data
-    - ${HOST_CLINICAL_TEMPLATE_PATH}:/opt/clinica/template.xlsx:ro
   modern:
     build:
       context: .
