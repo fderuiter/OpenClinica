@@ -14,8 +14,6 @@
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider user-service-ref="ocUserDetailsService">
             <security:password-encoder ref="openClinicaPasswordEncoder"/>
-            <!-- <security:password-encoder hash="md5" /> -->
-            <!-- <security:user-service properties="/WEB-INF/users.properties" /> -->
         </security:authentication-provider>
         <security:authentication-provider ref="ldapAuthenticationProvider"/>
     </security:authentication-manager>
