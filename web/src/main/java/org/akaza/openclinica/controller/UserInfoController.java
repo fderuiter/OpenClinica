@@ -18,7 +18,7 @@ import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
 import org.akaza.openclinica.dao.service.StudyParameterValueDAO;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.akaza.openclinica.service.pmanage.ParticipantPortalRegistrar;
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class UserInfoController {
 
 	@Autowired
 	@Qualifier("dataSource")
-	private BasicDataSource dataSource;
+	private DataSource dataSource;
 
 	@Autowired
 	ServletContext context;

@@ -31,7 +31,7 @@ import org.akaza.openclinica.domain.datamap.StudySubject;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.akaza.openclinica.service.pmanage.ParticipantPortalRegistrar;
 import org.akaza.openclinica.web.pform.PFormCache;
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.cdisc.ns.odm.v130_api.ODM;
 import org.cdisc.ns.odm.v130_api.ODMcomplexTypeDefinitionClinicalData;
@@ -65,7 +65,7 @@ public class OdmStudySubjectController {
 
 	@Autowired
 	@Qualifier("dataSource")
-	private BasicDataSource dataSource;
+	private DataSource dataSource;
 
 	@Autowired
 	CoreResources coreResources;

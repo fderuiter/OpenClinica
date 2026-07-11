@@ -37,7 +37,7 @@ import org.akaza.openclinica.dao.service.StudyParameterValueDAO;
 import org.akaza.openclinica.domain.user.AuthoritiesBean;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.akaza.openclinica.service.pmanage.ParticipantPortalRegistrar;
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
 import org.apache.commons.httpclient.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +80,7 @@ public class StudyController {
 
 	@Autowired
 	@Qualifier("dataSource")
-	private BasicDataSource dataSource;
+	private DataSource dataSource;
 
 	public static ResourceBundle resadmin, resaudit, resexception, resformat, respage, resterm, restext, resword, resworkflow;
 

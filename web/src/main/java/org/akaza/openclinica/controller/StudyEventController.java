@@ -17,7 +17,7 @@ import org.akaza.openclinica.domain.datamap.StudySubject;
 import org.akaza.openclinica.patterns.ocobserver.StudyEventChangeDetails;
 import org.akaza.openclinica.patterns.ocobserver.StudyEventContainer;
 import org.akaza.openclinica.service.pmanage.ParticipantPortalRegistrar;
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ public class StudyEventController {
 
 	@Autowired
 	@Qualifier("dataSource")
-	private BasicDataSource dataSource;
+	private DataSource dataSource;
 	
 	@Autowired
 	private org.akaza.openclinica.service.EventService eventService;

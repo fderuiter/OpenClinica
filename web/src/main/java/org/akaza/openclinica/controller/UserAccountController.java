@@ -38,7 +38,7 @@ import org.akaza.openclinica.i18n.core.LocaleResolver;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.akaza.openclinica.service.pmanage.ParticipantPortalRegistrar;
 import org.akaza.openclinica.view.Page;
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,7 @@ public class UserAccountController {
 
 	@Autowired
 	@Qualifier("dataSource")
-	private BasicDataSource dataSource;
+	private DataSource dataSource;
 
 	@Autowired
 	ServletContext context;
