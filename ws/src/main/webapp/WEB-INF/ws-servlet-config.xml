@@ -218,6 +218,7 @@
       <property name="providers">
           <bean class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
               <property name="userDetailsService" ref="ocUserDetailsService"/>
+              <property name="passwordEncoder" ref="openClinicaPasswordEncoder"/>
           </bean>
       </property>
     </bean>

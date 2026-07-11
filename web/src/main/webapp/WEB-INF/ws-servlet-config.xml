@@ -106,10 +106,11 @@
         <property name="callbackHandlers" ref="springSecurityHandler"/>
     </bean>
     
-    <bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
+    <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
       <property name="providers">
-          <bean class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
+          <bean class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
               <property name="userDetailsService" ref="ocUserDetailsService"/>
+              <property name="passwordEncoder" ref="openClinicaPasswordEncoder"/>
           </bean>
       </property>
     </bean>
