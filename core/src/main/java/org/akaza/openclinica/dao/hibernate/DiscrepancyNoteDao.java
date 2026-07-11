@@ -29,5 +29,30 @@ public class DiscrepancyNoteDao extends AbstractDomainDao<DiscrepancyNote> {
         return (DiscrepancyNote) q.getResultList().stream().findFirst().orElse(null);
     }
 
+    public void createMapping(DiscrepancyNote dn, int entityId, String column, String entityType) {
+        String sql = null;
+        if ("subject".equalsIgnoreCase(entityType)) {
+            sql = "INSERT INTO dn_subject_map (subject_id, discrepancy_note_id, column_name) VALUES (?,?,?)";
+        } else if ("studySub".equalsIgnoreCase(entityType)) {
+            sql = "INSERT INTO dn_study_subject_map (study_subject_id, discrepancy_note_id, column_name) VALUES (?,?,?)";
+        } else if ("eventCrf".equalsIgnoreCase(entityType)) {
+            sql = "INSERT INTO dn_event_crf_map (event_crf_id, discrepancy_note_id, column_name) VALUES (?,?,?)";
+        } else if ("studyEvent".equalsIgnoreCase(entityType)) {
+            sql = "INSERT INTO dn_study_event_map (study_event_id, discrepancy_note_id, column_name) VALUES (?,?,?)";
+        } else if ("itemData".equalsIgnoreCase(entityType)) {
+            sql = "INSERT INTO dn_item_data_map (item_data_id, discrepancy_note_id, column_name, activated) VALUES (?,?,?,?)";
+        }
+
+        if (sql != null) {
+            jakarta.persistence.Query q = getEntityManager().createNativeQuery(sql);
+            q.setParameter(1, entityId);
+            q.setParameter(2, dn.getDiscrepancyNoteId());
+            q.setParameter(3, column);
+            if ("itemData".equalsIgnoreCase(entityType)) {
+                q.setParameter(4, true);
+            }
+            q.executeUpdate();
+        }
+    }
 
 }
