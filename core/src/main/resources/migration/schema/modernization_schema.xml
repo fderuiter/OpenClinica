@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd"><changeSet author="modernization" id="api_key_trigger_pg" dbms="postgresql">
+        <sql splitStatements="false">
+            CREATE OR REPLACE FUNCTION generate_api_key() RETURNS TRIGGER AS $$
+            BEGIN
+                IF NEW.api_key IS NULL THEN
+                    NEW.api_key := replace(CAST(gen_random_uuid() AS text), '-', '');
+                    NEW.enable_api_key := true;
+                END IF;
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS user_account_api_key_trg ON user_account;
+            CREATE TRIGGER user_account_api_key_trg
+            BEFORE INSERT ON user_account
+            FOR EACH ROW EXECUTE PROCEDURE generate_api_key();
+        </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
+    </changeSet>
+    
+    <changeSet author="modernization" id="api_key_trigger_oracle" dbms="oracle">
+        <sql splitStatements="false">
+            CREATE OR REPLACE TRIGGER user_account_api_key_trg
+            BEFORE INSERT ON user_account
+            FOR EACH ROW
+            BEGIN
+                IF :NEW.api_key IS NULL THEN
+                    :NEW.api_key := lower(rawtohex(sys_guid()));
+                    :NEW.enable_api_key := 1;
+                END IF;
+            END;
+        </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
+    </changeSet>
+
+    <changeSet author="modernization" id="create_crf_lock_registry">
+        <createTable tableName="crf_lock_registry">
+            <column name="crf_id" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="modernization" id="create_configuration_drafts">
+        <createTable tableName="configuration_drafts">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="user_name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="draft_type" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="draft_data" type="clob" />
+            <column name="created_at" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="expires_at" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="modernization" id="create_audit_event_discrepancy_note">
+        <createTable tableName="audit_event_discrepancy_note">
+            <column name="audit_id" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="discrepancy_note_id" type="int">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="audit_id" baseTableName="audit_event_discrepancy_note" constraintName="fk_aedn_audit_event" referencedColumnNames="audit_id" referencedTableName="audit_event" />
+        <addForeignKeyConstraint baseColumnNames="discrepancy_note_id" baseTableName="audit_event_discrepancy_note" constraintName="fk_aedn_disc_note" referencedColumnNames="discrepancy_note_id" referencedTableName="discrepancy_note" />
+    </changeSet>
+
+    <changeSet author="modernization" id="item_data_id_mysql_table_generator" dbms="mysql">
+        <createTable tableName="item_data_item_data_id_seq">
+            <column name="next_val" type="bigint" />
+        </createTable>
+        <sql>
+            INSERT INTO item_data_item_data_id_seq (next_val) SELECT COALESCE(MAX(item_data_id), 0) + 1 FROM item_data;
+        </sql>
+        <sql>
+            ALTER TABLE item_data MODIFY item_data_id INT NOT NULL;
+        </sql>
+    </changeSet>
+
+    <changeSet author="modernization" id="create_notification_outbox_seq" dbms="postgresql, oracle">
+        <createSequence sequenceName="notification_outbox_id_seq" />
+    </changeSet>
+
+    <changeSet author="modernization" id="create_notification_outbox">
+        <createTable tableName="notification_outbox">
+            <column name="id" type="serial">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="study_oid" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="study_event_def_id" type="int" />
+            <column name="study_event_def_ordinal" type="int" />
+            <column name="crf_version_oid" type="varchar(255)" />
+            <column name="status" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="attempt_count" type="int" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_error_message" type="varchar(1000)" />
+            <column name="created_at" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP" />
+            <column name="version" type="int" defaultValueNumeric="0" />
+        </createTable>
+    </changeSet>
+    
+    <changeSet author="modernization" id="item_data_duplicate_uniqueness_key">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                
+                <indexExists indexName="duplicate_item_uniqueness_key" />
+            </not>
+        </preConditions>
+        <addUniqueConstraint constraintName="duplicate_item_uniqueness_key" tableName="item_data" columnNames="item_id, event_crf_id, ordinal" />
+    </changeSet>
+
+    <changeSet author="modernization" id="create_subject_label_sequence_table">
+        <createTable tableName="subject_label_sequence">
+            <column name="label_value" type="INT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <insert tableName="subject_label_sequence">
+            <column name="label_value" valueNumeric="0" />
+        </insert>
+        <rollback>
+            <dropTable tableName="subject_label_sequence" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="modernization" id="enforce_unique_study_subject_label">
+        <addUniqueConstraint constraintName="uc_study_subject_label" tableName="study_subject" columnNames="study_id, label" />
+    </changeSet>
+
+    <include file="migration/schema/modernization_indexes.xml" />
+</databaseChangeLog>

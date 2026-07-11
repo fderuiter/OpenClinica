@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd"><changeSet author="modernization" id="insert_ra2_role">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from user_role where role_id = 7</sqlCheck>
+        </preConditions>
+        <insert tableName="user_role">
+            <column name="role_id" valueNumeric="7" />
+            <column name="role_name" value="ra2" />
+            <column name="parent_id" valueNumeric="1" />
+            <column name="role_desc" value="site_Data_Entry_Person2" />
+        </insert>
+    </changeSet>
+
+    
+    <changeSet author="modernization" id="api_key_backfill_pg" dbms="postgresql">
+        <sql>
+            UPDATE user_account SET api_key = replace(CAST(gen_random_uuid() AS text), '-', ''), enable_api_key = true WHERE api_key IS NULL OR api_key = '';
+        </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
+    </changeSet>
+
+    
+    <changeSet author="modernization" id="api_key_backfill_oracle" dbms="oracle">
+        <sql>
+            UPDATE user_account SET api_key = lower(rawtohex(sys_guid())), enable_api_key = 1 WHERE api_key IS NULL;
+        </sql>
+        <rollback>-- Automated rollback: Data/schema changes must be manually reviewed if destructive.</rollback>
+    </changeSet>
+
+    
+    <changeSet author="modernization" id="java_managed_duplicate_cleanup">
+        <customChange class="org.akaza.openclinica.core.migration.DuplicateClinicalRecordsCleanupMigration" />
+    </changeSet>
+
+    
+    <changeSet author="modernization" id="auth_audit_event_types">
+        <insert tableName="audit_log_event_type">
+            <column name="audit_log_event_type_id" valueNumeric="44" />
+            <column name="name" value="__successful_login" />
+        </insert>
+        <insert tableName="audit_log_event_type">
+            <column name="audit_log_event_type_id" valueNumeric="45" />
+            <column name="name" value="__failed_login" />
+        </insert>
+        <insert tableName="audit_log_event_type">
+            <column name="audit_log_event_type_id" valueNumeric="46" />
+            <column name="name" value="__user_logout" />
+        </insert>
+    </changeSet>
+
+    </databaseChangeLog>

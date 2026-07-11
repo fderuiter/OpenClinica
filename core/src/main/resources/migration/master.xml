@@ -16,7 +16,8 @@
   <include  file="migration/3.11/release.xml"/>  
   <include  file="migration/3.12/release.xml"/>  
   <include  file="migration/3.14/release.xml"/>
-  <include  file="migration/modernization.xml"/>
-  <include  file="migration/modernization_flattening.xml"/>
+  <include  file="migration/schema/modernization_schema.xml"/>
+  <include  file="migration/schema/modernization_flattening.xml"/>
+  <include  file="migration/data/modernization_data.xml"/>
 </databaseChangeLog> 
 

@@ -1,8 +1,11 @@
 package org.akaza.openclinica.core.migration;
 
 import liquibase.change.custom.CustomTaskChange;
+import liquibase.change.custom.CustomTaskRollback;
 import liquibase.database.Database;
+import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.CustomChangeException;
+import liquibase.exception.RollbackImpossibleException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
 import liquibase.exception.SetupException;
@@ -10,10 +13,11 @@ import liquibase.exception.SetupException;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.core.ApplicationContextProvider;
 import org.akaza.openclinica.dao.login.UserAccountDAO;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import javax.sql.DataSource;
 
-public abstract class AbstractJavaManagedDataMigration implements CustomTaskChange {
+public abstract class AbstractJavaManagedDataMigration implements CustomTaskChange, CustomTaskRollback {
 
     protected ResourceAccessor resourceAccessor;
     protected UserAccountBean systemUser;
@@ -24,22 +28,28 @@ public abstract class AbstractJavaManagedDataMigration implements CustomTaskChan
     @Override
     public void execute(Database database) throws CustomChangeException {
         try {
-            setupDependencies();
+            setupDependencies(database);
             doMigration();
         } catch (Exception e) {
             throw new CustomChangeException("Migration failed", e);
         }
     }
 
-    protected void setupDependencies() {
-        if (ApplicationContextProvider.getApplicationContext() == null) {
-            throw new IllegalStateException("ApplicationContext is not initialized");
+    protected void setupDependencies(Database database) {
+        if (ApplicationContextProvider.getApplicationContext() != null) {
+            this.dataSource = ApplicationContextProvider.getApplicationContext().getBean("dataSource", DataSource.class);
+        } else {
+            // Fallback for tests
+            java.sql.Connection conn = ((JdbcConnection) database.getConnection()).getUnderlyingConnection();
+            this.dataSource = new SingleConnectionDataSource(conn, true);
         }
         
-        this.dataSource = ApplicationContextProvider.getApplicationContext().getBean("dataSource", DataSource.class);
-        
-        UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
-        systemUser = (UserAccountBean) userAccountDAO.findByUserName("root");
+        try {
+            UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+            systemUser = (UserAccountBean) userAccountDAO.findByUserName("root");
+        } catch (Exception e) {
+            // ignore
+        }
         if (systemUser == null || systemUser.getId() <= 0) {
             systemUser = new UserAccountBean();
             systemUser.setId(1);
@@ -47,6 +57,11 @@ public abstract class AbstractJavaManagedDataMigration implements CustomTaskChan
     }
 
     protected abstract void doMigration() throws Exception;
+
+    @Override
+    public void rollback(Database database) throws CustomChangeException, RollbackImpossibleException {
+        throw new RollbackImpossibleException("Irreversible Data Migration. Rollback is not supported and explicitly blocked to prevent data corruption.");
+    }
 
     @Override
     public String getConfirmationMessage() {
