@@ -391,6 +391,33 @@
                             </typeMappings>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>generate-randomize-sdk</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/randomize-api.yaml</inputSpec>
+                            <generatorName>java</generatorName>
+                            <library>native</library>
+                            <apiPackage>org.akaza.openclinica.sdk.randomize.api</apiPackage>
+                            <modelPackage>org.akaza.openclinica.sdk.randomize.model</modelPackage>
+                            <invokerPackage>org.akaza.openclinica.sdk.randomize</invokerPackage>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <configOptions>
+                                <dateLibrary>java8</dateLibrary>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <ignoreUnknownJacksonProperties>true</ignoreUnknownJacksonProperties>
+                                <useJakartaEe>true</useJakartaEe>
+                            </configOptions>
+                            <typeMappings>
+                                <typeMapping>DateTime=Date</typeMapping>
+                            </typeMappings>
+                        </configuration>
+                    </execution>
+
                                     </executions>
             </plugin>
             <plugin>
