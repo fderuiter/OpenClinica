@@ -2,7 +2,7 @@ package org.akaza.openclinica.templates;
 
 import org.akaza.openclinica.dao.core.SQLFactory;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
-import org.apache.commons.dbcp.BasicDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import org.dbunit.DataSourceBasedDBTestCase;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
@@ -34,7 +34,7 @@ public abstract class HibernateOcDbTestCase extends DataSourceBasedDBTestCase {
     public static String dbPassword;
     public static String dbDriverClassName;
     public static String locale;
-    public  BasicDataSource ds ;
+    public  com.zaxxer.hikari.HikariDataSource ds ;
     
    protected static  PlatformTransactionManager transactionManager;
    static
@@ -114,12 +114,11 @@ public abstract class HibernateOcDbTestCase extends DataSourceBasedDBTestCase {
 
     @Override
     public  DataSource getDataSource() {
-       ds = new BasicDataSource();
-        ds.setAccessToUnderlyingConnectionAllowed(true);
+       ds = new HikariDataSource();
         ds.setDriverClassName(dbDriverClassName);
         ds.setUsername(dbUserName);
         ds.setPassword(dbPassword);
-        ds.setUrl(dbUrl);
+        ds.setJdbcUrl(dbUrl);
         return ds;
     }
 

@@ -2,7 +2,7 @@ package org.akaza.openclinica.templates;
 
 import org.akaza.openclinica.dao.core.SQLFactory;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
-import org.apache.commons.dbcp.BasicDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import org.dbunit.DataSourceBasedDBTestCase;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
@@ -58,12 +58,11 @@ public abstract class OcDbTestCase extends DataSourceBasedDBTestCase {
 
     @Override
     public DataSource getDataSource() {
-        BasicDataSource ds = new BasicDataSource();
-        ds.setAccessToUnderlyingConnectionAllowed(true);
+        HikariDataSource ds = new HikariDataSource();
         ds.setDriverClassName(dbDriverClassName);
         ds.setUsername(dbUserName);
         ds.setPassword(dbPassword);
-        ds.setUrl(dbUrl);
+        ds.setJdbcUrl(dbUrl);
         return ds;
     }
 

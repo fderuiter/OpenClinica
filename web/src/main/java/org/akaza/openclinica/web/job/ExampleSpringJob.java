@@ -68,7 +68,7 @@ public class ExampleSpringJob extends QuartzJobBean {
 
     private static final String DATASET_DIR = SQLInitServlet.getField("filePath") + "datasets" + File.separator;
 
-    // private BasicDataSource basicDataSource;
+    // private DataSource basicDataSource;
     private OpenClinicaMailSender mailSender;
     private DataSource dataSource;
     private GenerateExtractFileService generateFileService;
@@ -405,7 +405,7 @@ public class ExampleSpringJob extends QuartzJobBean {
     private DataSource getDataSource(Scheduler scheduler) {
         try {
             ApplicationContext context = (ApplicationContext) scheduler.getContext().get("applicationContext");// dataMap
-            // : (BasicDataSource) context.getBean("dataSource");
+            // : (DataSource) context.getBean("dataSource");
             dataSource = this.dataSource != null ? dataSource : (DataSource) context.getBean("dataSource"); // basicDataSource
 
         } catch (Exception e) {

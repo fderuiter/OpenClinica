@@ -39,7 +39,7 @@ import org.akaza.openclinica.logic.odmExport.AdminDataCollector;
 import org.akaza.openclinica.logic.odmExport.MetaDataCollector;
 import org.akaza.openclinica.service.rule.RuleSetServiceInterface;
 import org.akaza.openclinica.service.rule.RulesPostImportContainerService;
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
@@ -72,7 +72,7 @@ public class RuleController {
 
     @Autowired
     @Qualifier("dataSource")
-    private BasicDataSource dataSource;
+    private DataSource dataSource;
     private RuleSetRuleDao ruleSetRuleDao;
     private RuleSetServiceInterface ruleSetService;
     private RulesPostImportContainerService rulesPostImportContainerService;

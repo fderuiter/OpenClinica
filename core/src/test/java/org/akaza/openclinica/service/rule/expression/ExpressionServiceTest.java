@@ -12,7 +12,7 @@ public class ExpressionServiceTest extends TestCase {
 
     public void testStatement() {
 
-        org.apache.commons.dbcp.BasicDataSource ds = new org.apache.commons.dbcp.BasicDataSource();
+        com.zaxxer.hikari.HikariDataSource ds = new com.zaxxer.hikari.HikariDataSource();
         ExpressionService expressionService = new ExpressionService(ds);
 
         // Syntax

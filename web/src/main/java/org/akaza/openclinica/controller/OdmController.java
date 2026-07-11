@@ -42,7 +42,7 @@ import org.akaza.openclinica.service.pmanage.ParticipantPortalRegistrar;
 import org.akaza.openclinica.web.pform.PFormCache;
 import org.akaza.openclinica.service.audit.AuditService;
 import org.akaza.openclinica.bean.admin.AuditEventBean;
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.cdisc.ns.odm.v130_api.ODM;
 import org.cdisc.ns.odm.v130_api.ODMcomplexTypeDefinitionClinicalData;
@@ -67,7 +67,7 @@ public class OdmController {
 
     @Autowired
     @Qualifier("dataSource")
-    private BasicDataSource dataSource;
+    private DataSource dataSource;
 
     @Autowired
     ServletContext context;

@@ -22,7 +22,7 @@ import org.akaza.openclinica.service.extract.XsltTriggerService;
 import org.akaza.openclinica.web.SQLInitServlet;
 import org.akaza.openclinica.service.audit.AuditService;
 import org.akaza.openclinica.bean.admin.AuditEventBean;
-import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
@@ -46,7 +46,7 @@ public class ExtractController {
 
     @Autowired
     @Qualifier("dataSource")
-    private BasicDataSource dataSource;
+    private DataSource dataSource;
 
     private DatasetDAO datasetDao;
 
