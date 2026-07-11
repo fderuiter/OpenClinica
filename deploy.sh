@@ -16,6 +16,7 @@ echo "Starting automated deployment lifecycle..."
 # 1. Backup Phase
 echo "[1/4] Backing up configuration properties and binaries..."
 mkdir -p "$BACKUP_DIR/properties_backup"
+chmod 700 "$BACKUP_DIR"
 cp -r "$PROPERTIES_DIR/"* "$BACKUP_DIR/properties_backup/"
 
 if [ -f "$APP_DIR/target/$BINARY_NAME" ]; then
@@ -24,6 +25,21 @@ if [ -f "$APP_DIR/target/$BINARY_NAME" ]; then
 else
     echo "No existing binary found to back up (First deployment?)."
 fi
+
+# Extract DB credentials dynamically from Maven
+echo "Extracting database credentials from Maven..."
+DB_HOST=$(mvn help:evaluate -Dexpression=dbHost -q -DforceStdout -f /app/pom.xml)
+DB_PORT=$(mvn help:evaluate -Dexpression=dbPort -q -DforceStdout -f /app/pom.xml)
+DB_USER=$(mvn help:evaluate -Dexpression=dbUser -q -DforceStdout -f /app/pom.xml)
+DB_PASS=$(mvn help:evaluate -Dexpression=dbPass -q -DforceStdout -f /app/pom.xml)
+DB_NAME=$(mvn help:evaluate -Dexpression=db -q -DforceStdout -f /app/pom.xml)
+
+echo "Executing full physical PostgreSQL backup..."
+if ! PGPASSWORD="$DB_PASS" pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -F c -f "$BACKUP_DIR/db_backup.dump"; then
+    echo "ERROR: Physical database backup failed. Halting deployment."
+    exit 1
+fi
+echo "Database backup completed successfully."
 
 # 2. Deployment Phase
 echo "[2/4] Executing deployment and starting application..."
@@ -78,8 +94,13 @@ else
     
     # Revert Database Migrations
     echo "Reverting database schema changes..."
-    # Execute liquibase rollback (using Maven for Java apps, for example)
-    # mvn liquibase:rollback -Dliquibase.rollbackCount=1 -f /app/core/pom.xml || echo "DB Rollback failed!"
+    # Execute complete physical PostgreSQL snapshot restore (bypassing Liquibase)
+    echo "Cleaning target schema to avoid conflicts..."
+    PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" || echo "Warning: Schema clean failed."
+    
+    echo "Restoring complete physical PostgreSQL snapshot..."
+    PGPASSWORD="$DB_PASS" pg_restore -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -1 "$BACKUP_DIR/db_backup.dump" || echo "Warning: DB Restore failed."
+    
     echo "Automated Database Recovery scripts executed."
     
     echo "Rollback complete. System restored to previous functional version."
