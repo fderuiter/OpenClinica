@@ -33,7 +33,41 @@ public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigr
         
         System.out.println("Starting interactive clinical data seeding from template: " + templatePath);
         
-        // 1. Create a Seeded Study
+        // 1. Pre-Validate Template Structure First
+        ResourceBundle resPageMsg = ResourceBundleProvider.getPageMessagesBundle(Locale.ENGLISH);
+        if (resPageMsg == null) {
+            resPageMsg = ResourceBundle.getBundle("org.akaza.openclinica.i18n.page_messages", Locale.ENGLISH);
+        }
+
+        MeasurementUnitDao muDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("measurementUnitDao", MeasurementUnitDao.class);
+        
+        System.out.println("Validating template structure in-memory...");
+        FileInputStream testInStream = new FileInputStream(templatePath);
+        SpreadSheetTableRepeating testHtab = new SpreadSheetTableRepeating(testInStream, systemUser, "1.0", Locale.ENGLISH, 0);
+        testHtab.setMeasurementUnitDao(muDao);
+        
+        NewCRFBean testNib = null;
+        if (testHtab.isRepeating()) {
+            testNib = testHtab.toNewCRF(dataSource, resPageMsg);
+        } else {
+            FileInputStream testInStreamClassic = new FileInputStream(templatePath);
+            SpreadSheetTableClassic testSstc = new SpreadSheetTableClassic(testInStreamClassic, systemUser, "1.0", Locale.ENGLISH, 0);
+            testSstc.setMeasurementUnitDao(muDao);
+            testNib = testSstc.toNewCRF(dataSource, resPageMsg);
+            testInStreamClassic.close();
+        }
+        testInStream.close();
+        
+        if (testNib.getErrors() != null && !testNib.getErrors().isEmpty()) {
+            System.err.println("Errors found during Excel template structural validation:");
+            for (Object err : testNib.getErrors()) {
+                System.err.println("- " + err);
+            }
+            throw new RuntimeException("Excel parsing failed during pre-validation. Database left untouched.");
+        }
+        System.out.println("Template is structurally valid.");
+        
+        // 2. Create a Seeded Study
         StudyDAO studyDAO = new StudyDAO(dataSource);
         StudyBean study = new StudyBean();
         study.setName("Seeded Study " + System.currentTimeMillis());
@@ -54,18 +88,12 @@ public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigr
         
         System.out.println("Created Study: " + study.getName() + " (ID: " + study.getId() + ")");
         
-        // 2. Parse Excel
-        ResourceBundle resPageMsg = ResourceBundleProvider.getPageMessagesBundle(Locale.ENGLISH);
-        if (resPageMsg == null) {
-            resPageMsg = ResourceBundle.getBundle("org.akaza.openclinica.i18n.page_messages", Locale.ENGLISH);
-        }
-
+        // 3. Parse Excel
         FileInputStream inStream = new FileInputStream(templatePath);
         SpreadSheetTableRepeating htab = new SpreadSheetTableRepeating(inStream, systemUser, "1.0", Locale.ENGLISH, study.getId());
         // Note: MeasurementUnitDao requires SessionFactory, but wait! We can bypass it if it's not strictly used or we can initialize it?
         // Actually spreadSheetTableRepeating only needs it if we use units. We can try bypassing or getting it from Spring.
         // Let's get it from ApplicationContextProvider!
-        MeasurementUnitDao muDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("measurementUnitDao", MeasurementUnitDao.class);
         htab.setMeasurementUnitDao(muDao);
         
         NewCRFBean nib = null;
@@ -88,7 +116,7 @@ public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigr
             throw new RuntimeException("Excel parsing failed.");
         }
         
-        // 3. Insert to DB
+        // 4. Insert to DB
         nib.insertToDB();
         System.out.println("Successfully seeded clinical data template!");
     }
