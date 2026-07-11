@@ -555,7 +555,7 @@ public class SDVUtil {
      * if(items != null && items.size() > 0) {
      * totalRowCount = items.size();
      * }
-     * TableFacade tableFacade = org.jmesa.facade.TableFacadeFactory.createTableFacade("sdv", org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
+     * TableFacade tableFacade = org.jmesa.facade.TableFacadeFactory.createTableFacade("sdv", (javax.servlet.http.HttpServletRequest)(Object)request);
      * tableFacade.setStateAttr("restore");
      * 
      * String[] allColumns = new String[]{"studySubjectId","personId","secondaryId",
@@ -621,7 +621,7 @@ public class SDVUtil {
         // boolean showMoreLink = Boolean.parseBoolean(request.getAttribute("showMoreLink").toString());//commented by
         // Jamuna, throwing null pointer exception
         boolean showMoreLink = Boolean.parseBoolean(request.getAttribute("showMoreLink") == null ? "false" : request.getAttribute("showMoreLink").toString());
-        TableFacade tableFacade = org.jmesa.facade.TableFacadeFactory.createTableFacade("sdv", org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
+        TableFacade tableFacade = org.jmesa.facade.TableFacadeFactory.createTableFacade("sdv", (javax.servlet.http.HttpServletRequest)(Object)request);
         tableFacade.setStateAttr("sdv_restore");
         resformat = ResourceBundleProvider.getFormatBundle(LocaleResolver.getLocale(request));
         this.pathPrefix = pathPrefix;
@@ -705,7 +705,7 @@ public class SDVUtil {
 
     public String renderSubjectsTableWithLimit(HttpServletRequest request, int studyId, int studySubjectId) {
 
-        TableFacade tableFacade = org.jmesa.facade.TableFacadeFactory.createTableFacade("sdv", org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
+        TableFacade tableFacade = org.jmesa.facade.TableFacadeFactory.createTableFacade("sdv", (javax.servlet.http.HttpServletRequest)(Object)request);
         tableFacade.setStateAttr("restore");
 
         /*
@@ -1222,7 +1222,7 @@ public class SDVUtil {
             totalRowCount = items.size();
         }
 
-        TableFacade tableFacade = org.jmesa.facade.TableFacadeFactory.createTableFacade("sdv", org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
+        TableFacade tableFacade = org.jmesa.facade.TableFacadeFactory.createTableFacade("sdv", (javax.servlet.http.HttpServletRequest)(Object)request);
         // The default display for the JMesa Limit select widget is 1,50,100 rows
         // We'll change this if the subject has more than one row, and have the last choice
         // set to the total row count

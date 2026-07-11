@@ -15,7 +15,7 @@ public class OCCsvViewExporter extends AbstractViewExporter {
     String fileName;
 
     public OCCsvViewExporter(View view, CoreContext coreContext, HttpServletResponse response) {
-        super(view, coreContext, org.akaza.openclinica.web.filter.HttpServletResponseAdapter.adapt(response), null);
+        super(view, coreContext, (javax.servlet.http.HttpServletResponse)(Object)response, null);
         if (fileName == null) {
             fileName = ExportUtils.exportFileName(view, getExtensionName());
         }
@@ -23,7 +23,7 @@ public class OCCsvViewExporter extends AbstractViewExporter {
     }
 
     public OCCsvViewExporter(View view, CoreContext coreContext, HttpServletResponse response, String fileName) {
-        super(view, coreContext, org.akaza.openclinica.web.filter.HttpServletResponseAdapter.adapt(response), fileName);
+        super(view, coreContext, (javax.servlet.http.HttpServletResponse)(Object)response, fileName);
         this.fileName = fileName + "." + getExtensionName();
     }
 

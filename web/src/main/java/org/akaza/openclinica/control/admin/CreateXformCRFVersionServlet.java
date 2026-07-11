@@ -60,7 +60,7 @@ public class CreateXformCRFVersionServlet extends SecureController {
         // Retrieve submission data from multipart request
         DiskFileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
-        List<FileItem> items = upload.parseRequest(org.akaza.openclinica.web.filter.HttpServletRequestAdapter.adapt(request));
+        List<FileItem> items = upload.parseRequest((javax.servlet.http.HttpServletRequest)(Object)request);
         String submittedCrfName = retrieveFormFieldValue(items, "crfName");
         String submittedCrfVersionName = retrieveFormFieldValue(items, "versionName");
         String submittedCrfVersionDescription = retrieveFormFieldValue(items, "versionDescription");
