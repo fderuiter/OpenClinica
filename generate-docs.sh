@@ -60,6 +60,33 @@ fi
 # Ensure docs directory has the latest README
 cp README.md docs/project-info.md
 
+# Validate markdown file locations
+APPROVED_DIRS=("^docs/$" "^docs/installation/$" "^docs/maintenance/$" "^docs/configuration/$" "^docs/frontend/$" "^docs/frontend-api/" "^docs/diataxis/tutorials/$" "^docs/diataxis/how-to/$" "^docs/diataxis/references/$" "^docs/diataxis/explanation/$")
+
+for file in $(find docs -name '*.md'); do
+    dir_path=$(dirname "$file")"/"
+    matched=false
+    for pattern in "${APPROVED_DIRS[@]}"; do
+        if echo "$dir_path" | grep -Eq "$pattern"; then
+            matched=true
+            break
+        fi
+    done
+    if [ "$matched" = false ]; then
+        echo "Error: Markdown file $file is outside the approved structure ($dir_path)."
+        exit 1
+    fi
+done
+
+# Generate frontend API documentation
+if [ -d "web" ] && [ -f "web/package.json" ]; then
+    echo "Generating frontend API documentation..."
+    cd web
+    npm install
+    npm run docs
+    cd ..
+fi
+
 # Generate REST API docs (Unified OpenAPI)
 python3 merge_openapi.py
 
