@@ -732,12 +732,38 @@ public class ItemDataDAO extends AuditableEntityDAO {
     }
 
     public void delete(int itemDataId) {
-        HashMap<Integer, Comparable> variables = new HashMap<Integer, Comparable>();
-        variables.put(new Integer(1), new Integer(itemDataId));
-
-        this.execute(digester.getQuery("delete"), variables);
-        return;
-
+        org.akaza.openclinica.bean.submit.ItemDataBean idb = (org.akaza.openclinica.bean.submit.ItemDataBean) this.findByPK(itemDataId);
+        try (java.sql.Connection con = ds.getConnection()) {
+            boolean originalAutoCommit = con.getAutoCommit();
+            con.setAutoCommit(false);
+            try {
+                if (idb != null) {
+                    try (java.sql.PreparedStatement ps = con.prepareStatement(
+                            "INSERT INTO audit_log_event (audit_log_event_type_id, audit_date, user_id, audit_table, entity_id, entity_name, old_value, event_crf_id) VALUES (13, now(), ?, 'item_data', ?, 'ItemData', ?, ?)")) {
+                        ps.setInt(1, idb.getUpdaterId() != 0 ? idb.getUpdaterId() : (idb.getOwnerId() != 0 ? idb.getOwnerId() : 1));
+                        ps.setInt(2, idb.getId());
+                        ps.setString(3, idb.getValue());
+                        ps.setInt(4, idb.getEventCRFId());
+                        ps.executeUpdate();
+                    }
+                }
+                
+                HashMap<Integer, Comparable> variables = new HashMap<Integer, Comparable>();
+                variables.put(new Integer(1), new Integer(itemDataId));
+                this.execute(digester.getQuery("delete"), variables, con);
+                if (!this.isQuerySuccessful()) {
+                    throw new RuntimeException("Deletion of ItemData failed");
+                }
+                con.commit();
+            } catch (Exception e) {
+                con.rollback();
+                throw new RuntimeException("Error executing deletion audit", e);
+            } finally {
+                con.setAutoCommit(originalAutoCommit);
+            }
+        } catch (java.sql.SQLException e) {
+            throw new RuntimeException("Database connection error during deletion audit", e);
+        }
     }
 
     public void deleteDnMap(int itemDataId) {
