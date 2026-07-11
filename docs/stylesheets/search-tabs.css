@@ -1,0 +1,43 @@
+.md-search__output {
+    display: flex;
+    flex-direction: column;
+}
+
+.md-search__scrollwrap {
+    height: auto !important;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.search-tabs {
+    display: flex;
+    gap: 10px;
+    padding: 10px 16px;
+    background: var(--md-default-bg-color);
+    border-bottom: 1px solid var(--md-default-fg-color--lightest);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.search-tab {
+    padding: 4px 12px;
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--md-default-fg-color);
+    cursor: pointer;
+    font-size: 0.7rem;
+    transition: all 0.2s ease;
+    font-weight: 700;
+}
+
+.search-tab:hover {
+    background: var(--md-default-fg-color--lightest);
+}
+
+.search-tab.active {
+    background: var(--md-primary-fg-color);
+    color: var(--md-primary-bg-color);
+    border-color: var(--md-primary-fg-color);
+}

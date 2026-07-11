@@ -33,3 +33,13 @@ nav:
     - Form Data Ingestion: diataxis/tutorials/cookbook_ingestion.md
   - Interactive REST API: api.md
   - SOAP API Documentation: soap.md
+hooks:
+  - hooks/assign_categories.py
+plugins:
+  - search
+  - tags
+extra_css:
+  - stylesheets/search-tabs.css
+extra_javascript:
+  - javascripts/search-tabs.js
+
