@@ -4,8 +4,8 @@ Welcome to the Developer Integration Cookbook. This guide provides end-to-end wo
 
 ## Workflow Guides
 
-1. [Subject Enrollment](enrollment.md)
-2. [Event Scheduling](scheduling.md)
-3. [Form Data Ingestion](ingestion.md)
+1. [Subject Enrollment](cookbook_enrollment.md)
+2. [Event Scheduling](cookbook_scheduling.md)
+3. [Form Data Ingestion](cookbook_ingestion.md)
 
 These guides include interactive sequence diagrams and runnable OpenRosa payloads. All data shown is fictitious and does not contain any clinical or personal data.

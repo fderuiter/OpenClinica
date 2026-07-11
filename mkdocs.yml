@@ -27,9 +27,9 @@ nav:
     - Architecture Guide: frontend/architecture.md
     - React Components API: frontend-api/modules.md
   - Developer Cookbook:
-    - Cookbook Index: cookbook/index.md
-    - Subject Enrollment: cookbook/enrollment.md
-    - Event Scheduling: cookbook/scheduling.md
-    - Form Data Ingestion: cookbook/ingestion.md
+    - Cookbook Index: diataxis/tutorials/cookbook_index.md
+    - Subject Enrollment: diataxis/tutorials/cookbook_enrollment.md
+    - Event Scheduling: diataxis/tutorials/cookbook_scheduling.md
+    - Form Data Ingestion: diataxis/tutorials/cookbook_ingestion.md
   - Interactive REST API: api.md
   - SOAP API Documentation: soap.md

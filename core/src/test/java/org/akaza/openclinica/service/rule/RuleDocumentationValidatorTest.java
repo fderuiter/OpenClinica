@@ -26,12 +26,12 @@ public class RuleDocumentationValidatorTest {
         File xsdFile = new File("src/main/resources/properties/rules.xsd");
         assertTrue("XSD file must exist", xsdFile.exists());
 
-        File mdFile = new File("../../docs/configuration/rules.md");
+        File mdFile = new File("../../docs/diataxis/references/rules.md");
         if (!mdFile.exists()) {
             // Depending on where tests are run (from core/ or from root)
-            mdFile = new File("../docs/configuration/rules.md");
+            mdFile = new File("../docs/diataxis/references/rules.md");
             if (!mdFile.exists()) {
-                mdFile = new File("docs/configuration/rules.md");
+                mdFile = new File("docs/diataxis/references/rules.md");
             }
         }
         assertTrue("Documentation file must exist", mdFile.exists());
