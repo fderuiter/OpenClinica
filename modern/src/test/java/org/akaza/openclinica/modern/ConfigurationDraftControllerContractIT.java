@@ -36,9 +36,14 @@ public class ConfigurationDraftControllerContractIT {
 
         when(draftService.getDraft(anyString())).thenReturn(draft);
 
+        String openapiJson = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get("src/test/resources/established-contract.json")));
+        com.atlassian.oai.validator.OpenApiInteractionValidator validator = com.atlassian.oai.validator.OpenApiInteractionValidator
+                .createForInlineApiSpecification(openapiJson)
+                .build();
+
         mockMvc.perform(get("/api/config/draft/123")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(OpenApiValidationMatchers.openApi().isValid("/app/modern/target/openapi.json"));
+                .andExpect(OpenApiValidationMatchers.openApi().isValid(validator));
     }
 }
