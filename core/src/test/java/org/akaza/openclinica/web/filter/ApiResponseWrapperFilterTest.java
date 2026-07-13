@@ -1,6 +1,6 @@
 package org.akaza.openclinica.web.filter;
 
-import org.akaza.openclinica.bean.api.ApiResponse;
+import org.akaza.openclinica.sdk.dto.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;

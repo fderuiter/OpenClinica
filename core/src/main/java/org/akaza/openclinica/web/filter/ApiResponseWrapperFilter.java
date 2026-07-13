@@ -1,7 +1,7 @@
 package org.akaza.openclinica.web.filter;
 
-import org.akaza.openclinica.bean.api.ApiError;
-import org.akaza.openclinica.bean.api.ApiResponse;
+import org.akaza.openclinica.sdk.dto.ApiError;
+import org.akaza.openclinica.sdk.dto.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.*;

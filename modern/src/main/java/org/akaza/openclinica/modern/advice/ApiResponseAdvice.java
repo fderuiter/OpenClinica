@@ -1,7 +1,7 @@
 package org.akaza.openclinica.modern.advice;
 
-import org.akaza.openclinica.modern.dto.ApiError;
-import org.akaza.openclinica.modern.dto.ApiResponse;
+import org.akaza.openclinica.sdk.dto.ApiError;
+import org.akaza.openclinica.sdk.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
