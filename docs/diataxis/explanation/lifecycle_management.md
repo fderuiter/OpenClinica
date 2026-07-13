@@ -55,3 +55,22 @@
 - [ ] Every change creates a new entry in a version history table.
 - [ ] Clicking the rollback button successfully reverts all active settings to a chosen historical state.
 - [ ] An audit log records the identity of the user who performed each configuration change.
+## 6. Database Schema Isolation & Safety
+The deployment lifecycle ensures that the application's database schema is isolated from shared infrastructure, mitigating the risk of accidental data deletion.
+
+### Isolated Database Schema Structure
+The application utilizes a dedicated, isolated database schema (`app_schema` by default, customizable via the `dbSchema` parameter in `pom.xml`) instead of the shared `public` schema. All tables and migrations are contained strictly within this schema.
+
+### Manual Data Restoration Procedures
+In the event that an automated restore fails, manual restoration must target the dedicated schema only. Operators should use the following `pg_restore` command format:
+```bash
+pg_restore -h <HOST> -p <PORT> -U <USER> -d <DATABASE> -1 path/to/db_backup.dump
+```
+*(Since the backup is scoped to the dedicated schema via `pg_dump -n`, `pg_restore` will naturally populate only that isolated schema).*
+
+### Safety Mechanisms
+- **Automated Rollback Safeguards:** The deployment script's rollback process will **never** execute `DROP SCHEMA public CASCADE`. It strictly cleans up and re-initializes only the dedicated application schema (`DROP SCHEMA IF EXISTS "<schema_name>" CASCADE`).
+- **Interactive Prompts:** When run in an interactive terminal, rollbacks prompt for explicit user confirmation before executing.
+- **Safety Overrides:** Non-interactive environments will reject automated rollback execution and fail safely unless the mandatory safety override environment variable `FORCE_ROLLBACK=true` is explicitly set.
+- **Backup Verification:** Rollbacks halt immediately if the pre-migration backup file is missing or empty, preventing data loss.
+- **Dry-Run & Simulation Modes:** Administrators can use the `--dry-run` or `--simulate-failure` flags to simulate failures and verify schema cleanup and rollback pathways safely without mutating actual database state.

@@ -33,9 +33,26 @@ DB_PORT=$(mvn help:evaluate -Dexpression=dbPort -q -DforceStdout -f /app/pom.xml
 DB_USER=$(mvn help:evaluate -Dexpression=dbUser -q -DforceStdout -f /app/pom.xml)
 DB_PASS=$(mvn help:evaluate -Dexpression=dbPass -q -DforceStdout -f /app/pom.xml)
 DB_NAME=$(mvn help:evaluate -Dexpression=db -q -DforceStdout -f /app/pom.xml)
+DB_SCHEMA=$(mvn help:evaluate -Dexpression=dbSchema -q -DforceStdout -f /app/pom.xml)
+DB_SCHEMA="${DB_SCHEMA:-app_schema}"
 
-echo "Executing full physical PostgreSQL backup..."
-if ! PGPASSWORD="$DB_PASS" pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -F c -f "$BACKUP_DIR/db_backup.dump"; then
+DRY_RUN=false
+SIMULATE_SUCCESS=false
+SIMULATE_FAILURE=false
+
+for arg in "$@"; do
+    if [ "$arg" == "--dry-run" ]; then
+        DRY_RUN=true
+        echo "Running in DRY-RUN mode."
+    elif [ "$arg" == "--simulate-success" ]; then
+        SIMULATE_SUCCESS=true
+    elif [ "$arg" == "--simulate-failure" ]; then
+        SIMULATE_FAILURE=true
+    fi
+done
+
+echo "Executing schema-specific PostgreSQL backup..."
+if ! PGPASSWORD="$DB_PASS" pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -n "$DB_SCHEMA" -F c -f "$BACKUP_DIR/db_backup.dump"; then
     echo "ERROR: Physical database backup failed. Halting deployment."
     exit 1
 fi
@@ -54,7 +71,7 @@ HEALTH_CHECK_PASSED=false
 for i in $(seq 1 $MAX_RETRIES); do
     echo "Pinging health endpoint (Attempt $i/$MAX_RETRIES)..."
     # Using curl to check status (mocking for test purposes using a dummy file or argument)
-    if [ "$1" == "--simulate-success" ]; then
+    if [ "$SIMULATE_SUCCESS" = true ]; then
         HEALTH_CHECK_PASSED=true
         break
     fi
@@ -65,7 +82,7 @@ for i in $(seq 1 $MAX_RETRIES); do
     fi
     
     # If the user simulates a failure for testing
-    if [ "$1" == "--simulate-failure" ]; then
+    if [ "$SIMULATE_FAILURE" = true ]; then
         HEALTH_CHECK_PASSED=false
         break
     fi
@@ -80,6 +97,24 @@ if [ "$HEALTH_CHECK_PASSED" = true ]; then
     exit 0
 else
     echo "[4/4] Health check failed! Initiating automated rollback..."
+
+    if [ ! -s "$BACKUP_DIR/db_backup.dump" ]; then
+        echo "ERROR: Backup file missing or empty. Halting rollback."
+        exit 1
+    fi
+
+    if [ -t 0 ]; then
+        read -p "Are you sure you want to proceed with rollback? (y/N) " response
+        if [[ ! "$response" =~ ^[Yy]$ ]]; then
+            echo "Rollback cancelled by user."
+            exit 1
+        fi
+    else
+        if [ "$FORCE_ROLLBACK" != "true" ]; then
+            echo "ERROR: Non-interactive rollback requires FORCE_ROLLBACK=true"
+            exit 1
+        fi
+    fi
     
     # Revert Application Binary
     if [ -f "$BACKUP_DIR/$BINARY_NAME.bak" ]; then
@@ -96,10 +131,18 @@ else
     echo "Reverting database schema changes..."
     # Execute complete physical PostgreSQL snapshot restore (bypassing Liquibase)
     echo "Cleaning target schema to avoid conflicts..."
-    PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" || echo "Warning: Schema clean failed."
+    if [ "$DRY_RUN" = true ]; then
+        echo "DRY-RUN: PGPASSWORD=\"$DB_PASS\" psql -h \"$DB_HOST\" -p \"$DB_PORT\" -U \"$DB_USER\" -d \"$DB_NAME\" -c \"DROP SCHEMA IF EXISTS \\\"$DB_SCHEMA\\\" CASCADE; CREATE SCHEMA \\\"$DB_SCHEMA\\\";\""
+    else
+        PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "DROP SCHEMA IF EXISTS \"$DB_SCHEMA\" CASCADE; CREATE SCHEMA \"$DB_SCHEMA\";" || echo "Warning: Schema clean failed."
+    fi
     
     echo "Restoring complete physical PostgreSQL snapshot..."
-    PGPASSWORD="$DB_PASS" pg_restore -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -1 "$BACKUP_DIR/db_backup.dump" || echo "Warning: DB Restore failed."
+    if [ "$DRY_RUN" = true ]; then
+        echo "DRY-RUN: PGPASSWORD=\"$DB_PASS\" pg_restore -h \"$DB_HOST\" -p \"$DB_PORT\" -U \"$DB_USER\" -d \"$DB_NAME\" -1 \"$BACKUP_DIR/db_backup.dump\""
+    else
+        PGPASSWORD="$DB_PASS" pg_restore -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -1 "$BACKUP_DIR/db_backup.dump" || echo "Warning: DB Restore failed."
+    fi
     
     echo "Automated Database Recovery scripts executed."
     
