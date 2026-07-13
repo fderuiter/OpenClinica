@@ -14,12 +14,12 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_DB: clinica
-          POSTGRES_USER: clinica
-          POSTGRES_PASSWORD: clinica
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U clinica -d clinica"
+          --health-cmd "pg_isready -U postgres -d clinica"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -37,6 +37,6 @@ jobs:
     - name: Run tests (core, web, modern)
       env:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/clinica
-        SPRING_DATASOURCE_USERNAME: clinica
-        SPRING_DATASOURCE_PASSWORD: clinica
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: postgres
       run: mvn -B test -pl core,web,modern -Ddb.test=localhost
