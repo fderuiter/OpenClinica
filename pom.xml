@@ -80,6 +80,7 @@
 				<db>openclinica</db>
 				<dbPort>5432</dbPort>
 				<dbHost>localhost</dbHost>
+				<dbSchema>app_schema</dbSchema>
 			</properties>
 		</profile>
 		<profile>
@@ -91,6 +92,7 @@
 				<db>openclinica</db>
 				<dbPort>5432</dbPort>
 				<dbHost>dev-db-host</dbHost>
+				<dbSchema>app_schema</dbSchema>
 			</properties>
 		</profile>
 		<profile>
@@ -102,6 +104,7 @@
 				<db>openclinica</db>
 				<dbPort>5432</dbPort>
 				<dbHost>qa-db-host</dbHost>
+				<dbSchema>app_schema</dbSchema>
 			</properties>
 		</profile>
 		<profile>
@@ -113,6 +116,7 @@
 				<db>openclinica</db>
 				<dbPort>5432</dbPort>
 				<dbHost>${env.DB_HOST}</dbHost>
+				<dbSchema>app_schema</dbSchema>
 			</properties>
 		</profile>
 		<profile>
