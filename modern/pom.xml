@@ -19,6 +19,16 @@
 
     <dependencyManagement>
         <dependencies>
+        <dependency>
+            <groupId>org.akaza.openclinica</groupId>
+            <artifactId>OpenClinica-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.akaza.openclinica</groupId>
+            <artifactId>domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
@@ -75,6 +85,16 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.akaza.openclinica</groupId>
+            <artifactId>OpenClinica-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.akaza.openclinica</groupId>
+            <artifactId>domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-base</artifactId>
@@ -230,6 +250,16 @@
                     </execution>
                 </executions>
                 <dependencies>
+        <dependency>
+            <groupId>org.akaza.openclinica</groupId>
+            <artifactId>OpenClinica-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.akaza.openclinica</groupId>
+            <artifactId>domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
                     </dependencies>
             </plugin>
             <plugin>
@@ -297,6 +327,16 @@
                     </execution>
                 </executions>
                 <dependencies>
+        <dependency>
+            <groupId>org.akaza.openclinica</groupId>
+            <artifactId>OpenClinica-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.akaza.openclinica</groupId>
+            <artifactId>domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
                     <dependency>
                         <groupId>org.apache.groovy</groupId>
                         <artifactId>groovy-json</artifactId>
