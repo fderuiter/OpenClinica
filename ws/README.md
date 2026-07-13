@@ -1,11 +1,11 @@
 # OpenClinica Release Notes
-**OpenClinica Version:** ${project.version}
+**OpenClinica Version:** 3.18-SNAPSHOT
 
-**Updated:** ${changeSetDate}
+**Updated:** 2026-07-13
 
 ## Overview
 
-This is OpenClinica release ${project.version}.
+This is OpenClinica release 3.18-SNAPSHOT.
 
 Please check the following URL for the latest release notes:
 [https://docs.openclinica.com/release-notes/release-notes-openclinica-3.2](https://docs.openclinica.com/release-notes/release-notes-openclinica-3.2)

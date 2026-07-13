@@ -16,7 +16,7 @@ export INIT_NAME="tomcat"
 export CATALINA_HOME="/usr/local/tomcat"
 export JAVA_HOME="/usr/local/java"
 #please note that -#XX:ParallelGCThreads need to be equivalent of number of cores
-export JAVA_OPTS="$JAVA_OPTS   -Xmx1280m -XX:+UseParallelGC -XX:ParallelGCThreads=1 -XX:MaxPermSize=180m -XX:+CMSClassUnloadingEnabled"
+export JAVA_OPTS="$JAVA_OPTS   -Xmx1280m -XX:+UseParallelGC -XX:ParallelGCThreads=1"
 
 
 case "$1" in

@@ -52,13 +52,31 @@ cat README.md.tmp > README.md
 echo "<!-- CHECKSUM: $NEW_CHECKSUM -->" >> README.md
 rm README.md.tmp
 
-# Install MkDocs if not present
-if ! python3 -m mkdocs --version &> /dev/null; then
-    python3 -m pip install mkdocs mkdocs-material pyyaml --break-system-packages || python3 -m pip install mkdocs mkdocs-material pyyaml
+# Install MkDocs and plugins if not present
+if ! python3 -c "import mkdocs_redirects" &> /dev/null; then
+    python3 -m pip install mkdocs mkdocs-material mkdocs-redirects pyyaml --break-system-packages || python3 -m pip install mkdocs mkdocs-material mkdocs-redirects pyyaml
 fi
 
 # Ensure docs directory has the latest README
 cp README.md docs/project-info.md
+
+CURRENT_DATE=$(date +"%Y-%m-%d")
+
+# Update module-level README files with the synchronized project version
+for f in core/README.md ws/README.md web/README.md; do
+  if [ -f "$f" ]; then
+    sed -i "s/\*\*OpenClinica Version:\*\* .*/\*\*OpenClinica Version:\*\* $PROJECT_VERSION/g" "$f"
+    sed -i "s/\*\*Updated:\*\* .*/\*\*Updated:\*\* $CURRENT_DATE/g" "$f"
+    sed -i "s/This is OpenClinica release .*\./This is OpenClinica release $PROJECT_VERSION./g" "$f"
+    sed -i "s/This is a beta release of OpenClinica 3\.1\./This is OpenClinica release $PROJECT_VERSION./g" "$f"
+    sed -i "s/\${project\.version}/$PROJECT_VERSION/g" "$f"
+    sed -i "s/\${changeSetDate}/$CURRENT_DATE/g" "$f"
+  fi
+done
+
+# Replace static, deprecated JVM flags in installation guides
+find docs/installation -type f -name "*.md" -exec sed -i 's/-XX:MaxPermSize=[^ ]* //g; s/ *-XX:+CMSClassUnloadingEnabled//g' {} +
+
 
 # Validate markdown file locations
 APPROVED_DIRS=("^docs/$" "^docs/installation/$" "^docs/maintenance/$" "^docs/configuration/$" "^docs/frontend/$" "^docs/frontend-api/" "^docs/diataxis/tutorials/$" "^docs/diataxis/how-to/$" "^docs/diataxis/references/$" "^docs/diataxis/explanation/$")
@@ -95,5 +113,13 @@ python3 extract_soap.py
 
 # Build the documentation site
 python3 -m mkdocs build
+
+# Validate that no placeholders remain in documentation
+UNRESOLVED=$(find docs core ws web -type f -name "*.md" -not -path "*/node_modules/*" -exec grep -lE '\$\{[a-zA-Z0-9._]+\}' {} + || true)
+if [ ! -z "$UNRESOLVED" ]; then
+    echo "Error: Unreplaced placeholders found in the following files:"
+    echo "$UNRESOLVED"
+    exit 1
+fi
 
 

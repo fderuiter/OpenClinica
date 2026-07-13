@@ -1,12 +1,12 @@
 # OpenClinica Release Notes
-**OpenClinica Version:** 3.1-beta  
+**OpenClinica Version:** 3.18-SNAPSHOT
 **Document Version:** 1.0  
 
-**Updated:** December 30, 2010 Paul Galvin pgalvin@akazaresearch.com
+**Updated:** 2026-07-13
 
 ## Overview
 
-This is a beta release of OpenClinica 3.1. It should not be used in a production setting. For more information on the features, please see [https://www.openclinica.org/dokuwiki/doku.php?id=developerwiki:oc31beta](https://www.openclinica.org/dokuwiki/doku.php?id=developerwiki:oc31beta).  
+This is OpenClinica release 3.18-SNAPSHOT. It should not be used in a production setting. For more information on the features, please see [https://www.openclinica.org/dokuwiki/doku.php?id=developerwiki:oc31beta](https://www.openclinica.org/dokuwiki/doku.php?id=developerwiki:oc31beta).  
 
 The web application and the web services piece of OpenClinica are in separate war files. 
 
