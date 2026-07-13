@@ -76,18 +76,7 @@ public class QueryStore implements Serializable, ResourceLoaderAware {
     }
 
     protected String resolveDbFolder() {
-        try {
-            String url = dataSource.getConnection().getMetaData().getURL();
-            if (url.startsWith("jdbc:postgresql")) {
-                return "postgres";
-            }
-            if (url.startsWith("jdbc:oracle")) {
-                return "oracle";
-            }
-            throw new BeanInitializationException("Unrecognized JDBC url " + url);
-        } catch (SQLException e) {
-            throw new BeanInitializationException("Unable to read datasource information", e);
-        }
+        return org.akaza.openclinica.dao.core.CoreResources.getSQLDialect().resolveDbFolder();
     }
 
     public void setResourceLoader(ResourceLoader resourceLoader) {

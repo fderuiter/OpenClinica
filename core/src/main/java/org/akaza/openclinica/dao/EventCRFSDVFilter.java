@@ -46,9 +46,9 @@ public class EventCRFSDVFilter implements CriteriaCommand {
         value = StringEscapeUtils.escapeSql(value.toString());
         if (value != null) {
             if (property.equals("sdvStatus")) {
-                String dbType = CoreResources.getDBName();
-                String theTrue = dbType.equals("postgres") ? " true " : " 1 ";
-                String theFalse = dbType.equals("postgres") ? " false " : " 0 ";
+                org.akaza.openclinica.dao.core.SQLDialect dialect = CoreResources.getSQLDialect();
+                String theTrue = dialect.getTrueLiteral();
+                String theFalse = dialect.getFalseLiteral();
                 if (value.equals("complete")) {
                     criteria = criteria + " and ";
                     criteria = criteria + " " + columnMapping.get(property) + " = " + theTrue;

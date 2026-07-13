@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 
+@Deprecated
 public abstract class CompositeIdAbstractDomainDao<T extends CompositeIdDomainObject> {
 
     @PersistenceContext

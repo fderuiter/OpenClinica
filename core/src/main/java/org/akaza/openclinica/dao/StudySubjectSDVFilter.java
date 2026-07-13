@@ -45,7 +45,7 @@ public class StudySubjectSDVFilter implements CriteriaCommand {
         value = StringEscapeUtils.escapeSql(value.toString());
         if (value != null) {
             if (property.equals("sdvStatus")) {
-                if ("oracle".equalsIgnoreCase(CoreResources.getDBName())) {
+                if (CoreResources.getSQLDialect().isOracle()) {
                     if (value.equals("complete")) {
                         criteria += SDVD_STUDY_SUBJECTS_oracle;
                     } else {

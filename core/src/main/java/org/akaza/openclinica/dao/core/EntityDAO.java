@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
  * @param <V>
  * @param <K>
  */
+@Deprecated
 public abstract class EntityDAO<K extends String, V extends ArrayList> implements DAOInterface {
     protected DataSource ds;
 
@@ -685,7 +686,7 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
                             break;
                         case TypeNames.BOOL:
                             // BADS FLAG
-                            if (CoreResources.getDBName().equals("oracle")) {
+                            if (CoreResources.getSQLDialect().isOracle()) {
                                 hm.put(column, new Boolean(rs.getString(i).equals("1") ? true : false));
                                 if (rs.wasNull()) {
                                     if (column.equalsIgnoreCase("start_time_flag") || column.equalsIgnoreCase("end_time_flag")) {
@@ -2881,18 +2882,9 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
     }
 
     public String genDatabaseDateConstraint(ExtractBean eb) {
-        String dateConstraint = "";
-        String dbName = CoreResources.getDBName();
         String sql = eb.getDataset().getSQLStatement();
         String[] os = sql.split("'");
-        if ("postgres".equalsIgnoreCase(dbName)) {
-        	dateConstraint = "(study_subject.enrollment_date is NULL OR ((date(study_subject.enrollment_date) >= date('" + os[1] + "')) and (date(study_subject.enrollment_date) <= date('" + os[3]
-                    + "'))))";
-        } else if ("oracle".equalsIgnoreCase(dbName)) {
-            dateConstraint = " trunc(study_subject.enrollment_date) >= to_date('" + os[1] + "') and trunc(study_subject.enrollment_date) <= to_date('" + os[3]
-                    + "')";
-        }
-        return dateConstraint;
+        return CoreResources.getSQLDialect().dateConstraint(os[1], os[3]);
     }
 
     public String getECStatusConstraint(int datasetItemStatusId) {

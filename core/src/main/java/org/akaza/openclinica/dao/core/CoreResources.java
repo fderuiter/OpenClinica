@@ -906,6 +906,19 @@ public class CoreResources implements ResourceLoaderAware {
         }
     }
 
+    private static SQLDialect sqlDialect;
+
+    public static SQLDialect getSQLDialect() {
+        if (sqlDialect == null) {
+            if ("oracle".equalsIgnoreCase(getDBName())) {
+                sqlDialect = new OracleSQLDialect();
+            } else {
+                sqlDialect = new PostgresSQLDialect();
+            }
+        }
+        return sqlDialect;
+    }
+
     public static String getDBName() {
         if (null == DB_NAME)
             return "postgres";
