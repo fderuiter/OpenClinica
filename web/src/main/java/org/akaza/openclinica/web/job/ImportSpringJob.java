@@ -392,6 +392,42 @@ public class ImportSpringJob extends QuartzJobBean {
                 }
             }
             // next: check, then import
+            org.akaza.openclinica.dao.managestudy.StudyDAO studyDAO = new org.akaza.openclinica.dao.managestudy.StudyDAO(dataSource);
+            String targetStudyOid = odmContainer.getCrfDataPostImportContainer().getStudyOID();
+            StudyBean targetStudy = studyDAO.findByOid(targetStudyOid);
+            if (targetStudy != null && (targetStudy.getStatus().isLocked() || targetStudy.getStatus().isFrozen())) {
+                File quarantineDir = new File(SQLInitServlet.getField("filePath") + "quarantine" + File.separator);
+                if (!quarantineDir.exists()) {
+                    quarantineDir.mkdirs();
+                }
+                File quarantinedFile = new File(quarantineDir, f.getName());
+                cutAndPaste(new File[] { f }, new File[] { quarantinedFile });
+
+                String blockReason = "Target study " + targetStudy.getName() + " is " + targetStudy.getStatus().getName().toUpperCase();
+                
+                auditEventDAO.createRowForExtractDataJobFailure(triggerBean, "Quarantined file " + quarantinedFile.getAbsolutePath() + " - " + blockReason);
+                
+                String contactEmail = context.getMergedJobDataMap().getString(EMAIL);
+                if (contactEmail == null || contactEmail.isEmpty()) {
+                    contactEmail = org.akaza.openclinica.core.EmailEngine.getAdminEmail();
+                }
+                if (contactEmail != null && !contactEmail.isEmpty()) {
+                    String subj = "Import blocked: " + f.getName();
+                    String bdy = "File " + f.getName() + " was quarantined due to a " + targetStudy.getStatus().getName().toUpperCase() + " status for study " + targetStudy.getName() + " at " + new Date().toString() + ".";
+                    try {
+                        mailSender.sendEmail(contactEmail, subj, bdy, false);
+                    } catch (Exception e) {
+                        logger.error("Failed to send quarantine email", e);
+                    }
+                }
+                
+                String uiMsg = "File " + f.getName() + " quarantined due to locked/frozen study.";
+                msg.append(uiMsg + "<br/>");
+                auditMsg.append(uiMsg + "<br/>");
+                out.close();
+                continue;
+            }
+
             List<String> errors = getImportCRFDataService(dataSource).validateStudyMetadata(odmContainer, studyBean.getId());
             // this needs to be replaced with the study name from the job, since
             // the user could be in any study ...

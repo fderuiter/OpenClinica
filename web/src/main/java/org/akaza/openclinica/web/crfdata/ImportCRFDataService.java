@@ -1007,6 +1007,8 @@ public void process(SubjectDataBean subjectDataBean) {
                 logger.debug("unknown study OID");
                 throw new RuntimeException(new OpenClinicaException("Unknown Study OID", ""));
 
+            } else if (studyBean.getStatus().isLocked() || studyBean.getStatus().isFrozen()) {
+                errors.add("The study is " + studyBean.getStatus().getName().toUpperCase() + " and cannot accept imported data.");
             } else if (studyBean.getId() != currentStudyId) {
                 mf.applyPattern(respage.getString("your_current_study_is_not_the_same_as"));
                 Object[] arguments = { studyBean.getName() };
