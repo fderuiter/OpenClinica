@@ -12,6 +12,7 @@ import org.akaza.openclinica.core.SessionManager;
 import org.akaza.openclinica.dao.managestudy.DiscrepancyNoteDAO;
 import org.akaza.openclinica.dao.rule.RuleDAO;
 import org.akaza.openclinica.dao.submit.EventCRFDAO;
+import org.akaza.openclinica.service.managestudy.DiscrepancyNoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,25 +68,8 @@ public class RuleExecutionBusinessObject {
     }
 
     private void createDiscrepancyNote(String description, ItemDataBean targetItemDataBean, ItemDataBean sourceItemDataBean) {
-
-        DiscrepancyNoteBean note = new DiscrepancyNoteBean();
-        note.setDescription(description);
-        note.setDetailedNotes("");
-        note.setOwner(ub);
-        note.setCreatedDate(new Date());
-        note.setResolutionStatusId(1);
-        note.setDiscrepancyNoteTypeId(1);
-        // note.setParentDnId(parentId);
-        // note.setField(field);
-        note.setEntityId(targetItemDataBean.getId());
-        note.setEntityType(DiscrepancyNoteBean.ITEM_DATA);
-        note.setColumn("value");
-        note.setStudyId(currentStudy.getId());
-
-        DiscrepancyNoteDAO discrepancyNoteDao = new DiscrepancyNoteDAO(sm.getDataSource());
-        note = (DiscrepancyNoteBean) discrepancyNoteDao.create(note);
-        discrepancyNoteDao.createMapping(note);
-
+        org.akaza.openclinica.service.managestudy.DiscrepancyNoteService discrepancyNoteService = new org.akaza.openclinica.service.managestudy.DiscrepancyNoteService(sm.getDataSource());
+        discrepancyNoteService.saveFieldNotes(description, targetItemDataBean.getId(), "itemData", currentStudy, ub);
     }
 
     // These are dao mostly calls see how to reduce redundancy
