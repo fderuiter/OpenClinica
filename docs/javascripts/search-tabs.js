@@ -5,12 +5,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Create tabs container
     const tabsContainer = document.createElement('div');
     tabsContainer.className = 'search-tabs';
-    tabsContainer.innerHTML = `
-        <button class="search-tab active" data-category="All">All</button>
-        <button class="search-tab" data-category="Guides">Guides</button>
-        <button class="search-tab" data-category="Reference">Reference</button>
-        <button class="search-tab" data-category="Tutorials">Tutorials</button>
-    `;
     
     // Insert tabs at the top of the search scrollwrap
     const scrollwrap = document.querySelector('.md-search__scrollwrap');
@@ -30,6 +24,44 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    function updateTabsAndFilter() {
+        const results = document.querySelectorAll('.md-search-result__item');
+        
+        // Extract unique tags
+        const uniqueTags = new Set();
+        results.forEach(item => {
+            const tagElements = item.querySelectorAll('.md-tag');
+            tagElements.forEach(tag => {
+                uniqueTags.add(tag.textContent.trim());
+            });
+        });
+
+        // Convert set to array and sort
+        const categories = Array.from(uniqueTags).sort();
+
+        // Revert to 'All' if active category is missing
+        if (activeCategory !== 'All' && !categories.includes(activeCategory)) {
+            activeCategory = 'All';
+        }
+
+        // Build tabs HTML
+        let html = `<button class="search-tab ${activeCategory === 'All' ? 'active' : ''}" data-category="All">All</button>`;
+        categories.forEach(category => {
+            if (category) {
+                // Escape category name to avoid syntax errors in HTML
+                const safeCategory = category.replace(/"/g, '&quot;');
+                html += `<button class="search-tab ${activeCategory === category ? 'active' : ''}" data-category="${safeCategory}">${safeCategory}</button>`;
+            }
+        });
+        
+        // Update DOM only if changed
+        if (tabsContainer.innerHTML !== html) {
+            tabsContainer.innerHTML = html;
+        }
+
+        filterResults();
+    }
+
     function filterResults() {
         const results = document.querySelectorAll('.md-search-result__item');
         results.forEach(item => {
@@ -41,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function() {
             const tagElements = item.querySelectorAll('.md-tag');
             let hasCategory = false;
             tagElements.forEach(tag => {
-                // Remove trailing/leading whitespaces and handle possible icon text if any
                 const text = tag.textContent.trim();
                 if (text === activeCategory) {
                     hasCategory = true;
@@ -59,8 +90,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const resultList = document.querySelector('.md-search-result__list');
     if (resultList) {
         const observer = new MutationObserver(function(mutations) {
-            filterResults();
+            updateTabsAndFilter();
         });
         observer.observe(resultList, { childList: true, subtree: true });
     }
+    
+    updateTabsAndFilter();
 });
