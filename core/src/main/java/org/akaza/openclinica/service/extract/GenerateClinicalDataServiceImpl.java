@@ -1076,4 +1076,99 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
         this.studyUserRoleDao = studyUserRoleDao;
     }
 
+    @Override
+    public void streamClinicalData(String studyOID, String studySubjectOID, String studyEventOID, String formVersionOID, Boolean collectDNs, Boolean collectAudit, Locale locale, int userId, java.util.Date modifiedSince, org.akaza.openclinica.bean.extract.odm.ClinicalDataStreamWriter writer) {
+        setLocale(locale);
+        setCollectDns(collectDNs);
+        setCollectAudits(collectAudit);
+        setModifiedSince(modifiedSince);
+
+        UserAccount userAccount = getUserAccountDao().findByColumnName(userId,"userId");
+        Study study = getStudyDao().findByOcOID(studyOID);
+        int parentStudyId = 0;
+        int studyId = study.getStudyId();
+        
+        if (study.getStudy()!=null){
+            isActiveRoleAtSite=true;
+            parentStudyId = study.getStudy().getStudyId();
+        }else{
+            parentStudyId= studyId;
+            isActiveRoleAtSite=false;             
+        }
+
+        ArrayList <StudyUserRole> surlist =  getStudyUserRoleDao().findAllUserRolesByUserAccount(userAccount, studyId, parentStudyId);
+        if (surlist==null || surlist.size()==0){
+            return;
+        }
+
+        if(!studySubjectOID.equals(INDICATE_ALL)) {
+            StudySubject ss = (StudySubject) getStudySubjectDao().findByColumnName(studySubjectOID, "ocOid");
+            studyOID = ss.getStudy().getOc_oid();
+        }
+
+        try {
+            if(studyEventOID.equals(INDICATE_ALL) && formVersionOID.equals(INDICATE_ALL) && !studySubjectOID.equals(INDICATE_ALL) && !studyOID.equals(INDICATE_ALL)) {
+                streamClinicalDataForStudy(studyOID, listStudySubjects(studySubjectOID), null, null, writer);
+            } else if(studyEventOID.equals(INDICATE_ALL) && formVersionOID.equals(INDICATE_ALL) && studySubjectOID.equals(INDICATE_ALL) && !studyOID.equals(INDICATE_ALL)) {
+                Study s = getStudyDao().findByColumnName(studyOID, "oc_oid");
+                List<StudySubject> subjs = s.getStudySubjects();
+                if(s.getStudies().size()<1) {
+                    streamClinicalDataForStudy(studyOID, subjs, null, null, writer);
+                } else {
+                    streamClinicalDataForStudy(studyOID, subjs, null, null, writer);
+                    for(Study site : s.getStudies()){
+                        streamClinicalDataForStudy(site.getOc_oid(), site.getStudySubjects(), null, null, writer);
+                    }
+                }
+            } else if(!studyEventOID.equals(INDICATE_ALL) && !studySubjectOID.equals(INDICATE_ALL) && !studyOID.equals(INDICATE_ALL) && formVersionOID.equals(INDICATE_ALL)) {
+                streamClinicalDatas(studyOID, studySubjectOID, studyEventOID, null, writer);
+            } else if(!studyEventOID.equals(INDICATE_ALL) && !studySubjectOID.equals(INDICATE_ALL) && !studyOID.equals(INDICATE_ALL) && !formVersionOID.equals(INDICATE_ALL)) {
+                streamClinicalDatas(studyOID, studySubjectOID, studyEventOID, formVersionOID, writer);
+            }
+
+            // Caller is responsible for writer.writeEndDocument() and writer.close()
+        } catch (Exception e) {
+            throw new RuntimeException("Error streaming clinical data", e);
+        }
+    }
+
+    private void streamClinicalDatas(String studyOID, String studySubjectOID, String studyEventOID, String formVersionOID, org.akaza.openclinica.bean.extract.odm.ClinicalDataStreamWriter writer) throws Exception {
+        int seOrdinal = 0;
+        String temp = studyEventOID;
+        List<StudyEvent> studyEvents = new ArrayList<StudyEvent>();
+        StudyEventDefinition sed = null;
+        Study study = getStudyDao().findByColumnName(studyOID, "oc_oid");
+        List<StudySubject> ss = listStudySubjects(studySubjectOID);
+        int idx = studyEventOID.indexOf(OPEN_ORDINAL_DELIMITER);
+        if(idx>0) {
+            studyEventOID = studyEventOID.substring(0,idx);
+            seOrdinal = new Integer(temp.substring(idx+1, temp.indexOf(CLOSE_ORDINAL_DELIMITER))).intValue();
+        }
+        sed = getStudyEventDefDao().findByColumnName(studyEventOID, "oc_oid");
+        if(seOrdinal>0) {
+            studyEvents = fetchSE(seOrdinal, sed.getStudyEvents(), studySubjectOID);
+        } else {
+            studyEvents = fetchSE(sed.getStudyEvents(), studySubjectOID);
+        }
+        streamClinicalDataForStudy(studyOID, ss, studyEvents, formVersionOID, writer);
+    }
+
+    private void streamClinicalDataForStudy(String studyOID, List<StudySubject> studySubjs, List<StudyEvent> baseStudyEvents, String formVersionOID, org.akaza.openclinica.bean.extract.odm.ClinicalDataStreamWriter writer) throws Exception {
+        Study study = getStudyDao().findByColumnName(studyOID, "oc_oid");
+        for(StudySubject studySubj : studySubjs) {
+            List<StudyEvent> studyEvents = baseStudyEvents != null ? baseStudyEvents : (ArrayList<StudyEvent>)getStudySubjectDao().fetchListSEs(studySubj.getOcOid());
+            
+            if (getModifiedSince() != null && !isSubjectModifiedSince(studySubj, studyEvents, getModifiedSince())) {
+                continue;
+            }
+            
+            if(studyEvents != null) {
+                ExportSubjectDataBean expSubjectBean = setExportSubjectDataBean(studySubj, study, studyEvents, formVersionOID);
+                writer.writeSubjectData(expSubjectBean);
+                
+                // Clear hibernate session to avoid memory leak
+                getStudySubjectDao().getEntityManager().clear();
+            }
+        }
+    }
 }
