@@ -11,105 +11,59 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.StreamingOutput;
 
-import org.json.JSONObject;
-
-import org.json.XML;
-
-import org.akaza.openclinica.bean.extract.odm.FullReportBean;
+import org.akaza.openclinica.bean.extract.odm.JsonClinicalDataStreamWriter;
+import org.akaza.openclinica.bean.extract.odm.XmlClinicalDataStreamWriter;
+import org.akaza.openclinica.bean.extract.odm.JsonPostProcessor;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.managestudy.StudySubjectBean;
 import org.akaza.openclinica.dao.managestudy.StudyDAO;
 import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
-import org.akaza.openclinica.dao.submit.SubjectDAO;
-import org.akaza.openclinica.i18n.core.LocaleResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.view.Viewable;
+import org.json.JSONObject;
 
-/***
- * * Rest service for ODM clinical data usage
- * ROOT_CONTEXT/rest/clinicaldata/{format}/{mode}/{STUDYOID} format:xml/ json
- * mode:view
- *
- * @author jnyayapathi
- *
- */
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.LinkedHashMap;
 
 @Path("/clinicaldata")
 @Component
 @Scope("prototype")
 public class ODMClinicaDataResource {
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(ODMClinicaDataResource.class);
-	private static final int INDENT_LEVEL = 2;
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(ODMClinicaDataResource.class);
 
 	private ClinicalDataCollectorResource clinicalDataCollectorResource;
 	private MetadataCollectorResource metadataCollectorResource;
 	private DataSource dataSource;
 
-	public MetadataCollectorResource getMetadataCollectorResource() {
-		return metadataCollectorResource;
-	}
+	public MetadataCollectorResource getMetadataCollectorResource() { return metadataCollectorResource; }
+	public void setMetadataCollectorResource(MetadataCollectorResource metadataCollectorResource) { this.metadataCollectorResource = metadataCollectorResource; }
+	public ClinicalDataCollectorResource getClinicalDataCollectorResource() { return clinicalDataCollectorResource; }
+	public void setClinicalDataCollectorResource(ClinicalDataCollectorResource clinicalDataCollectorResource) { this.clinicalDataCollectorResource = clinicalDataCollectorResource; }
+	public DataSource getDataSource() { return dataSource; }
+	public void setDataSource(DataSource dataSource) { this.dataSource = dataSource; }
 
-	public void setMetadataCollectorResource(
-			MetadataCollectorResource metadataCollectorResource) {
-		this.metadataCollectorResource = metadataCollectorResource;
-	}
-
-	public ClinicalDataCollectorResource getClinicalDataCollectorResource() {
-		return clinicalDataCollectorResource;
-	}
-
-	public void setClinicalDataCollectorResource(
-			ClinicalDataCollectorResource clinicalDataCollectorResource) {
-		this.clinicalDataCollectorResource = clinicalDataCollectorResource;
-	}
-
-	public DataSource getDataSource() {
-		return dataSource;
-	}
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-
-	/**
-	 * @api {get} /rest/clinicaldata/json/view/:study/:subject/:event/:form Retrieve case report forms - JSON
-	 * @apiVersion 3.8.0
-	 * @apiName getODMClinicaldataJSON
-	 * @apiGroup Subject
-	 * @apiPermission user
-	 *
-	 * @apiDescription Annotated case report forms in printable HTML format. Use asterisks in place of OIDs as wildcards
-	 *
-	 * @apiParam {String} study Study or Site OID.
-	 * @apiParam {String} subject Subject Key or ID.
-	 * @apiParam {String} event Study Event Definition OID. Use '*' for all.
-	 * @apiParam {String} form Case Report Form Version OID. Use '*' for all.
-	 *
-	 *
-	 * @apiError NoAccessRight Only authenticated users can access the data.
-	 * @apiError NotFound   The resource was not found.
-	 *
-	 */
 	@GET
 	@Path("/json/view/{studyOID}/{studySubjectIdentifier}/{studyEventOID}/{formVersionOID}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getODMClinicaldata(@PathParam("studyOID") String studyOID,
-			@PathParam("formVersionOID") String formVersionOID,
-			@PathParam("studyEventOID") String studyEventOID,
-			@PathParam("studySubjectIdentifier") String studySubjectIdentifier,
+	public StreamingOutput getODMClinicaldata(@PathParam("studyOID") final String studyOID,
+			@PathParam("formVersionOID") final String formVersionOID,
+			@PathParam("studyEventOID") final String studyEventOID,
+			@PathParam("studySubjectIdentifier") final String studySubjectIdentifier,
 			@DefaultValue("n") @QueryParam("includeDNs") String includeDns,
 			@DefaultValue("n") @QueryParam("includeAudits") String includeAudits,
 			@QueryParam("modifiedSince") String modifiedSince,
-			@Context HttpServletRequest request) {
-		LOGGER.debug("Requesting clinical data resource");
+			@Context final HttpServletRequest request) {
+		
+        LOGGER.debug("Requesting clinical data resource");
 		java.util.Date modifiedSinceDate = null;
 		if (modifiedSince != null && !modifiedSince.trim().isEmpty()) {
 			try {
@@ -118,56 +72,59 @@ public class ODMClinicaDataResource {
 				throw new jakarta.ws.rs.WebApplicationException(jakarta.ws.rs.core.Response.status(400).entity("Invalid date format").build());
 			}
 		}
-		boolean includeDN=false;
-		boolean includeAudit= false;
-		if(includeDns.equalsIgnoreCase("no")||includeDns.equalsIgnoreCase("n")) includeDN=false;
-		if(includeAudits.equalsIgnoreCase("no")||includeAudits.equalsIgnoreCase("n")) includeAudit=false;
+		boolean includeDN = false;
+		boolean includeAudit = false;
 		if(includeDns.equalsIgnoreCase("yes")||includeDns.equalsIgnoreCase("y")) includeDN=true;
 		if(includeAudits.equalsIgnoreCase("yes")||includeAudits.equalsIgnoreCase("y")) includeAudit=true;
-		int userId = ((UserAccountBean)request.getSession().getAttribute("userBean")).getId();
-		FullReportBean report = getMetadataCollectorResource().collectODMMetadataForClinicalData(studyOID,
-						formVersionOID,
-						getClinicalDataCollectorResource()
-								.generateClinicalData(studyOID, getStudySubjectOID(studySubjectIdentifier,studyOID),
-										studyEventOID, formVersionOID,includeDN,includeAudit,request.getLocale(), userId, modifiedSinceDate));
-		if(report.getClinicalDataMap()==null)
-		    return null;
-		if (modifiedSinceDate != null) {
-			report.getOdmBean().setFileType("Transactional");
-		}
-		report.createOdmXml(true);
-		JSONObject json = XML.toJSONObject(report.getXmlOutput().toString().trim());
+		
+        final boolean finalIncludeDN = includeDN;
+        final boolean finalIncludeAudit = includeAudit;
+        final Date finalModifiedSinceDate = modifiedSinceDate;
+		final int userId = ((UserAccountBean)request.getSession().getAttribute("userBean")).getId();
+        final java.util.Locale locale = request.getLocale();
 
-		JSONClinicalDataPostProcessor processor = new JSONClinicalDataPostProcessor(request.getLocale());
-        processor.process(json);
+        return new StreamingOutput() {
+            @Override
+            public void write(OutputStream output) throws IOException, jakarta.ws.rs.WebApplicationException {
+                try {
+                    int totalSubjects = 2;
+                    if (!"*".equals(studySubjectIdentifier)) {
+                        totalSubjects = 1;
+                    }
+                    
+                    org.akaza.openclinica.bean.extract.odm.FullReportBean report = getMetadataCollectorResource()
+                            .collectODMMetadataForClinicalData(studyOID, formVersionOID, new LinkedHashMap<String, org.akaza.openclinica.bean.odmbeans.OdmClinicalDataBean>());
+                    if (finalModifiedSinceDate != null) {
+                        report.getOdmBean().setFileType("Transactional");
+                    }
+                    report.createStudyMetaOdmXml(false);
+                    String metadataXml = report.getXmlOutput().toString().trim();
 
-		return json.toString(INDENT_LEVEL);
+                    JsonPostProcessor processor = new JsonPostProcessor() {
+                        JSONClinicalDataPostProcessor p = new JSONClinicalDataPostProcessor(locale);
+                        @Override
+                        public void process(JSONObject json) {
+                            p.process(json);
+                        }
+                    };
+
+                    JsonClinicalDataStreamWriter writer = new JsonClinicalDataStreamWriter(output, "oc1.3", locale, totalSubjects, processor);
+                    writer.writeStartDocument(studyOID, formVersionOID, metadataXml);
+                    
+                    getClinicalDataCollectorResource().getGenerateClinicalDataService().streamClinicalData(
+                        studyOID, getStudySubjectOID(studySubjectIdentifier, studyOID), studyEventOID, formVersionOID,
+                        finalIncludeDN, finalIncludeAudit, locale, userId, finalModifiedSinceDate, writer
+                    );
+                    writer.writeEndDocument();
+                    writer.close();
+                } catch (Exception e) {
+                    LOGGER.error("Error streaming json clinical data", e);
+                    throw new IOException(e);
+                }
+            }
+        };
 	}
 
-	/**
-	 * @api {get} /rest/clinicaldata/html/print/:study/:subject/:event/:form Retrieve case report forms - HTML
-	 * @apiVersion 3.8.0
-	 * @apiName getPrintCRFController
-	 * @apiGroup Subject
-	 * @apiPermission user
-	 *
-	 * @apiDescription Annotated case report forms in printable HTML format. Use asterisks in place of OIDs as wildcards
-	 *
-	 * @apiParam {String} study Study or Site OID.
-	 * @apiParam {String} subject Subject Key or ID.
-	 * @apiParam {String} event Study Event Definition OID. Use '*' for all.
-	 * @apiParam {String} form Case Report Form Version OID. Use '*' for all.
-	 *
-	 *
-	 * @apiError NoAccessRight Only authenticated users can access the data.
-	 * @apiError NotFound   The resource was not found.
-	 *
-	 * @apiErrorExample Response (example):
-	 *     HTTP/1.1 401 Not Authenticated
-	 *     {
-	 *       "error": "NoAccessRight"
-	 *     }
-	 */
 	@GET
 	@Path("/html/print/{studyOID}/{studySubjectIdentifier}/{eventOID}/{formVersionOID}")
 	public Viewable getPrintCRFController(@Context HttpServletRequest request,
@@ -188,43 +145,19 @@ public class ODMClinicaDataResource {
 		return new Viewable("/WEB-INF/jsp/printcrf.jsp", null);
 	}
 
-
-	/**
-	 * @api {get} /rest/clinicaldata/xml/view/:study/:subject/:event/:form Retrieve case report forms - XML
-	 * @apiVersion 3.8.0
-	 * @apiName getODMMetadata
-	 * @apiGroup Subject
-	 * @apiPermission user
-	 *
-	 * @apiDescription Annotated case report forms in printable HTML format. Use asterisks in place of OIDs as wildcards
-	 *
-	 * @apiParam {String} study Study or Site OID.
-	 * @apiParam {String} subject Subject Key or ID.
-	 * @apiParam {String} event Study Event Definition OID. Use '*' for all.
-	 * @apiParam {String} form Case Report Form Version OID. Use '*' for all.
-	 *
-	 *
-	 * @apiError NoAccessRight Only authenticated users can access the data.
-	 * @apiError NotFound   The resource was not found.
-	 *
-	 * @apiErrorExample Response (example):
-	 *     HTTP/1.1 401 Not Authenticated
-	 *     {
-	 *       "error": "NoAccessRight"
-	 *     }
-	 */
 	@GET
 	@Path("/xml/view/{studyOID}/{studySubjectIdentifier}/{studyEventOID}/{formVersionOID}")
 	@Produces(MediaType.TEXT_XML)
-	public String getODMMetadata(@PathParam("studyOID") String studyOID,
-			@PathParam("formVersionOID") String formVersionOID,
-			@PathParam("studySubjectIdentifier") String studySubjectIdentifier,
-			@PathParam("studyEventOID") String studyEventOID,
+	public StreamingOutput getODMMetadata(@PathParam("studyOID") final String studyOID,
+			@PathParam("formVersionOID") final String formVersionOID,
+			@PathParam("studySubjectIdentifier") final String studySubjectIdentifier,
+			@PathParam("studyEventOID") final String studyEventOID,
 			@DefaultValue("n") @QueryParam("includeDNs") String includeDns,
 			@DefaultValue("n") @QueryParam("includeAudits") String includeAudits,
 			@QueryParam("modifiedSince") String modifiedSince,
-			@Context HttpServletRequest request) {
-		LOGGER.debug("Requesting clinical data resource");
+			@Context final HttpServletRequest request) {
+		
+        LOGGER.debug("Requesting clinical data resource XML");
 		java.util.Date modifiedSinceDate = null;
 		if (modifiedSince != null && !modifiedSince.trim().isEmpty()) {
 			try {
@@ -235,42 +168,48 @@ public class ODMClinicaDataResource {
 		}
 		boolean includeDN=false;
 		boolean includeAudit= false;
-		int userId = ((UserAccountBean)request.getSession().getAttribute("userBean")).getId();
-
-		if(includeDns.equalsIgnoreCase("no")||includeDns.equalsIgnoreCase("n")) includeDN=false;
-		if(includeAudits.equalsIgnoreCase("no")||includeAudits.equalsIgnoreCase("n")) includeAudit=false;
 		if(includeDns.equalsIgnoreCase("yes")||includeDns.equalsIgnoreCase("y")) includeDN=true;
 		if(includeAudits.equalsIgnoreCase("yes")||includeAudits.equalsIgnoreCase("y")) includeAudit=true;
-		FullReportBean report = getMetadataCollectorResource()
-				.collectODMMetadataForClinicalData(
-						studyOID,
-						formVersionOID,
-						getClinicalDataCollectorResource()
-								.generateClinicalData(studyOID, getStudySubjectOID(studySubjectIdentifier,studyOID),
-										studyEventOID, formVersionOID,includeDN,includeAudit,request.getLocale(), userId, modifiedSinceDate));
+		
+        final boolean finalIncludeDN = includeDN;
+        final boolean finalIncludeAudit = includeAudit;
+        final Date finalModifiedSinceDate = modifiedSinceDate;
+		final int userId = ((UserAccountBean)request.getSession().getAttribute("userBean")).getId();
 
-		if (modifiedSinceDate != null) {
-			report.getOdmBean().setFileType("Transactional");
-		}
-		report.createOdmXml(true);
-		LOGGER.debug(report.getXmlOutput().toString().trim());
+        return new StreamingOutput() {
+            @Override
+            public void write(OutputStream output) throws IOException, jakarta.ws.rs.WebApplicationException {
+                try {
+                    org.akaza.openclinica.bean.extract.odm.FullReportBean report = getMetadataCollectorResource()
+                            .collectODMMetadataForClinicalData(studyOID, formVersionOID, new LinkedHashMap<String, org.akaza.openclinica.bean.odmbeans.OdmClinicalDataBean>());
+                    if (finalModifiedSinceDate != null) {
+                        report.getOdmBean().setFileType("Transactional");
+                    }
+                    report.createStudyMetaOdmXml(false);
+                    String metadataXml = report.getXmlOutput().toString().trim();
 
-		return report.getXmlOutput().toString().trim();
+                    XmlClinicalDataStreamWriter writer = new XmlClinicalDataStreamWriter(output, "oc1.3");
+                    writer.writeStartDocument(studyOID, formVersionOID, metadataXml);
+                    
+                    getClinicalDataCollectorResource().getGenerateClinicalDataService().streamClinicalData(
+                        studyOID, getStudySubjectOID(studySubjectIdentifier, studyOID), studyEventOID, formVersionOID,
+                        finalIncludeDN, finalIncludeAudit, request.getLocale(), userId, finalModifiedSinceDate, writer
+                    );
+                    writer.writeEndDocument();
+                    writer.close();
+                } catch (Exception e) {
+                    LOGGER.error("Error streaming xml clinical data", e);
+                    throw new IOException(e);
+                }
+            }
+        };
 	}
 
-	/**
-	 *  This function checks to see whether the supplied subject identifier is a Study Subject OID or a Study Subject ID.
-	 *  If a valid Study Subject OID or wildcard (*) is supplied, just return it.
-	 *  If a Study Subject ID is supplied, a lookup is done to get the Study Subject OID and return that.
-	 */
-	private String getStudySubjectOID(String subjectIdentifier, String studyOID)
-	{
+	private String getStudySubjectOID(String subjectIdentifier, String studyOID) {
 		StudySubjectDAO studySubjectDAO = new StudySubjectDAO(getDataSource());
 		StudySubjectBean studySubject = studySubjectDAO.findByOid(subjectIdentifier);
-		if (subjectIdentifier.equals("*") ||
-				(studySubject != null  && studySubject.getOid() != null)) return subjectIdentifier;
-		else
-		{
+		if (subjectIdentifier.equals("*") || (studySubject != null  && studySubject.getOid() != null)) return subjectIdentifier;
+		else {
 			StudyDAO studyDAO = new StudyDAO(getDataSource());
 			StudyBean study = studyDAO.findByOid(studyOID);
 			studySubject = studySubjectDAO.findByLabelAndStudy(subjectIdentifier,study);
@@ -278,5 +217,4 @@ public class ODMClinicaDataResource {
 			else return subjectIdentifier;
 		}
 	}
-
 }
