@@ -15,7 +15,6 @@
     <script type="text/JavaScript" language="JavaScript" src=
       "includes/global_functions_javascript.js"></script>
     <script type="text/javascript"  language="JavaScript" src=
-      "includes/repetition-model/repetition-model.js"></script>
     <link rel="stylesheet" href="includes/styles.css" type="text/css">
     <link rel="stylesheet" href="includes/print_crf.css" type="text/css">
 

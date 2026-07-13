@@ -2,11 +2,58 @@ export const store = {
   state: {
     studyOID: window.app_studyOID || '',
     userSession: window.app_userSession || '',
+    formData: {},
+    errors: {}
   },
   listeners: [],
   setState(newState) {
     this.state = { ...this.state, ...newState };
     this.listeners.forEach(listener => listener(this.state));
+  },
+  setFormData(groupOID, index, fieldOID, value) {
+    const currentData = { ...this.state.formData };
+    if (!currentData[groupOID]) {
+      currentData[groupOID] = [];
+    }
+    
+    // Ensure the array is a copy
+    currentData[groupOID] = [...currentData[groupOID]];
+    
+    if (!currentData[groupOID][index]) {
+      currentData[groupOID][index] = {};
+    } else {
+      currentData[groupOID][index] = { ...currentData[groupOID][index] };
+    }
+    
+    currentData[groupOID][index][fieldOID] = value;
+    this.setState({ formData: currentData });
+  },
+  addRow(groupOID, schema) {
+    const currentData = { ...this.state.formData };
+    if (!currentData[groupOID]) {
+      currentData[groupOID] = [];
+    } else {
+      currentData[groupOID] = [...currentData[groupOID]];
+    }
+    
+    // Initialize with empty values and proper formatting automatically
+    const newRow = {};
+    const groupSchema = schema.groups.find(g => g.groupOID === groupOID);
+    if (groupSchema) {
+      groupSchema.fields.forEach(field => {
+        newRow[field.fieldOID] = '';
+      });
+    }
+    
+    currentData[groupOID].push(newRow);
+    this.setState({ formData: currentData });
+  },
+  removeRow(groupOID, index) {
+    const currentData = { ...this.state.formData };
+    if (currentData[groupOID]) {
+      currentData[groupOID] = currentData[groupOID].filter((_, i) => i !== index);
+      this.setState({ formData: currentData });
+    }
   },
   subscribe(listener) {
     this.listeners.push(listener);
@@ -20,8 +67,6 @@ export const store = {
 };
 
 // Legacy non-blocking bridge
-// This intercepts assignments to window.app_studyOID by legacy JSP pages
-// and synchronizes them with the reactive store, and vice versa.
 let initialStudyOID = window.app_studyOID;
 if (initialStudyOID !== undefined) {
   store.setState({ studyOID: initialStudyOID });

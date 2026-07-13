@@ -56,7 +56,6 @@ public class FormServlet extends HttpServlet {
             + "\t<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
             + "\t<title>test form</title><link rel=\"stylesheet\" href=\"includes/styles.css\" type=\"text/css\">\n"
             + "  <link rel=\"stylesheet\" href=\"includes/styles2.css\" type=\"text/css\">\n"
-            + " <script type=\"text/javascript\"  language=\"JavaScript\" src=\n" + "    \"includes/repetition-model/repetition-model.js\"></script>"
             + "</head>\n" + "<body>");
         pw.write(builder.createMarkup());
         pw.write("</body>\n" + "</html>");
