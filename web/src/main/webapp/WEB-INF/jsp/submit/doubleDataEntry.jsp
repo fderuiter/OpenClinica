@@ -47,7 +47,6 @@
     <script type="text/javascript" src="includes/new_cal/lang/<fmt:message key="jscalendar_language_file" bundle="${resformat}"/>"></script>
     <script type="text/javascript" src="includes/new_cal/calendar-setup.js"></script>
     <!-- End -->
-    <script type="text/javascript"  language="JavaScript" src=   "includes/repetition-model/repetition-model.js"></script>
     <script type="text/JavaScript" language="JavaScript" src="dist/assets/main-vAm2N4M6.js"></script>
     </head>
 <body class="aka_bodywidth" onload="document.getElementById('CRF_infobox_closed').style.display='block';document.getElementById('CRF_infobox_open').style.display='none';"  onunload="javascript:clsWin();">
