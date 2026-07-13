@@ -32,6 +32,14 @@ public class UnifiedRepository {
     private StudyDAO studyDaoJdbc;
     private StudySubjectDAO studySubjectDaoJdbc;
     private SubjectDAO subjectDaoJdbc;
+    private org.akaza.openclinica.dao.admin.CRFDAO crfDaoJdbc;
+    private org.akaza.openclinica.dao.submit.CRFVersionDAO crfVersionDaoJdbc;
+    private org.akaza.openclinica.dao.managestudy.StudyEventDAO studyEventDaoJdbc;
+    private org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO studyEventDefinitionDaoJdbc;
+    private org.akaza.openclinica.dao.submit.ItemDAO itemDaoJdbc;
+    private org.akaza.openclinica.dao.submit.ItemDataDAO itemDataDaoJdbc;
+    private org.akaza.openclinica.dao.submit.ItemFormMetadataDAO itemFormMetadataDaoJdbc; 
+
 
     @Autowired
     public UnifiedRepository(DataSource dataSource) {
@@ -39,6 +47,14 @@ public class UnifiedRepository {
         this.studyDaoJdbc = new StudyDAO(dataSource);
         this.studySubjectDaoJdbc = new StudySubjectDAO(dataSource);
         this.subjectDaoJdbc = new SubjectDAO(dataSource);
+        this.crfDaoJdbc = new org.akaza.openclinica.dao.admin.CRFDAO(dataSource);
+        this.crfVersionDaoJdbc = new org.akaza.openclinica.dao.submit.CRFVersionDAO(dataSource);
+        this.studyEventDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDAO(dataSource);
+        this.studyEventDefinitionDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO(dataSource);
+        this.itemDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDAO(dataSource);
+        this.itemDataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDataDAO(dataSource);
+        this.itemFormMetadataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemFormMetadataDAO(dataSource);
+
     }
     
     public void setStudyDaoHibernate(StudyDao studyDaoHibernate) {
@@ -48,6 +64,32 @@ public class UnifiedRepository {
     public void setStudySubjectDaoHibernate(StudySubjectDao studySubjectDaoHibernate) {
         this.studySubjectDaoHibernate = studySubjectDaoHibernate;
     }
+
+    
+    
+    
+    
+    
+    
+    
+    
+
+    public org.akaza.openclinica.bean.admin.CRFBean getCrfBeanByVersionId(Integer versionId) { return crfDaoJdbc.findByVersionId(versionId); }
+    public org.akaza.openclinica.bean.admin.CRFBean getCrfBean(Integer id) { return (org.akaza.openclinica.bean.admin.CRFBean) crfDaoJdbc.findByPK(id); }
+    public org.akaza.openclinica.bean.admin.CRFBean getCrfBeanByItemOid(String itemOid) { return crfDaoJdbc.findByItemOid(itemOid); }
+    public org.akaza.openclinica.bean.submit.CRFVersionBean getCrfVersionBean(Integer id) { return (org.akaza.openclinica.bean.submit.CRFVersionBean) crfVersionDaoJdbc.findByPK(id); }
+    public List<org.akaza.openclinica.bean.submit.CRFVersionBean> findAllCrfVersionsByCrf(Integer crfId) { return (List<org.akaza.openclinica.bean.submit.CRFVersionBean>) crfVersionDaoJdbc.findAllByCRF(crfId); }
+    public org.akaza.openclinica.bean.managestudy.StudyEventBean getStudyEventBean(Integer id) { return (org.akaza.openclinica.bean.managestudy.StudyEventBean) studyEventDaoJdbc.findByPK(id); }
+    public List<org.akaza.openclinica.bean.managestudy.StudyEventBean> findAllStudyEventsByDefinition(Integer defId) { return (List<org.akaza.openclinica.bean.managestudy.StudyEventBean>) studyEventDaoJdbc.findAllByDefinition(defId); }
+    public List<org.akaza.openclinica.bean.managestudy.StudyEventBean> findAllStudyEventsByStudyEventDefinitionAndCrfOids(String defOid, String crfOid) { return studyEventDaoJdbc.findAllByStudyEventDefinitionAndCrfOids(defOid, crfOid); }
+    public org.akaza.openclinica.bean.submit.ItemBean getItemBean(Integer id) { return (org.akaza.openclinica.bean.submit.ItemBean) itemDaoJdbc.findByPK(id); }
+    public org.akaza.openclinica.bean.submit.ItemFormMetadataBean getItemFormMetadataBeanByItemIdAndCRFVersionId(Integer itemId, Integer crfVersionId) { return itemFormMetadataDaoJdbc.findByItemIdAndCRFVersionId(itemId, crfVersionId); }
+    public org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean getStudyEventDefinitionBean(Integer id) { return (org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean) studyEventDefinitionDaoJdbc.findByPK(id); }
+    public org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean getStudyEventDefinitionBeanByOid(String oid) { return studyEventDefinitionDaoJdbc.findByOid(oid); }
+
+    public org.akaza.openclinica.bean.submit.ItemDataBean getItemDataBeanByItemIdAndEventCRFId(Integer itemId, Integer eventCrfId) { return itemDataDaoJdbc.findByItemIdAndEventCRFId(itemId, eventCrfId); }
+    public List<org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean> findAllStudyEventDefinitionsByCrf(org.akaza.openclinica.bean.admin.CRFBean crf) { return (List<org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean>) studyEventDefinitionDaoJdbc.findAllByCrf(crf); }
+    public java.util.HashMap findItemDataCountByStudyEventAndOIDs(Integer studyId, String itemOid, String itemGroupOid) { return itemDataDaoJdbc.findCountByStudyEventAndOIDs(studyId, itemOid, itemGroupOid); }
 
     public StudyBean getStudyBean(Integer id) {
         return (StudyBean) studyDaoJdbc.findByPK(id);
