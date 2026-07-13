@@ -1,12 +1,14 @@
-package org.akaza.openclinica.bean.api;
+package org.akaza.openclinica.sdk.dto;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ApiResponse<T> {
     private T data;
-    private List<ApiError> errors;
-    private Map<String, Object> meta;
+    private List<ApiError> errors = new ArrayList<>();
+    private Map<String, Object> meta = new HashMap<>();
 
     public ApiResponse() {}
 
@@ -16,6 +18,11 @@ public class ApiResponse<T> {
 
     public ApiResponse(List<ApiError> errors) {
         this.errors = errors;
+    }
+
+    public ApiResponse(T data, Map<String, Object> meta) {
+        this.data = data;
+        this.meta = meta;
     }
 
     public T getData() {

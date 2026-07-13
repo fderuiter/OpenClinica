@@ -1,4 +1,4 @@
-package org.akaza.openclinica.modern.dto;
+package org.akaza.openclinica.sdk.dto;
 
 public class ApiError {
     private String code;

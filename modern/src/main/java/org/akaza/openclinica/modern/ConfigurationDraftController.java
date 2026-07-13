@@ -1,7 +1,7 @@
 package org.akaza.openclinica.modern;
 
 import org.akaza.openclinica.modern.model.ConfigurationDraft;
-import org.akaza.openclinica.modern.dto.ApiResponse;
+import org.akaza.openclinica.sdk.dto.ApiResponse;
 import org.akaza.openclinica.modern.service.ConfigurationDraftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

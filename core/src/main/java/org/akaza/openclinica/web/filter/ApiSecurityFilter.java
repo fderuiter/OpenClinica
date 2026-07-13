@@ -108,8 +108,8 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
         response.setContentType("application/json;charset=UTF-8");
         
         com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-        org.akaza.openclinica.bean.api.ApiError error = new org.akaza.openclinica.bean.api.ApiError("401", message);
-        org.akaza.openclinica.bean.api.ApiResponse<Object> apiResponse = new org.akaza.openclinica.bean.api.ApiResponse<>(java.util.Collections.singletonList(error));
+        org.akaza.openclinica.sdk.dto.ApiError error = new org.akaza.openclinica.sdk.dto.ApiError("401", message);
+        org.akaza.openclinica.sdk.dto.ApiResponse<Object> apiResponse = new org.akaza.openclinica.sdk.dto.ApiResponse<>(java.util.Collections.singletonList(error));
         mapper.writeValue(response.getWriter(), apiResponse);
     }
 
