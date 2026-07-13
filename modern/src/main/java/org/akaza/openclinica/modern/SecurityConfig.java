@@ -19,6 +19,11 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+
+import org.akaza.openclinica.modern.filter.LegacyModernContextBridgeFilter;
+import org.akaza.openclinica.repository.UnifiedRepository;
+import javax.sql.DataSource;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,8 +42,17 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final DataSource dataSource;
+
+    public SecurityConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     @Bean
     public SecurityFilterChain unifiedFilterChain(HttpSecurity http) throws Exception {
+        UnifiedRepository unifiedRepository = new UnifiedRepository(dataSource);
+        LegacyModernContextBridgeFilter bridgeFilter = new LegacyModernContextBridgeFilter(dataSource, unifiedRepository);
+
         http
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/auth/token", "/api/auth/jwks.json", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
@@ -48,7 +62,8 @@ public class SecurityConfig {
             .oauth2Login(withDefaults())
             .saml2Login(withDefaults())
             .csrf(csrf -> csrf.disable())
-            .httpBasic(withDefaults());
+            .httpBasic(withDefaults())
+            .addFilterAfter(bridgeFilter, AnonymousAuthenticationFilter.class);
         return http.build();
     }
 
