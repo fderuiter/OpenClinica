@@ -22,7 +22,7 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
-                <version>6.1.5</version>
+                <version>6.2.8</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
@@ -32,7 +32,7 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-web</artifactId>
-                <version>6.1.5</version>
+                <version>6.5.11</version>
             </dependency>
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
@@ -120,7 +120,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>6.1.5</version>
+            <version>6.2.8</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -130,7 +130,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>6.1.5</version>
+            <version>6.5.11</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -172,7 +172,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.11</version>
+            <version>1.2.13</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -182,7 +182,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.4.11</version>
+            <version>1.5.35</version>
         </dependency>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation</artifactId></dependency></dependencies>
 
