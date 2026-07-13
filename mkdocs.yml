@@ -26,11 +26,11 @@ nav:
   - Frontend Architecture:
     - Architecture Guide: diataxis/explanation/architecture.md
     - React Components API: frontend-api/modules.md
-  - Developer Cookbook:
-    - Cookbook Index: diataxis/tutorials/cookbook_index.md
-    - Subject Enrollment: diataxis/tutorials/cookbook_enrollment.md
-    - Event Scheduling: diataxis/tutorials/cookbook_scheduling.md
-    - Form Data Ingestion: diataxis/tutorials/cookbook_ingestion.md
+  - How-To Guides:
+    - Cookbook Index: diataxis/how-to/cookbook_index.md
+    - Subject Enrollment: diataxis/how-to/cookbook_enrollment.md
+    - Event Scheduling: diataxis/how-to/cookbook_scheduling.md
+    - Form Data Ingestion: diataxis/how-to/cookbook_ingestion.md
   - Interactive REST API: api.md
   - SOAP API Documentation: soap.md
 hooks:
@@ -43,6 +43,10 @@ plugins:
         'frontend/architecture.md': 'diataxis/explanation/architecture.md'
         'maintenance/staged_batch_persistence.md': 'diataxis/explanation/staged_batch_persistence.md'
         'configuration/lifecycle_management.md': 'diataxis/explanation/lifecycle_management.md'
+        'diataxis/tutorials/cookbook_index.md': 'diataxis/how-to/cookbook_index.md'
+        'diataxis/tutorials/cookbook_enrollment.md': 'diataxis/how-to/cookbook_enrollment.md'
+        'diataxis/tutorials/cookbook_scheduling.md': 'diataxis/how-to/cookbook_scheduling.md'
+        'diataxis/tutorials/cookbook_ingestion.md': 'diataxis/how-to/cookbook_ingestion.md'
 extra_css:
   - stylesheets/search-tabs.css
 extra_javascript:
