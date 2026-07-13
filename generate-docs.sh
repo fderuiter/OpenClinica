@@ -96,6 +96,14 @@ for file in $(find docs -name '*.md'); do
     fi
 done
 
+# Validate Diátaxis structural definition for tutorials
+VIOLATING_TUTORIALS=$(grep -ilE '\btasks?\b' docs/diataxis/tutorials/*.md || true)
+if [ ! -z "$VIOLATING_TUTORIALS" ]; then
+    echo "Error: The following tutorial files violate Diátaxis structural standards by including task-oriented language:"
+    echo "$VIOLATING_TUTORIALS"
+    exit 1
+fi
+
 # Generate frontend API documentation
 if [ -d "web" ] && [ -f "web/package.json" ]; then
     echo "Generating frontend API documentation..."

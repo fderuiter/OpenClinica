@@ -9,7 +9,7 @@ Welcome to the centralized OpenClinica Documentation Portal.
 - [Maintenance Guide](diataxis/how-to/import_data.md)
 - [Interactive REST API Documentation](api.md)
 - [SOAP API Documentation](soap.md)
-- [Frontend Architecture Guide](frontend/architecture.md)
+- [Frontend Architecture Guide](diataxis/explanation/architecture.md)
 - [Visual Testing Guide](frontend/visual_testing.md)
 
 ## Global Project Information
