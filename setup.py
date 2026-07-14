@@ -208,7 +208,7 @@ def main():
             if not verify_connection(l_host, l_port, "LDAP"):
                 sys.exit(1)
 
-    host_file_path = input("File Path for data (default: /app/data): ").strip() or "/app/data"
+    host_file_path = input("File Path for data (default: ./data): ").strip() or "./data"
     env_vars["HOST_FILE_PATH"] = os.path.abspath(host_file_path)
     env_vars["FILE_PATH"] = "/opt/clinica/data/"
 
