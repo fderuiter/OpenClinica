@@ -20,7 +20,7 @@ To get started quickly with a local development environment, run the setup tool:
 ```bash
 python3 setup.py
 ```
-This interactive wizard will verify system prerequisites (Java, Maven, Docker), prompt for necessary configuration values, automatically configure directory structures, and generate a `.env` file for runtime overrides.
+This interactive wizard will verify system prerequisites (Java, Maven, Docker), prompt for necessary configuration values, automatically configure directory structures, and generate a `.env` file for runtime overrides. Alternatively, you can copy the provided `.env.example` file to `.env` and configure the properties manually.
 
 ### Environment Variable Mapping
 The application prioritizes environment variables over file-based properties. The mapping follows an upper snake_case convention. Below is a complete mapping of environment variables to the properties they override:

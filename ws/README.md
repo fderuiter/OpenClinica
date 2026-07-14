@@ -1,7 +1,7 @@
 # OpenClinica Release Notes
 **OpenClinica Version:** 3.18-SNAPSHOT
 
-**Updated:** 2026-07-13
+**Updated:** 2026-07-14
 
 ## Overview
 
