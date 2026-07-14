@@ -16,6 +16,7 @@ nav:
     - Randomize Setup: diataxis/tutorials/randomize_setup.md
     - Rules XML Reference: diataxis/references/rules.md
     - Lifecycle Management: diataxis/explanation/lifecycle_management.md
+    - Safeguards and Rollbacks: diataxis/explanation/configuration_safeguards_and_rollbacks.md
   - Maintenance:
     - Import Data: diataxis/how-to/import_data.md
     - Verify Import Rule: diataxis/how-to/verify_import_rule.md
