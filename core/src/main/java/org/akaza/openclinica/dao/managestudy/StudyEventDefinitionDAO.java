@@ -232,6 +232,12 @@ public class StudyEventDefinitionDAO<K extends String,V extends ArrayList> exten
         StudyEventDefinitionBean studyEventDefinitionBean = this.findByOidAndStudy(oid, studyId);
         if (studyEventDefinitionBean == null) {
             studyEventDefinitionBean = this.findByOidAndStudy(oid, parentStudyId);
+            
+            // Sibling site isolation: if the fallback retrieved an event definition,
+            // we must verify it belongs to the parent study and not a sibling site.
+            if (studyEventDefinitionBean != null && studyEventDefinitionBean.getStudyId() != parentStudyId) {
+                studyEventDefinitionBean = null;
+            }
         }
         return studyEventDefinitionBean;
     }
