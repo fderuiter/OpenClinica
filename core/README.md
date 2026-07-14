@@ -2,11 +2,11 @@
 **OpenClinica Version:** 3.18-SNAPSHOT
 **Document Version:** 1.0  
 
-**Updated:** 2026-07-13
+**Updated:** 2026-07-14
 
 ## Overview
 
-This is OpenClinica release 3.18-SNAPSHOT. It should not be used in a production setting. For more information on the features, please see [https://www.openclinica.org/dokuwiki/doku.php?id=developerwiki:oc31beta](https://www.openclinica.org/dokuwiki/doku.php?id=developerwiki:oc31beta).  
+This is OpenClinica release 3.18-SNAPSHOT.  
 
 The web application and the web services piece of OpenClinica are in separate war files. 
 
