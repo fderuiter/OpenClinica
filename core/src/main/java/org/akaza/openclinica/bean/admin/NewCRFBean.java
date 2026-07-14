@@ -372,31 +372,32 @@ public class NewCRFBean extends Object implements java.io.Serializable {
             // commenting this out temporarily so that mistakes are not made,
             // tbh 8-13
             con.setAutoCommit(false);
-            Set mySet = itemQueries.entrySet();
             logger.debug("---start of item query generation here---");
-            for (Iterator itvl = mySet.iterator(); itvl.hasNext();) {
-                Map.Entry ment = (Map.Entry) itvl.next();
-               /* String pQuery = (String) ment.getValue();
-                s = con.prepareStatement(pQuery);*/
-                QueryObject qo = (QueryObject) ment.getValue();
+            HashMap<String, ArrayList<QueryObject>> batchedItemQueries = new HashMap<String, ArrayList<QueryObject>>();
+            for (Iterator itvl = itemQueries.values().iterator(); itvl.hasNext();) {
+                QueryObject qo = (QueryObject) itvl.next();
                 String cur_query = qo.getSql();
                 if (cur_query == null || cur_query.trim().length() < 1) {
                     continue;
                 }
-                int parCnt = qo.getSqlParameters().size();
-
-                s = con.prepareStatement(cur_query);
-                for(int i=0;i<parCnt;i++) {
-                	setPreparedStatementParameter(s,i+1,qo.getSqlParameters().get(i));
+                if (!batchedItemQueries.containsKey(cur_query)) {
+                    batchedItemQueries.put(cur_query, new ArrayList<QueryObject>());
                 }
+                batchedItemQueries.get(cur_query).add(qo);
+            }
 
-               // logger.debug(pQuery);
-                s.executeUpdate();
+            for (String cur_query : batchedItemQueries.keySet()) {
+                ArrayList<QueryObject> qos = batchedItemQueries.get(cur_query);
+                s = con.prepareStatement(cur_query);
+                for (QueryObject qo : qos) {
+                    int parCnt = qo.getSqlParameters().size();
+                    for(int i=0;i<parCnt;i++) {
+                        setPreparedStatementParameter(s,i+1,qo.getSqlParameters().get(i));
+                    }
+                    s.addBatch();
+                }
+                s.executeBatch();
                 s.close();
-                // this might throw off the 'error' count, who can say?
-                // of course, the queries are simple enough that maybe we'll
-                // never throw
-                // an error. Never say never though...
             }
             logger.debug("---pause in query generation, items---");
             // Iterator it = queries.iterator();
@@ -657,21 +658,31 @@ public class NewCRFBean extends Object implements java.io.Serializable {
             logger.debug("deleteInsertToDB function ---end of delete query generation, all queries committed---");
             logger.debug("deleteInsertToDB function ---start of item query generation here---");
 
-            QueryObject qo;
+            HashMap<String, ArrayList<QueryObject>> batchedItemQueries = new HashMap<String, ArrayList<QueryObject>>();
             Collection<QueryObject> values = itemQueries.values();
             for (QueryObject queryObj : values) {
-                qo = queryObj;
+                QueryObject qo = queryObj;
                 cur_query = qo.getSql();
                 if (cur_query == null || cur_query.trim().length() < 1) {
                     continue;
                 }
-                int parCnt = qo.getSqlParameters().size();
-                
-                statement = con.prepareStatement(cur_query);
-                for(int i=0;i<parCnt;i++) {
-                	setPreparedStatementParameter(statement,i+1,qo.getSqlParameters().get(i));                	
+                if (!batchedItemQueries.containsKey(cur_query)) {
+                    batchedItemQueries.put(cur_query, new ArrayList<QueryObject>());
                 }
-                statement.executeUpdate();
+                batchedItemQueries.get(cur_query).add(qo);
+            }
+
+            for (String query : batchedItemQueries.keySet()) {
+                ArrayList<QueryObject> qos = batchedItemQueries.get(query);
+                statement = con.prepareStatement(query);
+                for (QueryObject qo : qos) {
+                    int parCnt = qo.getSqlParameters().size();
+                    for(int i=0;i<parCnt;i++) {
+                        setPreparedStatementParameter(statement, i+1, qo.getSqlParameters().get(i));                    
+                    }
+                    statement.addBatch();
+                }
+                statement.executeBatch();
                 statement.close();
             }
             /*for (String pQuery : (Collection<String>) itemQueries.values()) {
@@ -687,7 +698,7 @@ public class NewCRFBean extends Object implements java.io.Serializable {
 
             logger.debug("deleteInsertToDB function  ---pause in query generation, items---");           
             for (QueryObject queryObj : (ArrayList<QueryObject>) queries) {               
-                qo = queryObj;
+                QueryObject qo = queryObj;
                 cur_query = qo.getSql();
                 if (cur_query == null || cur_query.trim().length() < 1) {
                     continue;
