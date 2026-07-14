@@ -19,6 +19,9 @@ def handle_validation_failure(tool_name, error_msg, required_version):
             else:
                 print("Invalid input. Please enter 'y' or 'n'.")
     else:
+        if os.environ.get("FORCE") == "1" or os.environ.get("OVERRIDE") == "1":
+            print(f"Warning: {error_msg} (Bypassed due to override flag)")
+            return
         print(f"Error: {error_msg}")
         print(f"Required version for {tool_name} is {required_version}.")
         sys.exit(1)
