@@ -35,6 +35,48 @@ public class JobTriggerListener extends TriggerListenerSupport {
     @Override
     public boolean vetoJobExecution(Trigger trigger, JobExecutionContext context) {
         boolean result =  super.vetoJobExecution(trigger, context);
+        
+        try {
+            org.quartz.JobDataMap jobDataMap = context.getMergedJobDataMap();
+            if (jobDataMap != null && jobDataMap.containsKey("user_id")) {
+                Object userIdObj = jobDataMap.get("user_id");
+                if (userIdObj != null) {
+                    int userId = -1;
+                    if (userIdObj instanceof Integer) {
+                        userId = (Integer) userIdObj;
+                    } else if (userIdObj instanceof String) {
+                        try {
+                            userId = Integer.parseInt((String) userIdObj);
+                        } catch (NumberFormatException e) {
+                            LOG.warn("Invalid user_id format in JobDataMap: {}", userIdObj);
+                        }
+                    }
+                    if (userId > 0) {
+                        org.springframework.context.ApplicationContext appCtx = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                        if (appCtx != null) {
+                            org.akaza.openclinica.dao.login.UserAccountDAO userAccountDao = (org.akaza.openclinica.dao.login.UserAccountDAO) appCtx.getBean("userAccountDao");
+                            if (userAccountDao != null) {
+                                org.akaza.openclinica.bean.login.UserAccountBean userAccount = (org.akaza.openclinica.bean.login.UserAccountBean) userAccountDao.findByPK(userId);
+                                
+                                if (userAccount != null && userAccount.getId() > 0) {
+                                    boolean isEnabled = userAccount.getEnabled() != null && userAccount.getEnabled();
+                                    boolean isNonLocked = userAccount.getAccountNonLocked() != null && userAccount.getAccountNonLocked();
+                                    boolean isAvailable = userAccount.getStatus() != null && userAccount.getStatus().isAvailable();
+                                    
+                                    if (!isAvailable || !isEnabled || !isNonLocked) {
+                                        LOG.warn("Security Warning: Background job vetoed. Job ID: {}, User ID: {}. Account is disabled, locked, or deleted.", context.getJobDetail().getKey().getName(), userId);
+                                        result = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error during security interceptor check in JobTriggerListener", e);
+        }
+
         logTriggerInfo(trigger, "Trigger {} vetoed");
         return result;
     }
