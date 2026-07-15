@@ -38,3 +38,5 @@ docs/project-info.md
 docs/openapi.json
 docs/soap.md
 README.md
+data/
+dummy_template.xlsx
