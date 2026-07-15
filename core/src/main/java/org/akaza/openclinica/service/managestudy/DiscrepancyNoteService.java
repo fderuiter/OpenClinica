@@ -25,6 +25,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.akaza.openclinica.domain.rule.action.RuleActionRunLogBean;
+import org.akaza.openclinica.dao.hibernate.RuleActionRunLogDao;
+
+@Service("discrepancyNoteService")
 public class DiscrepancyNoteService {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
@@ -35,22 +41,23 @@ public class DiscrepancyNoteService {
     private ResolutionStatusDao resolutionStatusDao;
     private DiscrepancyNoteTypeDao discrepancyNoteTypeDao;
 
+    public DiscrepancyNoteService() {
+    }
+
     public DiscrepancyNoteService(DataSource ds) {
         this.ds = ds;
     }
 
+    @Transactional
     public void saveFieldNotes(final String description, final int entityId, final String entityType, final StudyBean sb, final UserAccountBean ub) {
-        org.springframework.context.ApplicationContext context = ApplicationContextProvider.getApplicationContext();
-        org.springframework.transaction.PlatformTransactionManager txManager = (org.springframework.transaction.PlatformTransactionManager) context.getBean("transactionManager");
-        org.springframework.transaction.support.TransactionTemplate transactionTemplate = new org.springframework.transaction.support.TransactionTemplate(txManager);
-        
-        transactionTemplate.execute(new org.springframework.transaction.support.TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(org.springframework.transaction.TransactionStatus status) {
-                DiscrepancyNote parent = createDiscrepancyNote(description, entityId, entityType, sb, ub, null);
-                createDiscrepancyNote(description, entityId, entityType, sb, ub, parent);
-            }
-        });
+        DiscrepancyNote parent = createDiscrepancyNote(description, entityId, entityType, sb, ub, null);
+        createDiscrepancyNote(description, entityId, entityType, sb, ub, parent);
+    }
+
+    @Transactional
+    public void saveFieldNotesAndRunLog(final String description, final int entityId, final String entityType, final StudyBean sb, final UserAccountBean ub, RuleActionRunLogBean ruleActionRunLog, RuleActionRunLogDao ruleActionRunLogDao) {
+        saveFieldNotes(description, entityId, entityType, sb, ub);
+        ruleActionRunLogDao.saveOrUpdate(ruleActionRunLog);
     }
 
     private DiscrepancyNote createDiscrepancyNote(String description, int entityId, String entityType, StudyBean sb, UserAccountBean ub,

@@ -40,19 +40,9 @@ public class DiscrepancyNoteActionProcessor implements ActionProcessor {
     }
 
     private RuleActionBean save(final RuleActionBean ruleAction, final ItemDataBean itemDataBean, final String itemData, final StudyBean currentStudy, final UserAccountBean ub) {
-        org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
-        org.springframework.transaction.PlatformTransactionManager txManager = (org.springframework.transaction.PlatformTransactionManager) context.getBean("transactionManager");
-        org.springframework.transaction.support.TransactionTemplate transactionTemplate = new org.springframework.transaction.support.TransactionTemplate(txManager);
-        
-        transactionTemplate.execute(new org.springframework.transaction.support.TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(org.springframework.transaction.TransactionStatus status) {
-                getDiscrepancyNoteService().saveFieldNotes(ruleAction.getCuratedMessage(), itemDataBean.getId(), itemData, currentStudy, ub);
-                RuleActionRunLogBean ruleActionRunLog =
-                    new RuleActionRunLogBean(ruleAction.getActionType(), itemDataBean, itemDataBean.getValue(), ruleSetRule.getRuleBean().getOid());
-                ruleActionRunLogDao.saveOrUpdate(ruleActionRunLog);
-            }
-        });
+        RuleActionRunLogBean ruleActionRunLog =
+            new RuleActionRunLogBean(ruleAction.getActionType(), itemDataBean, itemDataBean.getValue(), ruleSetRule.getRuleBean().getOid());
+        getDiscrepancyNoteService().saveFieldNotesAndRunLog(ruleAction.getCuratedMessage(), itemDataBean.getId(), itemData, currentStudy, ub, ruleActionRunLog, ruleActionRunLogDao);
         return null;
     }
 
@@ -65,7 +55,19 @@ public class DiscrepancyNoteActionProcessor implements ActionProcessor {
     }
 
     private DiscrepancyNoteService getDiscrepancyNoteService() {
-        discrepancyNoteService = this.discrepancyNoteService != null ? discrepancyNoteService : new DiscrepancyNoteService(ds);
+        if (discrepancyNoteService == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    discrepancyNoteService = (DiscrepancyNoteService) context.getBean("discrepancyNoteService");
+                }
+            } catch (Exception e) {
+                // fallback
+            }
+            if (discrepancyNoteService == null) {
+                discrepancyNoteService = new DiscrepancyNoteService(ds);
+            }
+        }
         return discrepancyNoteService;
     }
 
