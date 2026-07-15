@@ -8,6 +8,7 @@
 package org.akaza.openclinica.control.submit;
 
 import org.akaza.openclinica.bean.core.DataEntryStage;
+import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import javax.xml.transform.stream.StreamSource;
@@ -35,6 +36,9 @@ import org.akaza.openclinica.web.SQLInitServlet;
 import org.akaza.openclinica.web.crfdata.ImportCRFDataService;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -53,7 +57,12 @@ import java.util.Locale;
  */
 public class ImportCRFDataServlet extends SecureController {
 
+
+    private static final int MAX_WORKERS = 3;
+    private static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_WORKERS);
+
     Locale locale;
+
 
     private ImportCRFDataService dataService;
 
@@ -133,293 +142,21 @@ public class ImportCRFDataServlet extends SecureController {
             }
             if (f == null) {
                 forwardPage(Page.IMPORT_CRF_DATA);
+                return;
             }
 
-            // TODO
-            // validation steps
-            // 1. valid xml - validated by file uploader below
+            final File finalFile = f;
+            final UserAccountBean finalUb = ub;
+            final org.akaza.openclinica.bean.managestudy.StudyBean finalStudy = currentStudy;
+            final org.springframework.context.ApplicationContext finalContext = SpringServletAccess.getApplicationContext(context);
+            final java.util.Locale finalLocale = request.getLocale();
+            final javax.sql.DataSource finalDataSource = sm.getDataSource();
 
-            // LocalConfiguration config = LocalConfiguration.getInstance();
-            // config.getProperties().setProperty(
-            // "org.exolab.castor.parser.namespaces",
-            // "true");
-            // config
-            // .getProperties()
-            // .setProperty("org.exolab.castor.sax.features",
-            // "http://xml.org/sax/features/validation,
-            // http://apache.org/xml/features/validation/schema,
-            // http://apache.org/xml/features/validation/schema-full-checking");
-            // // above sets to validate against namespace
+            AsyncImportTask task = new AsyncImportTask(finalFile, finalUb, finalStudy, finalDataSource, finalContext, finalLocale);
+            executor.submit(task);
 
-            ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-            Jaxb2Marshaller jaxb2Marshaller = (Jaxb2Marshaller) context.getBean("jaxb2Marshaller");
-
-            boolean fail = false;
-            ODMContainer odmContainer = new ODMContainer();
-            session.removeAttribute("odmContainer");
-            try {
-                InputStreamReader isr = new InputStreamReader(new FileInputStream(f), "UTF-8");
-                
-                org.akaza.openclinica.logic.importdata.StreamingSubjectDataList streamingList = new org.akaza.openclinica.logic.importdata.StreamingSubjectDataList(f);
-                org.akaza.openclinica.bean.submit.crfdata.CRFDataPostImportContainer crfDataPostImportContainer = new org.akaza.openclinica.bean.submit.crfdata.CRFDataPostImportContainer();
-                crfDataPostImportContainer.setStudyOID(streamingList.getStudyOid());
-                crfDataPostImportContainer.setUpsertOn(streamingList.getUpsertOn());
-                crfDataPostImportContainer.setSubjectData(streamingList);
-                odmContainer.setCrfDataPostImportContainer(crfDataPostImportContainer);
-
-
-                logger.debug("Found crf data container for study oid: " + odmContainer.getCrfDataPostImportContainer().getStudyOID());
-                logger.debug("found length of subject list: " + odmContainer.getCrfDataPostImportContainer().getSubjectData().size());
-                // 2. validates against ODM 1.3
-                // check it all below, throw an exception and route to a
-                // different
-                // page if not working
-
-                // TODO this block of code needs the xerces serializer in order
-                // to
-                // work
-
-                // StringWriter myWriter = new StringWriter();
-                // Marshaller m1 = new Marshaller(myWriter);
-                //
-                // m1.setProperty("org.exolab.castor.parser.namespaces",
-                // "true");
-                // m1
-                // .setProperty("org.exolab.castor.sax.features",
-                // "http://xml.org/sax/features/validation,
-                // http://apache.org/xml/features/validation/schema,
-                // http://apache.org/xml/features/validation/schema-full-checking
-                // ");
-                //
-                // m1.setMapping(myMap);
-                // m1.setNamespaceMapping("",
-                // "http://www.cdisc.org/ns/odm/v1.3");
-                // m1.setSchemaLocation("http://www.cdisc.org/ns/odm/v1.3
-                // ODM1-3.xsd");
-                // m1.marshal(odmContainer);
-                // if you havent thrown it, you wont throw it here
-                addPageMessage(respage.getString("passed_xml_validation"));
-            } catch (Exception me1) {
-                me1.printStackTrace();
-                // expanding it to all exceptions, but hoping to catch Marshal
-                // Exception or SAX Exceptions
-                logger.info("found exception with xml transform");
-                //
-                logger.info("trying 1.2.1");
-                try {
-                    schemaValidator.validateAgainstSchema(f, xsdFile2);
-                    // for backwards compatibility, we also try to validate vs
-                    // 1.2.1 ODM 06/2008
-                    InputStreamReader isr = new InputStreamReader(new FileInputStream(f), "UTF-8");
-                    
-                org.akaza.openclinica.logic.importdata.StreamingSubjectDataList streamingList = new org.akaza.openclinica.logic.importdata.StreamingSubjectDataList(f);
-                org.akaza.openclinica.bean.submit.crfdata.CRFDataPostImportContainer crfDataPostImportContainer = new org.akaza.openclinica.bean.submit.crfdata.CRFDataPostImportContainer();
-                crfDataPostImportContainer.setStudyOID(streamingList.getStudyOid());
-                crfDataPostImportContainer.setUpsertOn(streamingList.getUpsertOn());
-                crfDataPostImportContainer.setSubjectData(streamingList);
-                odmContainer.setCrfDataPostImportContainer(crfDataPostImportContainer);
-
-                } catch (Exception me2) {
-                    // not sure if we want to report me2
-                    MessageFormat mf = new MessageFormat("");
-                    mf.applyPattern(respage.getString("your_xml_is_not_well_formed"));
-                    Object[] arguments = { me1.getMessage() };
-                    addPageMessage(mf.format(arguments));
-                    //
-                    // addPageMessage("Your XML is not well-formed, and does not
-                    // comply with the ODM 1.3 Schema. Please check it, and try
-                    // again. It returned the message: "
-                    // + me1.getMessage());
-                    // me1.printStackTrace();
-                    forwardPage(Page.IMPORT_CRF_DATA);
-                    // you can't really wait to forward because then you throw
-                    // NPEs
-                    // in the next few parts of the code
-                }
-            }
-            // TODO need to output further here
-            // 2.a. is the study the same one that the user is in right now?
-            // 3. validates against study metadata
-            // 3.a. is that study subject in that study?
-            // 3.b. is that study event def in that study?
-            // 3.c. is that site in that study?
-            // 3.d. is that crf version in that study event def?
-            // 3.e. are those item groups in that crf version?
-            // 3.f. are those items in that item group?
-
-            List<String> errors = getImportCRFDataService().validateStudyMetadata(odmContainer, ub.getActiveStudyId());
-            if (errors != null) {
-                // add to session
-                // forward to another page
-                logger.info(errors.toString());
-                for (String error : errors) {
-                    addPageMessage(error);
-                }
-                if (errors.size() > 0) {
-                    // fail = true;
-                    forwardPage(Page.IMPORT_CRF_DATA);
-                } else {
-                    addPageMessage(respage.getString("passed_study_check"));
-                    addPageMessage(respage.getString("passed_oid_metadata_check"));
-                }
-
-            }
-            logger.debug("passed error check");
-            // TODO ADD many validation steps before we get to the
-            // session-setting below
-            // 4. is the event in the correct status to accept data import?
-            // -- scheduled, data entry started, completed
-            // (and the event should already be created)
-            // (and the event should be independent, ie not affected by other
-            // events)
-
-            Boolean eventCRFStatusesValid = getImportCRFDataService().eventCRFStatusesValid(odmContainer, ub);
-            ImportCRFInfoContainer importCrfInfo = new ImportCRFInfoContainer(odmContainer, sm.getDataSource());
-            // The eventCRFBeans list omits EventCRFs that don't match UpsertOn rules. If EventCRF did not exist and
-            // doesn't match upsert, it won't be created.
-            List<EventCRFBean> eventCRFBeans = getImportCRFDataService().fetchEventCRFBeans(odmContainer, ub);
-            List<DisplayItemBeanWrapper> displayItemBeanWrappers = new ArrayList<DisplayItemBeanWrapper>();
-            HashMap<String, String> totalValidationErrors = new HashMap<String, String>();
-            HashMap<String, String> hardValidationErrors = new HashMap<String, String>();
-            // The following map is used for setting the EventCRF status post import.
-            HashMap<Integer, String> importedCRFStatuses = getImportCRFDataService().fetchEventCRFStatuses(odmContainer);
-            // @pgawade 17-May-2011 Fix for issue#9590 - collection of
-            // eventCRFBeans is returned as null
-            // when status of one the events in xml file is either stopped,
-            // signed or locked.
-            // Instead of repeating the code to fetch the events in xml file,
-            // method in the ImportCRFDataService is modified for this fix.
-            if (eventCRFBeans == null) {
-                fail = true;
-                addPageMessage(respage.getString("no_event_status_matching"));
-            } else {
-                ArrayList<Integer> permittedEventCRFIds = new ArrayList<Integer>();
-                logger.info("found a list of eventCRFBeans: " + eventCRFBeans.toString());
-
-                // List<DisplayItemBeanWrapper> displayItemBeanWrappers = new ArrayList<DisplayItemBeanWrapper>();
-                // HashMap<String, String> totalValidationErrors = new
-                // HashMap<String, String>();
-                // HashMap<String, String> hardValidationErrors = new
-                // HashMap<String, String>();
-                logger.debug("found event crfs " + eventCRFBeans.size());
-                // -- does the event already exist? if not, fail
-                if (!eventCRFBeans.isEmpty()) {
-                    for (EventCRFBean eventCRFBean : eventCRFBeans) {
-                        DataEntryStage dataEntryStage = eventCRFBean.getStage();
-                        Status eventCRFStatus = eventCRFBean.getStatus();
-
-                        logger.info("Event CRF Bean: id " + eventCRFBean.getId() + ", data entry stage " + dataEntryStage.getName() + ", status "
-                                + eventCRFStatus.getName());
-                        if (eventCRFStatus.equals(Status.AVAILABLE) || dataEntryStage.equals(DataEntryStage.INITIAL_DATA_ENTRY)
-                                || dataEntryStage.equals(DataEntryStage.INITIAL_DATA_ENTRY_COMPLETE)
-                                || dataEntryStage.equals(DataEntryStage.DOUBLE_DATA_ENTRY_COMPLETE) || dataEntryStage.equals(DataEntryStage.DOUBLE_DATA_ENTRY)) {
-                            // actually want the negative
-                            // was status == available and the stage questions, but
-                            // when you are at 'data entry complete' your status is
-                            // set to 'unavailable'.
-                            // >> tbh 09/2008
-                            // HOWEVER, when one event crf is removed and the rest
-                            // are good, what happens???
-                            // need to create a list and inform that one is blocked
-                            // and the rest are not...
-                            //
-                            permittedEventCRFIds.add(new Integer(eventCRFBean.getId()));
-                        } else {
-                            // fail = true;
-                            // addPageMessage(respage.getString(
-                            // "the_event_crf_not_correct_status"));
-                            // forwardPage(Page.IMPORT_CRF_DATA);
-                        }
-                    }
-
-                    // so that we don't repeat this following message
-                    // did we exclude all the event CRFs? if not, pass, else fail
-                    if (eventCRFBeans.size() >= permittedEventCRFIds.size()) {
-                        addPageMessage(respage.getString("passed_event_crf_status_check"));
-                    } else {
-                        fail = true;
-                        addPageMessage(respage.getString("the_event_crf_not_correct_status"));
-                    }
-                    // do they all have to have the right status to move
-                    // forward? answer from bug tracker = no
-                    // 5. do the items contain the correct data types?
-
-                    // 6. are all the related OIDs present?
-                    // that is to say, do we chain all the way down?
-                    // this is covered by the OID Metadata Check
-
-                    // 7. do the edit checks pass?
-                    // only then can we pass on to VERIFY_IMPORT_SERVLET
-
-                    // do we overwrite?
-
-                    // XmlParser xp = new XmlParser();
-                    // List<HashMap<String, String>> importedData =
-                    // xp.getData(f);
-
-                    // now we generate hard edit checks, and have to set that to the
-                    // screen. get that from the service, generate a summary bean to
-                    // set to either
-                    // page in the workflow, either verifyImport.jsp or import.jsp
-
-                    try {
-                        List<DisplayItemBeanWrapper> tempDisplayItemBeanWrappers = new ArrayList<DisplayItemBeanWrapper>();
-                        tempDisplayItemBeanWrappers = getImportCRFDataService().lookupValidationErrors(org.akaza.openclinica.i18n.core.LocaleResolver.getLocale(request), odmContainer, ub, totalValidationErrors,
-                                hardValidationErrors, permittedEventCRFIds);
-                        logger.debug("generated display item bean wrappers " + tempDisplayItemBeanWrappers.size());
-                        logger.debug("size of total validation errors: " + totalValidationErrors.size());
-                        displayItemBeanWrappers.addAll(tempDisplayItemBeanWrappers);
-                    } catch (NullPointerException npe1) {
-                        // what if you have 2 event crfs but the third is a fake?
-                        fail = true;
-                        logger.debug("threw a NPE after calling lookup validation errors");
-                        System.out.println(ExceptionUtils.getStackTrace(npe1));
-                        addPageMessage(respage.getString("an_error_was_thrown_while_validation_errors"));
-                        // npe1.printStackTrace();
-                    } catch (OpenClinicaException oce1) {
-                        fail = true;
-                        logger.debug("threw an OCE after calling lookup validation errors " + oce1.getOpenClinicaMessage());
-                        addPageMessage(oce1.getOpenClinicaMessage());
-                    }
-                } else if (!eventCRFStatusesValid) {
-                    fail = true;
-                    addPageMessage(respage.getString("the_event_crf_not_correct_status"));
-                } else {
-                    fail = true;
-                    addPageMessage(respage.getString("no_event_crfs_matching_the_xml_metadata"));
-                }
-                // for (HashMap<String, String> crfData : importedData) {
-                // DisplayItemBeanWrapper displayItemBeanWrapper =
-                // testing(request,
-                // crfData);
-                // displayItemBeanWrappers.add(displayItemBeanWrapper);
-                // errors = displayItemBeanWrapper.getValidationErrors();
-                //
-                // }
-            }
-            if (fail) {
-                logger.debug("failed here - forwarding...");
-                forwardPage(Page.IMPORT_CRF_DATA);
-            } else {
-                addPageMessage(respage.getString("passing_crf_edit_checks"));
-                session.setAttribute("odmContainer", odmContainer);
-                session.setAttribute("importedData", displayItemBeanWrappers);
-                session.setAttribute("validationErrors", totalValidationErrors);
-                session.setAttribute("hardValidationErrors", hardValidationErrors);
-                session.setAttribute("importedCRFStatuses", importedCRFStatuses);
-                session.setAttribute("importCrfInfo", importCrfInfo);
-                // above are updated 'statically' by the method that originally
-                // generated the wrappers; soon the only thing we will use
-                // wrappers for is the 'overwrite' flag
-
-                logger.debug("+++ content of total validation errors: " + totalValidationErrors.toString());
-                SummaryStatsBean ssBean = getImportCRFDataService().generateSummaryStatsBean(odmContainer, displayItemBeanWrappers, importCrfInfo);
-                session.setAttribute("summaryStats", ssBean);
-                // will have to set hard edit checks here as well
-                session.setAttribute("subjectData", odmContainer.getCrfDataPostImportContainer().getSubjectData());
-                forwardPage(Page.VERIFY_IMPORT_SERVLET);
-            }
-            // }
+            addPageMessage("Your XML clinical data import has been queued for background processing. You will receive an email upon completion.");
+            forwardPage(Page.IMPORT_CRF_DATA);
         }
     }
 

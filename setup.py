@@ -19,6 +19,9 @@ def handle_validation_failure(tool_name, error_msg, required_version):
             else:
                 print("Invalid input. Please enter 'y' or 'n'.")
     else:
+        if os.environ.get("FORCE") == "1" or os.environ.get("OVERRIDE") == "1":
+            print(f"Warning: {error_msg} (Bypassed due to override flag)")
+            return
         print(f"Error: {error_msg}")
         print(f"Required version for {tool_name} is {required_version}.")
         sys.exit(1)
@@ -208,7 +211,9 @@ def main():
             if not verify_connection(l_host, l_port, "LDAP"):
                 sys.exit(1)
 
-    host_file_path = input("File Path for data (default: ./data): ").strip() or "./data"
+    app_root = os.path.dirname(os.path.abspath(__file__))
+    default_data_path = os.path.join(app_root, "data")
+    host_file_path = input(f"File Path for data (default: {default_data_path}): ").strip() or default_data_path
     env_vars["HOST_FILE_PATH"] = os.path.abspath(host_file_path)
     env_vars["FILE_PATH"] = "/opt/clinica/data/"
 
@@ -222,7 +227,7 @@ def main():
         env_vars["HOST_CLINICAL_TEMPLATE_PATH"] = os.path.abspath(template_path)
         env_vars["CLINICAL_TEMPLATE_PATH"] = "/opt/clinica/template.xlsx"
     else:
-        dummy_path = os.path.abspath("dummy_template.xlsx")
+        dummy_path = os.path.join(app_root, "dummy_template.xlsx")
         with open(dummy_path, "w") as f:
             pass
         env_vars["HOST_CLINICAL_TEMPLATE_PATH"] = dummy_path
@@ -232,7 +237,8 @@ def main():
     os.makedirs(host_file_path, exist_ok=True)
     print(f"Created directory structure: {host_file_path}")
 
-    with open(".env", "w") as f:
+    env_path = os.path.join(app_root, ".env")
+    with open(env_path, "w") as f:
         for k, v in env_vars.items():
             f.write(f"{k}={v}\n")
     
