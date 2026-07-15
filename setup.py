@@ -29,7 +29,7 @@ def handle_validation_failure(tool_name, error_msg, required_version):
 def check_java_version():
     required_version = "17"
     try:
-        result = subprocess.run(["java", "-version"], capture_output=True, text=True, check=True)
+        result = subprocess.run(["java", "-version"], capture_output=True, text=True, check=True, shell=(os.name == 'nt'))
         output = result.stderr + result.stdout
     except Exception:
         handle_validation_failure("Java", "Java is missing or not executable (or error running java -version).", required_version)
@@ -60,7 +60,7 @@ def check_java_version():
 def check_maven_version():
     required_version = "3.0.0"
     try:
-        result = subprocess.run(["mvn", "--version"], capture_output=True, text=True, check=True)
+        result = subprocess.run(["mvn", "--version"], capture_output=True, text=True, check=True, shell=(os.name == 'nt'))
         output = result.stdout + result.stderr
     except Exception:
         handle_validation_failure("Maven", "Maven is missing or not executable.", required_version)
@@ -84,7 +84,7 @@ def check_maven_version():
 def check_docker_version():
     required_version = "19.03.0"
     try:
-        result = subprocess.run(["docker", "--version"], capture_output=True, text=True, check=True)
+        result = subprocess.run(["docker", "--version"], capture_output=True, text=True, check=True, shell=(os.name == 'nt'))
         output = result.stdout + result.stderr
     except Exception:
         handle_validation_failure("Docker", "Docker is missing or not executable.", required_version)
@@ -108,7 +108,7 @@ def check_docker_version():
 def check_node_version():
     required_version = "22.13.0"
     try:
-        result = subprocess.run(["node", "--version"], capture_output=True, text=True, check=True)
+        result = subprocess.run(["node", "--version"], capture_output=True, text=True, check=True, shell=(os.name == 'nt'))
         output = result.stdout + result.stderr
     except Exception:
         handle_validation_failure("Node", "Node is missing or not executable.", required_version)
@@ -132,7 +132,7 @@ def check_node_version():
 def check_npm_version():
     required_version = "9.6.7"
     try:
-        result = subprocess.run(["npm", "--version"], capture_output=True, text=True, check=True)
+        result = subprocess.run(["npm", "--version"], capture_output=True, text=True, check=True, shell=(os.name == 'nt'))
         output = result.stdout + result.stderr
     except Exception:
         handle_validation_failure("NPM", "NPM is missing or not executable.", required_version)
@@ -163,6 +163,17 @@ def verify_connection(host, port, service_name):
         print(f"Immediate feedback: Connectivity error! Failed to connect to {service_name} at {host}:{port} ({e})")
         return False
 
+def get_input(prompt, default_val, env_var_name):
+    if env_var_name in os.environ:
+        return os.environ[env_var_name]
+    if not sys.stdin.isatty():
+        return default_val
+    try:
+        val = input(prompt).strip()
+        return val if val else default_val
+    except EOFError:
+        return default_val
+
 def main():
     print("Welcome to the Guided Developer Setup!")
     check_java_version()
@@ -176,17 +187,17 @@ def main():
     # Defaults
     env_vars = {}
     
-    db_host = input("Database Host (default: localhost): ").strip() or "localhost"
-    db_port = input("Database Port (default: 5432): ").strip() or "5432"
-    db_user = input("Database User (default: clinica): ").strip() or "clinica"
-    db_pass = input("Database Password (default: clinica): ").strip() or "clinica"
-    db_name = input("Database Name (default: clinica): ").strip() or "clinica"
+    db_host = get_input("Database Host (default: localhost): ", "localhost", "DB_HOST")
+    db_port = get_input("Database Port (default: 5432): ", "5432", "DB_PORT")
+    db_user = get_input("Database User (default: clinica): ", "clinica", "DB_USER")
+    db_pass = get_input("Database Password (default: clinica): ", "clinica", "DB_PASS")
+    db_name = get_input("Database Name (default: clinica): ", "clinica", "DB")
     
     # immediate feedback
     if db_host not in ["db", "localhost", "127.0.0.1"]:
         print(f"Verifying connection to {db_host}:{db_port}...")
         if not verify_connection(db_host, db_port, "Database"):
-            sys.exit(1)
+            print(f"Warning: Failed to connect to Database at {db_host}:{db_port}. Proceeding anyway.")
 
     env_vars["DB_HOST"] = db_host
     env_vars["DB_PORT"] = db_port
@@ -195,13 +206,14 @@ def main():
     env_vars["DB"] = db_name
     env_vars["DB_TYPE"] = "postgres"
 
-    ldap_enabled = input("Enable LDAP? (y/N): ").strip().lower() == 'y'
+    ldap_val = get_input("Enable LDAP? (y/N): ", "N", "LDAP_ENABLED")
+    ldap_enabled = ldap_val.lower() in ["y", "yes", "true", "1"]
     env_vars["LDAP_ENABLED"] = "true" if ldap_enabled else "false"
     if ldap_enabled:
-        ldap_host = input("LDAP Host (e.g., ldap://localhost:389): ").strip() or "ldap://localhost:389"
+        ldap_host = get_input("LDAP Host (e.g., ldap://localhost:389): ", "ldap://localhost:389", "LDAP_HOST")
         env_vars["LDAP_HOST"] = ldap_host
-        env_vars["LDAP_USER_DN"] = input("LDAP User DN: ").strip() or "cn=admin,dc=localhost"
-        env_vars["LDAP_PASSWORD"] = input("LDAP Password: ").strip() or "localhost"
+        env_vars["LDAP_USER_DN"] = get_input("LDAP User DN: ", "cn=admin,dc=localhost", "LDAP_USER_DN")
+        env_vars["LDAP_PASSWORD"] = get_input("LDAP Password: ", "localhost", "LDAP_PASSWORD")
         
         parsed_url = urlparse(ldap_host)
         l_host = parsed_url.hostname or "localhost"
@@ -209,28 +221,33 @@ def main():
         if l_host not in ["localhost", "127.0.0.1"]:
             print(f"Verifying connection to {l_host}:{l_port}...")
             if not verify_connection(l_host, l_port, "LDAP"):
-                sys.exit(1)
+                print(f"Warning: Failed to connect to LDAP at {l_host}:{l_port}. Proceeding anyway.")
 
     app_root = os.path.dirname(os.path.abspath(__file__))
     default_data_path = os.path.join(app_root, "data")
-    host_file_path = input(f"File Path for data (default: {default_data_path}): ").strip() or default_data_path
-    env_vars["HOST_FILE_PATH"] = os.path.abspath(host_file_path)
+    host_file_path = get_input(f"File Path for data (default: {default_data_path}): ", default_data_path, "HOST_FILE_PATH")
+    env_vars["HOST_FILE_PATH"] = os.path.abspath(host_file_path).replace("\\", "/")
     env_vars["FILE_PATH"] = "/opt/clinica/data/"
 
-    seed_clinical = input("Enable clinical data seeding? (y/N): ").strip().lower() == 'y'
+    seed_val = get_input("Enable clinical data seeding? (y/N): ", "N", "SEED_CLINICAL_DATA")
+    seed_clinical = seed_val.lower() in ["y", "yes", "true", "1"]
     env_vars["SEED_CLINICAL_DATA"] = "true" if seed_clinical else "false"
     if seed_clinical:
-        template_path = input("Path to local Excel template: ").strip()
+        default_template = os.path.join(app_root, "dummy_template.xlsx")
+        template_path = get_input("Path to local Excel template: ", default_template, "HOST_CLINICAL_TEMPLATE_PATH")
         if not os.path.isfile(template_path):
-            print(f"Error: Template file not found at {template_path}")
-            sys.exit(1)
-        env_vars["HOST_CLINICAL_TEMPLATE_PATH"] = os.path.abspath(template_path)
+            if sys.stdin.isatty() and not os.environ.get("HOST_CLINICAL_TEMPLATE_PATH"):
+                print(f"Error: Template file not found at {template_path}")
+                sys.exit(1)
+            else:
+                print(f"Warning: Template file not found at {template_path}. Proceeding anyway.")
+        env_vars["HOST_CLINICAL_TEMPLATE_PATH"] = os.path.abspath(template_path).replace("\\", "/")
         env_vars["CLINICAL_TEMPLATE_PATH"] = "/opt/clinica/template.xlsx"
     else:
         dummy_path = os.path.join(app_root, "dummy_template.xlsx")
-        with open(dummy_path, "w") as f:
+        with open(dummy_path, "w", newline='\n') as f:
             pass
-        env_vars["HOST_CLINICAL_TEMPLATE_PATH"] = dummy_path
+        env_vars["HOST_CLINICAL_TEMPLATE_PATH"] = dummy_path.replace("\\", "/")
         env_vars["CLINICAL_TEMPLATE_PATH"] = ""
 
     # Directory structures
@@ -238,7 +255,7 @@ def main():
     print(f"Created directory structure: {host_file_path}")
 
     env_path = os.path.join(app_root, ".env")
-    with open(env_path, "w") as f:
+    with open(env_path, "w", newline='\n') as f:
         for k, v in env_vars.items():
             f.write(f"{k}={v}\n")
     
