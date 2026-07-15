@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { store } from '../store';
+import { THEME } from '../theme';
+import { useAccessibility } from './AccessibilityProvider.jsx';
 
 const schema = {
   formOID: "F_TEST_1",
@@ -46,8 +48,10 @@ export default function CRFRenderer() {
   const [studyOID, setStudyOID] = useState(store.getState().studyOID);
   const [formData, setFormData] = useState(store.getState().formData);
   const [loading, setLoading] = useState(true);
+  const { announce } = useAccessibility();
 
   useEffect(() => {
+    announce('Form loading started');
     // Initialize default row for repeating groups if empty
     schema.groups.forEach(group => {
       const data = store.getState().formData[group.groupOID];
@@ -64,6 +68,7 @@ export default function CRFRenderer() {
 
     const timer = setTimeout(() => {
       setLoading(false);
+      announce('Form loading completed');
     }, 500);
 
     const unsubscribe = store.subscribe((state) => {
@@ -94,7 +99,7 @@ export default function CRFRenderer() {
         {schema.groups.map(group => {
           const rows = formData[group.groupOID] || [];
           return (
-            <div key={group.groupOID} style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
+            <div key={group.groupOID} style={{ marginTop: '20px', border: `1px solid ${THEME.colors.border}`, padding: '10px' }}>
               <h3>{group.title}</h3>
               {rows.map((row, index) => (
                 <div key={index} style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f9f9f9' }}>
@@ -127,12 +132,18 @@ export default function CRFRenderer() {
                     );
                   })}
                   {group.repeating && (
-                    <button type="button" onClick={() => store.removeRow(group.groupOID, index)}>Remove Row</button>
+                    <button type="button" onClick={() => {
+                      store.removeRow(group.groupOID, index);
+                      announce(`Row ${index + 1} removed from ${group.title}`);
+                    }}>Remove Row</button>
                   )}
                 </div>
               ))}
               {group.repeating && (
-                <button type="button" onClick={() => store.addRow(group.groupOID, schema)}>Add {group.title} Entry</button>
+                <button type="button" onClick={() => {
+                  store.addRow(group.groupOID, schema);
+                  announce(`New row added to ${group.title}`);
+                }}>Add {group.title} Entry</button>
               )}
             </div>
           );
