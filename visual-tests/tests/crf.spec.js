@@ -1,6 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
+const { AxeBuilder } = require('@axe-core/playwright');
 
 test.describe('Printable CRF', () => {
   test('should display investigator signature and labels', async ({ page }) => {
@@ -69,6 +70,30 @@ test.describe('Printable CRF', () => {
     await expect(signatureBlock).toContainText('Investigator:');
     await expect(signatureBlock).toContainText('Investigator Signature:');
     await expect(signatureBlock).toContainText('Meaning of Signature:');
+
+    if (!process.env.CI) {
+      const accessibilityScanResults = await new AxeBuilder({ page })
+        .withTags(['wcag21a', 'wcag21aa'])
+        .analyze();
+
+      if (accessibilityScanResults.violations.length > 0) {
+        console.log('Accessibility Violations:');
+        accessibilityScanResults.violations.forEach((violation) => {
+          console.log(`\nRule: ${violation.id} (${violation.impact})`);
+          console.log(`Description: ${violation.description}`);
+          console.log(`Help: ${violation.help}`);
+          console.log(`Help URL: ${violation.helpUrl}`);
+          violation.nodes.forEach((node) => {
+            console.log(`- Element: ${node.html}`);
+            console.log(`  Target: ${node.target.join(', ')}`);
+            console.log(`  Failure Summary: ${node.failureSummary}`);
+          });
+        });
+      } else {
+        console.log('No accessibility violations found.');
+      }
+      expect(accessibilityScanResults.violations).toEqual([]);
+    }
 
     // Take a snapshot
     await expect(page).toHaveScreenshot('crf-printable-view.png', { maxDiffPixelRatio: 0.01 });
