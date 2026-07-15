@@ -38,43 +38,54 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
 
         System.out.println("Oh look at you triggering API calls i see !!!!!!");
 
-
         String authHeader = request.getHeader("Authorization");
+        String apiKeyHeader = request.getHeader("api_key");
+        String apiKey = null;
+
         if (authHeader != null) {
             StringTokenizer st = new StringTokenizer(authHeader);
             if (st.hasMoreTokens()) {
-                String basic = st.nextToken();
-
-                if (basic.equalsIgnoreCase("Basic")) {
-                    try {
-                        String credentials = new String(Base64.decodeBase64(st.nextToken().getBytes()), "UTF-8");
-                        int p = credentials.indexOf(":");
-                        if (p != -1) {
-                            String _username = credentials.substring(0, p).trim();
-                            String _password = credentials.substring(p + 1).trim();
-
-                            UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
-                            UserAccountBean ub = (UserAccountBean) userAccountDAO.findByApiKey(_username);
-                            if (!_username.equals("") && ub.getId() != 0) {
-                                request.getSession().setAttribute("userBean",ub);
-                                auditApiLogin(_username, ub, true, "Successful API Login");
-                            }else{
-                                auditApiLogin(_username, null, false, "Bad credentials");
-                                unauthorized(response, "Bad credentials");
-                                return;
-                            }
-                        } else {
-                            auditApiLogin("unknown", null, false, "Invalid authentication token");
-                            unauthorized(response, "Invalid authentication token");
-                            return;
-                        }
-                    } catch (UnsupportedEncodingException e) {
-                        throw new Error("Couldn't retrieve authentication", e);
+                String tokenType = st.nextToken();
+                if (tokenType.equalsIgnoreCase("Basic")) {
+                    auditApiLogin("unknown", null, false, "Deprecated Basic authentication is not supported");
+                    unauthorized(response, "Deprecated Basic authentication is not supported");
+                    return;
+                } else if (tokenType.equalsIgnoreCase("Bearer")) {
+                    if (st.hasMoreTokens()) {
+                        apiKey = st.nextToken();
                     }
                 }
             }
+        }
+
+        if (apiKey == null && apiKeyHeader != null) {
+            apiKey = apiKeyHeader;
+        }
+
+        if (apiKey != null && !apiKey.trim().isEmpty()) {
+            apiKey = apiKey.trim();
+            UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+            UserAccountBean ub = (UserAccountBean) userAccountDAO.findByApiKey(apiKey);
+            if (ub != null && ub.getId() != 0) {
+                request.getSession().setAttribute("userBean", ub);
+                
+                java.util.List<org.springframework.security.core.GrantedAuthority> authorities = new java.util.ArrayList<>();
+                authorities.add(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER"));
+                org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(ub.getName(), "", true, true, true, true, authorities);
+                org.springframework.security.authentication.UsernamePasswordAuthenticationToken auth = 
+                    new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+                org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(auth);
+                request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", org.springframework.security.core.context.SecurityContextHolder.getContext());
+                
+                auditApiLogin(ub.getName(), ub, true, "Successful API Login");
+            } else {
+                auditApiLogin("unknown", null, false, "Bad credentials");
+                unauthorized(response, "Bad credentials");
+                return;
+            }
         } else {
             unauthorized(response);
+            return;
         }
 
         filterChain.doFilter(request, response);
@@ -103,7 +114,7 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
     }
 
     private void unauthorized(HttpServletResponse response, String message) throws IOException {
-        response.setHeader("WWW-Authenticate", "Basic realm=\"" + realm + "\"");
+        response.setHeader("WWW-Authenticate", "Bearer realm=\"" + realm + "\"");
         response.setStatus(401);
         response.setContentType("application/json;charset=UTF-8");
         
