@@ -537,7 +537,7 @@
                     </execution>
                     <execution>
                         <id>generate-docs</id>
-                        <phase>site</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
