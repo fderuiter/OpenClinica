@@ -78,6 +78,9 @@ public class OdmController {
     @Autowired
     EventCrfDao eventCrfDao;
 
+    @Autowired
+    private org.akaza.openclinica.service.OdmService odmService;
+
     public static final String FORM_CONTEXT = "ecid";
     ParticipantPortalRegistrar participantPortalRegistrar;
     StudyDAO sdao;
@@ -223,237 +226,13 @@ public class OdmController {
     ODM getEvent(@PathVariable("studyOid") String studyOid, @PathVariable("studySubjectOid") String studySubjectOid) throws Exception {
         ResourceBundleProvider.updateLocale(new Locale("en_US"));
 
-        return getODM(studyOid, studySubjectOid);
+        return odmService.getODM(studyOid, studySubjectOid, context);
     }
 
-    private ODM getODM(String studyOID, String subjectKey) throws Exception {
-        ODM odm = new ODM();
-        String ssoid = subjectKey;
-        if (ssoid == null) {
-            return null;
-        }
 
-        CRFVersionDAO versionDAO = new CRFVersionDAO(dataSource);
-        StudyDAO studyDAO = new StudyDAO(dataSource);
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        ItemDataDAO itemDataDAO = new ItemDataDAO(dataSource);
-        CRFDAO crfDAO = new CRFDAO(dataSource);
-        List<ODMcomplexTypeDefinitionFormData> formDatas = new ArrayList<>();
-        try {
-            // Retrieve crfs for next event
-            StudySubjectBean studySubjectBean = studySubjectDAO.findByOid(ssoid);
-            ParticipantEventService participantEventService = new ParticipantEventService(dataSource);
-            StudyEventBean nextEvent = participantEventService.getNextParticipantEvent(studySubjectBean);
-            if (nextEvent != null) {
-                logger.debug("Found event: " + nextEvent.getName() + " - ID: " + nextEvent.getId());
-
-                List<EventCRFBean> eventCrfs = eventCRFDAO.findAllByStudyEvent(nextEvent);
-                StudyBean study = studyDAO.findByOid(studyOID);
-                if (!mayProceed(studyOID, studySubjectBean))
-                    return odm;
-
-                List<EventDefinitionCRFBean> eventDefCrfs = participantEventService.getEventDefCrfsForStudyEvent(studySubjectBean, nextEvent);
-                for (EventDefinitionCRFBean eventDefCrf:eventDefCrfs) {
-                    if (eventDefCrf.isParticipantForm()) {
-                        EventCRFBean eventCRF = participantEventService.getExistingEventCRF(studySubjectBean, nextEvent, eventDefCrf);
-                        boolean itemDataExists = false;
-                        boolean validStatus = true;
-                        CRFVersionBean crfVersion = null;
-                        if (eventCRF!=null) {
-                            if (eventCRF.getStatus().getId() != 1 && eventCRF.getStatus().getId() != 2)
-                                validStatus = false;
-                            if (itemDataDAO.findAllByEventCRFId(eventCRF.getId()).size() > 0)
-                                itemDataExists = true;
-                            crfVersion = (CRFVersionBean) versionDAO.findByPK(eventCRF.getCRFVersionId());
-                        } else crfVersion = (CRFVersionBean) versionDAO.findByPK(eventDefCrf.getDefaultVersionId());
-
-                        if (validStatus) {
-                            String formUrl = null;
-                            if (!itemDataExists)
-                                formUrl = createEnketoUrl(studyOID, crfVersion, nextEvent, ssoid);
-                            else
-                                formUrl = createEditUrl(studyOID, crfVersion, nextEvent, ssoid);
-                            formDatas.add(getFormDataPerCrf(crfVersion, nextEvent, eventCrfs, crfDAO, formUrl, itemDataExists));
-                        }
-                    }
-                }
-            return createOdm(study, studySubjectBean, nextEvent, formDatas);
-            } else {
-                logger.debug("Unable to find next event for subject.");
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            logger.error(ExceptionUtils.getStackTrace(e));
-            
-            try {
-                AuditService auditService = new AuditService(dataSource);
-                AuditEventBean auditEvent = new AuditEventBean();
-                auditEvent.setAuditTable("export");
-                auditEvent.setEntityId(0);
-                String msg = e.getMessage() != null ? e.getMessage() : e.getClass().getName();
-                auditEvent.setReasonForChange("Export failed: " + msg);
-                auditEvent.setActionMessage("Export failed");
-                auditService.logEvent(auditEvent, null);
-            } catch (Exception auditEx) {
-                logger.error("Failed to log export error to audit trail", auditEx);
-            }
-            
-            throw e;
-        }
-
-        return odm;
-
-    }
-
-    private StudyEventDefinitionBean getStudyEventDefinitionBean(int ID) {
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(dataSource);
-        StudyEventDefinitionBean studyEventDefinitionBean = (StudyEventDefinitionBean) seddao.findByPK(ID);
-        return studyEventDefinitionBean;
-    }
-
-    private ODM createOdm(StudyBean study, StudySubjectBean studySubjectBean, StudyEventBean nextEvent, List<ODMcomplexTypeDefinitionFormData> formDatas) {
-        ODM odm = new ODM();
-
-        ODMcomplexTypeDefinitionClinicalData clinicalData = generateClinicalData(study);
-        ODMcomplexTypeDefinitionSubjectData subjectData = generateSubjectData(studySubjectBean);
-        ODMcomplexTypeDefinitionStudyEventData studyEventData = generateStudyEventData(nextEvent);
-        // Create the object graph
-        studyEventData.getFormData().addAll(formDatas);
-        subjectData.getStudyEventData().add(studyEventData);
-        clinicalData.getSubjectData().add(subjectData);
-        odm.getClinicalData().add(clinicalData);
-
-        return odm;
-    }
-
-    private String createEnketoUrl(String studyOID, CRFVersionBean crfVersion, StudyEventBean nextEvent, String ssoid) throws Exception {
-        PFormCache cache = PFormCache.getInstance(context);
-        String enketoURL = cache.getPFormURL(studyOID, crfVersion.getOid());
-        String contextHash = cache.putSubjectContext(ssoid, String.valueOf(nextEvent.getStudyEventDefinitionId()),
-                String.valueOf(nextEvent.getSampleOrdinal()), crfVersion.getOid());
-
-        String url = enketoURL + "?" + FORM_CONTEXT + "=" + contextHash;
-        logger.debug("Enketo URL for " + crfVersion.getName() + "= " + url);
-        return url;
-
-    }
-
-    private String createEditUrl(String studyOID, CRFVersionBean crfVersion, StudyEventBean nextEvent, String ssoid) throws Exception {
-        PFormCache cache = PFormCache.getInstance(context);
-        String contextHash = cache.putSubjectContext(ssoid, String.valueOf(nextEvent.getStudyEventDefinitionId()),
-                String.valueOf(nextEvent.getSampleOrdinal()), crfVersion.getOid());
-        String editURL = CoreResources.getField("sysURL.base") + "pages/api/v1/editform/" + studyOID + "/url";
-
-        String url = editURL + "?" + FORM_CONTEXT + "=" + contextHash;
-        logger.debug("Edit URL for " + crfVersion.getName() + "= " + url);
-        return url;
-
-    }
-
-    private ODMcomplexTypeDefinitionFormData getFormDataPerCrf(CRFVersionBean crfVersion, StudyEventBean nextEvent, List<EventCRFBean> eventCrfs,
-            CRFDAO crfDAO, String formUrl,boolean itemDataExists) {
-        EventCRFBean selectedEventCRFBean = null;
-        CRFBean crfBean = (CRFBean) crfDAO.findByVersionId(crfVersion.getId());
-        for (EventCRFBean eventCRFBean : eventCrfs) {
-            if (eventCRFBean.getCRFVersionId() == crfVersion.getId()) {
-                selectedEventCRFBean = eventCRFBean;
-                break;
-            }
-        }
-        return generateFormData(crfVersion, nextEvent, selectedEventCRFBean, crfBean, formUrl, itemDataExists);
-
-    }
-
-    private ODMcomplexTypeDefinitionClinicalData generateClinicalData(StudyBean study) {
-        ODMcomplexTypeDefinitionClinicalData clinicalData = new ODMcomplexTypeDefinitionClinicalData();
-        clinicalData.setStudyName(study.getName());
-        clinicalData.setStudyOID(study.getOid());
-        return clinicalData;
-    }
-
-    private ODMcomplexTypeDefinitionSubjectData generateSubjectData(StudySubjectBean studySubject) {
-        ODMcomplexTypeDefinitionSubjectData subjectData = new ODMcomplexTypeDefinitionSubjectData();
-        subjectData.setSubjectKey(studySubject.getOid());
-        subjectData.setStudySubjectID(studySubject.getLabel());
-        subjectData.setStatus(studySubject.getStatus().getName());
-        return subjectData;
-    }
-
-    private ODMcomplexTypeDefinitionStudyEventData generateStudyEventData(StudyEventBean studyEvent) {
-        ODMcomplexTypeDefinitionStudyEventData studyEventData = new ODMcomplexTypeDefinitionStudyEventData();
-        studyEventData.setStartDate(studyEvent.getDateStarted().toString());
-        StudyEventDefinitionBean studyEventDefBean = getStudyEventDefinitionBean(studyEvent.getStudyEventDefinitionId());
-        studyEventData.setEventName(studyEventDefBean.getName());
-        studyEventData.setStudyEventOID(studyEventDefBean.getOid());
-        studyEventData.setStudyEventRepeatKey(String.valueOf(studyEvent.getSampleOrdinal()));
-        return studyEventData;
-    }
-
-    private ODMcomplexTypeDefinitionFormData generateFormData(CRFVersionBean crfVersionBean, StudyEventBean nextEvent, EventCRFBean eventCRFBean,
-            CRFBean crfBean, String formUrl,boolean itemDataExists) {
-        ODMcomplexTypeDefinitionFormData formData = new ODMcomplexTypeDefinitionFormData();
-        formData.setFormOID(crfVersionBean.getOid());
-        formData.setFormName(crfBean.getName());
-        formData.setVersionDescription(crfVersionBean.getDescription());
-        formData.setUrl(formUrl);
-        if (eventCRFBean == null) {
-            formData.setStatus("Not Started");
-        } else {
-            EventCrf eventCrf = eventCrfDao.findById(eventCRFBean.getId());
-            if (!itemDataExists){
-                formData.setStatus("Not Started");                
-            }else{
-                formData.setStatus(eventCRFBean.getStatus().getName());                
-            } 
-            
-            if (eventCrf.getDateUpdated() != null) {
-                // returns time as UTC
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                formData.setStatusChangeTimeStamp(sdf.format(eventCrf.getDateUpdated()));
-            }
-        }
-        return formData;
-    }
-
-    /**
-     * Currently not used, but keep here for future unit test
-     *
-     * @param clazz
-     * @param odm
-     * @return
-     * @throws Exception
-     */
-    private String generateXmlFromObj(Class clazz, ODM odm) throws Exception {
-
-        JAXBContext context = JAXBContext.newInstance(clazz);
-
-        Marshaller m = context.createMarshaller();
-        StringWriter w = new StringWriter();
-
-        m.marshal(odm, w);
-        return w.toString();
-    }
-
-    @SuppressWarnings("unchecked")
-    private void sortList(ArrayList<EventDefinitionCRFBean> edcBeans) {
-
-        Collections.sort(edcBeans, new Comparator() {
-
-            public int compare(Object o1, Object o2) {
-
-                Integer x1 = ((EventDefinitionCRFBean) o1).getOrdinal();
-                Integer x2 = ((EventDefinitionCRFBean) o2).getOrdinal();
-                int sComp = x1.compareTo(x2);
-
-                return sComp;
-            }
-        });
-    }
 
     private StudyBean getStudy(String oid) {
-        sdao = new StudyDAO(dataSource);
+        sdao = new org.akaza.openclinica.dao.managestudy.StudyDAO(dataSource);
         StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
         return studyBean;
     }
@@ -466,36 +245,21 @@ public class OdmController {
             StudyBean parentStudy = (StudyBean) sdao.findByPK(study.getParentStudyId());
             return parentStudy;
         }
-
-    }
-
-    private boolean mayProceed(String studyOid, StudySubjectBean ssBean) throws Exception {
-        boolean accessPermission = false;
-        logger.info("  studySubjectStatus: " + ssBean.getStatus().getName());
-        System.out.println("  studySubjectStatus: " + ssBean.getStatus().getName());
-        if (mayProceed(studyOid) && ssBean.getStatus() == Status.AVAILABLE) {
-            accessPermission = true;
-        }
-        return accessPermission;
     }
 
     private boolean mayProceed(String studyOid) throws Exception {
         boolean accessPermission = false;
         StudyBean study = getParentStudy(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
-        StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
+        org.akaza.openclinica.dao.service.StudyParameterValueDAO spvdao = new org.akaza.openclinica.dao.service.StudyParameterValueDAO(dataSource);
+        org.akaza.openclinica.bean.service.StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         participantPortalRegistrar = new ParticipantPortalRegistrar();
-        String pManageStatus = participantPortalRegistrar.getRegistrationStatus(studyOid).toString(); // ACTIVE ,
-                                                                                                      // PENDING ,
-                                                                                                      // INACTIVE
-        String participateStatus = pStatus.getValue().toString(); // enabled , disabled
-        String studyStatus = study.getStatus().getName().toString(); // available , pending , frozen , locked
-        System.out.println("pManageStatus: " + pManageStatus + "  participantStatus: " + participateStatus + "   studyStatus: " + studyStatus);
+        String pManageStatus = participantPortalRegistrar.getRegistrationStatus(studyOid).toString(); 
+        String participateStatus = pStatus.getValue().toString(); 
+        String studyStatus = study.getStatus().getName().toString(); 
         logger.info("pManageStatus: " + pManageStatus + "  participantStatus: " + participateStatus + "   studyStatus: " + studyStatus);
         if (participateStatus.equalsIgnoreCase("enabled") && studyStatus.equalsIgnoreCase("available") && pManageStatus.equalsIgnoreCase("ACTIVE")) {
             accessPermission = true;
         }
         return accessPermission;
     }
-
 }
