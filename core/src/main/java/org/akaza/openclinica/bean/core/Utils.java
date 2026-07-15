@@ -195,22 +195,8 @@ public class Utils {
      * @return
      */
     public static Integer getAge(Date birthDate, Date controlDate) {
-        Integer age = -1;
-        if (birthDate.before(controlDate)) {
-            Calendar dateOfBirth = Calendar.getInstance();
-            dateOfBirth.setTime(birthDate);
-            Calendar theDate = Calendar.getInstance();
-            theDate.setTime(controlDate);
-            age = theDate.get(Calendar.YEAR) - dateOfBirth.get(Calendar.YEAR);
-            Calendar today = Calendar.getInstance();
-            // add the age to the year to see if it's happened yet
-            dateOfBirth.add(Calendar.YEAR, age);
-            // subtract one from the age if the birthday hasn't happened yet
-            if (today.before(dateOfBirth)) {
-                age--;
-            }
-        }
-        return age;
+        org.akaza.openclinica.service.DateCalculationService calc = new org.akaza.openclinica.service.DateCalculationService();
+        return calc.calculateAgeAtEvent(birthDate, controlDate);
     }
 
     public static String getAttachedFilePath(StudyBean study) {

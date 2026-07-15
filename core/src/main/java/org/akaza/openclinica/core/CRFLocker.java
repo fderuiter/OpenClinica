@@ -14,6 +14,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * Data structure used to keep track of CRFs locked by users. The synchronization of access to the locks is implemented
  * internally, so clients of this class don't have to deal with it.
@@ -21,12 +24,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @author Doug Rodrigues (douglas.rodrigues@openclinica.com)
  *
  */
+@Component("crfLocker")
 public class CRFLocker implements Serializable {
 
     private static final long serialVersionUID = -541015729642748245L;
 
     private transient JdbcTemplate jdbcTemplate;
 
+    @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
