@@ -77,40 +77,7 @@ public class EditFormController {
     ServletContext context;
 
     @Autowired
-    private CrfVersionDao crfVersionDao;
-
-    @Autowired
-    private SectionDao sectionDao;
-
-    @Autowired
-    private StudyEventDao studyEventDao;
-
-    @Autowired
-    private StudyEventDefinitionDao studyEventDefinitionDao;
-
-    @Autowired
-    private StudySubjectDao studySubjectDao;
-
-    @Autowired
-    private EventCrfDao eventCrfDao;
-
-    @Autowired
-    private ItemDao itemDao;
-
-    @Autowired
-    private ItemGroupDao itemGroupDao;
-
-    @Autowired
-    private ItemGroupMetadataDao itemGroupMetadataDao;
-
-    @Autowired
-    private ItemFormMetadataDao itemFormMetadataDao;
-
-    @Autowired
-    private ResponseTypeDao responseTypeDao;
-
-    @Autowired
-    private ItemDataDao itemDataDao;
+    private org.akaza.openclinica.service.EditFormService editFormService;
 
     public static final String FORM_CONTEXT = "ecid";
     ParticipantPortalRegistrar participantPortalRegistrar;
@@ -154,26 +121,17 @@ public class EditFormController {
         PFormCache cache = PFormCache.getInstance(context);
         HashMap<String, String> userContext = cache.getSubjectContext(formContext);
 
-        // Lookup relevant data
-        StudyEventDefinition eventDef = studyEventDefinitionDao.findById(Integer.valueOf(userContext.get("studyEventDefinitionID")));
-        CrfVersion crfVersion = crfVersionDao.findByOcOID(userContext.get("crfVersionOID"));
-        StudySubject subject = studySubjectDao.findByOcOID(userContext.get("studySubjectOID"));
-        StudyEvent event = studyEventDao.fetchByStudyEventDefOIDAndOrdinal(eventDef.getOc_oid(), Integer.valueOf(userContext.get("studyEventOrdinal")),
-                subject.getStudySubjectId());
-        EventCrf eventCrf = eventCrfDao.findByStudyEventIdStudySubjectIdCrfVersionId(event.getStudyEventId(), subject.getStudySubjectId(),
-                crfVersion.getCrfVersionId());
-
-        // Load populated instance
-        String populatedInstance = getPopulatedInstance(crfVersion, eventCrf);
+        // Fetch data via transactional service returning a DTO
+        org.akaza.openclinica.bean.submit.EditFormDTO dto = editFormService.getEditFormDetails(userContext);
 
         // Call Enketo api to get edit url
         EnketoAPI enketo = new EnketoAPI(EnketoCredentials.getInstance(studyOID));
 
         // Build redirect url
-        String redirectUrl = getRedirectUrl(subject.getOcOid(), studyOID);
+        String redirectUrl = getRedirectUrl(dto.getStudySubjectOid(), studyOID);
 
         // Return Enketo URL
-        editURL = enketo.getEditURL(crfVersion.getOcOid(), populatedInstance, formContext, redirectUrl).getEdit_url() + "&ecid=" + formContext;
+        editURL = enketo.getEditURL(dto.getCrfVersionOid(), dto.getPopulatedInstance(), formContext, redirectUrl).getEdit_url() + "&ecid=" + formContext;
         logger.debug("Generating Enketo edit url for form: " + editURL);
 
         return new ResponseEntity<String>(editURL, org.springframework.http.HttpStatus.ACCEPTED);
@@ -205,92 +163,7 @@ public class EditFormController {
         return url;
     }
 
-    private String getPopulatedInstance(CrfVersion crfVersion, EventCrf eventCrf) throws Exception {
-        boolean isXform = false;
-        if (crfVersion.getXform() != null && !crfVersion.getXform().equals(""))
-            isXform = true;
 
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder build = docFactory.newDocumentBuilder();
-        Document doc = build.newDocument();
-
-        Element crfElement = null;
-        if (isXform)
-            crfElement = doc.createElement(crfVersion.getXformName());
-        else
-            crfElement = doc.createElement(crfVersion.getOcOid());
-        doc.appendChild(crfElement);
-
-        ArrayList<ItemGroup> itemGroups = itemGroupDao.findByCrfVersionId(crfVersion.getCrfVersionId());
-        for (ItemGroup itemGroup : itemGroups) {
-            ItemGroupMetadata itemGroupMetadata = itemGroupMetadataDao.findByItemGroupCrfVersion(itemGroup.getItemGroupId(), crfVersion.getCrfVersionId()).get(
-                    0);
-            ArrayList<Item> items = (ArrayList<Item>) itemDao.findByItemGroupCrfVersionOrdered(itemGroup.getItemGroupId(), crfVersion.getCrfVersionId());
-
-            // Get max repeat in item data
-            int maxGroupRepeat = itemDataDao.getMaxGroupRepeat(eventCrf.getEventCrfId(), items.get(0).getItemId());
-            // loop thru each repeat creating items in instance
-            String repeatGroupMin = itemGroupMetadata.getRepeatNumber().toString();
-            Boolean isrepeating = itemGroupMetadata.isRepeatingGroup();
-
-            // TODO: Test empty group here (no items). make sure doesn't get nullpointer exception
-            for (int i = 0; i < maxGroupRepeat; i++) {
-                Element groupElement = null;
-
-                if (isXform)
-                    groupElement = doc.createElement(itemGroup.getName());
-                else
-                    groupElement = doc.createElement(itemGroup.getOcOid());
-                Element repeatOrdinal = null;
-                if (isrepeating) {
-                	repeatOrdinal = doc.createElement("OC.REPEAT_ORDINAL");
-                	repeatOrdinal.setTextContent(String.valueOf(i+1));
-                	groupElement.appendChild(repeatOrdinal);
-                }
-                boolean hasItemData = false;
-                for (Item item : items) {
-                    ItemFormMetadata itemMetadata = itemFormMetadataDao.findByItemCrfVersion(item.getItemId(), crfVersion.getCrfVersionId());
-                    ItemData itemData = itemDataDao.findByItemEventCrfOrdinal(item.getItemId(), eventCrf.getEventCrfId(), i + 1);
-
-                    Element question = null;
-                    if (crfVersion.getXform() != null && !crfVersion.getXform().equals(""))
-                        question = doc.createElement(item.getName());
-                    else
-                        question = doc.createElement(item.getOcOid());
-
-                    if (itemData != null && itemData.getValue() != null && !itemData.getValue().equals("")) {
-                        ResponseType responseType = responseTypeDao.findByItemFormMetaDataId(itemMetadata.getItemFormMetadataId());
-                        String itemValue = itemData.getValue();
-                        if (responseType.getResponseTypeId() == 3 || responseType.getResponseTypeId() == 7) {
-                            itemValue = itemValue.replaceAll(",", " ");
-                        }
-
-                        question.setTextContent(itemValue);
-                    }
-                    if (itemData==null || !itemData.isDeleted()) { 
-                    	hasItemData = true; 
-                    	groupElement.appendChild(question);
-                    }
-                } // end of item
-                if (hasItemData) {
-                	crfElement.appendChild(groupElement);
-                }
-            }
-
-        } // end of group
-
-        TransformerFactory transformFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        StringWriter writer = new StringWriter();
-        StreamResult result = new StreamResult(writer);
-        DOMSource source = new DOMSource(doc);
-        transformer.transform(source, result);
-        String instance = writer.toString();
-        System.out.println("Editable instance = " + instance);
-        return instance;
-    }
 
     private StudyBean getParentStudy(Integer studyId) {
         StudyBean study = getStudy(studyId);

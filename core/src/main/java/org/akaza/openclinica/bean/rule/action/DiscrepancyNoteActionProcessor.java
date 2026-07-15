@@ -20,7 +20,17 @@ public class DiscrepancyNoteActionProcessor implements ActionProcessor {
     }
 
     private DiscrepancyNoteService getDiscrepancyNoteService() {
-        discrepancyNoteService = this.discrepancyNoteService != null ? discrepancyNoteService : new DiscrepancyNoteService(ds);
+        if (discrepancyNoteService == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    discrepancyNoteService = (DiscrepancyNoteService) context.getBean("discrepancyNoteService");
+                }
+            } catch (Exception e) {}
+            if (discrepancyNoteService == null) {
+                discrepancyNoteService = new DiscrepancyNoteService(ds);
+            }
+        }
         return discrepancyNoteService;
     }
 

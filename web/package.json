@@ -7,7 +7,7 @@
     "dev": "vite",
     "test": "vitest run --environment jsdom",
     "build": "vite build && node inject-bundle.js",
-    "docs": "typedoc --plugin typedoc-plugin-markdown src/main/webapp/js/components/*.jsx --out ../docs/frontend-api"
+    "docs": "typedoc --plugin typedoc-plugin-markdown src/main/webapp/js/components/*.jsx --out ../docs/reference/frontend-api"
   },
   "keywords": [],
   "author": "",

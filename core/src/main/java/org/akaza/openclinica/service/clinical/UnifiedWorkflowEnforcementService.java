@@ -80,8 +80,16 @@ public class UnifiedWorkflowEnforcementService {
     @Autowired
     private DnItemDataMapDao dnItemDataMapDao;
 
-    @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        if (dataSource instanceof org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy) {
+            this.dataSource = dataSource;
+        } else {
+            this.dataSource = new org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy(dataSource);
+        }
+    }
     @Autowired
     private EventCrfDao eventCrfDao;
 
@@ -96,6 +104,63 @@ public class UnifiedWorkflowEnforcementService {
 
     @Autowired
     private org.akaza.openclinica.dao.hibernate.StudySubjectDao studySubjectDao;
+
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, rollbackFor = Exception.class)
+    public <T> T executeWorkflowTransaction(
+            Long studyId, 
+            org.akaza.openclinica.model.ClinicalPayload payload, 
+            WorkflowTransactionCallback<T> callback) {
+
+        // Validations
+        if (payload == null || payload.getSubjectId() == null || payload.getEventId() == null || payload.getValue() == null) {
+            throw new ClinicalWorkflowException("Invalid clinical payload: Missing required fields");
+        }
+        
+        org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(dataSource);
+        
+        // Pessimistic Locking
+        try {
+            jdbcTemplate.execute("SELECT study_id FROM study WHERE study_id = " + studyId + " FOR UPDATE");
+        } catch (Exception e) {
+            logger.warn("Could not lock study " + studyId, e);
+        }
+
+        // Execute transaction callback
+        T result = null;
+        if (callback != null) {
+            result = callback.doInTransaction();
+        }
+
+        // Cache eviction
+        try {
+            net.sf.ehcache.CacheManager manager = net.sf.ehcache.CacheManager.getInstance();
+            if (manager != null) {
+                net.sf.ehcache.Cache cache = manager.getCache("studyCache");
+                if (cache != null) {
+                    cache.remove(studyId.intValue());
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("Cache eviction failed", e);
+        }
+
+        // Audit Logging
+        try {
+            org.akaza.openclinica.service.audit.AuditService auditService = new org.akaza.openclinica.service.audit.AuditService(dataSource);
+            org.akaza.openclinica.bean.admin.AuditEventBean auditEvent = new org.akaza.openclinica.bean.admin.AuditEventBean();
+            auditEvent.setAuditDate(new Date());
+            auditEvent.setAuditTable("item_data");
+            auditEvent.setEntityId(1);
+            auditEvent.setReasonForChange("Automated integration data update");
+            auditEvent.setActionMessage("Imported clinical payload for subject: " + payload.getSubjectId());
+            auditEvent.setUpdaterId(1);
+            auditService.logEvent(auditEvent, null);
+        } catch (Exception e) {
+            logger.warn("Audit logging failed", e);
+        }
+
+        return result;
+    }
 
     public void validateLock(int eventCrfId) {
         EventCrf eventCrf = eventCrfDao.findById(eventCrfId);
@@ -215,6 +280,7 @@ public class UnifiedWorkflowEnforcementService {
         dnItemDataMapDao.saveOrUpdate(mapping);
     }
 
+    @Transactional
     public void executeRulesAndMetadata(EventCrf eventCrf, Study study, UserAccount user) {
         try {
             EventCRFDAO ecdao = new EventCRFDAO(dataSource);

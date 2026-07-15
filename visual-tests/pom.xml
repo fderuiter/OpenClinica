@@ -30,12 +30,12 @@
 						<executions>
 							<execution>
 								<id>playwright install</id>
-								<phase>generate-resources</phase>
+								<phase>pre-integration-test</phase>
 								<goals>
 									<goal>npx</goal>
 								</goals>
 								<configuration>
-									<arguments>playwright install</arguments>
+									<arguments>playwright install</arguments><skip>${skipTests}</skip>
 								</configuration>
 							</execution>
 						</executions>
@@ -61,6 +61,7 @@
 						<configuration>
 							<nodeVersion>v22.13.0</nodeVersion>
 							<npmVersion>9.6.7</npmVersion>
+							<skip>${skipTests}</skip>
 						</configuration>
 					</execution>
 					<execution>
@@ -70,7 +71,7 @@
 							<goal>npm</goal>
 						</goals>
 						<configuration>
-							<arguments>install</arguments>
+							<arguments>install</arguments><skip>${skipTests}</skip>
 						</configuration>
 					</execution>
 					<execution>

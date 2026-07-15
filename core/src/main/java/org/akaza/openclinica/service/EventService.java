@@ -119,6 +119,7 @@ public class EventService implements EventServiceInterface {
 
 
     
+    @Transactional
     public boolean completeParticipantEvent(String studySubjectOid, String studyEventDefOid, Integer ordinal) throws Exception {
         StudySubject subject = getUnifiedRepository().getStudySubjectEntityByOid(studySubjectOid);
         StudyEvent studyEvent = studyEventDaoHibernate.fetchByStudyEventDefOIDAndOrdinal(studyEventDefOid, ordinal, subject.getStudySubjectId());

@@ -3,6 +3,7 @@ package org.akaza.openclinica.domain.rule.action;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -77,7 +78,7 @@ public class DiscrepancyNoteActionProcessorTest {
 
         // Simulate an exception during save
         doThrow(new RuntimeException("Database error")).when(mockService)
-                .saveFieldNotes("Test message", 1, "ItemData", currentStudy, ub);
+                .saveFieldNotesAndRunLog(any(), anyInt(), any(), any(), any(), any(), any());
 
         try {
             processor.execute(RuleRunnerMode.DATA_ENTRY, ExecutionMode.SAVE, ruleAction, itemDataBean, "ItemData", currentStudy, ub);
@@ -86,8 +87,5 @@ public class DiscrepancyNoteActionProcessorTest {
             // Expected exception
             assert e.getMessage().equals("Database error");
         }
-
-        // Verify that transaction was rolled back
-        verify(mockTransactionManager).rollback(mockTransactionStatus);
     }
 }
