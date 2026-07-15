@@ -30,7 +30,7 @@
 						<executions>
 							<execution>
 								<id>playwright install</id>
-								<phase>generate-resources</phase>
+								<phase>pre-integration-test</phase>
 								<goals>
 									<goal>npx</goal>
 								</goals>
