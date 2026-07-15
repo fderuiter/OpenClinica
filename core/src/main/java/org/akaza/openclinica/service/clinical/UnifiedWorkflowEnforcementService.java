@@ -80,8 +80,16 @@ public class UnifiedWorkflowEnforcementService {
     @Autowired
     private DnItemDataMapDao dnItemDataMapDao;
 
-    @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        if (dataSource instanceof org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy) {
+            this.dataSource = dataSource;
+        } else {
+            this.dataSource = new org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy(dataSource);
+        }
+    }
     @Autowired
     private EventCrfDao eventCrfDao;
 
@@ -215,6 +223,7 @@ public class UnifiedWorkflowEnforcementService {
         dnItemDataMapDao.saveOrUpdate(mapping);
     }
 
+    @Transactional
     public void executeRulesAndMetadata(EventCrf eventCrf, Study study, UserAccount user) {
         try {
             EventCRFDAO ecdao = new EventCRFDAO(dataSource);

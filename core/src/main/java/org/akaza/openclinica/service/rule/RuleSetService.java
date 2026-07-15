@@ -1068,7 +1068,11 @@ public class RuleSetService implements RuleSetServiceInterface {
      * @param dataSource the dataSource to set
      */
     public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+        if (dataSource instanceof org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy) {
+            this.dataSource = dataSource;
+        } else {
+            this.dataSource = new org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy(dataSource);
+        }
     }
 
 

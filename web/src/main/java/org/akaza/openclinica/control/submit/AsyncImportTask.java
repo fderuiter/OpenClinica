@@ -55,7 +55,11 @@ public class AsyncImportTask implements Runnable {
         this.f = f;
         this.ub = ub;
         this.currentStudy = currentStudy;
-        this.dataSource = dataSource;
+        if (dataSource instanceof org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy) {
+            this.dataSource = dataSource;
+        } else {
+            this.dataSource = new org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy(dataSource);
+        }
         this.context = context;
         this.locale = locale;
         ResourceBundleProvider.updateLocale(locale);
