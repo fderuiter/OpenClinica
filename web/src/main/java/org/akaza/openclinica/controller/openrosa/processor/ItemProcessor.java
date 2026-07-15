@@ -57,6 +57,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Component
 public class ItemProcessor implements Processor, Ordered {
 
@@ -99,6 +101,7 @@ public class ItemProcessor implements Processor, Ordered {
         return 4;
     }
 
+    @Transactional
     public void process(SubmissionContainer container) throws Exception {
         logger.info("Executing Item Processor.");
         ArrayList<HashMap> listOfUploadFilePaths =container.getListOfUploadFilePaths();        
