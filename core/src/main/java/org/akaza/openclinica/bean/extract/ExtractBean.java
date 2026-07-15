@@ -2188,19 +2188,8 @@ public class ExtractBean {
         Date age = currentSubject.getDateOfBirth();
         String answer = "";
         if (age.before(startDate)) {
-            Calendar dateOfBirth = Calendar.getInstance();
-            dateOfBirth.setTime(age);// new GregorianCalendar(age);
-            Calendar theStartDate = Calendar.getInstance();// new
-            // GregorianCalendar(startDate);
-            theStartDate.setTime(startDate);
-            int theAge = theStartDate.get(Calendar.YEAR) - dateOfBirth.get(Calendar.YEAR);
-            Calendar today = Calendar.getInstance();
-            // add the age to the year to see if it's happened yet
-            dateOfBirth.add(Calendar.YEAR, theAge);
-            // subtract one from the age if the birthday hasn't happened yet
-            if (today.before(dateOfBirth)) {
-                theAge--;
-            }
+            org.akaza.openclinica.service.DateCalculationService calc = new org.akaza.openclinica.service.DateCalculationService();
+            int theAge = calc.calculateAgeAtEvent(age, startDate);
             answer = "" + theAge;
         } else {
             // ideally should not get here, but we have an 'error' code if it
