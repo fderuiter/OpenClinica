@@ -36,6 +36,9 @@ public class InteropService {
     private ConfigurationDraftService draftService;
 
     @Autowired
+    private javax.sql.DataSource dataSource;
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -111,11 +114,22 @@ public class InteropService {
 
             log.info("Extracted mapped values: subjectId={}, eventId={}, value={}", subjectId, eventId, value);
 
-            // Directly update core clinical entities using JdbcTemplate
-            // Bypassing ODM structures completely
-            jdbcTemplate.update("INSERT INTO study_subject (label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, 1, 1, NOW(), 1) ON CONFLICT DO NOTHING", subjectId, subjectId);
-            jdbcTemplate.update("INSERT INTO study_event (study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (1, 1, 1, 1, NOW()) ON CONFLICT DO NOTHING");
-            jdbcTemplate.update("INSERT INTO item_data (event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (1, 1, 1, ?, 1, NOW())", value);
+            org.akaza.openclinica.model.ClinicalPayload payloadObj = new org.akaza.openclinica.model.ClinicalPayload(subjectId, eventId, value);
+            final String fSubjectId = subjectId;
+            final String fValue = value;
+
+            org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService workflowService = new org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService();
+            workflowService.setDataSource(dataSource);
+
+            workflowService.executeWorkflowTransaction(1L, payloadObj, new org.akaza.openclinica.service.clinical.WorkflowTransactionCallback<Void>() {
+                @Override
+                public Void doInTransaction() {
+                    jdbcTemplate.update("INSERT INTO study_subject (label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, 1, 1, NOW(), 1) ON CONFLICT DO NOTHING", fSubjectId, fSubjectId);
+                    jdbcTemplate.update("INSERT INTO study_event (study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (1, 1, 1, 1, NOW()) ON CONFLICT DO NOTHING");
+                    jdbcTemplate.update("INSERT INTO item_data (event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (1, 1, 1, ?, 1, NOW())", fValue);
+                    return null;
+                }
+            });
             
             recordsInStaging.remove(recordId);
             draftService.deleteDraft(recordId);
