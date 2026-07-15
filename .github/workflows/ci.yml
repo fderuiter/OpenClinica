@@ -35,8 +35,4 @@ jobs:
     - name: Build with Maven
       run: mvn -B clean install -DskipTests
     - name: Run tests (core, web, modern)
-      env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/clinica
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: postgres
       run: mvn -B test -pl core,web,modern -Ddb.test=localhost
