@@ -10,6 +10,9 @@ import javax.sql.DataSource;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.ext.Provider;
 
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
@@ -20,72 +23,46 @@ import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.dao.login.UserAccountDAO;
 import org.akaza.openclinica.dao.managestudy.StudyDAO;
 
-
-import com.sun.jersey.server.impl.application.WebApplicationContext;
-import com.sun.jersey.spi.container.ContainerRequest;
-import com.sun.jersey.spi.container.ContainerRequestFilter;
-import com.sun.jersey.spi.container.ContainerResponseFilter;
-import com.sun.jersey.spi.container.ResourceFilter;
-
-
-
-public class RestODMFilter implements ContainerRequestFilter,ResourceFilter {
+@Provider
+public class RestODMFilter implements ContainerRequestFilter {
 
 	@Context
 	HttpServletRequest request;
 	@Context
 	HttpServletResponse response;
 	  
-	WebApplicationContext context;
-	String studyOIDS;
-	
 	 public static ResourceBundle  restext;
 	 
 	 private static String GlOBAL_STUDY_OID = "*";
 	
 	@Override
-	
-	public ContainerRequest filter(ContainerRequest containerRequest) {
+	public void filter(ContainerRequestContext requestContext) throws IOException {
 		UserAccountBean userBean = (UserAccountBean)request.getSession().getAttribute("userBean");	
 		
-		
-		
-		String studyOID = containerRequest.getPathSegments().get(3).getPath();
+		String studyOID = requestContext.getUriInfo().getPathSegments().get(3).getPath();
 
-		//parse to get studyOID
-	
-		
 		if(studyOID.equals(GlOBAL_STUDY_OID))
 		{
-			if(checkAuth(userBean)) return containerRequest;
-			
-				
+			if(checkAuth(userBean)) return;
 		}
-	
 		else{
 			StudyBean studyBean = getStudyByOID(studyOID,getDataSource());
-			if(checkAuth(studyBean,userBean)) return containerRequest;
+			if(checkAuth(studyBean,userBean)) return;
 			else
 			{
 				if(studyBean.getParentStudyId()!=0){
 				int parentStudyID = studyBean.getParentStudyId();
 				studyBean = getStudyByID(parentStudyID,getDataSource());
-				if(checkAuth(studyBean,userBean))return containerRequest;
+				if(checkAuth(studyBean,userBean)) return;
 			}
 			}   
 			
 	        request.setAttribute(SecureController.PAGE_MESSAGE, "You don't have correct permission in your current Study.");
 		}
         
-        
-
 		throw new WebApplicationException(Response.Status.FORBIDDEN);
-	
 	}
 
-
-	
-	
 	private Boolean checkAuth(UserAccountBean userBean) {
 		Boolean auth = false;
 		
@@ -102,25 +79,17 @@ public class RestODMFilter implements ContainerRequestFilter,ResourceFilter {
 		return auth;
 	}
 
-
-
-
 	private Boolean checkAuth(StudyBean studyBean,UserAccountBean userBean){
 		Boolean auth = false;
 		StudyUserRoleBean studyRole = getRoleByStudy(studyBean,getDataSource(),userBean);
 		Role r = studyRole.getRole();
 			if (r != null) {
-            // r = userBean.getActiveStudyRole();
             if (r != null && (r.equals(Role.COORDINATOR) || r.equals(Role.STUDYDIRECTOR )  )) {
                auth = true;
             }
-            //else if(userBean.isTechAdmin()||userBean.isSysAdmin())
-            //{
                 if(r!=null && (r.equals(Role.ADMIN)||r.equals(Role.COORDINATOR) || r.equals(Role.STUDYDIRECTOR) || r.equals(Role.INVESTIGATOR)||r.equals(Role.MONITOR)||r.equals(Role.RESEARCHASSISTANT)||r.equals(Role.RESEARCHASSISTANT2) ) ){
-
                         auth = true;
             	}
-            //}
         }
 			return auth;
 	}
@@ -142,18 +111,4 @@ public class RestODMFilter implements ContainerRequestFilter,ResourceFilter {
 		StudyDAO studyDAO = new StudyDAO(ds);
 		return (StudyBean) studyDAO.findByPK(id);
 	}
-	@Override
-	public ContainerRequestFilter getRequestFilter() {
-		// TODO Auto-generated method stub
-		return this;
-	}
-
-	@Override
-	public ContainerResponseFilter getResponseFilter() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-
-	}
+}
