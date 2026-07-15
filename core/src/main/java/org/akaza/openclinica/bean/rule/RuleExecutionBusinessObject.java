@@ -9,7 +9,6 @@ import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.submit.EventCRFBean;
 import org.akaza.openclinica.bean.submit.ItemDataBean;
 import org.akaza.openclinica.core.SessionManager;
-import org.akaza.openclinica.dao.managestudy.DiscrepancyNoteDAO;
 import org.akaza.openclinica.dao.rule.RuleDAO;
 import org.akaza.openclinica.dao.submit.EventCRFDAO;
 import org.akaza.openclinica.service.managestudy.DiscrepancyNoteService;
@@ -68,7 +67,7 @@ public class RuleExecutionBusinessObject {
     }
 
     private void createDiscrepancyNote(String description, ItemDataBean targetItemDataBean, ItemDataBean sourceItemDataBean) {
-        org.akaza.openclinica.service.managestudy.DiscrepancyNoteService discrepancyNoteService = new org.akaza.openclinica.service.managestudy.DiscrepancyNoteService(sm.getDataSource());
+        org.akaza.openclinica.service.managestudy.DiscrepancyNoteService discrepancyNoteService = (org.akaza.openclinica.service.managestudy.DiscrepancyNoteService) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("discrepancyNoteService");
         discrepancyNoteService.saveFieldNotes(description, targetItemDataBean.getId(), "itemData", currentStudy, ub);
     }
 
