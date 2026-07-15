@@ -722,7 +722,12 @@ public abstract class EntityDAO<K extends String, V extends ArrayList> implement
                             }
                             break;
                         case TypeNames.INT:
-                            hm.put(column, Integer.valueOf(rs.getInt(i)));
+                            Object intObj = rs.getObject(i);
+                            if (intObj instanceof Boolean) {
+                                hm.put(column, Integer.valueOf(((Boolean) intObj).booleanValue() ? 1 : 0));
+                            } else {
+                                hm.put(column, Integer.valueOf(rs.getInt(i)));
+                            }
                             if (rs.wasNull()) {
                                 hm.put(column, Integer.valueOf(0));
                             }
