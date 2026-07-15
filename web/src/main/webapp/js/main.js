@@ -21,13 +21,18 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Navigation from './components/Navigation.jsx';
 import CRFRenderer from './components/CRFRenderer.jsx';
+import { AccessibilityProvider } from './components/AccessibilityProvider.jsx';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Mount the modern navigation menu if the container exists
   const menuContainer = document.getElementById('menuContainer');
   if (menuContainer) {
     const navRoot = createRoot(menuContainer);
-    navRoot.render(React.createElement(Navigation));
+    navRoot.render(
+      React.createElement(AccessibilityProvider, null,
+        React.createElement(Navigation, null)
+      )
+    );
   }
 
   // If this is the print CRF page, replace the body or specific element with the new renderer
@@ -37,6 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.innerHTML = ''; // Replicate old app.js behavior of replacing body HTML
     document.body.appendChild(crfContainer);
     const crfRoot = createRoot(crfContainer);
-    crfRoot.render(React.createElement(CRFRenderer));
+    crfRoot.render(
+      React.createElement(AccessibilityProvider, null,
+        React.createElement(CRFRenderer, null)
+      )
+    );
   }
 });
