@@ -9,6 +9,39 @@
 		  <version>3.18-SNAPSHOT</version>
 	</parent>
 	<dependencies>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-mvc</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-mvc-jsp</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-spring6</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -138,9 +171,9 @@
 			<version>1.6</version>
 		</dependency>
 		<dependency>
-			<groupId>opensymphony</groupId>
+			<groupId>org.sitemesh</groupId>
 			<artifactId>sitemesh</artifactId>
-			<version>2.3</version>
+			<version>3.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.lowagie</groupId>
@@ -262,51 +295,9 @@
             <artifactId>ezmorph</artifactId>
             <version>1.0.6</version>
         </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-server</artifactId>
-            <version>1.17.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>1.17.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-spring</artifactId>
-            <version>1.13</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-context-support</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-aop</artifactId>
-				</exclusion>
-            </exclusions>
-        </dependency>
+        
+        
+        
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
@@ -333,6 +324,7 @@
                 <artifactId>swagger-maven-plugin</artifactId>
                 <version>2.2.15</version>
                 <dependencies>
+                    <dependency><groupId>javax.ws.rs</groupId><artifactId>javax.ws.rs-api</artifactId><version>2.1.1</version></dependency>
                     <dependency>
                         <groupId>jakarta.ws.rs</groupId>
                         <artifactId>jakarta.ws.rs-api</artifactId><version>3.1.0</version>
@@ -359,6 +351,7 @@
                 <groupId>com.github.kongchen</groupId>
                 <artifactId>swagger-maven-plugin</artifactId>
                 <version>3.1.8</version>
+                <dependencies><dependency><groupId>javax.ws.rs</groupId><artifactId>javax.ws.rs-api</artifactId><version>2.1.1</version></dependency></dependencies>
                 <configuration>
                     <apiSources>
                         <apiSource>
@@ -458,32 +451,7 @@
                 </configuration>
             </plugin>
             
-            <plugin>
-                <groupId>org.eclipse.transformer</groupId>
-                <artifactId>transformer-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <id>transform-artifacts</id>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <rules>
-                                <jakartaDefaults>true</jakartaDefaults>
-                            </rules>
-                            <transformZipEntries>
-                                <!-- we exclude our already migrated custom code from transformation to bypass overhead -->
-                                <transformZipEntry>
-                                    <name>WEB-INF/classes/</name>
-                                    <action>skip</action>
-                                </transformZipEntry>
-                            </transformZipEntries>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            
 <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>

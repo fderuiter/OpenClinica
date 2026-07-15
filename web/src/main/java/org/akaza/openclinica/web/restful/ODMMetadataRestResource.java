@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.view.Viewable;
+import org.glassfish.jersey.server.mvc.Viewable;
 
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
