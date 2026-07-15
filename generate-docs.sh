@@ -58,7 +58,7 @@ if ! python3 -c "import mkdocs_redirects" &> /dev/null; then
 fi
 
 # Ensure docs directory has the latest README
-cp README.md docs/project-info.md
+cp README.md docs/explanation/project-info.md
 
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
@@ -75,11 +75,10 @@ for f in core/README.md ws/README.md web/README.md; do
 done
 
 # Replace static, deprecated JVM flags in installation guides
-find docs/installation -type f -name "*.md" -exec sed -i 's/-XX:MaxPermSize=[^ ]* //g; s/ *-XX:+CMSClassUnloadingEnabled//g' {} +
-
+find docs/tutorials docs/how-to -type f -name "*.md" -exec sed -i 's/-XX:MaxPermSize=[^ ]* //g; s/ *-XX:+CMSClassUnloadingEnabled//g' {} +
 
 # Validate markdown file locations
-APPROVED_DIRS=("^docs/$" "^docs/installation/$" "^docs/maintenance/$" "^docs/configuration/$" "^docs/frontend/$" "^docs/frontend-api/" "^docs/diataxis/tutorials/$" "^docs/diataxis/how-to/$" "^docs/diataxis/references/$" "^docs/diataxis/explanation/$")
+APPROVED_DIRS=("^docs/$" "^docs/tutorials/$" "^docs/how-to/$" "^docs/reference/$" "^docs/explanation/$" "^docs/reference/frontend-api/")
 
 for file in $(find docs -name '*.md'); do
     dir_path=$(dirname "$file")"/"
@@ -97,7 +96,7 @@ for file in $(find docs -name '*.md'); do
 done
 
 # Validate Diátaxis structural definition for tutorials
-VIOLATING_TUTORIALS=$(grep -ilE '\btasks?\b' docs/diataxis/tutorials/*.md || true)
+VIOLATING_TUTORIALS=$(grep -ilE '\btasks?\b' docs/tutorials/*.md || true)
 if [ ! -z "$VIOLATING_TUTORIALS" ]; then
     echo "Error: The following tutorial files violate Diátaxis structural standards by including task-oriented language:"
     echo "$VIOLATING_TUTORIALS"
