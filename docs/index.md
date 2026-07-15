@@ -4,13 +4,13 @@ Welcome to the centralized OpenClinica Documentation Portal.
 
 ## Quick Links
 
-- [Installation Guide](installation/windows-install.md)
-- [Configuration Guide](diataxis/tutorials/build_study.md)
-- [Maintenance Guide](diataxis/how-to/import_data.md)
-- [Interactive REST API Documentation](api.md)
-- [SOAP API Documentation](soap.md)
-- [Frontend Architecture Guide](diataxis/explanation/architecture.md)
-- [Visual Testing Guide](frontend/visual_testing.md)
+- [Installation Guide](tutorials/windows-install.md)
+- [Configuration Guide](tutorials/build_study.md)
+- [Maintenance Guide](how-to/import_data.md)
+- [Interactive REST API Documentation](reference/api.md)
+- [SOAP API Documentation](reference/soap.md)
+- [Frontend Architecture Guide](explanation/architecture.md)
+- [Visual Testing Guide](how-to/visual_testing.md)
 
 ## Global Project Information
 For system requirements, please refer to the project README.

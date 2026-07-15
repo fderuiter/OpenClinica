@@ -2,38 +2,37 @@ site_name: OpenClinica Documentation Portal
 theme:
   name: material
 nav:
-  - Home: index.md
-  - Project Information: project-info.md
-  - Installation:
-    - Windows Installation: installation/windows-install.md
-    - Windows Upgrade: installation/windows-upgrade.md
-    - Linux Installation: installation/linux-install.md
-    - Linux Upgrade: installation/linux-upgrade.md
-    - Tomcat Initialization: installation/tomcat.md
-  - Configuration:
-    - Build Study: diataxis/tutorials/build_study.md
-    - Participate Setup: diataxis/tutorials/participate_setup.md
-    - Randomize Setup: diataxis/tutorials/randomize_setup.md
-    - Rules XML Reference: diataxis/references/rules.md
-    - Lifecycle Management: diataxis/explanation/lifecycle_management.md
-    - Safeguards and Rollbacks: diataxis/explanation/configuration_safeguards_and_rollbacks.md
-  - Maintenance:
-    - Import Data: diataxis/how-to/import_data.md
-    - Verify Import Rule: diataxis/how-to/verify_import_rule.md
-    - Test Rules: diataxis/how-to/test_rules.md
-    - Extract Selection Guide: diataxis/how-to/extract_select_crf_and_group.md
-    - Generate Dataset HTML: diataxis/how-to/generate_dataset_html.md
-    - Staged Batch Persistence: diataxis/explanation/staged_batch_persistence.md
-  - Frontend Architecture:
-    - Architecture Guide: diataxis/explanation/architecture.md
-    - React Components API: frontend-api/modules.md
+  - Tutorials:
+    - Build Study: tutorials/build_study.md
+    - Participate Setup: tutorials/participate_setup.md
+    - Randomize Setup: tutorials/randomize_setup.md
+    - Windows Installation: tutorials/windows-install.md
+    - Linux Installation: tutorials/linux-install.md
+    - Tomcat Initialization: tutorials/tomcat.md
   - How-To Guides:
-    - Cookbook Index: diataxis/how-to/cookbook_index.md
-    - Subject Enrollment: diataxis/how-to/cookbook_enrollment.md
-    - Event Scheduling: diataxis/how-to/cookbook_scheduling.md
-    - Form Data Ingestion: diataxis/how-to/cookbook_ingestion.md
-  - Interactive REST API: api.md
-  - SOAP API Documentation: soap.md
+    - Windows Upgrade: how-to/windows-upgrade.md
+    - Linux Upgrade: how-to/linux-upgrade.md
+    - Import Data: how-to/import_data.md
+    - Verify Import Rule: how-to/verify_import_rule.md
+    - Test Rules: how-to/test_rules.md
+    - Extract Selection Guide: how-to/extract_select_crf_and_group.md
+    - Generate Dataset HTML: how-to/generate_dataset_html.md
+    - Cookbook Index: how-to/cookbook_index.md
+    - Subject Enrollment: how-to/cookbook_enrollment.md
+    - Event Scheduling: how-to/cookbook_scheduling.md
+    - Form Data Ingestion: how-to/cookbook_ingestion.md
+    - Visual Testing Guide: how-to/visual_testing.md
+  - Reference:
+    - Rules XML Reference: reference/rules.md
+    - React Components API: reference/frontend-api/modules.md
+    - Interactive REST API: reference/api.md
+    - SOAP API Documentation: reference/soap.md
+  - Explanation:
+    - Project Information: explanation/project-info.md
+    - Lifecycle Management: explanation/lifecycle_management.md
+    - Safeguards and Rollbacks: explanation/configuration_safeguards_and_rollbacks.md
+    - Staged Batch Persistence: explanation/staged_batch_persistence.md
+    - Architecture Guide: explanation/architecture.md
 hooks:
   - hooks/assign_categories.py
 plugins:
@@ -41,15 +40,41 @@ plugins:
   - tags
   - redirects:
       redirect_maps:
-        'frontend/architecture.md': 'diataxis/explanation/architecture.md'
-        'maintenance/staged_batch_persistence.md': 'diataxis/explanation/staged_batch_persistence.md'
-        'configuration/lifecycle_management.md': 'diataxis/explanation/lifecycle_management.md'
-        'diataxis/tutorials/cookbook_index.md': 'diataxis/how-to/cookbook_index.md'
-        'diataxis/tutorials/cookbook_enrollment.md': 'diataxis/how-to/cookbook_enrollment.md'
-        'diataxis/tutorials/cookbook_scheduling.md': 'diataxis/how-to/cookbook_scheduling.md'
-        'diataxis/tutorials/cookbook_ingestion.md': 'diataxis/how-to/cookbook_ingestion.md'
+        'frontend/architecture.md': 'explanation/architecture.md'
+        'maintenance/staged_batch_persistence.md': 'explanation/staged_batch_persistence.md'
+        'configuration/lifecycle_management.md': 'explanation/lifecycle_management.md'
+        'diataxis/tutorials/cookbook_index.md': 'how-to/cookbook_index.md'
+        'diataxis/tutorials/cookbook_enrollment.md': 'how-to/cookbook_enrollment.md'
+        'diataxis/tutorials/cookbook_scheduling.md': 'how-to/cookbook_scheduling.md'
+        'diataxis/tutorials/cookbook_ingestion.md': 'how-to/cookbook_ingestion.md'
+        'diataxis/tutorials/build_study.md': 'tutorials/build_study.md'
+        'diataxis/tutorials/participate_setup.md': 'tutorials/participate_setup.md'
+        'diataxis/tutorials/randomize_setup.md': 'tutorials/randomize_setup.md'
+        'diataxis/references/rules.md': 'reference/rules.md'
+        'diataxis/how-to/import_data.md': 'how-to/import_data.md'
+        'diataxis/how-to/verify_import_rule.md': 'how-to/verify_import_rule.md'
+        'diataxis/how-to/test_rules.md': 'how-to/test_rules.md'
+        'diataxis/how-to/extract_select_crf_and_group.md': 'how-to/extract_select_crf_and_group.md'
+        'diataxis/how-to/generate_dataset_html.md': 'how-to/generate_dataset_html.md'
+        'diataxis/how-to/cookbook_index.md': 'how-to/cookbook_index.md'
+        'diataxis/how-to/cookbook_enrollment.md': 'how-to/cookbook_enrollment.md'
+        'diataxis/how-to/cookbook_scheduling.md': 'how-to/cookbook_scheduling.md'
+        'diataxis/how-to/cookbook_ingestion.md': 'how-to/cookbook_ingestion.md'
+        'diataxis/explanation/lifecycle_management.md': 'explanation/lifecycle_management.md'
+        'diataxis/explanation/configuration_safeguards_and_rollbacks.md': 'explanation/configuration_safeguards_and_rollbacks.md'
+        'diataxis/explanation/staged_batch_persistence.md': 'explanation/staged_batch_persistence.md'
+        'diataxis/explanation/architecture.md': 'explanation/architecture.md'
+        'installation/windows-install.md': 'tutorials/windows-install.md'
+        'installation/windows-upgrade.md': 'how-to/windows-upgrade.md'
+        'installation/linux-install.md': 'tutorials/linux-install.md'
+        'installation/linux-upgrade.md': 'how-to/linux-upgrade.md'
+        'installation/tomcat.md': 'tutorials/tomcat.md'
+        'frontend/visual_testing.md': 'how-to/visual_testing.md'
+        'api.md': 'reference/api.md'
+        'soap.md': 'reference/soap.md'
+        'project-info.md': 'explanation/project-info.md'
+        'frontend-api/modules.md': 'reference/frontend-api/modules.md'
 extra_css:
   - stylesheets/search-tabs.css
 extra_javascript:
   - javascripts/search-tabs.js
-
