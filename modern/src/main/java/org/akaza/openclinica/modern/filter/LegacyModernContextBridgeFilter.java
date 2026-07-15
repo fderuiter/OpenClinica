@@ -13,10 +13,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.lang.reflect.Proxy;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LegacyModernContextBridgeFilter extends OncePerRequestFilter {
 
@@ -35,6 +40,8 @@ public class LegacyModernContextBridgeFilter extends OncePerRequestFilter {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         boolean mdcSet = false;
+        HttpServletRequest requestToChain = request;
+
         try {
             if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
                 String username = authentication.getName();
@@ -43,7 +50,8 @@ public class LegacyModernContextBridgeFilter extends OncePerRequestFilter {
                 UserAccountBean userBean = (UserAccountBean) userAccountDAO.findByUserName(username);
                 
                 if (userBean != null && userBean.getId() > 0) {
-                    HttpSession session = request.getSession(true);
+                    requestToChain = new StatelessSessionRequestWrapper(request);
+                    HttpSession session = requestToChain.getSession(true);
                     session.setAttribute("userBean", userBean);
                     
                     if (userBean.getActiveStudyId() > 0) {
@@ -59,11 +67,72 @@ public class LegacyModernContextBridgeFilter extends OncePerRequestFilter {
                 }
             }
 
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(requestToChain, response);
         } finally {
             if (mdcSet) {
                 MDC.remove(LoggingConstants.USERNAME);
             }
+        }
+    }
+
+    private static class StatelessSessionRequestWrapper extends HttpServletRequestWrapper {
+        private HttpSession statelessSession;
+
+        public StatelessSessionRequestWrapper(HttpServletRequest request) {
+            super(request);
+        }
+
+        @Override
+        public HttpSession getSession(boolean create) {
+            if (statelessSession == null && create) {
+                statelessSession = createStatelessSession(super.getSession(false));
+            } else if (statelessSession == null && !create) {
+                return super.getSession(false);
+            }
+            return statelessSession;
+        }
+
+        @Override
+        public HttpSession getSession() {
+            return getSession(true);
+        }
+
+        private HttpSession createStatelessSession(HttpSession originalSession) {
+            Map<String, Object> attributes = new HashMap<>();
+            return (HttpSession) Proxy.newProxyInstance(
+                    HttpSession.class.getClassLoader(),
+                    new Class<?>[]{HttpSession.class},
+                    (proxy, method, args) -> {
+                        String methodName = method.getName();
+                        if ("getAttribute".equals(methodName)) {
+                            Object val = attributes.get(args[0]);
+                            if (val == null && originalSession != null) {
+                                return originalSession.getAttribute((String) args[0]);
+                            }
+                            return val;
+                        } else if ("setAttribute".equals(methodName)) {
+                            attributes.put((String) args[0], args[1]);
+                            return null;
+                        } else if ("removeAttribute".equals(methodName)) {
+                            attributes.remove(args[0]);
+                            return null;
+                        } else if ("getAttributeNames".equals(methodName)) {
+                            return Collections.enumeration(attributes.keySet());
+                        } else if (originalSession != null) {
+                            return method.invoke(originalSession, args);
+                        }
+                        
+                        if ("getId".equals(methodName)) return "stateless-session";
+                        if ("getCreationTime".equals(methodName)) return System.currentTimeMillis();
+                        if ("getLastAccessedTime".equals(methodName)) return System.currentTimeMillis();
+                        if ("getServletContext".equals(methodName)) return super.getServletContext();
+                        
+                        if (method.getReturnType().equals(Void.TYPE)) {
+                            return null;
+                        }
+                        return null;
+                    }
+            );
         }
     }
 }
