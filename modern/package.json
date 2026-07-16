@@ -2,9 +2,9 @@
   "name": "modern",
   "version": "1.0.0",
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "postinstall": "node security-audit.js"
   },
-  "dependencies": {},
   "devDependencies": {
     "vite": "^8.1.4"
   }

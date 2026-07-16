@@ -7,7 +7,9 @@
     "dev": "vite",
     "test": "vitest run --environment jsdom",
     "build": "vite build && node inject-bundle.js",
-    "docs": "typedoc --plugin typedoc-plugin-markdown src/main/webapp/js/components/*.jsx --out ../docs/reference/frontend-api"
+    "docs": "typedoc --plugin typedoc-plugin-markdown src/main/webapp/js/components/*.jsx --out ../docs/reference/frontend-api",
+    "preinstall": "node verify-hashes.js",
+    "postinstall": "node security-audit.js"
   },
   "keywords": [],
   "author": "",
