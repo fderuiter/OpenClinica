@@ -40,3 +40,5 @@ docs/soap.md
 README.md
 data/
 dummy_template.xlsx
+*.bak
+*.tmp
