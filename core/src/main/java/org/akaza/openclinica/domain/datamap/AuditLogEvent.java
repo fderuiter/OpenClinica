@@ -48,6 +48,8 @@ public class AuditLogEvent extends DataMapDomainObject implements Serializable{
 	private Integer eventCrfVersionId;
 	private UserAccount userAccount;
 	
+	private String chainHash;
+	
 	private AuditLogEventType auditLogEventType;
 	
 	public AuditLogEvent() {
@@ -219,4 +221,12 @@ public class AuditLogEvent extends DataMapDomainObject implements Serializable{
 		this.userAccount = userAccount;
 	}
 
+	@Column(name = "chain_hash", length = 255)
+	public String getChainHash() {
+		return this.chainHash;
+	}
+
+	public void setChainHash(String chainHash) {
+		this.chainHash = chainHash;
+	}
 }

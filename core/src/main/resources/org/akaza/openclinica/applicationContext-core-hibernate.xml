@@ -14,6 +14,11 @@
 
 
 
+    <bean id="auditHashService" class="org.akaza.openclinica.core.interceptor.AuditHashService" />
+    <bean id="auditEventListener" class="org.akaza.openclinica.core.interceptor.AuditEventListener">
+        <property name="hashService" ref="auditHashService" />
+    </bean>
+
     <!-- A Hibernate SessionFactory for mapping Domain Objects from object to relation tables -->
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
@@ -146,6 +151,14 @@
         </property>
         <property name="namingStrategy">
             <bean class="org.hibernate.cfg.ImprovedNamingStrategy"/>
+        </property>
+        <property name="eventListeners">
+            <map>
+                <entry key="pre-insert"><ref bean="auditEventListener"/></entry>
+                <entry key="post-insert"><ref bean="auditEventListener"/></entry>
+                <entry key="post-update"><ref bean="auditEventListener"/></entry>
+                <entry key="post-delete"><ref bean="auditEventListener"/></entry>
+            </map>
         </property>
     </bean>
 

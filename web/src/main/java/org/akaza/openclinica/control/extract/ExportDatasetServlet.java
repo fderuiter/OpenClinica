@@ -203,6 +203,19 @@ public class ExportDatasetServlet extends SecureController {
                     forwardPage(Page.EXPORT_DATASETS);
                     return;
                 }
+                
+                if ("odm".equalsIgnoreCase(action)) {
+                    org.akaza.openclinica.core.interceptor.AuditHashService hashService = 
+                        (org.akaza.openclinica.core.interceptor.AuditHashService) org.akaza.openclinica.control.SpringServletAccess.getApplicationContext(context).getBean(org.akaza.openclinica.core.interceptor.AuditHashService.class);
+                    try {
+                        hashService.validateChain();
+                    } catch (org.akaza.openclinica.core.interceptor.DataIntegrityException e) {
+                        addPageMessage("Data integrity validation failed. Database tampering detected.");
+                        loadList(db, asdfdao, datasetId, fp, eb);
+                        forwardPage(Page.EXPORT_DATASETS);
+                        return;
+                    }
+                }
 
                 final ExportTask task = new ExportTask();
                 exportTasks.put(task.getId(), task);
