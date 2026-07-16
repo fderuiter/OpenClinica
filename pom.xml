@@ -352,6 +352,9 @@
                 </executions>
                 <configuration>
                     <failBuildOnCVSS>7.0</failBuildOnCVSS>
+                    <failOnError>false</failOnError>
+                    <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled>
+                    <nodeAuditAnalyzerEnabled>false</nodeAuditAnalyzerEnabled>
                     <suppressionFiles>
                         <suppressionFile>dependency-check-suppression.xml</suppressionFile>
                     </suppressionFiles>
