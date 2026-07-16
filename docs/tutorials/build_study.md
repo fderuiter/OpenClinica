@@ -1,12 +1,13 @@
-# Build Study Tutorial
+# Tutorial: Building Your First Study
 
-Welcome to the Build Study page of OpenClinica! This page is designed to help you learn how to build and configure your Study by following an educational, step-by-step approach. 
+Welcome to the Study Builder tutorial. In this guide, you will learn how to create and configure a brand-new practice study from scratch. By following these steps, you will gain hands-on experience setting up the fundamental components needed to collect and manage clinical data.
 
-The lessons listed will guide you through the process of setting up a practice Study. Once you have finished each lesson, check "Mark Complete" then click the "Save" button. 
+## Prerequisites
 
 * To start a lesson, select the "Create" icon. You can always select the "Create" icon to add a new component to your practice Study.
 * Select the "Edit" icon to edit the values for a lesson.
 * Select the "View" icon to view the specified values for that lesson.
+* Before starting, ensure you have logged in to your environment with an account that has a Clinical Coordinator or Data Manager role.
 
 ## Study Configuration Workflow
 
@@ -20,18 +21,53 @@ flowchart TD
 
 ## Step-by-Step Instructions
 
-### Step 1: Study Creation
-Create a new study by defining the study name, protocol ID, and principal investigator details.
+### Step 1: Create a New Study
 
-### Step 2: Event Definitions
-Define the visits or data collection events for your study, such as Baseline, Week 1, and End of Study.
+Create a new study by defining the study name, protocol ID, and principal investigator details. To begin, you will define the basic parameters of your study.
 
-### Step 3: CRF Design
+1. Navigate to the main dashboard.
+2. Click on the **Build Study** menu option located in the top navigation bar.
+3. Select **Create New Study** from the dropdown menu.
+4. In the **Study Name** field, type a generic name such as "Cardiology Research Trial" (feel free to choose any name).
+5. Leave the default settings for the remaining fields and click the **Save** button.
+
+### Step 2: Define an Event
+
+Define the visits or data collection events for your study, such as Baseline, Week 1, and End of Study. An Event represents a specific timepoint or visit where you collect data from a participant.
+
+1. Once your study is created, navigate to the **Events** tab.
+2. Click the **Add Event** button.
+3. Enter "Baseline Visit" as the Event Name.
+4. Under the Event Type dropdown, select **Scheduled**.
+5. Click **Save Event**. You have now established a foundation for collecting data during a participant's first visit.
+
+### Step 3: CRF Design (Add a Form)
+
 Design your Case Report Forms (CRFs) using standard clinical layouts. You can start with our pre-configured template.
 - **[Download Sample Excel CRF Template](sample_crf_template.xlsx)**
 
-### Step 4: CRF Upload & Validation
-Upload your prepared Excel CRF. The system will automatically validate the template structure and map the fields to your study variables.
+Forms (or Case Report Forms) are used to capture the actual data points. You can upload your prepared Excel CRF. The system will automatically validate the template structure and map the fields to your study variables. Alternatively, you can use the web interface:
+
+1. Navigate to the **Forms** tab within your study builder interface.
+2. Click on the **Create Form** button.
+3. Provide a name for your form, such as "Vital Signs Assessment."
+4. Use the drag-and-drop editor to add three simple fields: "Heart Rate," "Blood Pressure," and "Temperature."
+5. Save your form by clicking the **Save** button at the bottom of the screen.
+
+### Step 4: Link the Form to the Event
+
+To ensure the system knows when to present your newly created form, you must assign it to the correct event.
+
+1. Return to the **Events** tab and locate the "Baseline Visit" event you created earlier.
+2. Click the **Edit** icon next to the event name.
+3. In the **Associated Forms** section, click the **Add Form** button.
+4. Check the box next to your "Vital Signs Assessment" form.
+5. Click **Update Event** to confirm your changes.
 
 ### Step 5: Study Sites Configuration
+
 Add participating clinical sites and associate them with your study to allow investigators to begin data entry.
+
+## Conclusion
+
+Congratulations! You have successfully created a practice study, defined a study event, created a data collection form, and linked them together. You can now use these skills to configure actual clinical trials within the platform.
