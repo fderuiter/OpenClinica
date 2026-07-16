@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +37,60 @@ import javax.sql.DataSource;
  * 
  */
 public class AuditEventDAO extends AuditableEntityDAO {
+    private java.util.List<Integer> idCache = new java.util.ArrayList<Integer>();
+    private java.util.List<AuditEventBean> batchBuffer = new java.util.ArrayList<AuditEventBean>();
+    private boolean batchingEnabled = false;
+
+    public void setBatchingEnabled(boolean enabled) {
+        this.batchingEnabled = enabled;
+        if (!enabled) {
+            flushBatch();
+        }
+    }
+
+    public void flushBatch() {
+        if (batchBuffer.isEmpty()) return;
+        org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(ds);
+        List<Object[]> batchArgs = new java.util.ArrayList<>();
+        for (AuditEventBean sb : batchBuffer) {
+            Object[] args = new Object[] {
+                sb.getId(),
+                sb.getAuditTable(),
+                sb.getUserId(),
+                sb.getEntityId(),
+                sb.getReasonForChangeKey(),
+                sb.getActionMessageKey()
+            };
+            batchArgs.add(args);
+        }
+        jdbcTemplate.batchUpdate(digester.getQuery("create"), batchArgs);
+        batchBuffer.clear();
+    }
+
+    @Override
+    public int getNextPK() {
+        if (!idCache.isEmpty()) {
+            return idCache.remove(0);
+        }
+        int batchSize = 1000;
+        String query = digester.getQuery(getNextPKName);
+        if (org.akaza.openclinica.dao.core.CoreResources.getDBName().equals("oracle")) {
+            query = query + " connect by level <= " + batchSize;
+        } else {
+            query = query + " from generate_series(1, " + batchSize + ")";
+        }
+        this.unsetTypeExpected();
+        this.setTypeExpected(1, org.akaza.openclinica.dao.core.TypeNames.INT);
+        ArrayList<HashMap<String, ?>> al = select(query);
+        if (al.size() > 0) {
+            for (HashMap<String, ?> h : al) {
+                idCache.add(((Integer) h.get("key")).intValue());
+            }
+            return idCache.remove(0);
+        }
+        return super.getNextPK();
+    }
+
     // private DAODigester digester;
 
     public AuditEventDAO(DataSource ds) {
@@ -51,6 +106,7 @@ public class AuditEventDAO extends AuditableEntityDAO {
     protected void setDigesterName() {
         digesterName = SQLFactory.getInstance().DAO_AUDITEVENT;
         getCurrentPKName = "getCurrentPK";
+        getNextPKName = "getNextPK";
     }
 
     @Override
@@ -245,20 +301,56 @@ public class AuditEventDAO extends AuditableEntityDAO {
         jdbcTemplate.update(sql, auditId, discrepancyNoteId);
     }
 
+    public void batchCreate(List<AuditEventBean> list) {
+        if (list == null || list.isEmpty()) return;
+        org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(ds);
+        
+        List<Object[]> batchArgs = new java.util.ArrayList<>();
+        for (AuditEventBean sb : list) {
+            int id = getNextPK();
+            sb.setId(id);
+            Object[] args = new Object[] {
+                id,
+                sb.getAuditTable(),
+                sb.getUserId(),
+                sb.getEntityId(),
+                sb.getReasonForChangeKey(),
+                sb.getActionMessageKey()
+            };
+            batchArgs.add(args);
+            
+            if (batchArgs.size() >= 500) {
+                jdbcTemplate.batchUpdate(digester.getQuery("create"), batchArgs);
+                batchArgs.clear();
+            }
+        }
+        if (!batchArgs.isEmpty()) {
+            jdbcTemplate.batchUpdate(digester.getQuery("create"), batchArgs);
+        }
+    }
+
     public EntityBean create(EntityBean eb) {
         AuditEventBean sb = (AuditEventBean) eb;
-        org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(ds);
+        
+        int id = getNextPK();
+        sb.setId(id);
 
-        jdbcTemplate.update(digester.getQuery("create"),
-            sb.getAuditTable(),
-            sb.getUserId(),
-            sb.getEntityId(),
-            sb.getReasonForChangeKey(),
-            sb.getActionMessageKey()
-        );
-
-        Integer id = jdbcTemplate.queryForObject(digester.getQuery(getCurrentPKName), Integer.class);
-        sb.setId(id != null ? id : 0);
+        if (batchingEnabled) {
+            batchBuffer.add(sb);
+            if (batchBuffer.size() >= 500) {
+                flushBatch();
+            }
+        } else {
+            org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(ds);
+            jdbcTemplate.update(digester.getQuery("create"),
+                id,
+                sb.getAuditTable(),
+                sb.getUserId(),
+                sb.getEntityId(),
+                sb.getReasonForChangeKey(),
+                sb.getActionMessageKey()
+            );
+        }
 
         return sb;
     }

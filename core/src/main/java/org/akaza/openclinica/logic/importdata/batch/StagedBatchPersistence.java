@@ -4,6 +4,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.logging.Logger;
+import org.akaza.openclinica.bean.admin.AuditEventBean;
+import org.akaza.openclinica.bean.submit.ItemDataBean;
+import org.akaza.openclinica.dao.admin.AuditEventDAO;
+import org.akaza.openclinica.dao.submit.ItemDataDAO;
+
 
 /**
  * Staged Batch Persistence
@@ -26,8 +31,27 @@ public class StagedBatchPersistence {
     }
 
     // Requirement 2: JDBC batching for high-volume entity inserts
+    // Requirement 2: JDBC batching for high-volume entity inserts
     public void executeBatchInserts(List<Object> entities) {
         logger.info("Executing multi-row batch inserts to replace sequential row-level commits");
+        
+        AuditEventDAO auditEventDAO = new AuditEventDAO(this.jdbcTemplate.getDataSource());
+        ItemDataDAO itemDataDAO = new ItemDataDAO(this.jdbcTemplate.getDataSource());
+        
+        java.util.List<AuditEventBean> audits = new java.util.ArrayList<>();
+        java.util.List<ItemDataBean> items = new java.util.ArrayList<>();
+        
+        for (Object entity : entities) {
+            if (entity instanceof AuditEventBean) {
+                audits.add((AuditEventBean) entity);
+            } else if (entity instanceof ItemDataBean) {
+                items.add((ItemDataBean) entity);
+            }
+        }
+        
+        auditEventDAO.batchCreate(audits);
+        itemDataDAO.batchCreate(items);
+        
         // Requirement 5: Ensure audit triggers fire
     }
 

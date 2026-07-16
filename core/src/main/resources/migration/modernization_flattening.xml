@@ -138,12 +138,31 @@
                     RETURN OLD;
                 END IF;
 
-                -- Get metadata
-                SELECT ec.crf_version_id, lower(i.oc_oid), i.item_data_type_id
-                INTO v_crf_version_id, v_col_name, v_item_data_type_id
-                FROM event_crf ec
-                JOIN item i ON i.item_id = NEW.item_id
-                WHERE ec.event_crf_id = NEW.event_crf_id;
+                -- Get metadata with session cache
+                BEGIN
+                    v_crf_version_id := current_setting('oc_cache.ec_' || NEW.event_crf_id, true)::INT;
+                EXCEPTION WHEN OTHERS THEN
+                    v_crf_version_id := NULL;
+                END;
+                
+                IF v_crf_version_id IS NULL THEN
+                    SELECT crf_version_id INTO v_crf_version_id FROM event_crf WHERE event_crf_id = NEW.event_crf_id;
+                    PERFORM set_config('oc_cache.ec_' || NEW.event_crf_id, v_crf_version_id::TEXT, true);
+                END IF;
+
+                BEGIN
+                    v_col_name := current_setting('oc_cache.col_' || NEW.item_id, true);
+                    v_item_data_type_id := current_setting('oc_cache.type_' || NEW.item_id, true)::INT;
+                EXCEPTION WHEN OTHERS THEN
+                    v_col_name := NULL;
+                    v_item_data_type_id := NULL;
+                END;
+
+                IF v_col_name IS NULL OR v_col_name = '' THEN
+                    SELECT lower(oc_oid), item_data_type_id INTO v_col_name, v_item_data_type_id FROM item WHERE item_id = NEW.item_id;
+                    PERFORM set_config('oc_cache.col_' || NEW.item_id, v_col_name, true);
+                    PERFORM set_config('oc_cache.type_' || NEW.item_id, v_item_data_type_id::TEXT, true);
+                END IF;
 
                 IF v_crf_version_id IS NULL THEN
                     RETURN NEW;
@@ -158,48 +177,67 @@
                     v_audit_user INT := COALESCE(NEW.update_id, NEW.owner_id);
                 BEGIN
 
-                -- Prepare value and execute UPSERT
-                IF v_item_data_type_id IN (1, 2) THEN
-                    v_val_bool := safe_cast_boolean(NEW.value);
-                    v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
-                    EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_bool;
-                    IF NOT FOUND THEN
-                        v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
-                        EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_bool;
+                -- Prepare value and execute UPSERT using compiled plan caching
+                DECLARE
+                    v_plan_name VARCHAR;
+                    v_is_prepared VARCHAR;
+                    v_pg_type VARCHAR;
+                BEGIN
+                    v_plan_name := 'flatten_plan_' || v_crf_version_id || '_' || v_item_data_type_id || '_' || v_col_name;
+                    BEGIN
+                        v_is_prepared := current_setting('oc_cache.plan_' || v_plan_name, true);
+                    EXCEPTION WHEN OTHERS THEN
+                        v_is_prepared := NULL;
+                    END;
+
+                    IF v_is_prepared IS NULL OR v_is_prepared = '' THEN
+                        IF v_item_data_type_id IN (1, 2) THEN v_pg_type := 'boolean';
+                        ELSIF v_item_data_type_id = 6 THEN v_pg_type := 'integer';
+                        ELSIF v_item_data_type_id = 7 THEN v_pg_type := 'numeric';
+                        ELSIF v_item_data_type_id = 9 THEN v_pg_type := 'date';
+                        ELSE v_pg_type := 'varchar'; END IF;
+
+                        EXECUTE 'PREPARE upd_' || v_plan_name || '(int, int, timestamp, int, ' || v_pg_type || ') AS ' ||
+                                'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
+                                
+                        EXECUTE 'PREPARE ins_' || v_plan_name || '(int, int, timestamp, int, ' || v_pg_type || ') AS ' ||
+                                'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
+                                
+                        PERFORM set_config('oc_cache.plan_' || v_plan_name, '1', true);
                     END IF;
-                ELSIF v_item_data_type_id = 6 THEN
-                    v_val_int := safe_cast_integer(NEW.value);
-                    v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
-                    EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_int;
-                    IF NOT FOUND THEN
-                        v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
-                        EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_int;
+
+                    IF v_item_data_type_id IN (1, 2) THEN
+                        v_val_bool := safe_cast_boolean(NEW.value);
+                        EXECUTE 'EXECUTE upd_' || v_plan_name || '($1, $2, $3, $4, $5)' USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_bool;
+                        IF NOT FOUND THEN
+                            EXECUTE 'EXECUTE ins_' || v_plan_name || '($1, $2, $3, $4, $5)' USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_bool;
+                        END IF;
+                    ELSIF v_item_data_type_id = 6 THEN
+                        v_val_int := safe_cast_integer(NEW.value);
+                        EXECUTE 'EXECUTE upd_' || v_plan_name || '($1, $2, $3, $4, $5)' USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_int;
+                        IF NOT FOUND THEN
+                            EXECUTE 'EXECUTE ins_' || v_plan_name || '($1, $2, $3, $4, $5)' USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_int;
+                        END IF;
+                    ELSIF v_item_data_type_id = 7 THEN
+                        v_val_num := safe_cast_numeric(NEW.value);
+                        EXECUTE 'EXECUTE upd_' || v_plan_name || '($1, $2, $3, $4, $5)' USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_num;
+                        IF NOT FOUND THEN
+                            EXECUTE 'EXECUTE ins_' || v_plan_name || '($1, $2, $3, $4, $5)' USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_num;
+                        END IF;
+                    ELSIF v_item_data_type_id = 9 THEN
+                        v_val_date := safe_cast_date(NEW.value);
+                        EXECUTE 'EXECUTE upd_' || v_plan_name || '($1, $2, $3, $4, $5)' USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_date;
+                        IF NOT FOUND THEN
+                            EXECUTE 'EXECUTE ins_' || v_plan_name || '($1, $2, $3, $4, $5)' USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_date;
+                        END IF;
+                    ELSE
+                        v_val_text := NEW.value;
+                        EXECUTE 'EXECUTE upd_' || v_plan_name || '($1, $2, $3, $4, $5)' USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_text;
+                        IF NOT FOUND THEN
+                            EXECUTE 'EXECUTE ins_' || v_plan_name || '($1, $2, $3, $4, $5)' USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_text;
+                        END IF;
                     END IF;
-                ELSIF v_item_data_type_id = 7 THEN
-                    v_val_num := safe_cast_numeric(NEW.value);
-                    v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
-                    EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_num;
-                    IF NOT FOUND THEN
-                        v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
-                        EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_num;
-                    END IF;
-                ELSIF v_item_data_type_id = 9 THEN
-                    v_val_date := safe_cast_date(NEW.value);
-                    v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
-                    EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_date;
-                    IF NOT FOUND THEN
-                        v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
-                        EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_date;
-                    END IF;
-                ELSE
-                    v_val_text := NEW.value;
-                    v_sql := 'UPDATE ' || v_table_name || ' SET date_updated = $3, update_id = $4, ' || quote_ident(v_col_name) || ' = $5 WHERE event_crf_id = $1 AND ordinal = $2';
-                    EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_text;
-                    IF NOT FOUND THEN
-                        v_sql := 'INSERT INTO ' || v_table_name || ' (event_crf_id, ordinal, date_updated, update_id, ' || quote_ident(v_col_name) || ') VALUES ($1, $2, $3, $4, $5)';
-                        EXECUTE v_sql USING NEW.event_crf_id, v_ordinal, v_audit_date, v_audit_user, v_val_text;
-                    END IF;
-                END IF;
+                END;
                 END;
 
                 RETURN NEW;
