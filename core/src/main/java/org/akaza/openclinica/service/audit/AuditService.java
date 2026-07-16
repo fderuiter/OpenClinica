@@ -22,6 +22,15 @@ public class AuditService {
      * Unified method to log an audit event and optionally link it to a discrepancy/justification note.
      * This centralizes the audit log creation and ensures the ID is properly linked.
      */
+    
+    public void setBatchingEnabled(boolean enabled) {
+        auditEventDAO.setBatchingEnabled(enabled);
+    }
+
+    public void flushBatch() {
+        auditEventDAO.flushBatch();
+    }
+
     public AuditEventBean logEvent(AuditEventBean auditEvent, DiscrepancyNoteBean note) {
         if (auditEvent.getAuditDate() == null) {
             auditEvent.setAuditDate(new Date());
