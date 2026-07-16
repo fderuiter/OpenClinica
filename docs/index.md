@@ -6,6 +6,8 @@ Welcome to the centralized OpenClinica Documentation Portal.
 
 - [Installation Guide](tutorials/windows-install.md)
 - [Configuration Guide](tutorials/build_study.md)
+- [Subdomain Setup Guide](tutorials/participate_setup.md)
+- [Randomization Setup Guide](tutorials/randomize_setup.md)
 - [Maintenance Guide](how-to/import_data.md)
 - [Interactive REST API Documentation](reference/api.md)
 - [SOAP API Documentation](reference/soap.md)
