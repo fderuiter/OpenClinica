@@ -124,90 +124,64 @@ public class CreateCRFVersionServlet extends SecureController {
                 new File(theDir).mkdirs();
                 logger.debug("Made the directory " + theDir);
             }
-            // MultipartRequest multi = new MultipartRequest(request, theDir, 50 * 1024 * 1024);
-            String tempFile = "";
+
+            List<File> theFiles = uploadHelper.returnFiles(request, context, theDir);
+            if (theFiles == null || theFiles.isEmpty()) {
+                Validator.addError(errors, "excel_file", resword.getString("you_have_to_provide_spreadsheet"));
+                request.setAttribute("formMessages", errors);
+                forwardPage(Page.CREATE_CRF_VERSION);
+                return;
+            }
+            File f = theFiles.get(0);
+            
+            String versionName = fp.getString("versionName");
+            if (StringUtil.isBlank(versionName)) {
+                versionName = fp.getString("name");
+                if (StringUtil.isBlank(versionName) && version != null) {
+                    versionName = version.getName();
+                }
+            }
+            if (StringUtil.isBlank(versionName)) {
+                versionName = "BackgroundVersion";
+            }
+            
+            int crfId = fp.getInt("crfId") == 0 ? (version != null ? version.getCrfId() : 0) : fp.getInt("crfId");
+            int previousVersionId = fp.getInt("previousVersionId");
+            boolean deletePreviousVersion = "true".equalsIgnoreCase(request.getParameter("deletePreviousVersion"));
+            
             try {
-                tempFile = uploadFile(theDir, version);
-            } catch (CRFReadingException crfException) {
-                Validator.addError(errors, "excel_file", crfException.getMessage());
-                String msg = crfException.getMessage();
-                request.setAttribute("formMessages", errors);
-                forwardPage(Page.CREATE_CRF_VERSION);
-                return;
+                org.quartz.impl.StdScheduler scheduler = (org.quartz.impl.StdScheduler) SpringServletAccess.getApplicationContext(context).getBean("schedulerFactoryBean");
+                org.quartz.impl.JobDetailImpl jobDetail = new org.quartz.impl.JobDetailImpl();
+                jobDetail.setName("ExcelImport_" + System.currentTimeMillis());
+                jobDetail.setGroup("BackgroundImports");
+                jobDetail.setJobClass(org.akaza.openclinica.web.job.AsyncExcelImportJob.class);
+                
+                org.quartz.JobDataMap jobDataMap = new org.quartz.JobDataMap();
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncExcelImportJob.FILE_PATH, f.getAbsolutePath());
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncExcelImportJob.USER_ID, ub.getId());
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncExcelImportJob.STUDY_ID, currentStudy.getId());
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncExcelImportJob.LOCALE, locale.toString());
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncExcelImportJob.CRF_ID, crfId);
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncExcelImportJob.PREVIOUS_VERSION_ID, previousVersionId);
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncExcelImportJob.DELETE_PREVIOUS_VERSION, deletePreviousVersion);
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncExcelImportJob.VERSION_NAME, versionName);
+                jobDetail.setJobDataMap(jobDataMap);
+                
+                org.quartz.impl.triggers.SimpleTriggerImpl trigger = new org.quartz.impl.triggers.SimpleTriggerImpl();
+                trigger.setName("Trigger_" + jobDetail.getName());
+                trigger.setGroup("BackgroundImports");
+                trigger.setStartTime(new java.util.Date());
+                
+                scheduler.scheduleJob(jobDetail, trigger);
+                
+                addPageMessage("Your Excel CRF template upload is being processed asynchronously in the background. You will receive an email upon completion.");
+                forwardPage(Page.CRF_LIST_SERVLET);
             } catch (Exception e) {
-                //
-                logger.warn("*** Found exception during file upload***");
-                e.printStackTrace();
-            }
-            session.setAttribute("tempFileName", tempFile);
-            // YW, at this point, if there are errors, they point to no file
-            // provided and/or not xls format
-            if (errors.isEmpty()) {
-                String s = ((NewCRFBean) session.getAttribute("nib")).getVersionName();
-                if (s.length() > 255) {
-                    Validator.addError(errors, "excel_file", resword.getString("the_version_CRF_version_more_than_255"));
-                } else if (s.length() <= 0) {
-                    Validator.addError(errors, "excel_file", resword.getString("the_VERSION_column_was_blank"));
-                }
-                version.setName(s);
-                if (version.getCrfId() == 0) {
-                    version.setCrfId(fp.getInt("crfId"));
-                }
-                session.setAttribute("version", version);
-            }
-            if (!errors.isEmpty()) {
-                logger.debug("has validation errors ");
-                request.setAttribute("formMessages", errors);
+                logger.error("Failed to schedule background job", e);
+                addPageMessage("Failed to schedule background processing.");
                 forwardPage(Page.CREATE_CRF_VERSION);
-            } else {
-                CRFBean crf = (CRFBean) cdao.findByPK(version.getCrfId());
-                ArrayList versions = (ArrayList) vdao.findAllByCRF(crf.getId());
-                for (int i = 0; i < versions.size(); i++) {
-                    CRFVersionBean version1 = (CRFVersionBean) versions.get(i);
-                    if (version.getName().equals(version1.getName())) {
-                        // version already exists
-                        logger.debug("Version already exists; owner or not:" + ub.getId() + "," + version1.getOwnerId());
-                        if (ub.getId() != version1.getOwnerId()) {// not owner
-                            addPageMessage(respage.getString("CRF_version_try_upload_exists_database") + version1.getOwner().getName()
-                                    + respage.getString("please_contact_owner_to_delete"));
-                            forwardPage(Page.CREATE_CRF_VERSION);
-                            return;
-                        } else {// owner,
-                            ArrayList definitions = edao.findByDefaultVersion(version1.getId());
-                            if (!definitions.isEmpty()) {// used in
-                                // definition
-                                request.setAttribute("definitions", definitions);
-                                forwardPage(Page.REMOVE_CRF_VERSION_DEF);
-                                return;
-                            } else {// not used in definition
-                                int previousVersionId = version1.getId();
-                                version.setId(previousVersionId);
-                                session.setAttribute("version", version);
-                                session.setAttribute("previousVersionId", new Integer(previousVersionId));
-                                forwardPage(Page.REMOVE_CRF_VERSION_CONFIRM);
-                                return;
-                            }
-                        }
-                    }
-                }
-                // didn't find same version in the DB,let user upload the excel
-                // file
-                logger.debug("didn't find same version in the DB,let user upload the excel file.");
-
-                // List excelErr =
-                // ((ArrayList)request.getAttribute("excelErrors"));
-                List excelErr = (ArrayList) session.getAttribute("excelErrors");
-                logger.debug("excelErr.isEmpty()=" + excelErr.isEmpty());
-                if (excelErr != null && excelErr.isEmpty()) {
-                    addPageMessage(resword.getString("congratulations_your_spreadsheet_no_errors"));
-                    forwardPage(Page.VIEW_SECTION_DATA_ENTRY_PREVIEW);
-                } else {
-                    logger.debug("OpenClinicaException thrown, forwarding to CREATE_CRF_VERSION_CONFIRM.");
-                    forwardPage(Page.CREATE_CRF_VERSION_CONFIRM);
-                }
-
-                return;
             }
+            return;
         } else if ("confirmsql".equalsIgnoreCase(action)) {
             NewCRFBean nib = (NewCRFBean) session.getAttribute("nib");
             if (nib != null && nib.getItemQueries() != null) {
