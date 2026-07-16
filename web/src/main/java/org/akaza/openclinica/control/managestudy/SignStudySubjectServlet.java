@@ -227,6 +227,16 @@ public class SignStudySubjectServlet extends SecureController {
             // .getInstance().encrytPassword(password);
             UserAccountBean ub = (UserAccountBean) session.getAttribute("userBean");
             if (securityManager.verifyPassword(password, getUserDetails()) && ub.getName().equals(username)) {
+                org.akaza.openclinica.core.interceptor.AuditHashService hashService = 
+                    (org.akaza.openclinica.core.interceptor.AuditHashService) org.akaza.openclinica.control.SpringServletAccess.getApplicationContext(context).getBean(org.akaza.openclinica.core.interceptor.AuditHashService.class);
+                try {
+                    hashService.validateChain();
+                } catch (org.akaza.openclinica.core.interceptor.DataIntegrityException e) {
+                    addPageMessage("Data integrity validation failed.");
+                    forwardPage(Page.LIST_STUDY_SUBJECTS_SERVLET);
+                    return;
+                }
+
                 if (signSubjectEvents(studySub, sm.getDataSource(), ub)) {
                     // Making the StudySubject signed as all the events have
                     // become signed.
