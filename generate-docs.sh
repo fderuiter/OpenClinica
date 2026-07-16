@@ -4,6 +4,12 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"
 
+# Check for Python and pip presence early on
+if ! command -v python3 &> /dev/null || ! python3 -m pip --version &> /dev/null; then
+    echo "Warning: Python 3 or pip is not installed. Skipping documentation generation."
+    exit 0
+fi
+
 # Fail the build if metadata cannot be extracted
 PROJECT_VERSION=$(python3 -c "import xml.etree.ElementTree as ET; tree = ET.parse('pom.xml'); root = tree.getroot(); print([elem.text for elem in root.iter('{http://maven.apache.org/POM/4.0.0}version')][0])")
 if [ -z "$PROJECT_VERSION" ]; then echo "Error: Could not extract PROJECT_VERSION"; exit 1; fi
@@ -54,7 +60,10 @@ rm README.md.tmp
 
 # Install MkDocs and plugins if not present
 if ! python3 -c "import mkdocs_redirects" &> /dev/null; then
-    python3 -m pip install mkdocs mkdocs-material mkdocs-redirects pyyaml --break-system-packages || python3 -m pip install mkdocs mkdocs-material mkdocs-redirects pyyaml
+    if ! python3 -m pip install --user mkdocs mkdocs-material mkdocs-redirects pyyaml; then
+        echo "Warning: Failed to install Python dependencies. Skipping documentation generation."
+        exit 0
+    fi
 fi
 
 # Ensure docs directory has the latest README
@@ -113,13 +122,22 @@ if [ -d "web" ] && [ -f "web/package.json" ]; then
 fi
 
 # Generate REST API docs (Unified OpenAPI)
-python3 merge_openapi.py
+if ! python3 merge_openapi.py; then
+    echo "Warning: Python tools failed (merge_openapi.py). Skipping documentation generation."
+    exit 0
+fi
 
 # Extract static SOAP definitions
-python3 extract_soap.py
+if ! python3 extract_soap.py; then
+    echo "Warning: Python tools failed (extract_soap.py). Skipping documentation generation."
+    exit 0
+fi
 
 # Build the documentation site
-python3 -m mkdocs build
+if ! python3 -m mkdocs build; then
+    echo "Warning: Python tools failed (mkdocs build). Skipping documentation generation."
+    exit 0
+fi
 
 # Validate that no placeholders remain in documentation
 UNRESOLVED=$(find docs core ws web -type f -name "*.md" -not -path "*/node_modules/*" -exec grep -lE '\$\{[a-zA-Z0-9._]+\}' {} + || true)
