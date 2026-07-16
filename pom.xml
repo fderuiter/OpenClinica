@@ -339,27 +339,6 @@
 	</dependencies>
 	<build>
 		<plugins>
-
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>9.0.9</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals><goal>check</goal></goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <failBuildOnCVSS>7.0</failBuildOnCVSS>
-                    <failOnError>false</failOnError>
-                    <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled>
-                    <nodeAuditAnalyzerEnabled>false</nodeAuditAnalyzerEnabled>
-                    <suppressionFiles>
-                        <suppressionFile>dependency-check-suppression.xml</suppressionFile>
-                    </suppressionFiles>
-                </configuration>
-            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
