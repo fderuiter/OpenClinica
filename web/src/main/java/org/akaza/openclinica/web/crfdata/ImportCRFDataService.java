@@ -111,6 +111,20 @@ public void process(SubjectDataBean subjectDataBean) {
                         ArrayList<StudyEventDataBean> studyEventDataBeans = subjectDataBean.getStudyEventData();
 
                         StudySubjectBean studySubjectBean = studySubjectDAO.findByOidAndStudy(subjectDataBean.getSubjectOID(), studyBean.getId());
+                        if (studySubjectBean == null) {
+                            org.akaza.openclinica.service.subject.SubjectServiceInterface subjectService = 
+                                (org.akaza.openclinica.service.subject.SubjectServiceInterface) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("subjectService");
+                            
+                            org.akaza.openclinica.bean.submit.SubjectBean newSubject = new org.akaza.openclinica.bean.submit.SubjectBean();
+                            newSubject.setUniqueIdentifier(subjectDataBean.getSubjectOID());
+                            newSubject.setLabel(subjectDataBean.getSubjectOID());
+                            newSubject.setCreatedDate(new java.util.Date());
+                            newSubject.setDobCollected(false);
+                            
+                            subjectService.createSubject(newSubject, studyBean, new java.util.Date(), null);
+                            
+                            studySubjectBean = studySubjectDAO.findByOidAndStudy(subjectDataBean.getSubjectOID(), studyBean.getId());
+                        }
                         for (StudyEventDataBean studyEventDataBean : studyEventDataBeans) {
                             ArrayList<FormDataBean> formDataBeans = studyEventDataBean.getFormData();
 
@@ -122,6 +136,23 @@ public void process(SubjectDataBean subjectDataBean) {
 
                             StudyEventBean studyEventBean = (StudyEventBean) studyEventDAO.findByStudySubjectIdAndDefinitionIdAndOrdinal(studySubjectBean.getId(),
                                     studyEventDefinitionBean.getId(), Integer.parseInt(sampleOrdinal));
+                                    
+                            if (studyEventBean == null || studyEventBean.getId() <= 0) {
+                                org.akaza.openclinica.service.EventService eventService = 
+                                    (org.akaza.openclinica.service.EventService) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("eventService");
+                                
+                                StudyEventBean newEvent = new StudyEventBean();
+                                newEvent.setStudyEventDefinitionId(studyEventDefinitionBean.getId());
+                                newEvent.setStudySubjectId(studySubjectBean.getId());
+                                newEvent.setSampleOrdinal(Integer.parseInt(sampleOrdinal));
+                                newEvent.setDateStarted(new java.util.Date());
+                                
+                                eventService.createStudyEvent(newEvent);
+                                
+                                studyEventBean = (StudyEventBean) studyEventDAO.findByStudySubjectIdAndDefinitionIdAndOrdinal(studySubjectBean.getId(),
+                                    studyEventDefinitionBean.getId(), Integer.parseInt(sampleOrdinal));
+                            }
+                            
                             // @pgawade 16-March-2011 Do not allow the data import
                             // if event status is one of the - stopped, signed,
                             // locked
@@ -1035,16 +1066,8 @@ public void process(SubjectDataBean subjectDataBean) {
 public void process(SubjectDataBean subjectDataBean) {
                     String oid = subjectDataBean.getSubjectOID();
                     StudySubjectBean studySubjectBean = studySubjectDAO.findByOidAndStudy(oid, studyBean.getId());
-                    if (studySubjectBean == null) {
-                        mf.applyPattern(respage.getString("your_subject_oid_does_not_reference"));
-                        Object[] arguments = { oid };
-                        errors.add(mf.format(arguments));
-
-                        // errors.add("Your Subject OID " + oid + " does not
-                        // reference an existing Subject in the Study.");
-                        logger.debug("logged an error with subject oid " + oid);
-                    }
-
+                    // Removed validation error for missing subject to allow auto-enrollment
+                    
                     ArrayList<StudyEventDataBean> studyEventDataBeans = subjectDataBean.getStudyEventData();
                     if (studyEventDataBeans != null) {
                         for (StudyEventDataBean studyEventDataBean : studyEventDataBeans) {
