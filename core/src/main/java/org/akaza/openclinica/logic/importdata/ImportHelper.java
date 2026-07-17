@@ -1,4 +1,4 @@
-package org.akaza.openclinica.web.crfdata;
+package org.akaza.openclinica.logic.importdata;
 
 import org.akaza.openclinica.bean.core.ItemDataType;
 import org.akaza.openclinica.bean.core.NumericComparisonOperator;
@@ -6,7 +6,6 @@ import org.akaza.openclinica.bean.submit.DisplayItemBean;
 import org.akaza.openclinica.bean.submit.ItemBean;
 import org.akaza.openclinica.bean.submit.ItemDataBean;
 import org.akaza.openclinica.bean.submit.ItemFormMetadataBean;
-import org.akaza.openclinica.control.form.DiscrepancyValidator;
 import org.akaza.openclinica.control.form.Validation;
 import org.akaza.openclinica.control.form.Validator;
 import org.akaza.openclinica.core.form.StringUtil;
@@ -39,7 +38,7 @@ public class ImportHelper {
      *            The DisplayItemBean to validate.
      * @return The DisplayItemBean which is validated.
      */
-    public DisplayItemBean validateDisplayItemBeanSingleCV(DiscrepancyValidator v, DisplayItemBean dib, String inputName) {
+    public DisplayItemBean validateDisplayItemBeanSingleCV(Validator v, DisplayItemBean dib, String inputName) {
         if (StringUtil.isBlank(inputName)) {
             inputName = getInputName(dib);
         }
@@ -71,7 +70,7 @@ public class ImportHelper {
      *            The DisplayItemBean to validate.
      * @return The DisplayItemBean which is validated.
      */
-    public DisplayItemBean validateDisplayItemBeanMultipleCV(DiscrepancyValidator v, DisplayItemBean dib, String inputName) {
+    public DisplayItemBean validateDisplayItemBeanMultipleCV(Validator v, DisplayItemBean dib, String inputName) {
         if (StringUtil.isBlank(inputName)) {
             inputName = getInputName(dib);
         }
@@ -95,13 +94,13 @@ public class ImportHelper {
      * If the item has a null value, it's automatically validated. Otherwise,
      * it's checked against its data type.
      * 
-     * @param v
+     * @param discValidator
      *            The Validator to add validations to.
      * @param dib
      *            The DisplayItemBean to validate.
      * @return The DisplayItemBean which is validated.
      */
-    public DisplayItemBean validateDisplayItemBeanText(DiscrepancyValidator discValidator, DisplayItemBean dib, String inputName) {
+    public DisplayItemBean validateDisplayItemBeanText(Validator discValidator, DisplayItemBean dib, String inputName) {
 
         if (StringUtil.isBlank(inputName)) {// for single items
             inputName = getInputName(dib);
