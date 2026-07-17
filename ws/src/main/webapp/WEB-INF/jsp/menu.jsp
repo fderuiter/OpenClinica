@@ -242,7 +242,7 @@
         <tr>
             <td valign="bottom" id="Tab1'">
                 <div id="Tab1NotSelected"><div class="tab_BG"><div class="tab_L"><div class="tab_R">
-                    <a class="tabtext" title="View By Event CRF" href='pages/viewAllSubjectSDVtmp?studyId=${studyId}' onclick="javascript:HighlightTab(1);">View By Event CRF</a></div></div></div></div>
+                    <a class="tabtext" title="View By Event CRF" href='pages/viewAllSubjectSDV?studyId=${studyId}' onclick="javascript:HighlightTab(1);">View By Event CRF</a></div></div></div></div>
                 <div id="Tab1Selected" style="display:none"><div class="tab_BG_h"><div class="tab_L_h"><div class="tab_R_h"><span class="tabtext">View By Event CRF</span></div></div></div></div></td>
               
             <td valign="bottom" id="Tab2'">
@@ -269,18 +269,18 @@
     </script>
 
 <div id="subjectSDV">
-    <form name='sdvForm' action="${pageContext.request.contextPath}/pages/viewAllSubjectSDVtmp">
+    <form name='sdvForm' action="${pageContext.request.contextPath}/pages/viewAllSubjectSDV">
         <input type="hidden" name="studyId" value="${study.id}">
         <input type="hidden" name=imagePathPrefix value="">
         <%--This value will be set by an onclick handler associated with an SDV button --%>
         <input type="hidden" name="crfId" value="0">
         <%-- the destination JSP page after removal or adding SDV for an eventCRF --%>
-        <input type="hidden" name="redirection" value="viewAllSubjectSDVtmp">
+        <input type="hidden" name="redirection" value="viewAllSubjectSDV">
         <%--<input type="hidden" name="decorator" value="mydecorator">--%>
         ${sdvMatrix}
         <br />
         <input type="submit" name="sdvAllFormSubmit" class="button_medium" value="Submit" onclick="this.form.method='POST';this.form.action='${pageContext.request.contextPath}/pages/handleSDVPost';this.form.submit();"/>
-        <input type="submit" name="sdvAllFormCancel" class="button_medium" value="Cancel" onclick="this.form.action='${pageContext.request.contextPath}/pages/viewAllSubjectSDVtmp';this.form.submit();"/>
+        <input type="submit" name="sdvAllFormCancel" class="button_medium" value="Cancel" onclick="this.form.action='${pageContext.request.contextPath}/pages/viewAllSubjectSDV';this.form.submit();"/>
     </form>
 
 </div>
