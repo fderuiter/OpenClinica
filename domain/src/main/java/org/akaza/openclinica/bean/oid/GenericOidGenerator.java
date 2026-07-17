@@ -1,27 +1,12 @@
-/*
- * OpenClinica is distributed under the
- * GNU Lesser General Public License (GNU LGPL).
- * For details see: http://www.openclinica.org/license
- *
- * Copyright 2003-2008 Akaza Research
- */
 package org.akaza.openclinica.bean.oid;
 
 import java.io.Serializable;
 
-/**
- * @author Krikor Krumlian
- *
- */
 public class GenericOidGenerator extends OidGenerator implements Serializable {
 
-    private final int argumentLength = 1;
-
     @Override
-    void verifyArgumentLength(String... keys) throws Exception {
-        if (keys.length != argumentLength) {
-            throw new Exception();
-        }
+    protected int getArgumentLength() {
+        return 1;
     }
 
     @Override
@@ -31,10 +16,6 @@ public class GenericOidGenerator extends OidGenerator implements Serializable {
 
         oid = truncateTo4Chars(capitalize(stripNonAlphaNumeric(key)));
 
-        // If oid is made up of all special characters then
-        if (oid.equals("_")) {
-            oid = randomizeOid("");
-        }
         logger.debug("OID : " + oid);
         return oid;
     }
