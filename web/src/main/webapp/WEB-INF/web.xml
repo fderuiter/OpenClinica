@@ -216,6 +216,22 @@
 
     <servlet-mapping>
         <servlet-name>pages</servlet-name>
+        <url-pattern>/Enterprise</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>pages</servlet-name>
+        <url-pattern>/RequestAccount</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>pages</servlet-name>
+        <url-pattern>/ListDiscNotesSubjectServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>pages</servlet-name>
         <url-pattern>/oauth/*</url-pattern>
     </servlet-mapping>
 
@@ -323,12 +339,7 @@
         <servlet-class>org.akaza.openclinica.control.managestudy.ListDiscNotesForCRFServlet</servlet-class>
     </servlet>
 
-    <!--    <servlet>
-            <servlet-name>ListDiscNotesSubjectServlet</servlet-name>
-            <display-name>ListDiscNotesSubjectServlet</display-name>
-            <description>ListDiscNotesSubjectServlet</description>
-            <servlet-class>org.akaza.openclinica.control.managestudy.ListDiscNotesSubjectServlet</servlet-class>
-        </servlet>-->
+    
     <servlet>
         <servlet-name>ViewJobServlet</servlet-name>
         <display-name>ViewJobServlet</display-name>
@@ -397,12 +408,7 @@
         <description>The log out Servlet</description>
         <servlet-class>org.akaza.openclinica.control.login.LogoutServlet</servlet-class>
     </servlet>
-    <!--    <servlet>
-            <servlet-name>EnterpriseServlet</servlet-name>
-            <display-name>EnterpriseServlet</display-name>
-            <description>The Enterprise Servlet</description>
-            <servlet-class>org.akaza.openclinica.control.login.EnterpriseServlet</servlet-class>
-        </servlet>-->
+    
     <servlet>
         <servlet-name>RequestPasswordServlet</servlet-name>
         <display-name>RequestPasswordServlet</display-name>
@@ -413,11 +419,7 @@
         <display-name>ContactServlet</display-name>
         <servlet-class>org.akaza.openclinica.control.login.ContactServlet</servlet-class>
     </servlet>
-    <!--    <servlet>
-            <servlet-name>RequestAccountServlet</servlet-name>
-            <display-name>RequestAccountServlet</display-name>
-            <servlet-class>org.akaza.openclinica.control.login.RequestAccountServlet</servlet-class>
-        </servlet>-->
+    
     <servlet>
         <servlet-name>RequestStudyServlet</servlet-name>
         <display-name>RequestStudyServlet</display-name>
@@ -1391,11 +1393,7 @@
         <url-pattern>/ListDiscNotesForCRFServlet</url-pattern>
     </servlet-mapping>
 
-    <!--    <servlet-mapping>
-            <servlet-name>ListDiscNotesSubjectServlet</servlet-name>
-            <url-pattern>/ListDiscNotesSubjectServlet</url-pattern>
-        </servlet-mapping>
-    -->
+    
     <servlet-mapping>
         <servlet-name>ViewJobServlet</servlet-name>
         <url-pattern>/ViewJob</url-pattern>
@@ -1577,10 +1575,7 @@
         <servlet-name>AccessFileServlet</servlet-name>
         <url-pattern>/AccessFile</url-pattern>
     </servlet-mapping>
-    <!--<servlet-mapping>
-        <servlet-name>EnterpriseServlet</servlet-name>
-        <url-pattern>/Enterprise</url-pattern>
-    </servlet-mapping>-->
+    
     <servlet-mapping>
         <servlet-name>ShowFileServlet</servlet-name>
         <url-pattern>/ShowFile</url-pattern>
@@ -1617,10 +1612,7 @@
         <servlet-name>ViewSchedulerServlet</servlet-name>
         <url-pattern>/ViewScheduler</url-pattern>
     </servlet-mapping>
-    <!--    <servlet-mapping>
-            <servlet-name>RequestAccountServlet</servlet-name>
-            <url-pattern>/RequestAccount</url-pattern>
-        </servlet-mapping>-->
+    
     <servlet-mapping>
         <servlet-name>RequestStudyServlet</servlet-name>
         <url-pattern>/RequestStudy</url-pattern>

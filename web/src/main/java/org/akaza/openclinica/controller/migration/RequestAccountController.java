@@ -1,86 +1,73 @@
-/*
- * OpenClinica is distributed under the
- * GNU Lesser General Public License (GNU LGPL).
-
- * For details see: http://www.openclinica.org/license
- * copyright 2003-2005 Akaza Research
- */
-package org.akaza.openclinica.control.login;
+package org.akaza.openclinica.controller.migration;
 
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.TermType;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
-import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.control.form.FormProcessor;
 import org.akaza.openclinica.control.form.Validator;
 import org.akaza.openclinica.core.EmailEngine;
-import org.akaza.openclinica.core.SessionManager;
 import org.akaza.openclinica.core.form.StringUtil;
 import org.akaza.openclinica.dao.managestudy.StudyDAO;
-import org.akaza.openclinica.view.Page;
-import org.akaza.openclinica.web.InsufficientPermissionException;
+import org.akaza.openclinica.dao.login.UserAccountDAO;
 import org.akaza.openclinica.web.SQLInitServlet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import jakarta.mail.internet.MimeMessage;
+import org.akaza.openclinica.control.SpringServletAccess;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.ResourceBundle;
+import java.util.Properties;
+import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
+import org.akaza.openclinica.i18n.core.LocaleResolver;
 
-/**
- * @author jxu
- * @version CVS: $Id: RequestAccountServlet.java 9771 2007-08-28 15:26:26Z
- *          thickerson $
- *
- * Processes request of 'request a user account'
- */
-public class RequestAccountServlet extends SecureController {
-    // private UserAccountBean ubForm = new UserAccountBean();
+@Controller
+public class RequestAccountController {
 
-    @Override
-    public void mayProceed() throws InsufficientPermissionException {
+    @Autowired
+    @Qualifier("dataSource")
+    private DataSource dataSource;
 
-    }
-
-    @Override
-    public void processRequest() throws Exception {
-
+    @RequestMapping(value = "/RequestAccount", method = {RequestMethod.GET, RequestMethod.POST})
+    public String requestAccount(HttpServletRequest request, HttpSession session) throws Exception {
         String action = request.getParameter("action");
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = new StudyDAO(dataSource);
         ArrayList studies = (ArrayList) sdao.findAll();
         ArrayList roles = Role.toArrayList();
-        roles.remove(Role.ADMIN); // admin is not a user role, only used for
-        // tomcat
+        roles.remove(Role.ADMIN);
 
         request.setAttribute("roles", roles);
         request.setAttribute("studies", studies);
 
         if (StringUtil.isBlank(action)) {
-
             session.setAttribute("newUserBean", new UserAccountBean());
-
-            forwardPage(Page.REQUEST_ACCOUNT);
+            return "login/requestAccount";
         } else {
             if ("confirm".equalsIgnoreCase(action)) {
-                confirmAccount();
-
+                return confirmAccount(request, session);
             } else if ("submit".equalsIgnoreCase(action)) {
-                submitAccount();
+                return submitAccount(request, session);
             } else {
-                logger.info("here...");
-                forwardPage(Page.REQUEST_ACCOUNT);
+                return "login/requestAccount";
             }
         }
-
     }
 
-    /**
-     *
-     * @param request
-     * @param response
-     */
-    private void confirmAccount() throws Exception {
+    private String confirmAccount(HttpServletRequest request, HttpSession session) throws Exception {
         Validator v = new Validator(request);
         v.addValidation("name", Validator.NO_BLANKS);
         v.addValidation("firstName", Validator.NO_BLANKS);
@@ -92,53 +79,39 @@ public class RequestAccountServlet extends SecureController {
         v.addValidation("activeStudyRole", Validator.IS_VALID_TERM, TermType.ROLE);
 
         HashMap errors = v.validate();
-
         FormProcessor fp = new FormProcessor(request);
-
-        UserAccountBean ubForm = getUserBean();
+        UserAccountBean ubForm = getUserBean(fp);
         request.setAttribute("otherStudy", fp.getString("otherStudy"));
         session.setAttribute("newUserBean", ubForm);
 
         if (!errors.isEmpty()) {
-            logger.info("after processing form,error is not empty");
             request.setAttribute("formMessages", errors);
-            forwardPage(Page.REQUEST_ACCOUNT);
-
+            return "login/requestAccount";
         } else {
-            logger.info("after processing form,no errors");
+            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountBean ubDB = (UserAccountBean) udao.findByUserName(ubForm.getName());
 
-            sm = new SessionManager(null, ubForm.getName());
-            // see whether this user already in the DB
-            UserAccountBean ubDB = sm.getUserBean();
-
-            if (StringUtil.isBlank(ubDB.getName())) {
-                StudyDAO sdao = new StudyDAO(sm.getDataSource());
+            if (ubDB == null || StringUtil.isBlank(ubDB.getName())) {
+                StudyDAO sdao = new StudyDAO(dataSource);
                 StudyBean study = (StudyBean) sdao.findByPK(ubForm.getActiveStudyId());
                 String studyName = study.getName();
                 request.setAttribute("studyName", studyName);
-                forwardPage(Page.REQUEST_ACCOUNT_CONFIRM);
+                return "login/requestAccountConfirm";
             } else {
-
-                addPageMessage(respage.getString("your_user_name_used_by_other_try_another"));
-                forwardPage(Page.REQUEST_ACCOUNT);
+                ResourceBundle respage = ResourceBundleProvider.getPageMessagesBundle(LocaleResolver.getLocale(request));
+                request.setAttribute("formMessages", new HashMap<String, String>() {{ put("error", respage.getString("your_user_name_used_by_other_try_another")); }});
+                return "login/requestAccount";
             }
-
         }
-
     }
 
-    /**
-     * Gets user basic info and set email to the administrator
-     *
-     * @param request
-     * @param response
-     */
-    private void submitAccount() throws Exception {
+    private String submitAccount(HttpServletRequest request, HttpSession session) throws Exception {
         String otherStudy = request.getParameter("otherStudy");
         String studyName = request.getParameter("studyName");
         UserAccountBean ubForm = (UserAccountBean) session.getAttribute("newUserBean");
-        logger.info("Sending email...");
-        // YW << <<
+        
+        ResourceBundle resword = ResourceBundleProvider.getWordsBundle(LocaleResolver.getLocale(request));
+
         StringBuffer email = new StringBuffer("From: " + ubForm.getEmail() + "\n");
         email.append("Sent: " + new Date() + "\n");
         email.append("To: " + SQLInitServlet.getField("adminEmail") + "\n");
@@ -155,22 +128,39 @@ public class RequestAccountServlet extends SecureController {
         email.append("\n" + resword.getString("other_study") + otherStudy);
         email.append("\n" + resword.getString("user_role_requested") + ubForm.getActiveStudyRoleName());
         String emailBody = email.toString();
-        // YW >>
-        logger.info("Sending email...begin" + emailBody);
-        sendEmail(EmailEngine.getAdminEmail(), ubForm.getEmail().trim(), "request account", emailBody, false);
+        
+        try {
+            JavaMailSenderImpl mailSender = (JavaMailSenderImpl) SpringServletAccess.getApplicationContext(request.getSession().getServletContext()).getBean("mailSender");
+            Properties javaMailProperties = mailSender.getJavaMailProperties();
+            if(null != javaMailProperties){
+            	if (javaMailProperties.get("mail.smtp.localhost") == null || ((String)javaMailProperties.get("mail.smtp.localhost")).equalsIgnoreCase("") ){
+            		javaMailProperties.put("mail.smtp.localhost", "localhost");
+            	}
+            }
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false);
+            helper.setFrom(ubForm.getEmail().trim());
+            
+            String to = EmailEngine.getAdminEmail();
+            String[] toArray = to.split(",");
+            for(int i=0; i<toArray.length; i++) {
+                toArray[i] = toArray[i].trim();
+            }
+            helper.setTo(toArray);
+            
+            helper.setSubject("request account");
+            helper.setText(emailBody, true);
+
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         session.removeAttribute("newUserBean");
-        forwardPage(Page.LOGIN);
+        return "login/login";
     }
 
-    /**
-     * Constructs userbean from request
-     *
-     * @param request
-     * @return
-     */
-    private UserAccountBean getUserBean() {
-        FormProcessor fp = new FormProcessor(request);
-
+    private UserAccountBean getUserBean(FormProcessor fp) {
         UserAccountBean ubForm = new UserAccountBean();
         ubForm.setName(fp.getString("name"));
         ubForm.setFirstName(fp.getString("firstName"));
@@ -183,7 +173,5 @@ public class RequestAccountServlet extends SecureController {
         uRole.setRole(Role.get(fp.getInt("activeStudyRole")));
         ubForm.addRole(uRole);
         return ubForm;
-
     }
-
 }
