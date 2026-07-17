@@ -149,17 +149,14 @@ public class SubjectService implements SubjectServiceInterface {
         subjectBean.setUpdatedDate(new Date());
         SubjectBean updatedSubject = (SubjectBean) sdao.update(subjectBean);
         
-        org.akaza.openclinica.service.audit.AuditService auditService = new org.akaza.openclinica.service.audit.AuditService(dataSource);
-        
-        org.akaza.openclinica.bean.admin.AuditEventBean auditEvent = new org.akaza.openclinica.bean.admin.AuditEventBean();
-        auditEvent.setAuditDate(new Date());
-        auditEvent.setAuditTable("subject");
-        auditEvent.setUserId(updater.getId());
-        auditEvent.setEntityId(updatedSubject.getId());
-        auditEvent.setReasonForChange(reasonForChange != null ? reasonForChange : "");
-        auditEvent.setActionMessage("Subject updated via Centralized Service");
-        
-        auditService.logEvent(auditEvent, note);
+        if (note != null && note.getId() > 0) {
+            org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(dataSource);
+            Integer auditId = jdbcTemplate.queryForObject("SELECT max(audit_id) FROM audit_log_event WHERE audit_table = 'subject' AND entity_id = ?", Integer.class, updatedSubject.getId());
+            if (auditId != null) {
+                org.akaza.openclinica.dao.admin.AuditEventDAO auditEventDAO = new org.akaza.openclinica.dao.admin.AuditEventDAO(dataSource);
+                auditEventDAO.createAuditEventDiscrepancyNoteLink(auditId, note.getId());
+            }
+        }
         
         return updatedSubject;
     }

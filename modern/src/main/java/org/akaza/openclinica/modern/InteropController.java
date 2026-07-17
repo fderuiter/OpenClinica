@@ -93,8 +93,10 @@ public class InteropController {
     }
 
     @PostMapping("/mapping/data")
-    public ResponseEntity<ApiResponse<String>> saveMapping(@RequestBody Map<String, String> newMappings) {
-        mappings.putAll(newMappings);
+    public ResponseEntity<ApiResponse<String>> saveMapping(@jakarta.validation.Valid @RequestBody org.akaza.openclinica.modern.dto.MappingDataRequest newMappings) {
+        mappings.put("subject_id", newMappings.getSubjectId());
+        mappings.put("event_id", newMappings.getEventId());
+        mappings.put("item_value", newMappings.getItemValue());
         try {
             String json = objectMapper.writeValueAsString(mappings);
             draftService.saveDraftWithId(MAPPINGS_ID, "system", MAPPINGS_DRAFT_TYPE, json);

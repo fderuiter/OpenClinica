@@ -565,46 +565,17 @@ public class ItemDataDAO extends AuditableEntityDAO {
     // }
 
     public String formatPDate(String pDate) {
-        String temp = "";
-        if (pDate != null && pDate.length() > 0) {
-            String yearMonthFormat = I18nFormatUtil.yearMonthFormatString(this.locale);
-            String yearFormat = I18nFormatUtil.yearFormatString();
-            String dateFormat = I18nFormatUtil.dateFormatString(this.locale);
-            try {
-                if (StringUtil.isFormatDate(pDate, dateFormat, this.locale)) {
-                    temp = new SimpleDateFormat(oc_df_string, this.locale).format(new SimpleDateFormat(dateFormat, this.locale).parse(pDate));
-                } else if (StringUtil.isPartialYear(pDate, yearFormat, this.locale)) {
-                    temp = pDate;
-                } else if (StringUtil.isPartialYearMonth(pDate, yearMonthFormat, this.locale)) {
-                    temp = new SimpleDateFormat(ApplicationConstants.getPDateFormatInSavedData(), this.locale).format(new SimpleDateFormat(yearMonthFormat,
-                            this.locale).parse(pDate));
-                }
-            } catch (Exception ex) {
-                logger.warn("Parsial Date Parsing Exception........");
-            }
-        }
-        return temp;
+        String yearMonthFormat = I18nFormatUtil.yearMonthFormatString(this.locale);
+        String yearFormat = I18nFormatUtil.yearFormatString();
+        String dateFormat = I18nFormatUtil.dateFormatString(this.locale);
+        return StringUtil.formatDateForSave(pDate, dateFormat, yearMonthFormat, yearFormat, oc_df_string, ApplicationConstants.getPDateFormatInSavedData(), this.locale);
     }
 
     public String reFormatPDate(String pDate) {
-        String temp = "";
-        if (pDate != null && pDate.length() > 0) {
-            String yearMonthFormat = I18nFormatUtil.yearMonthFormatString(this.locale);
-            String dateFormat = I18nFormatUtil.dateFormatString(this.locale);
-            try {
-                if (StringUtil.isFormatDate(pDate, oc_df_string, this.locale)) {
-                    temp = new SimpleDateFormat(dateFormat, this.locale).format(new SimpleDateFormat(oc_df_string, this.locale).parse(pDate));
-                } else if (StringUtil.isPartialYear(pDate, "yyyy", this.locale)) {
-                    temp = pDate;
-                } else if (StringUtil.isPartialYearMonth(pDate, ApplicationConstants.getPDateFormatInSavedData(), this.locale)) {
-                    temp = new SimpleDateFormat(yearMonthFormat, this.locale).format(new SimpleDateFormat(ApplicationConstants.getPDateFormatInSavedData(),
-                            this.locale).parse(pDate));
-                }
-            } catch (Exception ex) {
-                logger.warn("Parsial Date Parsing Exception........");
-            }
-        }
-        return temp;
+        String yearMonthFormat = I18nFormatUtil.yearMonthFormatString(this.locale);
+        String yearFormat = I18nFormatUtil.yearFormatString();
+        String dateFormat = I18nFormatUtil.dateFormatString(this.locale);
+        return StringUtil.formatDateForDisplay(pDate, dateFormat, yearMonthFormat, yearFormat, oc_df_string, ApplicationConstants.getPDateFormatInSavedData(), this.locale);
     }
 
     public Object getEntityFromHashMap(HashMap hm) {

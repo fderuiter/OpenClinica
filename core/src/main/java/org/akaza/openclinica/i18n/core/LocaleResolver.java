@@ -50,6 +50,9 @@ public final class LocaleResolver {
 	 * @return
 	 */
 	public final static Locale getLocale(HttpServletRequest request) {
+	    if (request == null) {
+	        return getDefaultLocale();
+	    }
 	    Locale locale = getLocaleInSession(request.getSession(false));
 	    if(locale == null) {
 	        return resolveLocale(request);

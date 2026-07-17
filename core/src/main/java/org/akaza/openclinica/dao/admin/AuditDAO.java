@@ -558,23 +558,10 @@ public class AuditDAO extends EntityDAO {
     }
 
     private String convertedItemDataValue(String itemValue, Locale locale) {
-        String temp = itemValue;
         String yearMonthFormat = I18nFormatUtil.yearMonthFormatString(locale);
         String yearFormat = I18nFormatUtil.yearFormatString();
         String dateFormat = I18nFormatUtil.dateFormatString(locale);
-        try{
-            if (StringUtil.isFormatDate(itemValue, oc_df_string, locale)) {
-                temp = Utils.convertedItemDateValue(itemValue, oc_df_string, local_df_string, locale);
-            } else if (StringUtil.isPartialYear(itemValue, yearFormat, locale)) {
-                temp = itemValue;
-            } else if (StringUtil.isPartialYearMonth(itemValue, ApplicationConstants.getPDateFormatInSavedData(), locale)) {
-                temp = new SimpleDateFormat(yearMonthFormat, locale).format(
-                        new SimpleDateFormat(ApplicationConstants.getPDateFormatInSavedData(), locale).parse(itemValue));
-            }
-        } catch (Exception ex) {
-            logger.warn("Parsial Date Parsing Exception........");
-        }
-        return temp;
+        return StringUtil.formatDateForDisplay(itemValue, dateFormat, yearMonthFormat, yearFormat, oc_df_string, ApplicationConstants.getPDateFormatInSavedData(), locale);
     }
     //      SELECT old_value FROM audit_log_event
 //	where   audit_table=? and entity_id=? 

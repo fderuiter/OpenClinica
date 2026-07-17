@@ -1,32 +1,31 @@
 package org.akaza.openclinica.service;
 
-import java.util.Calendar;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 
 public class DateCalculationService {
 
     public int calculateAgeAtEvent(Date birthDate, Date eventDate) {
-        if (birthDate == null || eventDate == null) {
+        Period agePeriod = calculateAgePeriodAtEvent(birthDate, eventDate);
+        if (agePeriod == null) {
             return -1;
+        }
+        return agePeriod.getYears();
+    }
+
+    public Period calculateAgePeriodAtEvent(Date birthDate, Date eventDate) {
+        if (birthDate == null || eventDate == null) {
+            return null;
         }
         if (birthDate.after(eventDate)) {
-            return -1;
+            return null;
         }
 
-        Calendar birthCal = Calendar.getInstance();
-        birthCal.setTime(birthDate);
-        
-        Calendar eventCal = Calendar.getInstance();
-        eventCal.setTime(eventDate);
-        
-        int age = eventCal.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR);
-        
-        birthCal.add(Calendar.YEAR, age);
-        
-        if (eventCal.before(birthCal)) {
-            age--;
-        }
-        
-        return age;
+        LocalDate birthLocal = birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate eventLocal = eventDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        return Period.between(birthLocal, eventLocal);
     }
 }

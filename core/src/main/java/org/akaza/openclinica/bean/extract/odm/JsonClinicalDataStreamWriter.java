@@ -3,9 +3,9 @@ package org.akaza.openclinica.bean.extract.odm;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.akaza.openclinica.bean.submit.crfdata.ExportSubjectDataBean;
-import org.json.JSONObject;
-import org.json.XML;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -16,9 +16,10 @@ public class JsonClinicalDataStreamWriter implements ClinicalDataStreamWriter {
     private final String odmVersion;
     private final Locale locale;
     private final ObjectMapper mapper = new ObjectMapper();
+    private final XmlMapper xmlMapper;
     
     private int subjectCount = 0;
-    private com.fasterxml.jackson.databind.JsonNode bufferedFirstSubject = null;
+    private JsonNode bufferedFirstSubject = null;
     private final JsonPostProcessor postProcessor;
 
     public JsonClinicalDataStreamWriter(OutputStream os, String odmVersion, Locale locale, int totalSubjects, JsonPostProcessor postProcessor) throws Exception {
@@ -28,26 +29,29 @@ public class JsonClinicalDataStreamWriter implements ClinicalDataStreamWriter {
         this.odmVersion = odmVersion;
         this.locale = locale;
         this.postProcessor = postProcessor;
+        
+        javax.xml.stream.XMLInputFactory xmlInputFactory = javax.xml.stream.XMLInputFactory.newFactory();
+        xmlInputFactory.setProperty(javax.xml.stream.XMLInputFactory.IS_NAMESPACE_AWARE, false);
+        this.xmlMapper = new XmlMapper(new com.fasterxml.jackson.dataformat.xml.XmlFactory(xmlInputFactory, null));
     }
 
     @Override
     public void writeStartDocument(String studyOID, String metaDataVersionOID, String metadataXml) throws Exception {
-        JSONObject metadataJson = XML.toJSONObject(metadataXml + "</ODM>");
+        JsonNode odmNode = xmlMapper.readTree(metadataXml + "</ODM>");
         if (postProcessor != null) {
-            postProcessor.process(metadataJson);
+            postProcessor.process(odmNode);
         }
-        JSONObject odmObj = metadataJson.optJSONObject("ODM");
-        if (odmObj == null) odmObj = new JSONObject();
-
+        
         jsonGenerator.writeStartObject();
         jsonGenerator.writeObjectFieldStart("ODM");
         
-        com.fasterxml.jackson.databind.JsonNode odmNode = mapper.readTree(odmObj.toString());
-        java.util.Iterator<java.util.Map.Entry<String, com.fasterxml.jackson.databind.JsonNode>> fields = odmNode.fields();
-        while (fields.hasNext()) {
-            java.util.Map.Entry<String, com.fasterxml.jackson.databind.JsonNode> field = fields.next();
-            if (!"ClinicalData".equals(field.getKey())) {
-                jsonGenerator.writeObjectField(field.getKey(), field.getValue());
+        if (odmNode != null) {
+            java.util.Iterator<java.util.Map.Entry<String, JsonNode>> fields = odmNode.fields();
+            while (fields.hasNext()) {
+                java.util.Map.Entry<String, JsonNode> field = fields.next();
+                if (!"ClinicalData".equals(field.getKey())) {
+                    jsonGenerator.writeObjectField(field.getKey(), field.getValue());
+                }
             }
         }
 
@@ -68,17 +72,11 @@ public class JsonClinicalDataStreamWriter implements ClinicalDataStreamWriter {
         tempXmlWriter.writeSubjectData(sub);
         tempXmlWriter.close();
         
-        String xml = new String(baos.toByteArray(), "UTF-8");
-        JSONObject jsonObject = XML.toJSONObject(xml);
+        byte[] xmlBytes = baos.toByteArray();
+        JsonNode tree = xmlMapper.readTree(xmlBytes);
         if (postProcessor != null) {
-            postProcessor.process(jsonObject);
+            postProcessor.process(tree);
         }
-        JSONObject subjectDataJson = jsonObject.optJSONObject("SubjectData");
-        if (subjectDataJson == null) {
-            subjectDataJson = new JSONObject();
-        }
-
-        com.fasterxml.jackson.databind.JsonNode tree = mapper.readTree(subjectDataJson.toString());
         
         subjectCount++;
         

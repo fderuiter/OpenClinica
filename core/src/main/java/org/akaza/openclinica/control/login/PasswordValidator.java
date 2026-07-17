@@ -63,10 +63,12 @@ public class PasswordValidator {
     		ResourceBundle resexception) {
     	ArrayList<String> errors = new ArrayList<String>();
 
-    	UserAccountBean userBean = (UserAccountBean) userDao.findByPK(userId);
-        if (userBean.getPasswd().equals(newHash)) {
-            errors.add(resexception.getString("pwd_cannot_reuse"));
-        }
+    	if (userDao != null && userId > 0 && newHash != null) {
+        	UserAccountBean userBean = (UserAccountBean) userDao.findByPK(userId);
+            if (userBean != null && userBean.getPasswd() != null && userBean.getPasswd().equals(newHash)) {
+                errors.add(resexception.getString("pwd_cannot_reuse"));
+            }
+    	}
 
     	int
     		minLen = passwordRequirementsDao.minLength(),
