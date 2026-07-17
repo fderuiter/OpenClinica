@@ -37,8 +37,7 @@ public class ParticipantPortalRegistrar {
         String baseUrl = CoreResources.getField("portalURL");
         try {
             List<org.akaza.openclinica.sdk.model.Authorization> sdkResponse = getApi(baseUrl).appRestOcAuthorizationsGet(studyOid, ocUrl);
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            com.fasterxml.jackson.databind.ObjectMapper mapper = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("permissiveObjectMapper", com.fasterxml.jackson.databind.ObjectMapper.class);
             java.util.List<Authorization> response = mapper.convertValue(sdkResponse, mapper.getTypeFactory().constructCollectionType(java.util.List.class, Authorization.class));
             if (response != null && response.size() > 0 && response.get(0).getAuthorizationStatus() != null)
                 return response.get(0);
@@ -58,8 +57,7 @@ public class ParticipantPortalRegistrar {
         String baseUrl = CoreResources.getField("portalURL");
         try {
             List<org.akaza.openclinica.sdk.model.Authorization> sdkResponse = getApi(baseUrl).appRestOcAuthorizationsGet(studyOid, ocUrl);
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            com.fasterxml.jackson.databind.ObjectMapper mapper = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("permissiveObjectMapper", com.fasterxml.jackson.databind.ObjectMapper.class);
             java.util.List<Authorization> response = mapper.convertValue(sdkResponse, mapper.getTypeFactory().constructCollectionType(java.util.List.class, Authorization.class));
             if (response != null && response.size() > 0 && response.get(0).getAuthorizationStatus() != null)
                 return response.get(0).getAuthorizationStatus().getStatus();
@@ -118,7 +116,7 @@ public class ParticipantPortalRegistrar {
     public String sendEmailThruMandrillViaOcui(ParticipantDTO participantDTO, String hostname) {
     	String host = hostname.substring(0,hostname.indexOf("/app/oauth2"));
         try {
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            com.fasterxml.jackson.databind.ObjectMapper mapper = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("permissiveObjectMapper", com.fasterxml.jackson.databind.ObjectMapper.class);
             org.akaza.openclinica.sdk.model.ParticipantDTO sdkDto = mapper.convertValue(participantDTO, org.akaza.openclinica.sdk.model.ParticipantDTO.class);
             getApi(host).appRestOcEmailPost(sdkDto);
         } catch (Exception e) {
@@ -158,8 +156,7 @@ public class ParticipantPortalRegistrar {
 
         try {
             List<org.akaza.openclinica.sdk.model.Authorization> sdkResponse = getApi(pManageUrl).appRestOcAuthorizationsGet(studyOid, ocUrl);
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            com.fasterxml.jackson.databind.ObjectMapper mapper = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("permissiveObjectMapper", com.fasterxml.jackson.databind.ObjectMapper.class);
             java.util.List<Authorization> response = mapper.convertValue(sdkResponse, mapper.getTypeFactory().constructCollectionType(java.util.List.class, Authorization.class));
             if (response != null && response.size() > 0 && response.get(0).getStudy() != null 
                     && response.get(0).getStudy().getHost() != null

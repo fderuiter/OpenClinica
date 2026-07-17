@@ -25,6 +25,10 @@ public class AIEventStreamerService {
     private final ExecutorService senderExecutor = Executors.newFixedThreadPool(10);
     private final Map<Integer, Long> pendingEvents = new ConcurrentHashMap<>();
 
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.beans.factory.annotation.Qualifier("standardObjectMapper")
+    private ObjectMapper mapper;
+
     public void streamEventCrfAsync(final int eventCrfId) {
         pendingEvents.put(eventCrfId, System.currentTimeMillis());
         scheduler.schedule(new Runnable() {
@@ -79,7 +83,6 @@ public class AIEventStreamerService {
             }
             payload.put("items", itemsMap);
             
-            ObjectMapper mapper = new ObjectMapper();
             String jsonPayload = mapper.writeValueAsString(payload);
             
             sendWithRetry(webhookUrl, jsonPayload, 3);

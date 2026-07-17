@@ -33,6 +33,10 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
     @Autowired
     private AuditLogEventDao auditLogEventDao;
 
+    @Autowired
+    @org.springframework.beans.factory.annotation.Qualifier("standardObjectMapper")
+    private com.fasterxml.jackson.databind.ObjectMapper mapper;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -118,7 +122,6 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
         response.setStatus(401);
         response.setContentType("application/json;charset=UTF-8");
         
-        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
         org.akaza.openclinica.sdk.dto.ApiError error = new org.akaza.openclinica.sdk.dto.ApiError("401", message);
         org.akaza.openclinica.sdk.dto.ApiResponse<Object> apiResponse = new org.akaza.openclinica.sdk.dto.ApiResponse<>(java.util.Collections.singletonList(error));
         mapper.writeValue(response.getWriter(), apiResponse);

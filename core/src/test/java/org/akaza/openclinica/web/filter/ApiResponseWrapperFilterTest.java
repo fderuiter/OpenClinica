@@ -22,6 +22,7 @@ public class ApiResponseWrapperFilterTest {
     public void setUp() {
         filter = new ApiResponseWrapperFilter();
         mapper = new ObjectMapper();
+        filter.setMapper(mapper);
     }
 
     @Test

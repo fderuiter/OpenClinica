@@ -6,7 +6,10 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfigurati
 import org.springframework.boot.autoconfigure.session.SessionAutoConfiguration;
 import org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration;
 
+import org.springframework.context.annotation.Import;
+
 @SpringBootApplication(exclude = {LiquibaseAutoConfiguration.class, SessionAutoConfiguration.class, QuartzAutoConfiguration.class})
+@Import(org.akaza.openclinica.config.ParserConfiguration.class)
 public class ModernApplication {
     public static void main(String[] args) {
         SpringApplication.run(ModernApplication.class, args);

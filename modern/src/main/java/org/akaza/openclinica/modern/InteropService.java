@@ -97,7 +97,9 @@ public class InteropService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    @org.springframework.beans.factory.annotation.Qualifier("standardObjectMapper")
+    private ObjectMapper objectMapper;
     private HapiContext hl7Context = new DefaultHapiContext();
 
     @PostConstruct

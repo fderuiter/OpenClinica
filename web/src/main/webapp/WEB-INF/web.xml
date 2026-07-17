@@ -84,7 +84,7 @@
 
     <filter>
         <filter-name>apiResponseWrapperFilter</filter-name>
-        <filter-class>org.akaza.openclinica.web.filter.ApiResponseWrapperFilter</filter-class>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
 
     <filter-mapping>

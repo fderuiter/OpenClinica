@@ -15,13 +15,14 @@ public class JsonClinicalDataStreamWriter implements ClinicalDataStreamWriter {
     private final JsonGenerator jsonGenerator;
     private final String odmVersion;
     private final Locale locale;
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
     
     private int subjectCount = 0;
     private com.fasterxml.jackson.databind.JsonNode bufferedFirstSubject = null;
     private final JsonPostProcessor postProcessor;
 
-    public JsonClinicalDataStreamWriter(OutputStream os, String odmVersion, Locale locale, int totalSubjects, JsonPostProcessor postProcessor) throws Exception {
+    public JsonClinicalDataStreamWriter(OutputStream os, String odmVersion, Locale locale, int totalSubjects, JsonPostProcessor postProcessor, ObjectMapper mapper) throws Exception {
+        this.mapper = mapper;
         JsonFactory factory = new JsonFactory();
         this.jsonGenerator = factory.createGenerator(os);
         this.jsonGenerator.setCodec(mapper);

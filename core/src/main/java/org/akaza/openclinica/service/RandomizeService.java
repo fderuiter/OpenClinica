@@ -215,7 +215,7 @@ public class RandomizeService extends RandomizationRegistrar {
             Object response = api.getRandomisation(studySubject.getOid());
             if (response != null) {
                 // response is usually a Map from Jackson
-                return new JSONObject(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(response));
+                return new JSONObject(org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("standardObjectMapper", com.fasterxml.jackson.databind.ObjectMapper.class).writeValueAsString(response));
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -305,7 +305,7 @@ public class RandomizeService extends RandomizationRegistrar {
                 (String) subjectMap.get("question9"),
                 (String) subjectMap.get("question10")
             );
-            jsonObject = new JSONObject(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(responseObj));
+            jsonObject = new JSONObject(org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("standardObjectMapper", com.fasterxml.jackson.databind.ObjectMapper.class).writeValueAsString(responseObj));
 
         } catch (Exception e) {
             System.out.println(e.getMessage());

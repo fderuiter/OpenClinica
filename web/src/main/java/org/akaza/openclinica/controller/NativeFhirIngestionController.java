@@ -43,13 +43,16 @@ public class NativeFhirIngestionController {
     @Autowired
     DataSource dataSource;
 
+    @Autowired
+    @org.springframework.beans.factory.annotation.Qualifier("standardObjectMapper")
+    private ObjectMapper mapper;
+
     @RequestMapping(value = "/ingest", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<String> ingestFhirData(
             @RequestBody String fhirPayload,
             HttpServletRequest request) {
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(fhirPayload);
 
             // Get UserAccountBean

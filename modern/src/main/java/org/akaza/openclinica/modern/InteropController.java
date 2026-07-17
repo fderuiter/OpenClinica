@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.akaza.openclinica.sdk.dto.ApiResponse;
 import org.akaza.openclinica.modern.service.ConfigurationDraftService;
 import org.akaza.openclinica.modern.model.ConfigurationDraft;
@@ -35,7 +36,9 @@ public class InteropController {
     private FhirContext fhirContext = FhirContext.forR4();
     private HapiContext hl7Context = new DefaultHapiContext();
     private Map<String, String> mappings = new ConcurrentHashMap<>();
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    @Qualifier("standardObjectMapper")
+    private ObjectMapper objectMapper;
 
     @Autowired
     private InteropService interopService;

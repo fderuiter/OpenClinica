@@ -14,7 +14,11 @@ import java.util.Collections;
 
 public class ApiResponseWrapperFilter implements Filter {
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper;
+
+    public void setMapper(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

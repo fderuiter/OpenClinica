@@ -44,6 +44,10 @@ public class ODMClinicaDataResource {
 	private MetadataCollectorResource metadataCollectorResource;
 	private DataSource dataSource;
 
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.beans.factory.annotation.Qualifier("standardObjectMapper")
+    private com.fasterxml.jackson.databind.ObjectMapper standardObjectMapper;
+
 	public MetadataCollectorResource getMetadataCollectorResource() { return metadataCollectorResource; }
 	public void setMetadataCollectorResource(MetadataCollectorResource metadataCollectorResource) { this.metadataCollectorResource = metadataCollectorResource; }
 	public ClinicalDataCollectorResource getClinicalDataCollectorResource() { return clinicalDataCollectorResource; }
@@ -108,7 +112,7 @@ public class ODMClinicaDataResource {
                         }
                     };
 
-                    JsonClinicalDataStreamWriter writer = new JsonClinicalDataStreamWriter(output, "oc1.3", locale, totalSubjects, processor);
+                    JsonClinicalDataStreamWriter writer = new JsonClinicalDataStreamWriter(output, "oc1.3", locale, totalSubjects, processor, standardObjectMapper);
                     writer.writeStartDocument(studyOID, formVersionOID, metadataXml);
                     
                     getClinicalDataCollectorResource().getGenerateClinicalDataService().streamClinicalData(

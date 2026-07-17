@@ -20,5 +20,9 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <bean id="apiResponseWrapperFilter" class="org.akaza.openclinica.web.filter.ApiResponseWrapperFilter">
+        <property name="mapper" ref="standardObjectMapper"/>
+    </bean>
+
    
 </beans>
