@@ -66,7 +66,7 @@
 
             <td valign="bottom" id="Tab2'">
                 <div id="Tab2NotSelected"><div class="tab_BG"><div class="tab_L"><div class="tab_R">
-                    <a class="tabtext" title="View By Event CRF" href='viewAllSubjectSDVtmp?studyId=${studyId}' onclick="javascript:HighlightTab(2);">View By Event CRF</a></div></div></div></div>
+                    <a class="tabtext" title="View By Event CRF" href='viewAllSubjectSDV?studyId=${studyId}' onclick="javascript:HighlightTab(2);">View By Event CRF</a></div></div></div></div>
                 <div id="Tab2Selected" style="display:none"><div class="tab_BG_h"><div class="tab_L_h"><div class="tab_R_h"><span class="tabtext">View By Event CRF</span></div></div></div></div></td>
         </tr>
     </table>
@@ -236,7 +236,7 @@
         ${sdvTableAttribute}
         <br />
         <input type="submit" name="sdvAllFormSubmit" class="button_medium" value="Submit" onclick="this.form.method='POST';this.form.action='${pageContext.request.contextPath}/pages/handleSDVPost';this.form.submit();"/>
-        <input type="submit" name="sdvAllFormCancel" class="button_medium" value="Cancel" onclick="this.form.action='${pageContext.request.contextPath}/pages/viewAllSubjectSDVtmp';this.form.submit();"/>
+        <input type="submit" name="sdvAllFormCancel" class="button_medium" value="Cancel" onclick="this.form.action='${pageContext.request.contextPath}/pages/viewAllSubjectSDV';this.form.submit();"/>
     </form>
     <script type="text/javascript">hideCols('sdv',[1,2,5,6,9,10])</script>
 

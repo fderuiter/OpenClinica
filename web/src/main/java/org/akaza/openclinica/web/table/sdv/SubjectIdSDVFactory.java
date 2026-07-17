@@ -303,7 +303,7 @@ public class SubjectIdSDVFactory extends AbstractTableFactory {
         }
         StringBuilder actions = new StringBuilder("<table><tr><td>");
         StringBuilder urlPrefix = new StringBuilder("<a href=\"");
-        StringBuilder path = new StringBuilder(contextPath).append("/pages/viewAllSubjectSDVtmp?studyId=").append(studyId).append("&sdv_f_studySubjectId=");
+        StringBuilder path = new StringBuilder(contextPath).append("/pages/viewAllSubjectSDV?studyId=").append(studyId).append("&sdv_f_studySubjectId=");
         path.append(studySubjectBean.getLabel());
         urlPrefix.append(path).append("\">");
         actions.append(urlPrefix).append(SDVUtil.VIEW_ICON_HTML).append("</a></td>");
