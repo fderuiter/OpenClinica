@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
+import java.util.Collections;
 
 @Service
 public class InteropService {
@@ -31,6 +33,60 @@ public class InteropService {
     private static final String MAPPINGS_ID = "field-mappings-singleton";
 
     private Map<String, String> recordsInStaging = new ConcurrentHashMap<>();
+
+    private static class ResizableSemaphore extends Semaphore {
+        public ResizableSemaphore(int permits) {
+            super(permits);
+        }
+        public void reducePermits(int reduction) {
+            super.reducePermits(reduction);
+        }
+    }
+
+    private ResizableSemaphore semaphore = new ResizableSemaphore(getConcurrencyLimit());
+    private int currentSemaphoreLimit = getConcurrencyLimit();
+
+    private int getConcurrencyLimit() {
+        try {
+            return Integer.parseInt(System.getProperty("interop.batch.concurrency.limit", "5"));
+        } catch (Exception e) {
+            return 5;
+        }
+    }
+
+    private int getChunkSize() {
+        try {
+            return Integer.parseInt(System.getProperty("interop.batch.chunk.size", "1000"));
+        } catch (Exception e) {
+            return 1000;
+        }
+    }
+
+    private void syncSemaphoreLimit() {
+        int newLimit = getConcurrencyLimit();
+        synchronized (this) {
+            if (newLimit > currentSemaphoreLimit) {
+                semaphore.release(newLimit - currentSemaphoreLimit);
+                currentSemaphoreLimit = newLimit;
+            } else if (newLimit < currentSemaphoreLimit) {
+                semaphore.reducePermits(currentSemaphoreLimit - newLimit);
+                currentSemaphoreLimit = newLimit;
+            }
+        }
+    }
+
+    private static class BatchRecord {
+        String recordId;
+        String subjectId;
+        String eventId;
+        String value;
+        public BatchRecord(String recordId, String subjectId, String eventId, String value) {
+            this.recordId = recordId;
+            this.subjectId = subjectId;
+            this.eventId = eventId;
+            this.value = value;
+        }
+    }
 
     @Autowired
     private ConfigurationDraftService draftService;
@@ -137,6 +193,110 @@ public class InteropService {
         } catch (Exception e) {
             log.error("Failed to execute dynamic mapping or persist clinical data. Transaction rolled back for recordId: {}", recordId, e);
             throw new RuntimeException("Commit aborted: " + e.getMessage(), e);
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void batchCommit(List<String> recordIds) {
+        syncSemaphoreLimit();
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted while acquiring permit", e);
+        }
+
+        try {
+            List<BatchRecord> validatedRecords = new ArrayList<>();
+            ConfigurationDraft mappingDraft = draftService.getDraft(MAPPINGS_ID);
+            if (mappingDraft == null || mappingDraft.getDraftData() == null) {
+                throw new IllegalStateException("Active field mappings not found.");
+            }
+            Map<String, String> mappings = objectMapper.readValue(mappingDraft.getDraftData(), new TypeReference<Map<String, String>>() {});
+            
+            String subjectIdPath = mappings.get("subject_id");
+            String eventIdPath = mappings.get("event_id");
+            String itemValuePath = mappings.get("item_value");
+
+            for (String recordId : recordIds) {
+                String payload = recordsInStaging.get(recordId);
+                if (payload == null) {
+                    throw new IllegalArgumentException("Record not found in staging: " + recordId);
+                }
+
+                String subjectId = null;
+                String eventId = null;
+                String value = null;
+
+                if (payload.trim().startsWith("{")) {
+                    JsonNode rootNode = objectMapper.readTree(payload);
+                    subjectId = extractJson(rootNode, subjectIdPath);
+                    eventId = extractJson(rootNode, eventIdPath);
+                    value = extractJson(rootNode, itemValuePath);
+                } else if (payload.trim().startsWith("MSH")) {
+                    Message message = hl7Context.getPipeParser().parse(payload);
+                    Terser terser = new Terser(message);
+                    subjectId = extractHl7(terser, subjectIdPath);
+                    eventId = extractHl7(terser, eventIdPath);
+                    value = extractHl7(terser, itemValuePath);
+                } else {
+                    throw new IllegalArgumentException("Unknown payload format.");
+                }
+
+                if (subjectId == null || eventId == null || value == null) {
+                    throw new IllegalStateException("Failed to extract required clinical fields based on dynamic mapping selectors.");
+                }
+
+                validatedRecords.add(new BatchRecord(recordId, subjectId, eventId, value));
+            }
+
+            int count = validatedRecords.size();
+            if (count == 0) return;
+
+            List<Long> subjectIdsPk = jdbcTemplate.queryForList("SELECT nextval('study_subject_study_subject_id_seq') FROM generate_series(1, ?)", Long.class, count);
+            List<Long> eventIdsPk = jdbcTemplate.queryForList("SELECT nextval('study_event_study_event_id_seq') FROM generate_series(1, ?)", Long.class, count);
+            List<Long> itemDataIdsPk = jdbcTemplate.queryForList("SELECT nextval('item_data_item_data_id_seq') FROM generate_series(1, ?)", Long.class, count);
+
+            int chunkSize = getChunkSize();
+            for (int i = 0; i < count; i += chunkSize) {
+                int end = Math.min(i + chunkSize, count);
+                List<BatchRecord> chunk = validatedRecords.subList(i, end);
+                List<Long> chunkSubIds = subjectIdsPk.subList(i, end);
+                List<Long> chunkEvtIds = eventIdsPk.subList(i, end);
+                List<Long> chunkItemIds = itemDataIdsPk.subList(i, end);
+
+                for (int j = 0; j < chunk.size(); j++) {
+                    BatchRecord br = chunk.get(j);
+                    Long sIdPk = chunkSubIds.get(j);
+                    Long eIdPk = chunkEvtIds.get(j);
+                    Long iIdPk = chunkItemIds.get(j);
+
+                    org.akaza.openclinica.model.ClinicalPayload payloadObj = new org.akaza.openclinica.model.ClinicalPayload(br.subjectId, br.eventId, br.value);
+
+                    org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService workflowService = new org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService();
+                    workflowService.setDataSource(dataSource);
+
+                    workflowService.executeWorkflowTransaction(1L, payloadObj, new org.akaza.openclinica.service.clinical.WorkflowTransactionCallback<Void>() {
+                        @Override
+                        public Void doInTransaction() {
+                            jdbcTemplate.update("INSERT INTO study_subject (study_subject_id, label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, ?, 1, 1, NOW(), 1) ON CONFLICT DO NOTHING", sIdPk, br.subjectId, br.subjectId);
+                            jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, 1, 1, 1, 1, NOW()) ON CONFLICT DO NOTHING", eIdPk);
+                            jdbcTemplate.update("INSERT INTO item_data (item_data_id, event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (?, 1, 1, 1, ?, 1, NOW())", iIdPk, br.value);
+                            return null;
+                        }
+                    });
+
+                    recordsInStaging.remove(br.recordId);
+                    draftService.deleteDraft(br.recordId);
+                }
+            }
+            log.info("Committed batch of clinical records: count={}", count);
+
+        } catch (Exception e) {
+            log.error("Failed to execute batch dynamic mapping or persist clinical data.", e);
+            throw new RuntimeException("Batch commit aborted: " + e.getMessage(), e);
+        } finally {
+            semaphore.release();
         }
     }
 
