@@ -7,13 +7,21 @@ import org.akaza.openclinica.bean.managestudy.StudySubjectBean;
 import org.akaza.openclinica.bean.submit.SubjectBean;
 import org.akaza.openclinica.dao.hibernate.StudyDao;
 import org.akaza.openclinica.dao.hibernate.StudySubjectDao;
+import org.akaza.openclinica.dao.hibernate.SubjectDao;
+import org.akaza.openclinica.dao.hibernate.CrfDao;
+import org.akaza.openclinica.dao.hibernate.EventCrfDao;
 import org.akaza.openclinica.dao.managestudy.StudyDAO;
 import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
 import org.akaza.openclinica.dao.submit.SubjectDAO;
 import org.akaza.openclinica.domain.datamap.Study;
 import org.akaza.openclinica.domain.datamap.StudySubject;
+import org.akaza.openclinica.domain.datamap.Subject;
+import org.akaza.openclinica.domain.datamap.CrfBean;
+import org.akaza.openclinica.domain.datamap.EventCrf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.BeanUtils;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -28,6 +36,15 @@ public class UnifiedRepository {
     
     @Autowired(required=false)
     private StudySubjectDao studySubjectDaoHibernate;
+
+    @Autowired(required=false)
+    private SubjectDao subjectDaoHibernate;
+
+    @Autowired(required=false)
+    private CrfDao crfDaoHibernate;
+
+    @Autowired(required=false)
+    private EventCrfDao eventCrfDaoHibernate;
 
     private StudyDAO studyDaoJdbc;
     private StudySubjectDAO studySubjectDaoJdbc;
@@ -54,7 +71,6 @@ public class UnifiedRepository {
         this.itemDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDAO(dataSource);
         this.itemDataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDataDAO(dataSource);
         this.itemFormMetadataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemFormMetadataDAO(dataSource);
-
     }
     
     public void setStudyDaoHibernate(StudyDao studyDaoHibernate) {
@@ -65,14 +81,17 @@ public class UnifiedRepository {
         this.studySubjectDaoHibernate = studySubjectDaoHibernate;
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
+    public void setSubjectDaoHibernate(SubjectDao subjectDaoHibernate) {
+        this.subjectDaoHibernate = subjectDaoHibernate;
+    }
+
+    public void setCrfDaoHibernate(CrfDao crfDaoHibernate) {
+        this.crfDaoHibernate = crfDaoHibernate;
+    }
+
+    public void setEventCrfDaoHibernate(EventCrfDao eventCrfDaoHibernate) {
+        this.eventCrfDaoHibernate = eventCrfDaoHibernate;
+    }
 
     public org.akaza.openclinica.bean.admin.CRFBean getCrfBeanByVersionId(Integer versionId) { return crfDaoJdbc.findByVersionId(versionId); }
     public org.akaza.openclinica.bean.admin.CRFBean getCrfBean(Integer id) { return (org.akaza.openclinica.bean.admin.CRFBean) crfDaoJdbc.findByPK(id); }
@@ -111,22 +130,13 @@ public class UnifiedRepository {
         return studySubjectDaoHibernate.findByOcOID(oid);
     }
     
-    // SubjectBean methods
     public SubjectBean getSubjectBeanByUniqueIdentifier(String identifier) {
         return subjectDaoJdbc.findByUniqueIdentifier(identifier);
-    }
-    
-    public SubjectBean createSubjectBean(SubjectBean subjectBean) {
-        return subjectDaoJdbc.create(subjectBean);
     }
     
     // StudySubject methods
     public List<StudySubjectBean> findAllStudySubjectBeansByStudy(StudyBean study) {
         return studySubjectDaoJdbc.findAllByStudy(study);
-    }
-    
-    public StudySubjectBean createStudySubjectBean(StudySubjectBean studySubject) {
-        return studySubjectDaoJdbc.createWithoutGroup(studySubject);
     }
     
     public int findTheGreatestStudySubjectLabel() {
@@ -165,5 +175,93 @@ public class UnifiedRepository {
     public StudySubject mapToEntity(StudySubjectBean studySubjectBean) {
         if (studySubjectBean == null) return null;
         return getStudySubjectEntity(studySubjectBean.getId());
+    }
+
+    // ==========================================
+    // Gatekeeper Write Methods for Core Entities
+    // ==========================================
+
+    @Transactional
+    public SubjectBean createSubjectBean(SubjectBean subjectBean) {
+        return save(subjectBean);
+    }
+    
+    @Transactional
+    public StudySubjectBean createStudySubjectBean(StudySubjectBean studySubject) {
+        return save(studySubject);
+    }
+
+    @Transactional
+    public StudyBean save(StudyBean bean) {
+        Study entity = mapToEntity(bean);
+        if (entity == null) entity = new Study();
+        BeanUtils.copyProperties(bean, entity, "id");
+        if (bean.getId() > 0) entity.setStudyId(bean.getId());
+        entity = studyDaoHibernate.saveOrUpdate(entity);
+        studyDaoHibernate.getEntityManager().flush();
+        studyDaoHibernate.getEntityManager().clear();
+        bean.setId(entity.getStudyId());
+        return bean;
+    }
+
+    @Transactional
+    public SubjectBean save(SubjectBean bean) {
+        Subject entity = null;
+        if (bean.getId() > 0) {
+            entity = subjectDaoHibernate.findById(bean.getId());
+        }
+        if (entity == null) entity = new Subject();
+        BeanUtils.copyProperties(bean, entity, "id");
+        if (bean.getId() > 0) entity.setSubjectId(bean.getId());
+        entity = subjectDaoHibernate.saveOrUpdate(entity);
+        subjectDaoHibernate.getEntityManager().flush();
+        subjectDaoHibernate.getEntityManager().clear();
+        bean.setId(entity.getSubjectId());
+        return bean;
+    }
+
+    @Transactional
+    public StudySubjectBean save(StudySubjectBean bean) {
+        StudySubject entity = mapToEntity(bean);
+        if (entity == null) entity = new StudySubject();
+        BeanUtils.copyProperties(bean, entity, "id");
+        if (bean.getId() > 0) entity.setStudySubjectId(bean.getId());
+        entity = studySubjectDaoHibernate.saveOrUpdate(entity);
+        studySubjectDaoHibernate.getEntityManager().flush();
+        studySubjectDaoHibernate.getEntityManager().clear();
+        bean.setId(entity.getStudySubjectId());
+        return bean;
+    }
+
+    @Transactional
+    public org.akaza.openclinica.bean.admin.CRFBean save(org.akaza.openclinica.bean.admin.CRFBean bean) {
+        CrfBean entity = null;
+        if (bean.getId() > 0) {
+            entity = crfDaoHibernate.findById(bean.getId());
+        }
+        if (entity == null) entity = new CrfBean();
+        BeanUtils.copyProperties(bean, entity, "id");
+        if (bean.getId() > 0) entity.setCrfId(bean.getId());
+        entity = crfDaoHibernate.saveOrUpdate(entity);
+        crfDaoHibernate.getEntityManager().flush();
+        crfDaoHibernate.getEntityManager().clear();
+        bean.setId(entity.getCrfId());
+        return bean;
+    }
+
+    @Transactional
+    public org.akaza.openclinica.bean.submit.EventCRFBean save(org.akaza.openclinica.bean.submit.EventCRFBean bean) {
+        EventCrf entity = null;
+        if (bean.getId() > 0) {
+            entity = eventCrfDaoHibernate.findById(bean.getId());
+        }
+        if (entity == null) entity = new EventCrf();
+        BeanUtils.copyProperties(bean, entity, "id");
+        if (bean.getId() > 0) entity.setEventCrfId(bean.getId());
+        entity = eventCrfDaoHibernate.saveOrUpdate(entity);
+        eventCrfDaoHibernate.getEntityManager().flush();
+        eventCrfDaoHibernate.getEntityManager().clear();
+        bean.setId(entity.getEventCrfId());
+        return bean;
     }
 }
