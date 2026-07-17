@@ -1,7 +1,7 @@
 package org.akaza.openclinica.bean.extract.odm;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public interface JsonPostProcessor {
-    void process(JSONObject json);
+    void process(JsonNode json);
 }
