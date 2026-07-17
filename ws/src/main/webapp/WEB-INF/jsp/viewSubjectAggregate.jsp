@@ -63,7 +63,7 @@
         <tr>
             <td valign="bottom" id="Tab1'">
               <div id="Tab1Selected"><div class="tab_BG"><div class="tab_L"><div class="tab_R">
-					<a class="tabtext" title="View By Event CRF" href='viewAllSubjectSDVtmp?studyId=${studyId}' onclick="javascript:HighlightTab(1);">View By Event CRF</a></div></div></div></div>                   
+					<a class="tabtext" title="View By Event CRF" href='viewAllSubjectSDV?studyId=${studyId}' onclick="javascript:HighlightTab(1);">View By Event CRF</a></div></div></div></div>                   
                 <div id="Tab1NotSelected" style="display:none"><div class="tab_BG_h"><div class="tab_L_h"><div class="tab_R_h"><span class="tabtext">View By Event CRF</span></div></div></div></div></td>
 
             <td valign="bottom" id="Tab2'">
