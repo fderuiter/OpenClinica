@@ -7,6 +7,7 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,47 @@ public class AuditHashService {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Scheduled(fixedDelay = 60000)
+    public void sealAudits() {
+        StatelessSession session = sessionFactory.openStatelessSession();
+        try {
+            // Find last sealed hash that is not a legacy record
+            Query<AuditLogEvent> lastSealedQ = session.createQuery(
+                "FROM AuditLogEvent WHERE chainHash IS NOT NULL AND chainHash != 'LEGACY_UNCHAINED' ORDER BY auditId DESC", AuditLogEvent.class);
+            lastSealedQ.setMaxResults(1);
+            AuditLogEvent lastSealed = lastSealedQ.uniqueResult();
+            String prevHash = lastSealed != null ? lastSealed.getChainHash() : null;
+            Integer lastSealedId = lastSealed != null ? lastSealed.getAuditId() : 0;
+
+            // Find unsealed audits (excluding LEGACY_UNCHAINED)
+            Query<AuditLogEvent> unsealedQ = session.createQuery(
+                "FROM AuditLogEvent WHERE auditId > :lastSealedId AND (chainHash IS NULL OR chainHash != 'LEGACY_UNCHAINED') ORDER BY auditId ASC", AuditLogEvent.class);
+            unsealedQ.setParameter("lastSealedId", lastSealedId);
+            unsealedQ.setFetchSize(100);
+            
+            ScrollableResults<AuditLogEvent> results = unsealedQ.scroll(ScrollMode.FORWARD_ONLY);
+            session.getTransaction().begin();
+            try {
+                while (results.next()) {
+                    AuditLogEvent event = results.get();
+                    if ("LEGACY_UNCHAINED".equals(event.getChainHash())) {
+                        continue;
+                    }
+                    String newHash = computeHash(event, prevHash);
+                    event.setChainHash(newHash);
+                    session.update(event);
+                    prevHash = newHash;
+                }
+                session.getTransaction().commit();
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                throw e;
+            }
+        } finally {
+            session.close();
+        }
+    }
 
     public String computeHash(AuditLogEvent event, String previousHash) {
         try {
@@ -55,6 +97,9 @@ public class AuditHashService {
 
             while (results.next()) {
                 AuditLogEvent event = results.get();
+                if ("LEGACY_UNCHAINED".equals(event.getChainHash())) {
+                    continue;
+                }
                 String expectedHash = computeHash(event, currentHash);
                 
                 if (event.getChainHash() == null || !event.getChainHash().equals(expectedHash)) {

@@ -40,30 +40,6 @@ public class AuditEventListener implements PostInsertEventListener, PostUpdateEv
 
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
-        if (event.getEntity() instanceof AuditLogEvent) {
-            AuditLogEvent auditEvent = (AuditLogEvent) event.getEntity();
-            synchronized (lock) {
-                StatelessSession session = event.getPersister().getFactory().openStatelessSession();
-                try {
-                    Query<AuditLogEvent> q = session.createQuery("FROM AuditLogEvent ORDER BY auditId DESC", AuditLogEvent.class);
-                    q.setMaxResults(1);
-                    AuditLogEvent prev = q.uniqueResult();
-                    String prevHash = prev != null ? prev.getChainHash() : null;
-                    
-                    String newHash = hashService.computeHash(auditEvent, prevHash);
-                    auditEvent.setChainHash(newHash);
-                    
-                    // Update the state array so Hibernate saves the new value
-                    String[] propertyNames = event.getPersister().getPropertyNames();
-                    int chainHashIndex = Arrays.asList(propertyNames).indexOf("chainHash");
-                    if (chainHashIndex != -1) {
-                        event.getState()[chainHashIndex] = newHash;
-                    }
-                } finally {
-                    session.close();
-                }
-            }
-        }
         return false; // Return false to not veto the insert
     }
 
@@ -121,18 +97,7 @@ public class AuditEventListener implements PostInsertEventListener, PostUpdateEv
             eventType.setAuditLogEventTypeId(1);
             auditEvent.setAuditLogEventType(eventType);
             
-            // onPreInsert doesn't fire for StatelessSession.insert(), so we calculate here as well
-            // Or we can use regular Session to fire events.
-            synchronized (lock) {
-                Query<AuditLogEvent> q = session.createQuery("FROM AuditLogEvent ORDER BY auditId DESC", AuditLogEvent.class);
-                q.setMaxResults(1);
-                AuditLogEvent prev = q.uniqueResult();
-                String prevHash = prev != null ? prev.getChainHash() : null;
-                
-                String newHash = hashService.computeHash(auditEvent, prevHash);
-                auditEvent.setChainHash(newHash);
-                session.insert(auditEvent);
-            }
+            session.insert(auditEvent);
         } finally {
             session.close();
         }
