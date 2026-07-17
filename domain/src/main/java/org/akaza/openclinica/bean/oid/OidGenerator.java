@@ -1,10 +1,3 @@
-/* 
- * OpenClinica is distributed under the
- * GNU Lesser General Public License (GNU LGPL).
- * For details see: http://www.openclinica.org/license
- *
- * Copyright 2003-2008 Akaza Research 
- */
 package org.akaza.openclinica.bean.oid;
 
 import org.slf4j.Logger;
@@ -12,19 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-/**
- * OID Generator solves the problems described below. We have Domain Objects
- * that need to be assigned a specific OID. - The OID is generated differently
- * for every Domain Object - The OID keys depend on the Domain object ,So some
- * domain objects need two keys to make up an OID some need three ... - The
- * number of Domain object needing an OID is small with respect to the total
- * amount of domain objects.
- * 
- * 
- * @author Krikor Krumlian
- * @see Strategy Pattern, Template Pattern
- */
 
 public abstract class OidGenerator {
 
@@ -62,7 +42,23 @@ public abstract class OidGenerator {
     public final String generateOid(String... keys) throws Exception {
         verifyArgumentLength(keys);
         String oid = createOid(keys);
+        oid = applyFallbackIfNecessary(oid);
         validate(oid);
+        return oid;
+    }
+
+    public final String generateOidNoValidation(String... keys) throws Exception {
+        verifyArgumentLength(keys);
+        String oid = createOid(keys);
+        oid = applyFallbackIfNecessary(oid);
+        return oid;
+    }
+
+    private String applyFallbackIfNecessary(String oid) {
+        if (oid == null || oid.isEmpty() || oid.endsWith("_")) {
+            String prefix = oid == null ? "" : oid.replaceAll("_+$", "");
+            return randomizeOid(prefix);
+        }
         return oid;
     }
 
@@ -75,13 +71,27 @@ public abstract class OidGenerator {
         return input;
     }
 
-    abstract void verifyArgumentLength(String... keys) throws Exception;
+    protected abstract int getArgumentLength();
+
+    public void verifyArgumentLength(String... keys) throws Exception {
+        if (keys == null || keys.length != getArgumentLength()) {
+            throw new Exception("Invalid number of arguments");
+        }
+    }
 
     abstract String createOid(String... keys);
 
+    protected boolean isPreserveUnderscores() {
+        return false;
+    }
+
     String stripNonAlphaNumeric(String input) {
-        // Add capitalization too
-        return input.trim().replaceAll("\\s+|\\W+", "");
+        if (input == null) return "";
+        if (isPreserveUnderscores()) {
+            return input.trim().replaceAll("[^a-zA-Z_0-9]", "");
+        } else {
+            return input.trim().replaceAll("[^a-zA-Z0-9]", "");
+        }
     }
 
     String capitalize(String input) {
