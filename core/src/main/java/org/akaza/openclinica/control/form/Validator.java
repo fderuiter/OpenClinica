@@ -999,6 +999,18 @@ public class Validator {
             }
             break;
        
+        case IS_A_PASSWORD:
+            String password = getFieldValue(fieldName);
+            if (password != null && password.length() > 0) {
+                org.akaza.openclinica.dao.hibernate.ConfigurationDao configurationDao = (org.akaza.openclinica.dao.hibernate.ConfigurationDao) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("configurationDao");
+                org.akaza.openclinica.dao.hibernate.PasswordRequirementsDao passwordRequirementsDao = new org.akaza.openclinica.dao.hibernate.PasswordRequirementsDao(configurationDao);
+                java.util.List<String> pwdErrors = org.akaza.openclinica.control.login.PasswordValidator.validatePassword(passwordRequirementsDao, null, 0, password, null, resexception);
+                for (String err : pwdErrors) {
+                    addError(fieldName, err);
+                }
+            }
+            break;
+
         case IS_IN_SET:
             ArrayList set = (ArrayList) v.getArg(0);
 
@@ -1698,6 +1710,10 @@ public class Validator {
         Date laterDate = parseDate(laterDateValue, locale);
         Date earlierDate = parseDate(earlierDateValue, locale);
 
+        if (laterDate == null || earlierDate == null) {
+            return false;
+        }
+
         if (laterDate.compareTo(earlierDate) >= 0) {
             return true;
         } else {
@@ -2218,6 +2234,9 @@ public class Validator {
         return message;
     }
     public static Date parseDate(String date, Locale locale) {
+        if (date == null || date.trim().length() == 0) {
+            return null;
+        }
         Date answer;
         try {
             SimpleDateFormat f = I18nFormatUtil.getDateFormat(locale);
