@@ -1,4 +1,5 @@
 package org.akaza.openclinica.web.crfdata;
+import org.akaza.openclinica.logic.importdata.ImportHelper;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
