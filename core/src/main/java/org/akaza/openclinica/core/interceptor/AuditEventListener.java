@@ -99,6 +99,9 @@ public class AuditEventListener implements PostInsertEventListener, PostUpdateEv
         } else if (entity instanceof StudySubject) {
             auditTable = "study_subject";
             entityId = ((StudySubject) entity).getStudySubjectId();
+        } else if (entity instanceof org.akaza.openclinica.domain.datamap.Subject) {
+            auditTable = "subject";
+            entityId = ((org.akaza.openclinica.domain.datamap.Subject) entity).getSubjectId();
         }
         
         if (auditTable == null) {

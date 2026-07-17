@@ -413,37 +413,33 @@ public class SubjectDAO extends AuditableEntityDAO {
      */
     @Deprecated
     public EntityBean create(EntityBean eb) {
-        SubjectBean sb = (SubjectBean) eb;
-        HashMap variables = new HashMap();
-        HashMap nullVars = new HashMap();
-        // FATHER_ID,MOTHER_ID, STATUS_ID,
-        // DATE_OF_BIRTH,GENDER,UNIQUE_IDENTIFIER,DATE_CREATED,
-        // OWNER_ID
-        variables.put(new Integer(1), new Integer(sb.getStatus().getId()));
-        if (sb.getDateOfBirth() == null) {
-            nullVars.put(new Integer(4), new Integer(Types.DATE));
-            variables.put(new Integer(4), null);
+        org.akaza.openclinica.bean.submit.SubjectBean sb = (org.akaza.openclinica.bean.submit.SubjectBean) eb;
+        org.akaza.openclinica.dao.hibernate.SubjectDao subjectDao = (org.akaza.openclinica.dao.hibernate.SubjectDao) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("subjectDao");
+        org.akaza.openclinica.dao.hibernate.UserAccountDao userDao = (org.akaza.openclinica.dao.hibernate.UserAccountDao) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("userDaoDomain");
+        
+        org.akaza.openclinica.domain.datamap.Subject subject = new org.akaza.openclinica.domain.datamap.Subject();
+        subject.setGender(sb.getGender());
+        subject.setUniqueIdentifier(sb.getUniqueIdentifier());
+        subject.setDateOfBirth(sb.getDateOfBirth());
+        subject.setDobCollected(sb.isDobCollected());
+        subject.setDateCreated(sb.getCreatedDate() != null ? sb.getCreatedDate() : new java.util.Date());
+        if (sb.getStatus() != null) {
+            subject.setStatus(org.akaza.openclinica.domain.Status.getByCode(sb.getStatus().getId()));
         } else {
-            variables.put(new Integer(4), sb.getDateOfBirth());
+            subject.setStatus(org.akaza.openclinica.domain.Status.AVAILABLE);
         }
-        if (sb.getGender() != 'm' && sb.getGender() != 'f') {
-            nullVars.put(new Integer(5), new Integer(Types.CHAR));
-            variables.put(new Integer(5), null);
-        } else {
-            char[] ch = { sb.getGender() };
-            variables.put(new Integer(5), new String(ch));
+        if (sb.getOwner() != null) {
+            subject.setUserAccount(userDao.findById(sb.getOwner().getId()));
         }
-
-        variables.put(new Integer(6), sb.getUniqueIdentifier());
-        // DATE_CREATED is now()
-        variables.put(new Integer(7), new Integer(sb.getOwner().getId()));
-
-        execute(digester.getQuery("create"), variables, nullVars);
-
-        if (isQuerySuccessful()) {
-            sb.setId(getCurrentPK());
+        
+        jakarta.validation.Validator validator = jakarta.validation.Validation.buildDefaultValidatorFactory().getValidator();
+        java.util.Set<jakarta.validation.ConstraintViolation<org.akaza.openclinica.domain.datamap.Subject>> violations = validator.validate(subject);
+        if (!violations.isEmpty()) {
+            throw new RuntimeException("Validation failed for subject: " + violations.iterator().next().getMessage());
         }
 
+        subjectDao.saveOrUpdate(subject);
+        sb.setId(subject.getSubjectId());
         return sb;
     }
 
@@ -555,43 +551,33 @@ public class SubjectDAO extends AuditableEntityDAO {
      * @return sb, an updated study bean.
      */
     public EntityBean update(EntityBean eb) {
-        SubjectBean sb = (SubjectBean) eb;
-        HashMap variables = new HashMap();
-        HashMap nullVars = new HashMap();
-
-        // UPDATE subject SET FATHER_ID=?,MOTHER_ID=?, STATUS_ID=?,
-        // DATE_OF_BIRTH=?,GENDER=?,UNIQUE_IDENTIFIER=?, DATE_UPDATED=?,
-        // UPDATE_ID=? DOB_COLLECTED=? WHERE SUBJECT_ID=?
-        // YW <<
-        int ind = 1;
-        variables.put(new Integer(ind++), new Integer(sb.getStatus().getId()));
-        if (sb.getDateOfBirth() != null) {
-            variables.put(new Integer(ind), sb.getDateOfBirth());
-        } else {
-            nullVars.put(new Integer(ind), new Integer(Types.DATE));
-            variables.put(new Integer(ind), null);
+        org.akaza.openclinica.bean.submit.SubjectBean sb = (org.akaza.openclinica.bean.submit.SubjectBean) eb;
+        org.akaza.openclinica.dao.hibernate.SubjectDao subjectDao = (org.akaza.openclinica.dao.hibernate.SubjectDao) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("subjectDao");
+        
+        org.akaza.openclinica.domain.datamap.Subject subject = subjectDao.findById(sb.getId());
+        if (subject == null) {
+            throw new RuntimeException("Subject not found");
         }
-        ind++;
-        if (sb.getGender() != 'm' && sb.getGender() != 'f') {
-            nullVars.put(new Integer(ind), new Integer(Types.CHAR));
-            variables.put(new Integer(ind), null);
-        } else {
-            char[] ch = { sb.getGender() };
-            variables.put(new Integer(ind), new String(ch));
+        subject.setGender(sb.getGender());
+        subject.setUniqueIdentifier(sb.getUniqueIdentifier());
+        subject.setDateOfBirth(sb.getDateOfBirth());
+        subject.setDobCollected(sb.isDobCollected());
+        subject.setDateUpdated(new java.util.Date());
+        if (sb.getStatus() != null) {
+            subject.setStatus(org.akaza.openclinica.domain.Status.getByCode(sb.getStatus().getId()));
         }
-        ind++;
-        variables.put(new Integer(ind++), new String(sb.getUniqueIdentifier()));
-        // date_updated is set to now()
-        //    variables.put(new Integer(ind++), new java.util.Date());
-        variables.put(new Integer(ind++), new Integer(sb.getUpdater().getId()));
-        variables.put(new Integer(ind++), new Boolean(sb.isDobCollected()));
-        // YW >>
+        if (sb.getUpdater() != null) {
+            subject.setUpdateId(sb.getUpdater().getId());
+        }
+        
+        jakarta.validation.Validator validator = jakarta.validation.Validation.buildDefaultValidatorFactory().getValidator();
+        java.util.Set<jakarta.validation.ConstraintViolation<org.akaza.openclinica.domain.datamap.Subject>> violations = validator.validate(subject);
+        if (!violations.isEmpty()) {
+            throw new RuntimeException("Validation failed for subject: " + violations.iterator().next().getMessage());
+        }
 
-        variables.put(new Integer(ind++), new Integer(sb.getId()));
-
-        String sql = digester.getQuery("update");
-        this.execute(sql, variables, nullVars);
-
+        subjectDao.saveOrUpdate(subject);
+        sb.setUpdatedDate(subject.getDateUpdated());
         return sb;
     }
 
