@@ -9,18 +9,18 @@ import static org.junit.Assert.*;
 public class EntityToBeanTranslationTest {
 
     @Test
-    public void testMapEntityToBean() {
-        Study entity = new Study();
-        entity.setStudyId(123);
-        entity.setName("Test Study Entity");
-        entity.setOfficialTitle("Official Title Entity");
-
+    public void testMapBeanToEntity() {
         StudyBean bean = new StudyBean();
-        BeanUtils.copyProperties(entity, bean, "id");
-        bean.setId(entity.getStudyId());
+        bean.setId(123);
+        bean.setName("Test Study Bean");
+        bean.setOfficialTitle("Official Title Bean");
 
-        assertEquals("Test Study Entity", bean.getName());
-        assertEquals("Official Title Entity", bean.getOfficialTitle());
-        assertEquals(123, bean.getId());
+        Study entity = new Study();
+        BeanUtils.copyProperties(bean, entity, "id");
+        entity.setStudyId(bean.getId());
+
+        assertEquals("Test Study Bean", entity.getName());
+        assertEquals("Official Title Bean", entity.getOfficialTitle());
+        assertEquals(123, entity.getStudyId());
     }
 }
