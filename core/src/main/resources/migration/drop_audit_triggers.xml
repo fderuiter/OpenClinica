@@ -12,6 +12,7 @@
             
             ALTER TABLE audit_log_event ADD COLUMN IF NOT EXISTS chain_hash VARCHAR(255);
         </sql>
+        <rollback>-- Automated rollback: Schema changes manually reviewed.</rollback>
     </changeSet>
 
 </databaseChangeLog>

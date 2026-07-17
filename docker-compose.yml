@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   db:
-    image: postgres:15
+    image: postgres:15-alpine
     environment:
       POSTGRES_DB: clinica
       POSTGRES_USER: clinica
@@ -10,6 +10,22 @@ services:
     - 5432:5432
     volumes:
     - db-data:/var/lib/postgresql/data
+  admin:
+    image: postgres:15-alpine
+    entrypoint: ["/admin.sh"]
+    depends_on:
+    - db
+    environment:
+    - DB_HOST=db
+    - DB_PORT=5432
+    - DB_USER=clinica
+    - DB_PASS=clinica
+    - DB_NAME=clinica
+    - DB_SCHEMA=app_schema
+    - BACKUP_FILE=/tmp/backup/db_backup.dump
+    volumes:
+    - backup-data:/tmp/backup
+    - ./admin.sh:/admin.sh:ro
   web:
     build: .
     ports:
@@ -18,11 +34,18 @@ services:
     - db
     environment:
     - JAVA_OPTS=-Xmx1024m
+    - SPRING_QUARTZ_AUTO_STARTUP=false
     env_file:
     - .env
     volumes:
-    - ${HOST_FILE_PATH}:/opt/clinica/data
-    - ${HOST_CLINICAL_TEMPLATE_PATH}:/opt/clinica/template.xlsx:ro
+    - ${HOST_FILE_PATH:-./data}:/opt/clinica/data
+    - ${HOST_CLINICAL_TEMPLATE_PATH:-./dummy_template.xlsx}:/opt/clinica/template.xlsx:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
   modern:
     build:
       context: .
@@ -35,5 +58,13 @@ services:
     - spring.datasource.url=jdbc:postgresql://db:5432/clinica
     - spring.datasource.username=clinica
     - spring.datasource.password=clinica
+    - SPRING_QUARTZ_AUTO_STARTUP=false
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 volumes:
-  db-data: null
+  db-data:
+  backup-data:
