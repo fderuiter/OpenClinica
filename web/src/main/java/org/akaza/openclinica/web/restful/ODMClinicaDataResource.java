@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import org.glassfish.jersey.server.mvc.Viewable;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -103,7 +103,7 @@ public class ODMClinicaDataResource {
                     JsonPostProcessor processor = new JsonPostProcessor() {
                         JSONClinicalDataPostProcessor p = new JSONClinicalDataPostProcessor(locale);
                         @Override
-                        public void process(JSONObject json) {
+                        public void process(JsonNode json) {
                             p.process(json);
                         }
                     };

@@ -5,7 +5,8 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +15,14 @@ import org.slf4j.LoggerFactory;
 public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionMapper.class);
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public Response toResponse(Exception exception) {
         LOGGER.error("REST API Exception", exception);
 
         // Standardized error response object
-        JSONObject errorObj = new JSONObject();
+        ObjectNode errorObj = mapper.createObjectNode();
         errorObj.put("status", "error");
         errorObj.put("code", 500);
         errorObj.put("message", exception.getMessage() != null ? exception.getMessage() : "An unexpected system error occurred.");

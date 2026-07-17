@@ -1,7 +1,9 @@
 package org.akaza.openclinica.web.restful;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +12,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
@@ -57,48 +61,47 @@ public class JSONClinicalDataPostProcessor {
     /**
      * Iterates over the elements of a JSON object.
      *
-     * @param json JSON object to be processed
+     * @param json JSON node to be processed
      */
-    public void process(Object json) {
+    public void process(JsonNode json) {
         processJSONFields(json);
     }
 
-    private void processJSONFields(Object json) {
-        if (json instanceof JSONArray) {
-            processJSONArray((JSONArray) json);
-        } else if (json instanceof JSONObject) {
-            processJSONObject((JSONObject) json);
+    private void processJSONFields(JsonNode json) {
+        if (json == null) return;
+        if (json.isArray()) {
+            processJSONArray((ArrayNode) json);
+        } else if (json.isObject()) {
+            processJSONObject((ObjectNode) json);
         }
     }
 
-    private Object processJSONArray(JSONArray jsonArray) {
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            Object elem = jsonArray.get(i);
-            if (elem instanceof JSONArray) {
-                processJSONArray((JSONArray) elem);
-            } else if (elem instanceof JSONObject) {
-                processJSONObject((JSONObject) elem);
-            } else if (elem instanceof String) {
-                jsonArray.put(i, processString((String) elem));
+    private void processJSONArray(ArrayNode jsonArray) {
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonNode elem = jsonArray.get(i);
+            if (elem.isArray()) {
+                processJSONArray((ArrayNode) elem);
+            } else if (elem.isObject()) {
+                processJSONObject((ObjectNode) elem);
+            } else if (elem.isTextual()) {
+                jsonArray.set(i, new TextNode(processString(elem.asText())));
             }
         }
-        return jsonArray;
     }
 
-    private Object processJSONObject(JSONObject jsonObject) {
-        for (String key : jsonObject.keySet()) {
-            Object elem = jsonObject.get(key);
-            if (elem instanceof JSONArray) {
-                processJSONArray((JSONArray) elem);
-            } else if (elem instanceof JSONObject) {
-                processJSONObject((JSONObject) elem);
-            } else if (elem instanceof String) {
-                jsonObject.put(key, processString((String) elem));
+    private void processJSONObject(ObjectNode jsonObject) {
+        Iterator<Map.Entry<String, JsonNode>> fields = jsonObject.fields();
+        while (fields.hasNext()) {
+            Map.Entry<String, JsonNode> field = fields.next();
+            JsonNode elem = field.getValue();
+            if (elem.isArray()) {
+                processJSONArray((ArrayNode) elem);
+            } else if (elem.isObject()) {
+                processJSONObject((ObjectNode) elem);
+            } else if (elem.isTextual()) {
+                jsonObject.set(field.getKey(), new TextNode(processString(elem.asText())));
             }
         }
-
-        return jsonObject;
     }
 
     private String processString(String elem) {
