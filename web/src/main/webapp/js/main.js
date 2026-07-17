@@ -11,10 +11,10 @@ import 'jquery-blockui';
 import { store } from './store.js';
 
 import 'json3';
-import 'jmesa';
-import 'new_cal';
-import 'wz_tooltip';
-import 'calendarpopup';
+import './vendor/jmesa/index.js';
+import './vendor/new_cal/index.js';
+import './vendor/wz_tooltip/wz_tooltip.js';
+import './vendor/calendarpopup/CalendarPopup.js';
 
 // Initialize modern React UI
 import React from 'react';

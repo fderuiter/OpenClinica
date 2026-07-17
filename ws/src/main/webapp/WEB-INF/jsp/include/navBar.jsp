@@ -95,7 +95,7 @@
                                         <c:if test="${userRole.monitor }">
                                             <li><a href="${urlPrefix}MainMenu"><fmt:message key="nav_home" bundle="${resword}"/></a>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
                                             <li><a href="${urlPrefix}ListStudySubjects"><fmt:message key="nav_subject_matrix" bundle="${resword}"/></a>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
-                                            <li><a href="${urlPrefix}pages/viewAllSubjectSDVtmp?studyId=${study.id}"><fmt:message key="nav_sdv" bundle="${resword}"/></a>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
+                                            <li><a href="${urlPrefix}pages/viewAllSubjectSDV?studyId=${study.id}"><fmt:message key="nav_sdv" bundle="${resword}"/></a>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
                                             <li><a href="${urlPrefix}ListDiscNotesSubjectServlet?module=submit"><fmt:message key="nav_notes_and_discrepancies" bundle="${resword}"/></a>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
                                         </c:if>
                                         <li id="nav_Tasks" style="position: relative; z-index: 3;">
@@ -148,7 +148,7 @@
         <div class="taskLeftColumn">
             <div class="taskLink"><a href="${urlPrefix}ListStudySubjects"><fmt:message key="nav_subject_matrix" bundle="${resword}"/></a></div>
             <div class="taskLink"><a href="${urlPrefix}ViewStudyEvents"><fmt:message key="nav_view_events" bundle="${resword}"/></a></div>
-            <div class="taskLink"><a href="${urlPrefix}pages/viewAllSubjectSDVtmp?studyId=${study.id}"><fmt:message key="nav_source_data_verification" bundle="${resword}"/></a></div>
+            <div class="taskLink"><a href="${urlPrefix}pages/viewAllSubjectSDV?studyId=${study.id}"><fmt:message key="nav_source_data_verification" bundle="${resword}"/></a></div>
         </div>
         <div class="taskRightColumn">
             <div class="taskLink"><a href="${urlPrefix}ListDiscNotesSubjectServlet?module=submit"><fmt:message key="nav_notes_and_discrepancies" bundle="${resword}"/></a></div>
@@ -227,7 +227,7 @@
         <br clear="all"> 
         <div class="taskGroup"><fmt:message key="nav_monitor_and_manage_data" bundle="${resword}"/></div>
         <div class="taskLeftColumn">
-            <div class="taskLink"><a href="${urlPrefix}pages/viewAllSubjectSDVtmp?studyId=${study.id}"><fmt:message key="nav_source_data_verification" bundle="${resword}"/></a></div>
+            <div class="taskLink"><a href="${urlPrefix}pages/viewAllSubjectSDV?studyId=${study.id}"><fmt:message key="nav_source_data_verification" bundle="${resword}"/></a></div>
             <div class="taskLink"><a href="${urlPrefix}StudyAuditLog"><fmt:message key="nav_study_audit_log" bundle="${resword}"/></a></div>
             <c:choose>
                 <c:when test="${study.parentStudyId > 0 && (userRole.coordinator || userRole.director) }">

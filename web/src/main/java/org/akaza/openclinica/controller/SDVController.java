@@ -148,7 +148,7 @@ public class SDVController {
         return gridMap;
     }
 
-    @RequestMapping("/viewAllSubjectSDVtmp")
+    @RequestMapping("/viewAllSubjectSDV")
     public ModelMap viewAllSubjectHandler(HttpServletRequest request, @RequestParam("studyId") int studyId, HttpServletResponse response) {
 
         if(!mayProceed(request)){
