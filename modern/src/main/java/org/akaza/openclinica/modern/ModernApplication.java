@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration;
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication(exclude = {LiquibaseAutoConfiguration.class, SessionAutoConfiguration.class, QuartzAutoConfiguration.class})
-@ImportResource("classpath*:org/akaza/openclinica/applicationContext-core-*.xml")
 public class ModernApplication {
     public static void main(String[] args) {
         SpringApplication.run(ModernApplication.class, args);
