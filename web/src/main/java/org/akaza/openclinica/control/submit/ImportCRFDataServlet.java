@@ -152,10 +152,32 @@ public class ImportCRFDataServlet extends SecureController {
             final java.util.Locale finalLocale = request.getLocale();
             final javax.sql.DataSource finalDataSource = sm.getDataSource();
 
-            AsyncImportTask task = new AsyncImportTask(finalFile, finalUb, finalStudy, finalDataSource, finalContext, finalLocale);
-            executor.submit(task);
-
-            addPageMessage("Your XML clinical data import has been queued for background processing. You will receive an email upon completion.");
+            try {
+                org.quartz.impl.StdScheduler scheduler = (org.quartz.impl.StdScheduler) SpringServletAccess.getApplicationContext(context).getBean("schedulerFactoryBean");
+                org.quartz.impl.JobDetailImpl jobDetail = new org.quartz.impl.JobDetailImpl();
+                jobDetail.setName("XmlImport_" + System.currentTimeMillis());
+                jobDetail.setGroup("BackgroundImports");
+                jobDetail.setJobClass(org.akaza.openclinica.web.job.AsyncXmlImportJob.class);
+                
+                org.quartz.JobDataMap jobDataMap = new org.quartz.JobDataMap();
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncXmlImportJob.FILE_PATH, finalFile.getAbsolutePath());
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncXmlImportJob.USER_ID, finalUb.getId());
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncXmlImportJob.STUDY_ID, finalStudy.getId());
+                jobDataMap.put(org.akaza.openclinica.web.job.AsyncXmlImportJob.LOCALE, finalLocale.toString());
+                jobDetail.setJobDataMap(jobDataMap);
+                
+                org.quartz.impl.triggers.SimpleTriggerImpl trigger = new org.quartz.impl.triggers.SimpleTriggerImpl();
+                trigger.setName("Trigger_" + jobDetail.getName());
+                trigger.setGroup("BackgroundImports");
+                trigger.setStartTime(new java.util.Date());
+                
+                scheduler.scheduleJob(jobDetail, trigger);
+                
+                addPageMessage("Your XML clinical data import has been queued for background processing. You will receive an email upon completion.");
+            } catch (Exception e) {
+                logger.error("Failed to schedule background job", e);
+                addPageMessage("Failed to schedule background processing.");
+            }
             forwardPage(Page.IMPORT_CRF_DATA);
         }
     }
