@@ -3,6 +3,8 @@
  */
 package org.akaza.openclinica.control.urlRewrite;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -41,7 +43,31 @@ import org.slf4j.LoggerFactory;
  *         supported RESTful URLs
  *
  */
+@Component
 public class UrlRewriteServlet extends CoreSecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private ItemDAO _itemDAO;
+    private ItemGroupDAO _itemGroupDAO;
+    private SectionDAO _sectionDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public UrlRewriteServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemDAO _itemDAO, ItemGroupDAO _itemGroupDAO, SectionDAO _sectionDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._itemDAO = _itemDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
 
@@ -132,7 +158,7 @@ public class UrlRewriteServlet extends CoreSecureController {
 		                    }
 		                    //@pgawade 16-Aug-2012: fix for issue https://issuetracker.openclinica.com/view.php?id=12343#c55853
 		                    //retrieve sectionId from tabId
-		                    SectionDAO sdao = new SectionDAO(getDataSource());
+		                    SectionDAO sdao = this._sectionDAO;
 		                    if(mapQueryParams.containsKey("tabId")){
 			                    HashMap sectionIdMap = sdao.getSectionIdForTabId(ocResource.getFormVersionID(), Integer.parseInt(mapQueryParams.get("tabId")));
 			                    Integer sectionId = null;
@@ -221,14 +247,14 @@ public class UrlRewriteServlet extends CoreSecureController {
                 String[] tokens = URLPath.split("/");
                 if (tokens.length != 0) {
                     String URLParamValue = "";
-                    StudyDAO stdao = new StudyDAO(getDataSource());
-                    StudySubjectDAO ssubdao = new StudySubjectDAO(getDataSource());
-                    StudyEventDefinitionDAO sedefdao = new StudyEventDefinitionDAO(getDataSource());
-                    CRFDAO crfdao = new CRFDAO(getDataSource());
-                    CRFVersionDAO crfvdao = new CRFVersionDAO(getDataSource());
-                    ItemDAO idao = new ItemDAO(getDataSource());
-                    ItemGroupDAO igdao = new ItemGroupDAO(getDataSource());
-                    StudyEventDAO sedao = new StudyEventDAO(getDataSource());
+                    StudyDAO stdao = this._studyDAO;
+                    StudySubjectDAO ssubdao = this._studySubjectDAO;
+                    StudyEventDefinitionDAO sedefdao = this._studyEventDefinitionDAO;
+                    CRFDAO crfdao = this._cRFDAO;
+                    CRFVersionDAO crfvdao = this._cRFVersionDAO;
+                    ItemDAO idao = this._itemDAO;
+                    ItemGroupDAO igdao = this._itemGroupDAO;
+                    StudyEventDAO sedao = this._studyEventDAO;
 
                     StudyBean study = null;
                     StudySubjectBean subject = null;

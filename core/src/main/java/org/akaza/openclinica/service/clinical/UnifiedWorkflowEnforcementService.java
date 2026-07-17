@@ -1,5 +1,6 @@
 package org.akaza.openclinica.service.clinical;
 
+import org.akaza.openclinica.dao.admin.CRFDAO;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UnifiedWorkflowEnforcementService {
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public UnifiedWorkflowEnforcementService(CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, UserAccountDAO _userAccountDAO) {
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     private static final Logger logger = LoggerFactory.getLogger(UnifiedWorkflowEnforcementService.class);
 
@@ -283,19 +299,19 @@ public class UnifiedWorkflowEnforcementService {
     @Transactional
     public void executeRulesAndMetadata(EventCrf eventCrf, Study study, UserAccount user) {
         try {
-            EventCRFDAO ecdao = new EventCRFDAO(dataSource);
+            EventCRFDAO ecdao = this._eventCRFDAO;
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(eventCrf.getEventCrfId());
 
-            StudyDAO sdao = new StudyDAO(dataSource);
+            StudyDAO sdao = this._studyDAO;
             StudyBean studyBean = (StudyBean) sdao.findByPK(study.getStudyId());
 
-            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountDAO udao = this._userAccountDAO;
             UserAccountBean ub = (UserAccountBean) udao.findByPK(user.getUserId());
 
-            StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(dataSource);
+            StudyEventDefinitionDAO sedDao = this._studyEventDefinitionDAO;
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) sedDao.findByPK(eventCrf.getStudyEvent().getStudyEventDefinition().getStudyEventDefinitionId());
 
-            CRFVersionDAO cvDao = new CRFVersionDAO(dataSource);
+            CRFVersionDAO cvDao = this._cRFVersionDAO;
             CRFVersionBean crfVersion = (CRFVersionBean) cvDao.findByPK(eventCrf.getCrfVersion().getCrfVersionId());
 
             List<RuleSetBean> ruleSets = ruleSetService.getRuleSetsByCrfStudyAndStudyEventDefinition(studyBean, sed, crfVersion);

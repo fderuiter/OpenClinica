@@ -9,6 +9,9 @@
 
 package org.akaza.openclinica.logic.odmExport;
 
+import org.akaza.openclinica.dao.managestudy.StudyDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -37,7 +40,10 @@ import org.akaza.openclinica.job.JobTerminationMonitor;
  * @author ywang (May, 2009)
  */
 
+@Component
 public class MetaDataCollector extends OdmDataCollector {
+    private StudyDAO _studyDAO;
+
     private LinkedHashMap<String, OdmStudyBean> odmStudyMap;
     private static int textLength = 4000;
     private RuleSetRuleDao ruleSetRuleDao;
@@ -45,10 +51,13 @@ public class MetaDataCollector extends OdmDataCollector {
     // protected final Logger logger =
     // LoggerFactory.getLogger(getClass().getName());
 
-    public MetaDataCollector(DataSource ds, StudyBean study,RuleSetRuleDao ruleSetRuleDao) {
+    @Autowired
+    public MetaDataCollector(DataSource ds, StudyBean study,RuleSetRuleDao ruleSetRuleDao, StudyDAO _studyDAO) {
         super(ds, study);
+        this._studyDAO = _studyDAO;
+
         this.ruleSetRuleDao = ruleSetRuleDao;
-        odmStudyMap = new LinkedHashMap<String, OdmStudyBean>();
+        odmStudyMap = new LinkedHashMap<String, OdmStudyBean>(_studyDAO, _studyDAO);
     }
 
     public MetaDataCollector(DataSource ds, DatasetBean dataset, StudyBean currentStudy,RuleSetRuleDao ruleSetRuleDao) {

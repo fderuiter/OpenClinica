@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.table.sdv;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,7 +54,16 @@ import org.jmesa.web.WebContext;
 /**
  * A Jmesa table that represents study subjects in each row.
  */
+@Component
 public class SubjectIdSDVFactory extends AbstractTableFactory {
+    private CRFDAO _cRFDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
 
     private DataSource dataSource;
 
@@ -62,7 +73,16 @@ public class SubjectIdSDVFactory extends AbstractTableFactory {
     private final static String ICON_FORCRFSTATUS_SUFFIX = ".gif'/>";
     public boolean showMoreLink;
 
-    public SubjectIdSDVFactory() {
+    @Autowired
+    public SubjectIdSDVFactory(CRFDAO _cRFDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyGroupDAO _studyGroupDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+
     }
 
     public DataSource getDataSource() {
@@ -216,7 +236,7 @@ public class SubjectIdSDVFactory extends AbstractTableFactory {
      */
     public int getTotalRowCount(StudySubjectSDVFilter studySubjectSDVFilter) {
 
-        StudySubjectDAO studySubDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubDAO = this._studySubjectDAO;
         return studySubDAO.countAllByStudySDV(studyId, studyId, studySubjectSDVFilter);
 
     }
@@ -230,7 +250,7 @@ public class SubjectIdSDVFactory extends AbstractTableFactory {
     private Collection<SubjectAggregateContainer> getFilteredItems(StudySubjectSDVFilter filterSet, StudySubjectSDVSort sortSet, int rowStart, int rowEnd) {
 
         List<SubjectAggregateContainer> rows = new ArrayList<SubjectAggregateContainer>();
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
         List<StudySubjectBean> studySubjectBeans = studySubjectDAO.findAllByStudySDV(studyId, studyId, filterSet, sortSet, rowStart, rowEnd);
         SubjectAggregateContainer containerTmp = null;
 
@@ -249,10 +269,10 @@ public class SubjectIdSDVFactory extends AbstractTableFactory {
 
     private SubjectAggregateContainer getRow(StudySubjectBean studySubjectBean) {
         SubjectAggregateContainer row = new SubjectAggregateContainer();
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        StudyDAO studyDAO = new StudyDAO(dataSource);
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
-        StudyGroupDAO studyGroupDAO = new StudyGroupDAO(dataSource);
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
+        StudyDAO studyDAO = this._studyDAO;
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+        StudyGroupDAO studyGroupDAO = this._studyGroupDAO;
 
         row.setStudySubjectId(studySubjectBean.getLabel());
         row.setPersonId(studySubjectBean.getUniqueIdentifier());
@@ -328,7 +348,7 @@ public class SubjectIdSDVFactory extends AbstractTableFactory {
 
     private int getNumberCompletedEventCRFs(List<EventCRFBean> eventCRFBeans) {
 
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
         StudyEventBean studyEventBean = null;
         int counter = 0;
         int statusId = 0;
@@ -362,9 +382,9 @@ public class SubjectIdSDVFactory extends AbstractTableFactory {
 
     private HashMap<String, Integer> getEventCRFStats(List<EventCRFBean> eventCRFBeans, StudySubjectBean studySubject) {
 
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
-        EventDefinitionCRFDAO eventDefinitionCrfDAO = new EventDefinitionCRFDAO(dataSource);
-        CRFDAO crfDAO = new CRFDAO(dataSource);
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
+        EventDefinitionCRFDAO eventDefinitionCrfDAO = this._eventDefinitionCRFDAO;
+        CRFDAO crfDAO = this._cRFDAO;
         StudyEventBean studyEventBean = null;
         Integer numberOfCompletedEventCRFs = 0;
         Integer numberOfSDVdEventCRFs = 0;

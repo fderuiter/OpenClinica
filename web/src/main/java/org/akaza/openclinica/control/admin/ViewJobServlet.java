@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.TriggerBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.extract.DatasetBean;
@@ -28,7 +30,17 @@ import java.util.HashMap;
  * 
  * @author thickerson purpose: to generate the list of jobs and allow us to view them
  */
+@Component
 public class ViewJobServlet extends SecureController {
+    private DatasetDAO _datasetDAO;
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public ViewJobServlet(DatasetDAO _datasetDAO, StudyDAO _studyDAO) {
+        this._datasetDAO = _datasetDAO;
+        this._studyDAO = _studyDAO;
+    }
+
 
    
     private static String SCHEDULER = "schedulerFactoryBean";
@@ -103,8 +115,8 @@ public class ViewJobServlet extends SecureController {
             }
             // setting: frequency, dataset name
             JobDataMap dataMap = new JobDataMap();
-            DatasetDAO datasetDAO = new DatasetDAO(sm.getDataSource());
-            StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+            DatasetDAO datasetDAO = this._datasetDAO;
+            StudyDAO studyDao = this._studyDAO;
             if (trigger.getJobDataMap().size() > 0) {
                 dataMap = trigger.getJobDataMap();
                 int dsId = dataMap.getInt(ExampleSpringJob.DATASET_ID);

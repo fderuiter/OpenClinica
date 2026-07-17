@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.core.Utils;
@@ -58,7 +60,33 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * View a CRF version section data entry
  */
+@Component
 public class PrintDataEntryServlet extends DataEntryServlet {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemGroupDAO _itemGroupDAO;
+    private SectionDAO _sectionDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    @Autowired
+    public PrintDataEntryServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, ItemGroupDAO _itemGroupDAO, SectionDAO _sectionDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+    }
+
 
     Locale locale;
 
@@ -96,7 +124,7 @@ public class PrintDataEntryServlet extends DataEntryServlet {
         int eventCRFId = fp.getInt("ecId");
         //JN:The following were the the global variables, moved as local.
         EventCRFBean ecb ;
-        SectionDAO sdao = new SectionDAO(getDataSource());
+        SectionDAO sdao = this._sectionDAO;
        ArrayList<SectionBean> allSectionBeans = new ArrayList<SectionBean>();
         ArrayList sectionBeans = new ArrayList();
         String age = "";
@@ -112,7 +140,7 @@ public class PrintDataEntryServlet extends DataEntryServlet {
             ecb = new EventCRFBean();
             // super.ecb.setCRFVersionId(sb.getCRFVersionId());
         } else {
-            EventCRFDAO ecdao = new EventCRFDAO(getDataSource());
+            EventCRFDAO ecdao = this._eventCRFDAO;
             ecb = (EventCRFBean) ecdao.findByPK(eventCRFId);
 
             // Get all the SectionBeans attached to this ECB
@@ -126,16 +154,16 @@ public class PrintDataEntryServlet extends DataEntryServlet {
                 }
             }
             // This is the StudySubjectBean
-            StudySubjectDAO ssdao = new StudySubjectDAO(getDataSource());
+            StudySubjectDAO ssdao = this._studySubjectDAO;
             StudySubjectBean sub = (StudySubjectBean) ssdao.findByPK(ecb.getStudySubjectId());
             // This is the SubjectBean
-            SubjectDAO subjectDao = new SubjectDAO(getDataSource());
+            SubjectDAO subjectDao = this._subjectDAO;
             int subjectId = sub.getSubjectId();
             int studyId = sub.getStudyId();
             SubjectBean subject = (SubjectBean) subjectDao.findByPK(subjectId);
-            StudyEventDAO sedao = new StudyEventDAO(getDataSource());
+            StudyEventDAO sedao = this._studyEventDAO;
             StudyEventBean se = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(getDataSource());
+            StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(se.getStudyEventDefinitionId());
             se.setStudyEventDefinition(sed);
             // Let us process the age
@@ -144,7 +172,7 @@ public class PrintDataEntryServlet extends DataEntryServlet {
                 age = Utils.getInstacne().processAge(sub.getEnrollmentDate(), subject.getDateOfBirth());
             }
             // Get the study then the parent study
-            StudyDAO studydao = new StudyDAO(getDataSource());
+            StudyDAO studydao = this._studyDAO;
             StudyBean study = (StudyBean) studydao.findByPK(studyId);
 
             if (study.getParentStudyId() > 0) {
@@ -168,7 +196,7 @@ public class PrintDataEntryServlet extends DataEntryServlet {
         }
 
         // Find out whether the sections involve groups
-        ItemGroupDAO itemGroupDao = new ItemGroupDAO(getDataSource());
+        ItemGroupDAO itemGroupDao = this._itemGroupDAO;
         // Find truely grouped tables, not groups with a name of 'Ungrouped'
         // CRF VERSION ID WILL BE 0 IF "ecId" IS NOT IN THE QUERYSTRING
         int crfVersionId = ecb.getCRFVersionId();
@@ -189,8 +217,8 @@ public class PrintDataEntryServlet extends DataEntryServlet {
             handler.setEventCRFId(eventCRFId);
             List<DisplaySectionBean> displaySectionBeans = handler.getDisplaySectionBeans();
 
-            CRFVersionDAO crfVersionDAO = new CRFVersionDAO(getDataSource());
-            CRFDAO crfDao = new CRFDAO(getDataSource());
+            CRFVersionDAO crfVersionDAO = this._cRFVersionDAO;
+            CRFDAO crfDao = this._cRFDAO;
 
             request.setAttribute("listOfDisplaySectionBeans", displaySectionBeans);
             // Make available the CRF names and versions for

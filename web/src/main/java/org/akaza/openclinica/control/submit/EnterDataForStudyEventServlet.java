@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +54,37 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
 /**
  * @author ssachs
  */
+@Component
 public class EnterDataForStudyEventServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private RuleSetDAO _ruleSetDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public EnterDataForStudyEventServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, DiscrepancyNoteDAO _discrepancyNoteDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDataDAO _itemDataDAO, RuleSetDAO _ruleSetDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO, UserAccountDAO _userAccountDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._ruleSetDAO = _ruleSetDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     Locale locale;
     // < ResourceBundleresexception,respage;
@@ -80,7 +112,7 @@ public class EnterDataForStudyEventServlet extends SecureController {
     public final static String HAS_END_DATE_NOTE = "hasEndDateNote";
 
     private StudyEventBean getStudyEvent(int eventId) throws Exception {
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudyEventDAO sedao = this._studyEventDAO;
 
         StudyBean studyWithSED = currentStudy;
         if (currentStudy.getParentStudyId() > 0) {
@@ -97,7 +129,7 @@ public class EnterDataForStudyEventServlet extends SecureController {
 
         StudyEventBean seb = (StudyEventBean) aeb;
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
         StudyEventDefinitionBean sedb = (StudyEventDefinitionBean) seddao.findByPK(seb.getStudyEventDefinitionId());
         seb.setStudyEventDefinition(sedb);
         //A. Hamid mantis issue 5048
@@ -125,11 +157,11 @@ public class EnterDataForStudyEventServlet extends SecureController {
         StudyEventBean seb = getStudyEvent(eventId);
 
         // so we can display the subject's label
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = this._studySubjectDAO;
         StudySubjectBean studySubjectBean = (StudySubjectBean) ssdao.findByPK(seb.getStudySubjectId());
         int studyId = studySubjectBean.getStudyId();
 
-        StudyDAO studydao = new StudyDAO(sm.getDataSource());
+        StudyDAO studydao = this._studyDAO;
         StudyBean study = (StudyBean) studydao.findByPK(studyId);
         // If the study subject derives from a site, and is being viewed from a
         // parent study,
@@ -141,7 +173,7 @@ public class EnterDataForStudyEventServlet extends SecureController {
         boolean isParentStudy = study.getParentStudyId() < 1;
 
         // Get any disc notes for this study event
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(sm.getDataSource());
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
         ArrayList<DiscrepancyNoteBean> allNotesforSubjectAndEvent = new ArrayList<DiscrepancyNoteBean>();
 
         /*
@@ -170,10 +202,10 @@ public class EnterDataForStudyEventServlet extends SecureController {
         }
 
         // prepare to figure out what the display should look like
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+        EventCRFDAO ecdao = this._eventCRFDAO;
         ArrayList<EventCRFBean> eventCRFs = ecdao.findAllByStudyEvent(seb);
         ArrayList<Boolean> doRuleSetsExist = new ArrayList<Boolean>();
-        RuleSetDAO ruleSetDao = new RuleSetDAO(sm.getDataSource());
+        RuleSetDAO ruleSetDao = this._ruleSetDAO;
 
         for (EventCRFBean eventCrfBean : eventCRFs) {
             // Boolean result = ruleSetDao.findByEventCrf(eventCrfBean) != null
@@ -181,7 +213,7 @@ public class EnterDataForStudyEventServlet extends SecureController {
             // doRuleSetsExist.add(result);
         }
 
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
         ArrayList eventDefinitionCRFs = (ArrayList) edcdao.findAllActiveByEventDefinitionId(study, seb.getStudyEventDefinitionId());
 
         // get the event definition CRFs for which no event CRF exists
@@ -307,8 +339,8 @@ public class EnterDataForStudyEventServlet extends SecureController {
             startedButIncompleted.put(new Integer(edcrf.getCrfId()), new EventCRFBean());
         }
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        ItemDataDAO iddao = this._itemDataDAO;
         for (i = 0; i < eventCRFs.size(); i++) {
             EventCRFBean ecrf = (EventCRFBean) eventCRFs.get(i);
             int crfId = cvdao.getCRFIdFromCRFVersionId(ecrf.getCRFVersionId());
@@ -339,7 +371,7 @@ public class EnterDataForStudyEventServlet extends SecureController {
         if (displayEventDefinitionCRFBeans == null || displayEventDefinitionCRFBeans.isEmpty()) {
             return;
         }
-        UserAccountDAO userAccountDAO = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO userAccountDAO = this._userAccountDAO;
         UserAccountBean userAccountBean;
         EventCRFBean eventCRFBean;
         EventDefinitionCRFBean eventDefinitionCRFBean;
@@ -369,8 +401,8 @@ public class EnterDataForStudyEventServlet extends SecureController {
     }
 
     private void populateUncompletedCRFsWithCRFAndVersions(ArrayList uncompletedEventDefinitionCRFs) {
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFDAO cdao = this._cRFDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
 
         int size = uncompletedEventDefinitionCRFs.size();
         for (int i = 0; i < size; i++) {
@@ -460,9 +492,9 @@ public class EnterDataForStudyEventServlet extends SecureController {
             definitionsByCRFId.put(new Integer(edc.getCrfId()), edc);
         }
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        CRFDAO cdao = this._cRFDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        ItemDataDAO iddao = this._itemDataDAO;
 
         for (i = 0; i < eventCRFs.size(); i++) {
             EventCRFBean ecb = (EventCRFBean) eventCRFs.get(i);

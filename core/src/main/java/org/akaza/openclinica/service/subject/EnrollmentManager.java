@@ -1,5 +1,11 @@
 package org.akaza.openclinica.service.subject;
 
+import org.akaza.openclinica.dao.submit.ItemDAO;
+import org.akaza.openclinica.dao.submit.CRFVersionDAO;
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
+import org.akaza.openclinica.dao.managestudy.StudyDAO;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.managestudy.StudySubjectBean;
@@ -19,6 +25,16 @@ import java.util.Date;
 
 @Component("enrollmentManager")
 public class EnrollmentManager {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private ItemDAO _itemDAO;
+
+    private StudyDAO _studyDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     
@@ -27,9 +43,19 @@ public class EnrollmentManager {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public EnrollmentManager(DataSource dataSource) {
+    public EnrollmentManager(DataSource dataSource, StudyParameterValueDAO _studyParameterValueDAO, StudyDAO _studyDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemDAO _itemDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._itemDAO = _itemDAO;
+
+        this._studyDAO = _studyDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+
         this.unifiedRepository = new UnifiedRepository(dataSource);
-        this.studyParameterValueDAO = new StudyParameterValueDAO(dataSource);
+        this.studyParameterValueDAO = this._studyParameterValueDAO;
         if (dataSource != null) {
             this.jdbcTemplate = new JdbcTemplate(dataSource);
         } else {

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.submit.CRFVersionBean;
@@ -34,7 +36,17 @@ import java.util.Locale;
  *
  * @author jxu
  */
+@Component
 public class ListCRFServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+
+    @Autowired
+    public ListCRFServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+    }
+
     Locale locale;
 
     // < ResourceBundle resexception,respage,resword,restext,resworkflow;
@@ -102,8 +114,8 @@ public class ListCRFServlet extends SecureController {
         // spreadsheet
         logger.debug("found directory: " + dir);
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
+        CRFDAO cdao = this._cRFDAO;
+        CRFVersionDAO vdao = this._cRFVersionDAO;
         ArrayList crfs = (ArrayList) cdao.findAllByPermission(ub, 1);
         for (int i = 0; i < crfs.size(); i++) {
             CRFBean eb = (CRFBean) crfs.get(i);

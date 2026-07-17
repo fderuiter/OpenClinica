@@ -1,5 +1,9 @@
 package org.akaza.openclinica.service;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,7 +36,23 @@ import org.akaza.openclinica.dao.submit.EventCRFDAO;
  * such as getting all notes for a study, or filtering them by subject or
  * resolution status.
  */
+@Component
 public class DiscrepancyNoteUtil {
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public DiscrepancyNoteUtil(DiscrepancyNoteDAO _discrepancyNoteDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudySubjectDAO _studySubjectDAO) {
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
     // TODO: initialize these static members from the database.
     public static final Map<String, Integer> TYPES = new HashMap<String, Integer>();
     static {
@@ -77,7 +97,7 @@ public class DiscrepancyNoteUtil {
             return;
         }
 
-        StudySubjectDAO studySubjDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjDAO = this._studySubjectDAO;
         StudySubjectBean studySubjBean = new StudySubjectBean();
 
         for (StudyEventBean sbean : studyBeans) {
@@ -133,8 +153,8 @@ public class DiscrepancyNoteUtil {
         boolean hasResolutionStatus = resolutionStatus >= 1 && resolutionStatus <= 5;
         boolean hasDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
 
         StudyEventBean studyEventBean;
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
@@ -226,8 +246,8 @@ public class DiscrepancyNoteUtil {
         boolean hasResolutionStatus = this.checkResolutionStatus(resolutionStatusIds);
         boolean hasDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
 
         StudyEventBean studyEventBean;
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
@@ -379,8 +399,8 @@ public class DiscrepancyNoteUtil {
         boolean hasResolutionStatus = this.checkResolutionStatus(resolutionStatusIds);
         boolean hasDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
 
         StudyEventBean studyEventBean;
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
@@ -453,11 +473,11 @@ public class DiscrepancyNoteUtil {
 
         boolean filterforDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
         // what is the purpose of this data member?
         discrepancyNoteDAO.setFetchMapping(true);
 
-        EventCRFDAO ecdao = new EventCRFDAO(dataSource);
+        EventCRFDAO ecdao = this._eventCRFDAO;
         ArrayList itemDataNotes = discrepancyNoteDAO.findAllItemDataByStudy(currentStudy);
 
         ArrayList subjectNotes = discrepancyNoteDAO.findAllSubjectByStudy(currentStudy);
@@ -514,11 +534,11 @@ public class DiscrepancyNoteUtil {
 
         boolean filterforDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
         // what is the purpose of this data member?
         discrepancyNoteDAO.setFetchMapping(true);
 
-        EventCRFDAO ecdao = new EventCRFDAO(dataSource);
+        EventCRFDAO ecdao = this._eventCRFDAO;
         ArrayList itemDataNotes = discrepancyNoteDAO.findAllItemDataByStudy(currentStudy);
 
         ArrayList subjectNotes = discrepancyNoteDAO.findAllSubjectByStudy(currentStudy);
@@ -577,14 +597,14 @@ public class DiscrepancyNoteUtil {
 
         boolean filterforDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
-        StudyDAO studyDAO = new StudyDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
+        StudyDAO studyDAO = this._studyDAO;
         // what is the purpose of this data member?
         discrepancyNoteDAO.setFetchMapping(true);
         int parentStudyId = currentStudy.getParentStudyId();
         Set<String> hiddenCrfNames = new TreeSet<String>();
         if (parentStudyId > 0) {
-            hiddenCrfNames = new EventDefinitionCRFDAO(dataSource).findHiddenCrfNamesBySite(currentStudy);
+            hiddenCrfNames = this._eventDefinitionCRFDAO.findHiddenCrfNamesBySite(currentStudy);
         }
         allDiscNotes = discrepancyNoteDAO.findAllDiscrepancyNotesDataByStudy(currentStudy);
 
@@ -637,7 +657,7 @@ public class DiscrepancyNoteUtil {
             return;
         }
         List<DiscrepancyNoteBean> childDiscBeans = new ArrayList<DiscrepancyNoteBean>();
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
         DiscrepancyNoteBean lastChild = new DiscrepancyNoteBean();
         int resolutionStatusId = 0;
 
@@ -676,7 +696,7 @@ public class DiscrepancyNoteUtil {
 
         boolean filterforDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
         // what is the purpose of this data member?
         discrepancyNoteDAO.setFetchMapping(true);
         // method finds only parents
@@ -721,7 +741,7 @@ public class DiscrepancyNoteUtil {
         List<DiscrepancyNoteBean> childDiscBeans = new ArrayList<DiscrepancyNoteBean>();
         List<DiscrepancyNoteBean> eventCRFChildDiscBeans = new ArrayList<DiscrepancyNoteBean>();
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
         DiscrepancyNoteThread tempDNThread = null;
         int resolutionStatusId = 0;
 
@@ -936,7 +956,7 @@ public class DiscrepancyNoteUtil {
             return allDiscNotes;
         }
 
-        StudySubjectDAO studySubjDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjDAO = this._studySubjectDAO;
         StudySubjectBean studySubjBean = new StudySubjectBean();
         studySubjBean = (StudySubjectBean) studySubjDAO.findByPK(subjectId);
 
@@ -960,7 +980,7 @@ public class DiscrepancyNoteUtil {
      */
     public Map generateDiscNoteSummaryRefactored(DataSource ds, StudyBean currentStudy, Set<Integer> resolutionStatusIds, int discNoteType) {
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(ds);
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
         boolean filterDiscNotes = checkResolutionStatus(resolutionStatusIds);
         boolean filterforDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
         //if (allDiscBeans == null || allDiscBeans.isEmpty())
@@ -1435,7 +1455,7 @@ public class DiscrepancyNoteUtil {
         if (discrepancyNoteBean == null)
             return 0;
 
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
         List<StudySubjectBean> studySubjectBeans = new ArrayList<StudySubjectBean>();
 
         if ("subject".equalsIgnoreCase(discrepancyNoteBean.getEntityType())) {
@@ -1444,7 +1464,7 @@ public class DiscrepancyNoteUtil {
                 if (bean.getStudyId() == studyId) {
                     return bean.getId();
                 } else {
-                    if (((StudyBean) new StudyDAO(dataSource).findByPK(bean.getStudyId())).getParentStudyId() == studyId) {
+                    if (((StudyBean) this._studyDAO.findByPK(bean.getStudyId())).getParentStudyId() == studyId) {
                         return bean.getId();
                     }
                 }
@@ -1468,7 +1488,7 @@ public class DiscrepancyNoteUtil {
         List<DiscrepancyNoteBean> childDiscBeans = new ArrayList<DiscrepancyNoteBean>();
         List<DiscrepancyNoteBean> eventCRFChildDiscBeans = new ArrayList<DiscrepancyNoteBean>();
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = this._discrepancyNoteDAO;
         DiscrepancyNoteThread tempDNThread = null;
         int resolutionStatusId = 0;
 

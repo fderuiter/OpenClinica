@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -46,7 +48,11 @@ import org.akaza.openclinica.service.rule.StudyEventBeanListener;
  *         Modified by ywang.
  *
  */
+@Component
 public class StudyEventDAO extends AuditableEntityDAO implements Listener {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+
     
 	
 	private Observer observer;
@@ -57,8 +63,12 @@ public class StudyEventDAO extends AuditableEntityDAO implements Listener {
         getCurrentPKName = "getCurrentPrimaryKey";
     }
 
-    public StudyEventDAO(DataSource ds) {
+    @Autowired
+    public StudyEventDAO(DataSource ds, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO) {
         super(ds);
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+
         setQueryNames();
     }
 
@@ -972,8 +982,8 @@ public class StudyEventDAO extends AuditableEntityDAO implements Listener {
         variables.put(Integer.valueOf(1), Integer.valueOf(seb.getStudyEventDefinitionId()));
         ArrayList alist = this.select(digester.getQuery("findCRFsByStudyEvent"), variables);
         Iterator it = alist.iterator();
-        CRFDAO cdao = new CRFDAO(this.ds);
-        CRFVersionDAO cvdao = new CRFVersionDAO(this.ds);
+        CRFDAO cdao = this._cRFDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
         while (it.hasNext()) {
             HashMap answers = (HashMap) it.next();
             logger.warn("***First CRF ID: " + answers.get("crf_id"));

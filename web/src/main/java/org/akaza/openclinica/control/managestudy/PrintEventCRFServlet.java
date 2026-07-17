@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
@@ -44,7 +46,25 @@ import jakarta.servlet.http.HttpServletResponse;
  * Date: Nov 19, 2009
  * Time: 9:19:46 AM
  */
+@Component
 public class PrintEventCRFServlet extends DataEntryServlet {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemGroupDAO _itemGroupDAO;
+    private SectionDAO _sectionDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+
+    @Autowired
+    public PrintEventCRFServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemGroupDAO _itemGroupDAO, SectionDAO _sectionDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+    }
+
     Locale locale;
 
     /**
@@ -75,7 +95,7 @@ public class PrintEventCRFServlet extends DataEntryServlet {
         int eventCRFId = fp.getInt("ecId");
         //JN:The following were the the global variables, moved as local.
         EventCRFBean ecb = (EventCRFBean)request.getAttribute(INPUT_EVENT_CRF);
-        StudyEventDefinitionDAO sedao = new StudyEventDefinitionDAO(getDataSource());
+        StudyEventDefinitionDAO sedao = this._studyEventDefinitionDAO;
         int defId = fp.getInt("id", true);
         boolean isSubmitted = false;
         ArrayList<SectionBean> allSectionBeans;
@@ -86,11 +106,11 @@ public class PrintEventCRFServlet extends DataEntryServlet {
             // definition id
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) sedao.findByPK(defId);
 
-            EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(getDataSource());
+            EventDefinitionCRFDAO edao = this._eventDefinitionCRFDAO;
             ArrayList eventDefinitionCRFs = (ArrayList) edao.findAllByDefinition(defId);
 
-            CRFVersionDAO cvdao = new CRFVersionDAO(getDataSource());
-            CRFDAO cdao = new CRFDAO(getDataSource());
+            CRFVersionDAO cvdao = this._cRFVersionDAO;
+            CRFDAO cdao = this._cRFDAO;
             ArrayList defaultVersions = new ArrayList();
 
             for (int i = 0; i < eventDefinitionCRFs.size(); i++) {
@@ -126,9 +146,9 @@ public class PrintEventCRFServlet extends DataEntryServlet {
             int eventDefinitionCRFId = fp.getInt("eventDefinitionCRFId");
             // EventDefinitionCRFDao findByStudyEventIdAndCRFVersionId(int
             // studyEventId, int crfVersionId)
-            SectionDAO sdao = new SectionDAO(getDataSource());
-            CRFVersionDAO crfVersionDAO = new CRFVersionDAO(getDataSource());
-            CRFDAO crfDao = new CRFDAO(getDataSource());
+            SectionDAO sdao = this._sectionDAO;
+            CRFVersionDAO crfVersionDAO = this._cRFVersionDAO;
+            CRFDAO crfDao = this._cRFDAO;
             ArrayList printCrfBeans = new ArrayList();
 
             for (Iterator it = defaultVersions.iterator(); it.hasNext();) {
@@ -142,7 +162,7 @@ public class PrintEventCRFServlet extends DataEntryServlet {
                 // BWP 2/7/2008>> Find out if the CRF has grouped tables, and if so,
                 // use
                 // that dedicated JSP
-                ItemGroupDAO itemGroupDao = new ItemGroupDAO(getDataSource());
+                ItemGroupDAO itemGroupDao = this._itemGroupDAO;
                 // Find truely grouped tables, not groups with a name of 'Ungrouped'
                 List<ItemGroupBean> itemGroupBeans = itemGroupDao.findOnlyGroupsByCRFVersionID(crfVersionBean.getId());
                 CRFBean crfBean = crfDao.findByVersionId(crfVersionBean.getId());

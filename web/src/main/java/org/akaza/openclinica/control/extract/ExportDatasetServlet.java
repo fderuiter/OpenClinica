@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,7 +69,19 @@ import org.quartz.impl.JobDetailImpl;
  *
  *
  */
+@Component
 public class ExportDatasetServlet extends SecureController {
+    private ArchivedDatasetFileDAO _archivedDatasetFileDAO;
+    private DatasetDAO _datasetDAO;
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public ExportDatasetServlet(ArchivedDatasetFileDAO _archivedDatasetFileDAO, DatasetDAO _datasetDAO, StudyDAO _studyDAO) {
+        this._archivedDatasetFileDAO = _archivedDatasetFileDAO;
+        this._datasetDAO = _datasetDAO;
+        this._studyDAO = _studyDAO;
+    }
+
     // Background worker pool
     private static final int MAX_WORKERS = 5;
     private static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_WORKERS);
@@ -105,8 +119,8 @@ public class ExportDatasetServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
-        ArchivedDatasetFileDAO asdfdao = new ArchivedDatasetFileDAO(sm.getDataSource());
+        DatasetDAO dsdao = this._datasetDAO;
+        ArchivedDatasetFileDAO asdfdao = this._archivedDatasetFileDAO;
         FormProcessor fp = new FormProcessor(request);
 
         GenerateExtractFileService generateFileService = new GenerateExtractFileService(sm.getDataSource(),
@@ -127,7 +141,7 @@ public class ExportDatasetServlet extends SecureController {
             }
         }
         DatasetBean db = (DatasetBean) dsdao.findByPK(datasetId);
-       StudyDAO sdao = new StudyDAO(sm.getDataSource());
+       StudyDAO sdao = this._studyDAO;
         StudyBean study = (StudyBean)sdao.findByPK(db.getStudyId());
         checkRoleByUserAndStudy(ub, study.getParentStudyId(), study.getId());
 
@@ -151,7 +165,7 @@ public class ExportDatasetServlet extends SecureController {
 
         StudyBean parentStudy = new StudyBean();
         if (currentStudy.getParentStudyId() > 0) {
-            //StudyDAO sdao = new StudyDAO(sm.getDataSource());
+            //StudyDAO sdao = this._studyDAO;
             parentStudy = (StudyBean) sdao.findByPK(currentStudy.getParentStudyId());
         }
 

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.extract.DatasetBean;
@@ -34,7 +36,23 @@ import java.util.List;
  *
  *
  */
+@Component
 public class EditDatasetServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private DatasetDAO _datasetDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+
+    @Autowired
+    public EditDatasetServlet(CRFDAO _cRFDAO, DatasetDAO _datasetDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._datasetDAO = _datasetDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+    }
+
 
     public static String getLink(int dsId) {
         return "EditDataset?dsId=" + dsId;
@@ -47,7 +65,7 @@ public class EditDatasetServlet extends SecureController {
         int dsId = fp.getInt("dsId");
         DatasetBean dataset = initializeAttributes(dsId);
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         StudyBean study = (StudyBean)sdao.findByPK(dataset.getStudyId());
         // Checking if user has permission to access the current study/site
         checkRoleByUserAndStudy(ub, study.getParentStudyId(), study.getId());
@@ -70,12 +88,12 @@ public class EditDatasetServlet extends SecureController {
 
         HashMap events = (LinkedHashMap) session.getAttribute("eventsForCreateDataset");
         // << tbh
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+        CRFDAO crfdao = this._cRFDAO;
 
         // >> tbh 11/2009
         if (events == null || events.isEmpty()) {
             events = new LinkedHashMap();
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+            StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
 
             StudyBean studyWithEventDefinitions = currentStudy;
             if (currentStudy.getParentStudyId() > 0) {
@@ -105,12 +123,12 @@ public class EditDatasetServlet extends SecureController {
          * TermType.STATUS); v.addValidation("dsName", Validator.LENGTH_NUMERIC_COMPARISON, NumericComparisonOperator.LESS_THAN_OR_EQUAL_TO, 255);
          * v.addValidation("dsDesc", Validator.LENGTH_NUMERIC_COMPARISON, NumericComparisonOperator.LESS_THAN_OR_EQUAL_TO, 2000); //what else to validate?
          * HashMap errors = v.validate(); if (!StringUtil.isBlank(fp.getString("dsName"))) { //logger.info("dsName" + fp.getString("dsName")); DatasetDAO dsdao
-         * = new DatasetDAO(sm.getDataSource()); DatasetBean dsBean = (DatasetBean) dsdao.findByNameAndStudy(fp.getString("dsName").trim(), currentStudy); if
+         * = this._datasetDAO; DatasetBean dsBean = (DatasetBean) dsdao.findByNameAndStudy(fp.getString("dsName").trim(), currentStudy); if
          * (dsBean.getId() > 0 && (dsBean.getId() != fp.getInt("dsId"))) { Validator.addError(errors, "dsName",
          * restext.getString("dataset_name_used_by_another_choose_unique")); } } if (!errors.isEmpty()) { String fieldNames[] = { "dsName", "dsDesc" };
          * fp.setCurrentStringValuesAsPreset(fieldNames); fp.addPresetValue("dsStatus", fp.getInt("dsStatus"));
          * addPageMessage(restext.getString("errors_in_update_see_below")); setInputMessages(errors); setPresetValues(fp.getPresetValues()); //TODO determine if
-         * this is necessary //int dsId = fp.getInt("dsId"); //DatasetDAO dsDAO = new DatasetDAO(sm.getDataSource()); //DatasetBean showDataset = (DatasetBean)
+         * this is necessary //int dsId = fp.getInt("dsId"); //DatasetDAO dsDAO = this._datasetDAO; //DatasetBean showDataset = (DatasetBean)
          * dsDAO.findByPK(dsId); request.setAttribute("dataset", dataset); //maybe just set the above to the session? request.setAttribute("statuses",
          * getStatuses()); forwardPage(Page.EDIT_DATASET); } else { dataset.setName(fp.getString("dsName")); dataset.setDescription(fp.getString("dsDesc"));
          * dataset.setStatus(Status.get(fp.getInt("dsStatus"))); dataset.setUpdater(ub); //dataset.setUpdaterId(ub.getId()); dsDAO.update(dataset);
@@ -160,13 +178,13 @@ public class EditDatasetServlet extends SecureController {
      */
     // @author ywang (Feb, 2008)
     public DatasetBean initializeAttributes(int datasetId) {
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = this._datasetDAO;
         DatasetBean db = dsdao.initialDatasetData(datasetId);
         request.setAttribute("newDataset", db);
         request.setAttribute("allItems", db.getItemDefCrf().clone());
         request.setAttribute("allSelectedItems", db.getItemDefCrf().clone());
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
-        StudyDAO studydao = new StudyDAO(sm.getDataSource());
+        StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
+        StudyDAO studydao = this._studyDAO;
         StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
         ArrayList<StudyGroupClassBean> allSelectedGroups = sgcdao.findAllActiveByStudy(theStudy);
         ArrayList<Integer> selectedSubjectGroupIds = db.getSubjectGroupIds();

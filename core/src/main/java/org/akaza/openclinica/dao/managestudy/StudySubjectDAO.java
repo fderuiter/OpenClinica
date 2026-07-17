@@ -7,6 +7,7 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
 import java.sql.Connection;
 import java.sql.Types;
 import java.util.ArrayList;

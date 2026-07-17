@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.control.SpringServletAccess;
 import org.akaza.openclinica.control.core.SecureController;
@@ -25,7 +27,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+@Component
 public class UpdateJobImportServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public UpdateJobImportServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     private static String SCHEDULER = "schedulerFactoryBean";
     private static String TRIGGER_IMPORT_GROUP = "importTrigger";
@@ -77,8 +89,8 @@ public class UpdateJobImportServlet extends SecureController {
 
         Date jobDate = trigger.getNextFireTime();
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
+        StudyDAO sdao = this._studyDAO;
 
         // ArrayList studies = udao.findStudyByUser(ub.getName(), (ArrayList)
         // sdao.findAll());
@@ -133,7 +145,7 @@ public class UpdateJobImportServlet extends SecureController {
                 setUpServlet(trigger);
                 forwardPage(Page.UPDATE_JOB_IMPORT);
             } else {
-                StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+                StudyDAO studyDAO = this._studyDAO;
                 int studyId = fp.getInt(CreateJobImportServlet.STUDY_ID);
                 StudyBean study = (StudyBean) studyDAO.findByPK(studyId);
                 // in the place of a users' current study, tbh

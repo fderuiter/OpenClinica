@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.filter;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /* Copyright 2004, 2005, 2006 Acegi Technology Pty Limited
@@ -64,7 +66,10 @@ import org.springframework.util.Assert;
  * @author Luke Taylor
  * @since 3.0
  */
+@Component
 public class OpenClinicaUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+    private UserAccountDAO _userAccountDAO;
+
     //~ Static fields/initializers =====================================================================================
 	protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "j_username";
@@ -84,8 +89,11 @@ public class OpenClinicaUsernamePasswordAuthenticationFilter extends AbstractAut
 
     //~ Constructors ===================================================================================================
 
-    public OpenClinicaUsernamePasswordAuthenticationFilter() {
+    @Autowired
+    public OpenClinicaUsernamePasswordAuthenticationFilter(UserAccountDAO _userAccountDAO) {
         super("/j_spring_security_check");
+        this._userAccountDAO = _userAccountDAO;
+
     }
 
     //~ Methods ========================================================================================================
@@ -356,7 +364,7 @@ public class OpenClinicaUsernamePasswordAuthenticationFilter extends AbstractAut
     }
 
     public UserAccountDAO getUserAccountDao() {
-        return userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        return userAccountDao != null ? userAccountDao : this._userAccountDAO;
     }
 
     public CRFLocker getCrfLocker() {

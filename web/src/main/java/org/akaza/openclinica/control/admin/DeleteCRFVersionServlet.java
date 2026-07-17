@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.admin.NewCRFBean;
 import org.akaza.openclinica.bean.submit.CRFVersionBean;
@@ -39,7 +41,29 @@ import java.util.ArrayList;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class DeleteCRFVersionServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public DeleteCRFVersionServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDataDAO _itemDataDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
     public static final String VERSION_ID = "verId";
 
     public static final String VERSION_TO_DELETE = "version";
@@ -66,14 +90,14 @@ public class DeleteCRFVersionServlet extends SecureController {
             addPageMessage(respage.getString("please_choose_a_CRF_version_to_delete"));
             forwardPage(Page.CRF_LIST_SERVLET);
         } else {
-            CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
-            EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-            StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(sm.getDataSource());
-            StudyEventDAO seDao = new StudyEventDAO(sm.getDataSource());
-            ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+            CRFVersionDAO cvdao = this._cRFVersionDAO;
+            CRFDAO cdao = this._cRFDAO;
+            EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
+            StudyEventDefinitionDAO sedDao = this._studyEventDefinitionDAO;
+            StudyEventDAO seDao = this._studyEventDAO;
+            ItemDataDAO iddao = this._itemDataDAO;
+            EventCRFDAO ecdao = this._eventCRFDAO;
+            StudySubjectDAO ssdao = this._studySubjectDAO;
             CRFVersionBean version = (CRFVersionBean) cvdao.findByPK(versionId);
 
             // find definitions using this version

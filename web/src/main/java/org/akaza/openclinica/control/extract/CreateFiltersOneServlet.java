@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.control.form.FormProcessor;
@@ -34,7 +36,15 @@ import java.util.Locale;
  *
  *
  */
+@Component
 public class CreateFiltersOneServlet extends SecureController {
+    private FilterDAO _filterDAO;
+
+    @Autowired
+    public CreateFiltersOneServlet(FilterDAO _filterDAO) {
+        this._filterDAO = _filterDAO;
+    }
+
 
     Locale locale;
 
@@ -53,7 +63,7 @@ public class CreateFiltersOneServlet extends SecureController {
             // note that this is now set up to accept the
             // tabling classes created in View.
             FormProcessor fp = new FormProcessor(request);
-            FilterDAO fdao = new FilterDAO(sm.getDataSource());
+            FilterDAO fdao = this._filterDAO;
             EntityBeanTable table = fp.getEntityBeanTable();
 
             ArrayList filters = new ArrayList();

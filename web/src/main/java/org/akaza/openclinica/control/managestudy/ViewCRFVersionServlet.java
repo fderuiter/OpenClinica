@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.submit.CRFVersionBean;
@@ -36,7 +38,21 @@ import java.util.HashMap;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class ViewCRFVersionServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+
+    @Autowired
+    public ViewCRFVersionServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+    }
+
     /**
      * Checks whether the user has the right permission to proceed function
      */
@@ -57,9 +73,9 @@ public class ViewCRFVersionServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        ItemDAO idao = this._itemDAO;
+        ItemFormMetadataDAO ifmdao = this._itemFormMetadataDAO;
         FormProcessor fp = new FormProcessor(request);
         // checks which module the requests are from
         String module = fp.getString(MODULE);
@@ -73,7 +89,7 @@ public class ViewCRFVersionServlet extends SecureController {
         } else {
             CRFVersionBean version = (CRFVersionBean) cvdao.findByPK(crfVersionId);
             // tbh
-            CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+            CRFDAO crfdao = this._cRFDAO;
             CRFBean crf = (CRFBean) crfdao.findByPK(version.getCrfId());
             CRFVersionMetadataUtil metadataUtil = new CRFVersionMetadataUtil(sm.getDataSource());
             ArrayList<SectionBean> sections = metadataUtil.retrieveFormMetadata(version); 

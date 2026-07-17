@@ -8,6 +8,8 @@
 
 package org.akaza.openclinica.dao.submit;
 
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.akaza.openclinica.dao.submit.EventCRFDAO;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.sql.Types;

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
@@ -39,7 +41,19 @@ import java.util.*;
  * 
  * @author jxu
  */
+@Component
 public class AddCRFToDefinitionServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
+    @Autowired
+    public AddCRFToDefinitionServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+    }
+
 
     /**
      * Checks whether the user has the correct privilege
@@ -63,7 +77,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
         String actionName = request.getParameter("actionName");
         String submit = request.getParameter("Submit");
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFDAO cdao = this._cRFDAO;
         ArrayList crfs = (ArrayList) cdao.findAllByStatus(Status.AVAILABLE);
         ArrayList edcs = (ArrayList) session.getAttribute("eventDefinitionCRFs");
         if (edcs == null) {
@@ -165,7 +179,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
     private void addCRF() throws Exception {
 
         FormProcessor fp = new FormProcessor(request);
-        CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO vdao = this._cRFVersionDAO;
         ArrayList crfArray = new ArrayList();
         Map tmpCRFIdMap = (HashMap) session.getAttribute("tmpCRFIdMap");
         if (tmpCRFIdMap == null) {
@@ -215,7 +229,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
             }
         }
         request.removeAttribute("tmpCRFIdMap");
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;    
 
 
         if (crfArray.size() == 0) {// no crf seleted
@@ -277,7 +291,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
 //        ArrayList crfs = (ArrayList) session.getAttribute("crfsWithVersion");
 //        StudyEventDefinitionBean sed = (StudyEventDefinitionBean) session.getAttribute("definition");
 //        FormProcessor fp = new FormProcessor(request);
-//        CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
+//        CRFVersionDAO vdao = this._cRFVersionDAO;
 //        String crfNames = "";
 //        boolean isCRFSelected = false;
 //        int ordinalForNewCRF = edcs.size();

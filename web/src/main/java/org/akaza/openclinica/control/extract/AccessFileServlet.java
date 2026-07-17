@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.extract.ArchivedDatasetFileBean;
 import org.akaza.openclinica.bean.extract.DatasetBean;
@@ -27,7 +29,19 @@ import java.util.Locale;
  *
  *
  */
+@Component
 public class AccessFileServlet extends SecureController {
+    private ArchivedDatasetFileDAO _archivedDatasetFileDAO;
+    private DatasetDAO _datasetDAO;
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public AccessFileServlet(ArchivedDatasetFileDAO _archivedDatasetFileDAO, DatasetDAO _datasetDAO, StudyDAO _studyDAO) {
+        this._archivedDatasetFileDAO = _archivedDatasetFileDAO;
+        this._datasetDAO = _datasetDAO;
+        this._studyDAO = _studyDAO;
+    }
+
 
     Locale locale;
 
@@ -43,10 +57,10 @@ public class AccessFileServlet extends SecureController {
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         int fileId = fp.getInt("fileId");
-        ArchivedDatasetFileDAO asdfdao = new ArchivedDatasetFileDAO(sm.getDataSource());
-        DatasetDAO dsDao = new DatasetDAO(sm.getDataSource());
+        ArchivedDatasetFileDAO asdfdao = this._archivedDatasetFileDAO;
+        DatasetDAO dsDao = this._datasetDAO;
         ArchivedDatasetFileBean asdfBean = (ArchivedDatasetFileBean) asdfdao.findByPK(fileId);
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+        StudyDAO studyDao = this._studyDAO;
         DatasetBean dsBean = (DatasetBean) dsDao.findByPK(asdfBean.getDatasetId());
         int parentId = currentStudy.getParentStudyId();
         if(parentId==0)//Logged in at study level

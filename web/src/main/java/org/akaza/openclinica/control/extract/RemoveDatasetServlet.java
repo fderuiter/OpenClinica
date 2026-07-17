@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.extract.DatasetBean;
@@ -31,7 +33,17 @@ import java.util.Locale;
  *
  *
  */
+@Component
 public class RemoveDatasetServlet extends SecureController {
+    private DatasetDAO _datasetDAO;
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public RemoveDatasetServlet(DatasetDAO _datasetDAO, StudyDAO _studyDAO) {
+        this._datasetDAO = _datasetDAO;
+        this._studyDAO = _studyDAO;
+    }
+
 
     Locale locale;
 
@@ -45,10 +57,10 @@ public class RemoveDatasetServlet extends SecureController {
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         int dsId = fp.getInt("dsId");
-        DatasetDAO dsDAO = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsDAO = this._datasetDAO;
         DatasetBean dataset = (DatasetBean) dsDAO.findByPK(dsId);
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         StudyBean study = (StudyBean)sdao.findByPK(dataset.getStudyId());
         checkRoleByUserAndStudy(ub, study.getParentStudyId(), study.getId());
         if (study.getId() != currentStudy.getId() && study.getParentStudyId() != currentStudy.getId()) {
@@ -107,7 +119,7 @@ public class RemoveDatasetServlet extends SecureController {
         FormProcessor fp = new FormProcessor(request);
 
         EntityBeanTable table = fp.getEntityBeanTable();
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = this._datasetDAO;
         ArrayList datasets = new ArrayList();
         // if (ub.isSysAdmin()) {
         // datasets =

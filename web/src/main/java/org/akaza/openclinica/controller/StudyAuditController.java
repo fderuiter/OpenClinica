@@ -36,6 +36,15 @@ import jakarta.xml.bind.DatatypeConverter;
 @Controller
 @RequestMapping(value = "/auth/api/v1/studies")
 public class StudyAuditController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public StudyAuditController(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
@@ -64,14 +73,14 @@ public class StudyAuditController {
             }
 
             // 2. Resolve study and check existence
-            StudyDAO studyDAO = new StudyDAO(dataSource);
+            StudyDAO studyDAO = this._studyDAO;
             StudyBean study = (StudyBean) studyDAO.findByOid(studyOid);
             if (study == null || study.getId() <= 0) {
                 return new ResponseEntity<>("Study not found", HttpStatus.NOT_FOUND);
             }
 
             // 3. Authorization Check
-            UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+            UserAccountDAO userAccountDAO = this._userAccountDAO;
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth == null || auth.getPrincipal() == null) {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);

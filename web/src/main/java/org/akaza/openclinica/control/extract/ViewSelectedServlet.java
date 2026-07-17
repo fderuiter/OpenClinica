@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.extract.DatasetBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -34,7 +36,23 @@ import java.util.Locale;
  * Views selected items for creating dataset, aslo allow user to de-select or
  * select all items in a study
  */
+@Component
 public class ViewSelectedServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private StudyDAO _studyDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+
+    @Autowired
+    public ViewSelectedServlet(CRFDAO _cRFDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO, StudyDAO _studyDAO, StudyGroupClassDAO _studyGroupClassDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._studyDAO = _studyDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+    }
+
 
     Locale locale;
 
@@ -71,8 +89,8 @@ public class ViewSelectedServlet extends SecureController {
     public void setUpStudyGroups() {
         ArrayList sgclasses = (ArrayList) session.getAttribute("allSelectedGroups");
         if (sgclasses == null || sgclasses.size() == 0) {
-            StudyDAO studydao = new StudyDAO(sm.getDataSource());
-            StudyGroupClassDAO sgclassdao = new StudyGroupClassDAO(sm.getDataSource());
+            StudyDAO studydao = this._studyDAO;
+            StudyGroupClassDAO sgclassdao = this._studyGroupClassDAO;
             StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
             sgclasses = sgclassdao.findAllActiveByStudy(theStudy);
         }
@@ -91,9 +109,9 @@ public class ViewSelectedServlet extends SecureController {
         }
         request.setAttribute("eventlist", events);
 
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO imfdao = new ItemFormMetadataDAO(sm.getDataSource());
+        CRFDAO crfdao = this._cRFDAO;
+        ItemDAO idao = this._itemDAO;
+        ItemFormMetadataDAO imfdao = this._itemFormMetadataDAO;
         ArrayList ids = CreateDatasetServlet.allSedItemIdsInStudy(events, crfdao, idao);// new
                                                                                         // ArrayList();
         // ArrayList allItemsInStudy = EditSelectedServlet.selectAll(events,

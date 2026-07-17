@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.control.core.SecureController;
@@ -21,7 +23,15 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class InitUpdateCRFServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+
+    @Autowired
+    public InitUpdateCRFServlet(CRFDAO _cRFDAO) {
+        this._cRFDAO = _cRFDAO;
+    }
+
 
     private static String CRF_ID = "crfId";
 
@@ -85,7 +95,7 @@ public class InitUpdateCRFServlet extends SecureController {
             addPageMessage(respage.getString("please_choose_a_CRF_version_to_update"));
             forwardPage(Page.CRF_LIST_SERVLET);
         } else {
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFDAO cdao = this._cRFDAO;
             CRFBean crf = (CRFBean) cdao.findByPK(crfId);
             if(!ub.isSysAdmin() && (crf.getOwnerId() != ub.getId())){
                 addPageMessage(respage.getString("no_have_correct_privilege_current_study")

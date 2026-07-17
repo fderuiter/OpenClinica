@@ -7,6 +7,9 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,7 +42,10 @@ import org.apache.commons.lang.StringUtils;
  * @author jxu
  * 
  */
+@Component
 public class EventDefinitionCRFDAO extends AuditableEntityDAO {
+    private StudyDAO _studyDAO;
+
     // private DAODigester digester;
 
     private void setQueryNames() {
@@ -48,8 +54,11 @@ public class EventDefinitionCRFDAO extends AuditableEntityDAO {
         findAllByStudyName = "findAllByStudy";
     }
 
-    public EventDefinitionCRFDAO(DataSource ds) {
+    @Autowired
+    public EventDefinitionCRFDAO(DataSource ds, StudyDAO _studyDAO) {
         super(ds);
+        this._studyDAO = _studyDAO;
+
         setQueryNames();
     }
 
@@ -683,7 +692,7 @@ public class EventDefinitionCRFDAO extends AuditableEntityDAO {
      * @return boolean to tell us if it's required or not.
      */
     public boolean isRequiredInDefinition(int crfVersionId, StudyEventBean studyEvent) {
-        StudyBean study = new StudyDAO(this.ds).findByStudySubjectId(studyEvent.getStudySubjectId());
+        StudyBean study = this._studyDAO.findByStudySubjectId(studyEvent.getStudySubjectId());
         int studyEventId = studyEvent.getId();
 
         /*

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.admin.JDBCType;
 import org.akaza.openclinica.bean.admin.NewCRFBean;
@@ -73,7 +75,14 @@ import java.util.regex.PatternSyntaxException;
  *          kkrumlian $
  */
 
+@Component
 public class SpreadSheetTableRepeating implements SpreadSheetTable {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private ItemGroupDAO _itemGroupDAO;
+
 
     private Workbook wb = null;
 
@@ -107,7 +116,14 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
     // the default; all crf ids should be > 0, tbh 8-29 :-)
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    public SpreadSheetTableRepeating(FileInputStream parseStream, UserAccountBean ub, String versionName, Locale locale, int studyId) throws IOException {
+    @Autowired
+    public SpreadSheetTableRepeating(FileInputStream parseStream, UserAccountBean ub, String versionName, Locale locale, int studyId, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO, ItemGroupDAO _itemGroupDAO) throws IOException {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+
         // super();
 
         this.wb = WorkbookFactory.create(parseStream);
@@ -172,16 +188,16 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
         ArrayList<String> itemGroupOids = new ArrayList<String>();
         ArrayList<String> itemOids = new ArrayList<String>();
 
-        CRFDAO cdao = new CRFDAO(ds);
+        CRFDAO cdao = this._cRFDAO;
         CRFBean crf = (CRFBean) cdao.findByPK(crfId);
-        ItemDAO idao = new ItemDAO(ds);
-        CRFVersionDAO cvdao = new CRFVersionDAO(ds);
-        ItemGroupDAO itemGroupDao = new ItemGroupDAO(ds);
+        ItemDAO idao = this._itemDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        ItemGroupDAO itemGroupDao = this._itemGroupDAO;
         SheetValidationContainer sheetContainer = new SheetValidationContainer();
         HashMap<String, String> allItems = (HashMap<String, String>)sheetContainer.getAllItems();
         //HashMap<String, String> allItems = new HashMap<String, String>();
         Map<String, String[]> controlValues = new HashMap<String, String[]>();
-        int maxItemFormMetadataId = new ItemFormMetadataDAO(ds).findMaxId();
+        int maxItemFormMetadataId = this._itemFormMetadataDAO.findMaxId();
         OnChangeSheetValidator instantValidator = new OnChangeSheetValidator(sheetContainer, resPageMsg);
 
 
@@ -264,7 +280,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                         int cellIndex = 0;
                        
                         Cell cell = sheet.getRow(k).getCell((short) 0);
-                        item_from_row =  new SpreadSheetItemUtil();
+                        item_from_row =  new SpreadSheetItemUtil(_itemDAO, _itemDAO, _itemDAO, _itemDAO);
                         row_items.add( item_from_row);
                   	    item_from_row.setItemName(getValue(cell));
                   	    item_from_row.verifyItemName(row_items, errors, htmlErrors,j,  resPageMsg);

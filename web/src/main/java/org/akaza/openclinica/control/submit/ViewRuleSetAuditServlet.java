@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.control.SpringServletAccess;
@@ -26,7 +28,15 @@ import java.util.List;
 /**
  * @author Krikor Krumlian
  */
+@Component
 public class ViewRuleSetAuditServlet extends SecureController {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ViewRuleSetAuditServlet(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     private static String RULESET_ID = "ruleSetId";
     private static String RULESET = "ruleSet";
@@ -108,7 +118,7 @@ public class ViewRuleSetAuditServlet extends SecureController {
     }
 
     private UserAccountDAO getUserAccountDAO() {
-        return userAccountDAO = this.userAccountDAO != null ? userAccountDAO : new UserAccountDAO(sm.getDataSource());
+        return userAccountDAO = this.userAccountDAO != null ? userAccountDAO : this._userAccountDAO;
     }
 
 }

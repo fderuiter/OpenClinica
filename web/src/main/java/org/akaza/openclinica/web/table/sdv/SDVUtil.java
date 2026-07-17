@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.table.sdv;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import static org.jmesa.facade.TableFacadeFactory.createTableFacade;
 
 import java.io.IOException;
@@ -74,7 +76,31 @@ import org.springframework.validation.BindingResult;
 /**
  * A utility class that implements the details of the Source Data Verification (SDV) Jmesa tables.
  */
+@Component
 public class SDVUtil {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    @Autowired
+    public SDVUtil(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+    }
+
 
     private final static String VIEW_ICON_FORSUBJECT_PREFIX = "<a onmouseup=\"javascript:setImage('bt_View1','images/bt_View.gif');\" onmousedown=\"javascript:setImage('bt_View1','images/bt_View_d.gif');\" href=\"ViewStudySubject?id=";
     private final static String VIEW_ICON_FORSUBJECT_SUFFIX = "\"><img hspace=\"6\" border=\"0\" align=\"left\" title=\"View\" alt=\"View\" src=\"../images/bt_View.gif\" name=\"bt_View1\"/></a>";
@@ -158,7 +184,7 @@ public class SDVUtil {
 
     public int getTotalRowCountSubjects(FilterSet filterSet, int studyId, int studySubjectId) {
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
 
         if (filterSet.getFilters().size() == 0) {
             return eventCRFDAO.countEventCRFsByStudySubject(studySubjectId, studyId, studyId);
@@ -166,7 +192,7 @@ public class SDVUtil {
 
         int count = 0;
         // Filter for study subject label
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
         StudySubjectBean studySubjectBean = new StudySubjectBean();
         studySubjectBean = (StudySubjectBean) studySubjectDAO.findByPK(studySubjectId);
         String label = studySubjectBean.getLabel();
@@ -273,7 +299,7 @@ public class SDVUtil {
 
     public int getTotalRowCount(EventCRFSDVFilter eventCRFSDVFilter, Integer studyId) {
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
         return eventCRFDAO.getCountWithFilter(studyId, studyId, eventCRFSDVFilter);
 
     }
@@ -308,12 +334,12 @@ public class SDVUtil {
     private Collection<SubjectSDVContainer> getFilteredItems(EventCRFSDVFilter filterSet, EventCRFSDVSort sortSet, int rowStart, int rowEnd, int studyId,
             HttpServletRequest request) {
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
         /*
-         * StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+         * StudyEventDAO studyEventDAO = this._studyEventDAO;
          * 
-         * StudyDAO studyDAO = new StudyDAO(dataSource);
+         * StudyDAO studyDAO = this._studyDAO;
          * StudyBean studyBean = (StudyBean) studyDAO.findByPK(studyId);
          * 
          * String label = "";
@@ -391,8 +417,8 @@ public class SDVUtil {
     private Collection<SubjectSDVContainer> getFilteredItemsSubject(FilterSet filterSet, SortSet sortSet, int rowStart, int rowEnd, int studyId,
             int studySubjectId, HttpServletRequest request) {
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
 
         String label = "";
@@ -445,7 +471,7 @@ public class SDVUtil {
      * private int getTotalRowCount(FilterSet filterSet, int studyId) {
      * 
      * 
-     * EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+     * EventCRFDAO eventCRFDAO = this._eventCRFDAO;
      * 
      * if (filterSet.getFilters().size() == 0) {
      * return eventCRFDAO.countEventCRFsByStudy(studyId, studyId);
@@ -453,9 +479,9 @@ public class SDVUtil {
      * 
      * int count = 0;
      * //Filter for study subject label
-     * StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+     * StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
      * StudySubjectBean studySubjectBean = new StudySubjectBean();
-     * StudyDAO studyDAO = new StudyDAO(dataSource);
+     * StudyDAO studyDAO = this._studyDAO;
      * StudyBean studyBean = (StudyBean) studyDAO.findByPK(studyId);
      * String subjectValue = "";
      * String eventNameValue = "";
@@ -709,7 +735,7 @@ public class SDVUtil {
         tableFacade.setStateAttr("restore");
 
         /*
-         * StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+         * StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
          * StudySubjectBean subjectBean = (StudySubjectBean) studySubjectDAO.findByPK(studySubjectId);
          */
 
@@ -850,12 +876,12 @@ public class SDVUtil {
 
         getEventNamesForEventCRFs(eventCRFBeans);
 
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
-        SubjectDAO subjectDAO = new SubjectDAO(dataSource);
-        StudyDAO studyDAO = new StudyDAO(dataSource);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+        SubjectDAO subjectDAO = this._subjectDAO;
+        StudyDAO studyDAO = this._studyDAO;
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
 
-        EventDefinitionCRFDAO eventDefinitionCRFDAO = new EventDefinitionCRFDAO(dataSource);
+        EventDefinitionCRFDAO eventDefinitionCRFDAO = this._eventDefinitionCRFDAO;
 
         StudySubjectBean studySubjectBean = null;
         SubjectBean subjectBean = null;
@@ -923,7 +949,7 @@ public class SDVUtil {
             }
             // TODO: I18N Date must be formatted properly
             // Fix OC 1888
-            StudyEventDAO sedao = new StudyEventDAO(dataSource);
+            StudyEventDAO sedao = this._studyEventDAO;
             StudyEventBean seBean = (StudyEventBean) sedao.findByPK(crfBean.getStudyEventId());
             tempSDVBean.setEventDate(sdformat.format(seBean.getDateStarted()));
 
@@ -1137,8 +1163,8 @@ public class SDVUtil {
         if (eventCRFBeans == null || eventCRFBeans.isEmpty())
             return;
 
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(dataSource);
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
+        StudyEventDefinitionDAO studyEventDefinitionDAO = this._studyEventDefinitionDAO;
 
         StudyEventBean studyEventBean = null;
         StudyEventDefinitionBean studyEventDefBean = null;
@@ -1166,8 +1192,8 @@ public class SDVUtil {
     }
 
     public String getCRFName(int crfVersionId) {
-        CRFVersionDAO cRFVersionDAO = new CRFVersionDAO(dataSource);
-        CRFDAO cRFDAO = new CRFDAO(dataSource);
+        CRFVersionDAO cRFVersionDAO = this._cRFVersionDAO;
+        CRFDAO cRFDAO = this._cRFDAO;
 
         CRFVersionBean versionBean = (CRFVersionBean) cRFVersionDAO.findByPK(crfVersionId);
         if (versionBean != null) {
@@ -1181,7 +1207,7 @@ public class SDVUtil {
 
     public String getCRFVersionName(int crfVersionId) {
 
-        CRFVersionDAO cRFVersionDAO = new CRFVersionDAO(dataSource);
+        CRFVersionDAO cRFVersionDAO = this._cRFVersionDAO;
         CRFVersionBean versionBean = (CRFVersionBean) cRFVersionDAO.findByPK(crfVersionId);
         if (versionBean != null) {
             return versionBean.getName();
@@ -1196,7 +1222,7 @@ public class SDVUtil {
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
         List<EventCRFBean> studyEventCRFBeans = new ArrayList<EventCRFBean>();
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
 
         for (StudyEventBean studyEventBean : studyEventBeans) {
             eventCRFBeans = eventCRFDAO.findAllByStudyEvent(studyEventBean);
@@ -1211,7 +1237,7 @@ public class SDVUtil {
     public String renderSubjectsAggregateTable(int studyId, HttpServletRequest request) {
 
         List<StudySubjectBean> studySubjectBeans = new ArrayList<StudySubjectBean>();
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
         studySubjectBeans = studySubjectDAO.findAllByStudyId(studyId);
 
         Collection<SubjectSDVContainer> items = getSubjectAggregateRows(studySubjectBeans);
@@ -1249,11 +1275,11 @@ public class SDVUtil {
 
     public boolean setSDVStatusForStudySubjects(List<Integer> studySubjectIds, int userId, boolean setVerification) {
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
-        EventDefinitionCRFDAO eventDefinitionCrfDAO = new EventDefinitionCRFDAO(dataSource);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
-        CRFDAO crfDAO = new CRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+        EventDefinitionCRFDAO eventDefinitionCrfDAO = this._eventDefinitionCRFDAO;
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
+        CRFDAO crfDAO = this._cRFDAO;
 
         if (studySubjectIds == null || studySubjectIds.isEmpty()) {
             return true;
@@ -1295,7 +1321,7 @@ public class SDVUtil {
             return true;
         }
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
 
         for (Integer eventCrfId : eventCRFIds) {
             try {
@@ -1337,7 +1363,7 @@ public class SDVUtil {
         request.setAttribute("sdvRequirements", SourceDataVerification.values());
 
         // study event definitions
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(dataSource);
+        StudyEventDefinitionDAO studyEventDefinitionDAO = this._studyEventDefinitionDAO;
 
         List<StudyEventDefinitionBean> studyEventDefinitionBeans = new ArrayList<StudyEventDefinitionBean>();
 
@@ -1350,7 +1376,7 @@ public class SDVUtil {
         // event CRF status
         request.setAttribute("eventCRFDStatuses", SubjectEventStatus.toArrayList());
 
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
 
         List<StudyEventBean> studyEventBeans = studyEventDAO.findAllByStudy(studyBean);
         List<EventCRFBean> eventCRFBeans = getAllEventCRFs(studyEventBeans);
@@ -1379,8 +1405,8 @@ public class SDVUtil {
         SdvFilterDataBean filterBean = (SdvFilterDataBean) bindingResult.getTarget();
         StudySubjectBean studySubjectBean = null;
         StudyEventBean studyEventBean = null;
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
         boolean studySub = true, studyEventDef = true, studyEventStatus = true, eventCRFStatusBool = true, eventcrfSDVStatus = true, eventCRFNameBool = true,
                 upDatedDateBool = true, sdvRequirementBool = true;
 

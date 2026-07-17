@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
@@ -35,7 +37,25 @@ import java.util.Date;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class RestoreCRFServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private SectionDAO _sectionDAO;
+
+    @Autowired
+    public RestoreCRFServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDataDAO _itemDataDAO, SectionDAO _sectionDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._sectionDAO = _sectionDAO;
+    }
+
     /**
      *
      */
@@ -56,8 +76,8 @@ public class RestoreCRFServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFDAO cdao = this._cRFDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
         FormProcessor fp = new FormProcessor(request);
         // checks which module the requests are from
         String module = fp.getString(MODULE);
@@ -73,12 +93,12 @@ public class RestoreCRFServlet extends SecureController {
             CRFBean crf = (CRFBean) cdao.findByPK(crfId);
             ArrayList versions = cvdao.findAllByCRFId(crfId);
             crf.setVersions(versions);
-            EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+            EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
             ArrayList edcs = (ArrayList) edcdao.findAllByCRF(crfId);
 
-            SectionDAO secdao = new SectionDAO(sm.getDataSource());
+            SectionDAO secdao = this._sectionDAO;
 
-            EventCRFDAO evdao = new EventCRFDAO(sm.getDataSource());
+            EventCRFDAO evdao = this._eventCRFDAO;
             ArrayList eventCRFs = evdao.findAllByCRF(crfId);
             if ("confirm".equalsIgnoreCase(action)) {
                 request.setAttribute("crfToRestore", crf);
@@ -122,7 +142,7 @@ public class RestoreCRFServlet extends SecureController {
                     }
                 }
 
-                ItemDataDAO idao = new ItemDataDAO(sm.getDataSource());
+                ItemDataDAO idao = this._itemDataDAO;
                 for (int i = 0; i < eventCRFs.size(); i++) {
                     EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(i);
                     if (eventCRF.getStatus().equals(Status.AUTO_DELETED)) {

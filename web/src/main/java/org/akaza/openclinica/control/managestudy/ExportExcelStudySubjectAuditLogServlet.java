@@ -8,6 +8,8 @@
 
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.AuditBean;
 import org.akaza.openclinica.bean.admin.DeletedEventCRFBean;
 import org.akaza.openclinica.bean.core.Status;
@@ -55,7 +57,35 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 
 @SuppressWarnings("serial")
+@Component
 public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
+    private AuditDAO _auditDAO;
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    @Autowired
+    public ExportExcelStudySubjectAuditLogServlet(AuditDAO _auditDAO, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDataDAO _itemDataDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO) {
+        this._auditDAO = _auditDAO;
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+    }
+
 
     /**
      * Checks whether the user has the right permission to proceed function
@@ -90,17 +120,17 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
-        AuditDAO adao = new AuditDAO(sm.getDataSource());
+        StudySubjectDAO subdao = this._studySubjectDAO;
+        SubjectDAO sdao = this._subjectDAO;
+        AuditDAO adao = this._auditDAO;
 
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        StudyDAO studydao = new StudyDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        StudyEventDAO sedao = this._studyEventDAO;
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
+        EventCRFDAO ecdao = this._eventCRFDAO;
+        StudyDAO studydao = this._studyDAO;
+        CRFDAO cdao = this._cRFDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
         StudySubjectBean studySubject = null;
         SubjectBean subject = null;
 		ArrayList events = null;
@@ -195,7 +225,7 @@ public class ExportExcelStudySubjectAuditLogServlet extends SecureController {
                     logger.info("eventCRFAudits size [" + eventCRFAudits.size() + "] eventCRF id [" + eventCRF.getId() + "]");
                 }
             }
-            ItemDataDAO itemDataDao = new ItemDataDAO(sm.getDataSource());
+            ItemDataDAO itemDataDao = this._itemDataDAO;
             for (Object o :eventCRFAudits) {
                 AuditBean ab = (AuditBean)o;
                 if (ab.getAuditTable().equalsIgnoreCase("item_data")) {

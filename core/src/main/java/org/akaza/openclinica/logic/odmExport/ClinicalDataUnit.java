@@ -9,6 +9,8 @@
 
 package org.akaza.openclinica.logic.odmExport;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.HashMap;
 
 import javax.sql.DataSource;
@@ -25,11 +27,17 @@ import org.akaza.openclinica.dao.extract.OdmExtractDAO;
  * @author ywang (May, 2009)
  */
 
+@Component
 public class ClinicalDataUnit extends OdmUnit {
+    private OdmExtractDAO _odmExtractDAO;
+
     private OdmClinicalDataBean odmClinicalData;
     private String studySubjectIds;
 
-    public ClinicalDataUnit() {
+    @Autowired
+    public ClinicalDataUnit(OdmExtractDAO _odmExtractDAO) {
+        this._odmExtractDAO = _odmExtractDAO;
+
     }
 
     public ClinicalDataUnit(DataSource ds, StudyBean study, int category) {
@@ -57,7 +65,7 @@ public class ClinicalDataUnit extends OdmUnit {
         }
         odmClinicalData.setStudyOID(studyOID);
 
-        OdmExtractDAO oedao = new OdmExtractDAO(this.ds);
+        OdmExtractDAO oedao = this._odmExtractDAO;
         if (this.getCategory() == 1 && study.isSite(study.getParentStudyId())) {
             String mvoid = "";
             if (this.dataset != null) {

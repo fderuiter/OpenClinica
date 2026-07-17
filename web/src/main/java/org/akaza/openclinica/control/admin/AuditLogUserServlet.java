@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.control.form.FormProcessor;
@@ -28,7 +30,17 @@ import java.util.Locale;
  *
  *
  */
+@Component
 public class AuditLogUserServlet extends SecureController {
+    private AuditEventDAO _auditEventDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public AuditLogUserServlet(AuditEventDAO _auditEventDAO, UserAccountDAO _userAccountDAO) {
+        this._auditEventDAO = _auditEventDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     Locale locale;
     // < ResourceBundleresword,resexception;
@@ -56,7 +68,7 @@ public class AuditLogUserServlet extends SecureController {
         } else {
             session.setAttribute(ARG_USERID, new Integer(userId));
         }
-        AuditEventDAO aeDAO = new AuditEventDAO(sm.getDataSource());
+        AuditEventDAO aeDAO = this._auditEventDAO;
         ArrayList al = aeDAO.findAllByUserId(userId);
 
         EntityBeanTable table = fp.getEntityBeanTable();
@@ -86,7 +98,7 @@ public class AuditLogUserServlet extends SecureController {
         table.computeDisplay();
 
         request.setAttribute("table", table);
-        UserAccountDAO uadao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO uadao = this._userAccountDAO;
         UserAccountBean uabean = (UserAccountBean) uadao.findByPK(userId);
         request.setAttribute("auditUserBean", uabean);
         forwardPage(Page.AUDIT_LOG_USER);

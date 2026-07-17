@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.dao.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.AuditEventBean;
 import org.akaza.openclinica.bean.admin.TriggerBean;
 import org.akaza.openclinica.bean.core.EntityBean;
@@ -36,7 +38,12 @@ import javax.sql.DataSource;
  * 
  * 
  */
+@Component
 public class AuditEventDAO extends AuditableEntityDAO {
+    private StudyDAO _studyDAO;
+    private SubjectDAO _subjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
     private java.util.List<Integer> idCache = new java.util.ArrayList<Integer>();
     private java.util.List<AuditEventBean> batchBuffer = new java.util.ArrayList<AuditEventBean>();
     private boolean batchingEnabled = false;
@@ -93,8 +100,13 @@ public class AuditEventDAO extends AuditableEntityDAO {
 
     // private DAODigester digester;
 
-    public AuditEventDAO(DataSource ds) {
+    @Autowired
+    public AuditEventDAO(DataSource ds, StudyDAO _studyDAO, SubjectDAO _subjectDAO, UserAccountDAO _userAccountDAO) {
         super(ds);
+        this._studyDAO = _studyDAO;
+        this._subjectDAO = _subjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+
     }
 
     public AuditEventDAO(DataSource ds, DAODigester digester) {
@@ -191,19 +203,19 @@ public class AuditEventDAO extends AuditableEntityDAO {
 
     public AuditEventBean setStudyAndSubjectInfo(AuditEventBean aeb) {
         if (aeb.getStudyId() > 0) {
-            StudyDAO sdao = new StudyDAO(this.ds);
+            StudyDAO sdao = this._studyDAO;
             StudyBean sbean = (StudyBean) sdao.findByPK(aeb.getStudyId());
             aeb.setStudyName(sbean.getName());
         }
         if (aeb.getSubjectId() > 0) {
             SubjectBean subbean = new SubjectBean();
-            SubjectDAO subdao = new SubjectDAO(this.ds);
+            SubjectDAO subdao = this._subjectDAO;
             subbean = (SubjectBean) subdao.findByPK(aeb.getSubjectId());
             aeb.setSubjectName(subbean.getName());
         }
         if (aeb.getUserId() > 0) {
             UserAccountBean updater = new UserAccountBean();
-            UserAccountDAO uadao = new UserAccountDAO(this.ds);
+            UserAccountDAO uadao = this._userAccountDAO;
             updater = (UserAccountBean) uadao.findByPK(aeb.getUserId());
             aeb.setUpdater(updater);
         }
@@ -499,10 +511,10 @@ public class AuditEventDAO extends AuditableEntityDAO {
     // int studyId = ((Integer) hm.get("study_id")).intValue();
     // int subjectId = ((Integer) hm.get("subject_id")).intValue();
     // try {
-    // SubjectDAO sdao = new SubjectDAO(ds);
+    // SubjectDAO sdao = this._subjectDAO;
     // SubjectBean sbean = (SubjectBean)sdao.findByPK(subjectId);
     // aeb.setSubjectName(sbean.getName());
-    // StudyDAO stdao = new StudyDAO(ds);
+    // StudyDAO stdao = this._studyDAO;
     // StudyBean stbean = (StudyBean)stdao.findByPK(studyId);
     // aeb.setStudyName(stbean.getName());
     // } catch (RuntimeException e) {

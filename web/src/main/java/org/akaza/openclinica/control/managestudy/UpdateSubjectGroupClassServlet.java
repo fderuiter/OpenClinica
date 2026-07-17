@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.GroupClassType;
 import org.akaza.openclinica.bean.core.NumericComparisonOperator;
 import org.akaza.openclinica.bean.core.Role;
@@ -32,7 +34,17 @@ import java.util.Date;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class UpdateSubjectGroupClassServlet extends SecureController {
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+
+    @Autowired
+    public UpdateSubjectGroupClassServlet(StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO) {
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+    }
+
     @Override
     public void mayProceed() throws InsufficientPermissionException {
         checkStudyLocked(Page.SUBJECT_GROUP_CLASS_LIST_SERVLET, respage.getString("current_study_locked"));
@@ -58,8 +70,8 @@ public class UpdateSubjectGroupClassServlet extends SecureController {
             addPageMessage(respage.getString("please_choose_a_subject_group_class_to_edit"));
             forwardPage(Page.SUBJECT_GROUP_CLASS_LIST_SERVLET);
         } else {
-            StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
-            StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
+            StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
+            StudyGroupDAO sgdao = this._studyGroupDAO;
 
             if (!fp.isSubmitted()) {
                 StudyGroupClassBean sgcb = (StudyGroupClassBean) sgcdao.findByPK(classId);
@@ -158,7 +170,7 @@ public class UpdateSubjectGroupClassServlet extends SecureController {
         StudyGroupClassBean group = (StudyGroupClassBean) session.getAttribute("group");
         ArrayList studyGroups = (ArrayList) session.getAttribute("studyGroups");
         ArrayList newStudyGroups = (ArrayList) session.getAttribute("newStudyGroups");
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
+        StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
         group.setUpdater(ub);
         group.setUpdatedDate(new Date());
         group = (StudyGroupClassBean) sgcdao.update(group);
@@ -166,7 +178,7 @@ public class UpdateSubjectGroupClassServlet extends SecureController {
         if (!group.isActive()) {
             addPageMessage(respage.getString("the_subject_group_class_no_updated_database"));
         } else {
-            StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
+            StudyGroupDAO sgdao = this._studyGroupDAO;
             for (int i = 0; i < studyGroups.size(); i++) {
                 StudyGroupBean sg = (StudyGroupBean) studyGroups.get(i);
                 sg.setStudyGroupClassId(group.getId());

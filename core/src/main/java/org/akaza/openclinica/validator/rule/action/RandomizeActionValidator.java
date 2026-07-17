@@ -1,5 +1,7 @@
 package org.akaza.openclinica.validator.rule.action;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.NullValue;
 import org.akaza.openclinica.bean.core.ResponseType;
@@ -38,7 +40,14 @@ import java.util.ResourceBundle;
 
 import javax.sql.DataSource;
 
+@Component
 public class RandomizeActionValidator implements Validator {
+    private CRFDAO _cRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+
 
     ItemDAO itemDAO;
     ItemFormMetadataDAO itemFormMetadataDAO;
@@ -52,7 +61,14 @@ public class RandomizeActionValidator implements Validator {
     ResourceBundle respage;
 
 
-    public RandomizeActionValidator(DataSource dataSource) {
+    @Autowired
+    public RandomizeActionValidator(DataSource dataSource, CRFDAO _cRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+
         this.dataSource = dataSource;
     }
 
@@ -119,23 +135,23 @@ public class RandomizeActionValidator implements Validator {
 
 
     public ItemDAO getItemDAO() {
-        return this.itemDAO != null ? itemDAO : new ItemDAO(dataSource);
+        return this.itemDAO != null ? itemDAO : this._itemDAO;
     }
 
     public StudyEventDefinitionDAO getStudyEventDefinitionDAO() {
-        return this.studyEventDefinitionDAO != null ? studyEventDefinitionDAO : new StudyEventDefinitionDAO(dataSource);
+        return this.studyEventDefinitionDAO != null ? studyEventDefinitionDAO : this._studyEventDefinitionDAO;
     }
 
     public CRFDAO getCrfDAO() {
-        return this.crfDAO != null ? crfDAO : new CRFDAO(dataSource);
+        return this.crfDAO != null ? crfDAO : this._cRFDAO;
     }
 
     public EventDefinitionCRFDAO getEventDefinitionCRFDAO() {
-        return this.eventDefinitionCRFDAO != null ? eventDefinitionCRFDAO : new EventDefinitionCRFDAO(dataSource);
+        return this.eventDefinitionCRFDAO != null ? eventDefinitionCRFDAO : this._eventDefinitionCRFDAO;
     }
 
     public ItemFormMetadataDAO getItemFormMetadataDAO() {
-        return this.itemFormMetadataDAO != null ? itemFormMetadataDAO : new ItemFormMetadataDAO(dataSource);
+        return this.itemFormMetadataDAO != null ? itemFormMetadataDAO : this._itemFormMetadataDAO;
     }
 
     public EventDefinitionCRFBean getEventDefinitionCRFBean() {

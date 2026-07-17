@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.login;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -37,7 +39,17 @@ import org.apache.commons.lang.StringUtils;
  *
  * Servlet for processing 'update profile' request from user
  */
+@Component
 public class UpdateProfileServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public UpdateProfileServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     /**
 	 * 
@@ -53,8 +65,8 @@ public class UpdateProfileServlet extends SecureController {
     public void processRequest() throws Exception {
 
         String action = request.getParameter("action");// action sent by user
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
+        UserAccountDAO udao = this._userAccountDAO;
         UserAccountBean userBean1 = (UserAccountBean) udao.findByUserName(ub.getName());
 
         Collection studies = sdao.findAllByUser(ub.getName());
@@ -137,7 +149,7 @@ public class UpdateProfileServlet extends SecureController {
         userBean1.setPasswdChallengeAnswer(fp.getString("passwdChallengeAnswer"));
         userBean1.setPhone(fp.getString("phone"));
         userBean1.setActiveStudyId(fp.getInt("activeStudyId"));
-        StudyDAO sdao = new StudyDAO(this.sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
 
         StudyBean newActiveStudy = (StudyBean) sdao.findByPK(userBean1.getActiveStudyId());
         request.setAttribute("newActiveStudy", newActiveStudy);

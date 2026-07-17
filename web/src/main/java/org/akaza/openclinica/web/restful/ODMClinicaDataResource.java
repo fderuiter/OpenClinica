@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.restful;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -38,6 +40,15 @@ import java.util.LinkedHashMap;
 @Component
 @Scope("prototype")
 public class ODMClinicaDataResource {
+    private StudyDAO _studyDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public ODMClinicaDataResource(StudyDAO _studyDAO, StudySubjectDAO _studySubjectDAO) {
+        this._studyDAO = _studyDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ODMClinicaDataResource.class);
 
 	private ClinicalDataCollectorResource clinicalDataCollectorResource;
@@ -206,11 +217,11 @@ public class ODMClinicaDataResource {
 	}
 
 	private String getStudySubjectOID(String subjectIdentifier, String studyOID) {
-		StudySubjectDAO studySubjectDAO = new StudySubjectDAO(getDataSource());
+		StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
 		StudySubjectBean studySubject = studySubjectDAO.findByOid(subjectIdentifier);
 		if (subjectIdentifier.equals("*") || (studySubject != null  && studySubject.getOid() != null)) return subjectIdentifier;
 		else {
-			StudyDAO studyDAO = new StudyDAO(getDataSource());
+			StudyDAO studyDAO = this._studyDAO;
 			StudyBean study = studyDAO.findByOid(studyOID);
 			studySubject = studySubjectDAO.findByLabelAndStudy(subjectIdentifier,study);
 			if (studySubject != null && studySubject.getOid() != null) return studySubject.getOid();

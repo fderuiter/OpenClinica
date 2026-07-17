@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.SubjectEventStatus;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -51,7 +53,33 @@ import javax.sql.DataSource;
 /**
  * @author jxu
  */
+@Component
 public abstract class ListStudySubjectServlet extends SecureController {
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+
+    @Autowired
+    public ListStudySubjectServlet(EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, StudyParameterValueDAO _studyParameterValueDAO, StudySubjectDAO _studySubjectDAO, SubjectGroupMapDAO _subjectGroupMapDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+    }
+
 
     // Shaoyu Su
     Locale locale;
@@ -110,14 +138,14 @@ public abstract class ListStudySubjectServlet extends SecureController {
 
         request.setAttribute(PAGINATING_QUERY, paginatingQuery.toString());
 
-        StudyDAO stdao = new StudyDAO(sm.getDataSource());
-        StudySubjectDAO sdao = new StudySubjectDAO(sm.getDataSource());
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-        SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
-        StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudyDAO stdao = this._studyDAO;
+        StudySubjectDAO sdao = this._studySubjectDAO;
+        StudyEventDAO sedao = this._studyEventDAO;
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
+        SubjectGroupMapDAO sgmdao = this._subjectGroupMapDAO;
+        StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
+        StudyGroupDAO sgdao = this._studyGroupDAO;
+        StudySubjectDAO ssdao = this._studySubjectDAO;
 
         // YW << update study parameters of current study.
         // "collectDob" and "genderRequired" are set as the same as the parent
@@ -138,7 +166,7 @@ public abstract class ListStudySubjectServlet extends SecureController {
             studyGroupClasses = sgcdao.findAllActiveByStudy(currentStudy);
             allDefs = seddao.findAllActiveByStudy(currentStudy);
         }
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean parentSPV = spvdao.findByHandleAndStudy(parentStudyId, "collectDob");
         currentStudy.getStudyParameterConfig().setCollectDob(parentSPV.getValue());
         parentSPV = spvdao.findByHandleAndStudy(parentStudyId, "genderRequired");
@@ -382,8 +410,8 @@ public abstract class ListStudySubjectServlet extends SecureController {
         if (studyEvent == null)
             return false;
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(sm.getDataSource());
-        EventDefinitionCRFDAO eventDefinitionDAO = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
+        EventDefinitionCRFDAO eventDefinitionDAO = this._eventDefinitionCRFDAO;
         List<EventCRFBean> crfBeans = new ArrayList<EventCRFBean>();
 
         crfBeans.addAll(eventCRFDAO.findAllByStudyEvent(studyEvent));
@@ -405,10 +433,10 @@ public abstract class ListStudySubjectServlet extends SecureController {
 
     public static DisplayStudyEventBean getDisplayStudyEventsForStudySubject(StudySubjectBean studySub, StudyEventBean event, DataSource ds,
             UserAccountBean ub, StudyUserRoleBean currentRole, StudyBean study) {
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(ds);
-        StudyEventDAO sedao = new StudyEventDAO(ds);
-        EventCRFDAO ecdao = new EventCRFDAO(ds);
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(ds);
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
+        StudyEventDAO sedao = this._studyEventDAO;
+        EventCRFDAO ecdao = this._eventCRFDAO;
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
 
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(event.getStudyEventDefinitionId());
         event.setStudyEventDefinition(sed);

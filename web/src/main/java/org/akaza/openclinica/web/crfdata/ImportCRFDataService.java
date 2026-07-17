@@ -1,4 +1,6 @@
 package org.akaza.openclinica.web.crfdata;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.logic.importdata.ImportHelper;
 
 import java.math.BigDecimal;
@@ -67,7 +69,21 @@ import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class ImportCRFDataService {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private ItemGroupDAO _itemGroupDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
@@ -77,7 +93,21 @@ public class ImportCRFDataService {
 
     public static ResourceBundle respage;
 
-    public ImportCRFDataService(DataSource ds, Locale locale) {
+    @Autowired
+    public ImportCRFDataService(DataSource ds, Locale locale, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, ItemFormMetadataDAO _itemFormMetadataDAO, ItemGroupDAO _itemGroupDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+
         ResourceBundleProvider.updateLocale(locale);
         respage = ResourceBundleProvider.getPageMessagesBundle(locale);
         this.ds = ds;
@@ -97,11 +127,11 @@ public class ImportCRFDataService {
                 try {
                     ArrayList<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
                     ArrayList<Integer> eventCRFBeanIds = new ArrayList<Integer>();
-                    EventCRFDAO eventCrfDAO = new EventCRFDAO(ds);
-                    StudySubjectDAO studySubjectDAO = new StudySubjectDAO(ds);
-                    StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(ds);
-                    StudyDAO studyDAO = new StudyDAO(ds);
-                    StudyEventDAO studyEventDAO = new StudyEventDAO(ds);
+                    EventCRFDAO eventCrfDAO = this._eventCRFDAO;
+                    StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+                    StudyEventDefinitionDAO studyEventDefinitionDAO = this._studyEventDefinitionDAO;
+                    StudyDAO studyDAO = this._studyDAO;
+                    StudyEventDAO studyEventDAO = this._studyEventDAO;
                     UpsertOnBean upsert = odmContainer.getCrfDataPostImportContainer().getUpsertOn();
                     final UpsertOnBean finalUpsert = upsert == null ? new UpsertOnBean() : upsert;
                     String studyOID = odmContainer.getCrfDataPostImportContainer().getStudyOID();
@@ -164,7 +194,7 @@ public void process(SubjectDataBean subjectDataBean) {
                             }
                             for (FormDataBean formDataBean : formDataBeans) {
 
-                                CRFVersionDAO crfVersionDAO = new CRFVersionDAO(ds);
+                                CRFVersionDAO crfVersionDAO = this._cRFVersionDAO;
 
                                 ArrayList<CRFVersionBean> crfVersionBeans = crfVersionDAO.findAllByOid(formDataBean.getFormOID());
                                 for (CRFVersionBean crfVersionBean : crfVersionBeans) {
@@ -261,11 +291,11 @@ if ("NULL".equals(_stop_666854)) return null;
     public boolean eventCRFStatusesValid(ODMContainer odmContainer, UserAccountBean ub) {
         ArrayList<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
         ArrayList<Integer> eventCRFBeanIds = new ArrayList<Integer>();
-        EventCRFDAO eventCrfDAO = new EventCRFDAO(ds);
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(ds);
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(ds);
-        StudyDAO studyDAO = new StudyDAO(ds);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(ds);
+        EventCRFDAO eventCrfDAO = this._eventCRFDAO;
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+        StudyEventDefinitionDAO studyEventDefinitionDAO = this._studyEventDefinitionDAO;
+        StudyDAO studyDAO = this._studyDAO;
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
         UpsertOnBean upsert = odmContainer.getCrfDataPostImportContainer().getUpsertOn();
         final UpsertOnBean finalUpsert = upsert == null ? new UpsertOnBean() : upsert;
         String studyOID = odmContainer.getCrfDataPostImportContainer().getStudyOID();
@@ -297,7 +327,7 @@ public void process(SubjectDataBean subjectDataBean) {
                 }
                 for (FormDataBean formDataBean : formDataBeans) {
 
-                    CRFVersionDAO crfVersionDAO = new CRFVersionDAO(ds);
+                    CRFVersionDAO crfVersionDAO = this._cRFVersionDAO;
 
                     ArrayList<CRFVersionBean> crfVersionBeans = crfVersionDAO.findAllByOid(formDataBean.getFormOID());
                     for (CRFVersionBean crfVersionBean : crfVersionBeans) {
@@ -342,11 +372,11 @@ if (_stop_c94890 != null) return (Boolean)_stop_c94890;
      */
     public HashMap<Integer, String> fetchEventCRFStatuses(ODMContainer odmContainer) {
         HashMap<Integer, String> eventCRFStatuses = new HashMap<Integer, String>();
-        EventCRFDAO eventCrfDAO = new EventCRFDAO(ds);
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(ds);
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(ds);
-        StudyDAO studyDAO = new StudyDAO(ds);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(ds);
+        EventCRFDAO eventCrfDAO = this._eventCRFDAO;
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+        StudyEventDefinitionDAO studyEventDefinitionDAO = this._studyEventDefinitionDAO;
+        StudyDAO studyDAO = this._studyDAO;
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
 
         String studyOID = odmContainer.getCrfDataPostImportContainer().getStudyOID();
         StudyBean studyBean = studyDAO.findByOid(studyOID);
@@ -371,7 +401,7 @@ public void process(SubjectDataBean subjectDataBean) {
 
                 for (FormDataBean formDataBean : formDataBeans) {
 
-                    CRFVersionDAO crfVersionDAO = new CRFVersionDAO(ds);
+                    CRFVersionDAO crfVersionDAO = this._cRFVersionDAO;
 
                     ArrayList<CRFVersionBean> crfVersionBeans = crfVersionDAO.findAllByOid(formDataBean.getFormOID());
                     for (CRFVersionBean crfVersionBean : crfVersionBeans) {
@@ -439,11 +469,11 @@ public void process(SubjectDataBean subjectDataBean) {
         // create a second Validator, this one for hard edit checks
         HashMap<String, String> hardValidator = new HashMap<String, String>();
 
-        StudyEventDAO studyEventDAO = new StudyEventDAO(ds);
-        StudyDAO studyDAO = new StudyDAO(ds);
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
+        StudyDAO studyDAO = this._studyDAO;
         StudyBean studyBean = studyDAO.findByOid(odmContainer.getCrfDataPostImportContainer().getStudyOID());
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(ds);
-        StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(ds);
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+        StudyEventDefinitionDAO sedDao = this._studyEventDefinitionDAO;
         HashMap<String, ItemDataBean> blankCheck = new HashMap<String, ItemDataBean>();
         String[] hardValidatorErrorMsgs = {""};
 
@@ -483,8 +513,8 @@ public void process(SubjectDataBean subjectDataBean) {
                 for (FormDataBean formDataBean : formDataBeans) {
                     Map<String,Integer> groupMaxOrdinals = new HashMap<String,Integer>();
                     displayItemBeanWrapper[0] = null;
-                    CRFVersionDAO crfVersionDAO = new CRFVersionDAO(ds);
-                    EventCRFDAO eventCRFDAO = new EventCRFDAO(ds);
+                    CRFVersionDAO crfVersionDAO = this._cRFVersionDAO;
+                    EventCRFDAO eventCRFDAO = this._eventCRFDAO;
                     ArrayList<CRFVersionBean> crfVersionBeans = crfVersionDAO.findAllByOid(formDataBean.getFormOID());
                     ArrayList<ImportItemGroupDataBean> itemGroupDataBeans = formDataBean.getItemGroupData();
 
@@ -518,7 +548,7 @@ public void process(SubjectDataBean subjectDataBean) {
 
                     }
                     
-                    EventDefinitionCRFDAO eventDefinitionCRFDAO = new EventDefinitionCRFDAO(ds);
+                    EventDefinitionCRFDAO eventDefinitionCRFDAO = this._eventDefinitionCRFDAO;
                     EventDefinitionCRFBean eventDefinitionCRF = eventDefinitionCRFDAO.findByStudyEventIdAndCRFVersionId(studyBean, studyEvent.getId(),
                             crfVersion.getId());
                     if (eventCRFBean != null) {
@@ -537,7 +567,7 @@ public void process(SubjectDataBean subjectDataBean) {
                                 ArrayList<ImportItemDataBean> itemDataBeans = itemGroupDataBean.getItemData();
                                 logger.debug("iterating through group beans: " + itemGroupDataBean.getItemGroupOID());
                                 // put a checker in here
-                                ItemGroupDAO itemGroupDAO = new ItemGroupDAO(ds);
+                                ItemGroupDAO itemGroupDAO = this._itemGroupDAO;
                                 ItemGroupBean testBean = itemGroupDAO.findByOid(itemGroupDataBean.getItemGroupOID());
                                 if (testBean == null) {
                                     // TODO i18n of message
@@ -553,8 +583,8 @@ public void process(SubjectDataBean subjectDataBean) {
 
                                 for (ImportItemDataBean importItemDataBean : itemDataBeans) {
                                     logger.debug("   iterating through item data beans: " + importItemDataBean.getItemOID());
-                                    ItemDAO itemDAO = new ItemDAO(ds);
-                                    ItemFormMetadataDAO itemFormMetadataDAO = new ItemFormMetadataDAO(ds);
+                                    ItemDAO itemDAO = this._itemDAO;
+                                    ItemFormMetadataDAO itemFormMetadataDAO = this._itemFormMetadataDAO;
 
                                     List<ItemBean> itemBeans = itemDAO.findByOid(importItemDataBean.getItemOID());
                                     if (!itemBeans.isEmpty()) {
@@ -682,7 +712,7 @@ public void process(SubjectDataBean subjectDataBean) {
 
                         }// matches if on permittedCRFIDs
 
-                        CRFDAO crfDAO = new CRFDAO(ds);
+                        CRFDAO crfDAO = this._cRFDAO;
                         CRFBean crfBean = crfDAO.findByVersionId(crfVersion.getCrfId());
                         // seems like an extravagance, but is not contained in crf
                         // version or event crf bean
@@ -1023,7 +1053,7 @@ public void process(SubjectDataBean subjectDataBean) {
 
         // throw new RuntimeException(new OpenClinicaException(mf.format(arguments), ""));
         try {
-            StudyDAO studyDAO = new StudyDAO(ds);
+            StudyDAO studyDAO = this._studyDAO;
             String studyOid = odmContainer.getCrfDataPostImportContainer().getStudyOID();
             StudyBean studyBean = studyDAO.findByOid(studyOid);
             if (studyBean == null) {
@@ -1054,11 +1084,11 @@ public void process(SubjectDataBean subjectDataBean) {
             }
             ArrayList<SubjectDataBean> subjectDataBeans = odmContainer.getCrfDataPostImportContainer().getSubjectData();
 
-            StudySubjectDAO studySubjectDAO = new StudySubjectDAO(ds);
-            StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(ds);
-            CRFVersionDAO crfVersionDAO = new CRFVersionDAO(ds);
-            ItemGroupDAO itemGroupDAO = new ItemGroupDAO(ds);
-            ItemDAO itemDAO = new ItemDAO(ds);
+            StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+            StudyEventDefinitionDAO studyEventDefinitionDAO = this._studyEventDefinitionDAO;
+            CRFVersionDAO crfVersionDAO = this._cRFVersionDAO;
+            ItemGroupDAO itemGroupDAO = this._itemGroupDAO;
+            ItemDAO itemDAO = this._itemDAO;
 
             if (subjectDataBeans != null) {// need to do this so as not to
                 // throw the exception below and
@@ -1238,7 +1268,7 @@ public void process(SubjectDataBean subjectDataBean) {
     }
 
     private ItemDataDAO getItemDataDao() {
-        itemDataDao = this.itemDataDao != null ? itemDataDao : new ItemDataDAO(ds);
+        itemDataDao = this.itemDataDao != null ? itemDataDao : this._itemDataDAO;
         return itemDataDao;
     }
 

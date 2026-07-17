@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +43,27 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
 /**
  * @author jxu Processes request to update a study subject
  */
+@Component
 public class UpdateStudySubjectServlet extends SecureController {
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private StudyDAO _studyDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+
+    @Autowired
+    public UpdateStudySubjectServlet(DiscrepancyNoteDAO _discrepancyNoteDAO, StudyDAO _studyDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, SubjectGroupMapDAO _subjectGroupMapDAO) {
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._studyDAO = _studyDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+    }
+
     /**
      * Checks whether the user has the right permission to proceed function
      */
@@ -64,8 +86,8 @@ public class UpdateStudySubjectServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
         FormDiscrepancyNotes discNotes = null;
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = this._subjectDAO;
+        StudySubjectDAO subdao = this._studySubjectDAO;
         FormProcessor fp = new FormProcessor(request);
 
         String fromResolvingNotes = fp.getString("fromResolvingNotes",true);
@@ -91,9 +113,9 @@ public class UpdateStudySubjectServlet extends SecureController {
 
             StudySubjectBean sub = (StudySubjectBean) subdao.findByPK(studySubId);
 
-            StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
-            StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
-            SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
+            StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
+            StudyGroupDAO sgdao = this._studyGroupDAO;
+            SubjectGroupMapDAO sgmdao = this._subjectGroupMapDAO;
             ArrayList groupMaps = (ArrayList) sgmdao.findAllByStudySubject(studySubId);
 
             HashMap gMaps = new HashMap();
@@ -103,7 +125,7 @@ public class UpdateStudySubjectServlet extends SecureController {
 
             }
 
-            StudyDAO stdao = new StudyDAO(sm.getDataSource());
+            StudyDAO stdao = this._studyDAO;
             ArrayList classes = new ArrayList();
             if (!"submit".equalsIgnoreCase(action)) {
                 // YW <<
@@ -151,7 +173,7 @@ public class UpdateStudySubjectServlet extends SecureController {
 
                 // save discrepancy notes into DB
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = this._discrepancyNoteDAO;
                 AddNewSubjectServlet.saveFieldNotes("enrollmentDate", fdn, dndao, subject.getId(), "studySub", currentStudy);
 
                 ArrayList groups = (ArrayList) session.getAttribute("groups");
@@ -234,7 +256,7 @@ public class UpdateStudySubjectServlet extends SecureController {
             errors = v.validate();
 
             if (!StringUtil.isBlank(fp.getString("label"))) {
-                StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+                StudySubjectDAO ssdao = this._studySubjectDAO;
 
                 StudySubjectBean sub1 = (StudySubjectBean) ssdao.findAnotherBySameLabel(fp.getString("label").trim(), currentStudy.getId(), sub.getId());
 
@@ -298,7 +320,7 @@ public class UpdateStudySubjectServlet extends SecureController {
                     + respage.getString("you_may_enter_study_subject_ID_listed")
                     + respage.getString("study_subject_ID_should_not_contain_protected_information"));
             } else {
-                StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
+                StudySubjectDAO subdao = this._studySubjectDAO;
                 StudySubjectBean sub1 = (StudySubjectBean) subdao.findAnotherBySameLabel(sub.getLabel(), sub.getStudyId(), sub.getId());
                 if (sub1.getId() > 0) {
                     addPageMessage(resexception.getString("subject_ID_used_by_another_choose_unique"));

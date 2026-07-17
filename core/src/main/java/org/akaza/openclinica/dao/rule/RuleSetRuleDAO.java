@@ -8,6 +8,9 @@
 
 package org.akaza.openclinica.dao.rule;
 
+import org.akaza.openclinica.dao.rule.RuleSetDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -36,7 +39,12 @@ import javax.sql.DataSource;
  * @author Krikor Krumlian
  * 
  */
+@Component
 public class RuleSetRuleDAO extends AuditableEntityDAO {
+    private RuleDAO _ruleDAO;
+    private RuleSetDAO _ruleSetDAO;
+    private RuleSetRuleAuditDAO _ruleSetRuleAuditDAO;
+
 
     private RuleDAO ruleDao;
     private RuleSetDAO ruleSetDao;
@@ -47,17 +55,22 @@ public class RuleSetRuleDAO extends AuditableEntityDAO {
         this.getCurrentPKName = "getCurrentPK";
     }
 
-    public RuleSetRuleDAO(DataSource ds) {
+    @Autowired
+    public RuleSetRuleDAO(DataSource ds, RuleDAO _ruleDAO, RuleSetDAO _ruleSetDAO, RuleSetRuleAuditDAO _ruleSetRuleAuditDAO) {
         super(ds);
+        this._ruleDAO = _ruleDAO;
+        this._ruleSetDAO = _ruleSetDAO;
+        this._ruleSetRuleAuditDAO = _ruleSetRuleAuditDAO;
+
         setQueryNames();
     }
 
     private RuleDAO getRuleDao() {
-        return this.ruleDao != null ? this.ruleDao : new RuleDAO(ds);
+        return this.ruleDao != null ? this.ruleDao : this._ruleDAO;
     }
 
     private RuleSetDAO getRuleSetDao() {
-        return this.ruleSetDao != null ? this.ruleSetDao : new RuleSetDAO(ds);
+        return this.ruleSetDao != null ? this.ruleSetDao : this._ruleSetDAO;
     }
 
     public RuleSetRuleDAO(DataSource ds, DAODigester digester) {
@@ -67,7 +80,7 @@ public class RuleSetRuleDAO extends AuditableEntityDAO {
     }
 
     private RuleSetRuleAuditDAO getRuleSetRuleAuditDao() {
-        return this.ruleSetRuleAuditDao != null ? this.ruleSetRuleAuditDao : new RuleSetRuleAuditDAO(ds);
+        return this.ruleSetRuleAuditDao != null ? this.ruleSetRuleAuditDao : this._ruleSetRuleAuditDAO;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.control.SpringServletAccess;
 import org.akaza.openclinica.control.core.SecureController;
@@ -29,7 +31,17 @@ import java.util.HashMap;
  * @author thickerson Purpose: to create jobs in the 'importTrigger' group,
  *         which will be meant to run the ImportStatefulJob.
  */
+@Component
 public class CreateJobImportServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public CreateJobImportServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     private static String SCHEDULER = "schedulerFactoryBean";
     private static String IMPORT_TRIGGER = "importTrigger";
@@ -81,8 +93,8 @@ public class CreateJobImportServlet extends SecureController {
         // find all the form items and re-populate them if necessary
         FormProcessor fp2 = new FormProcessor(request);
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
+        StudyDAO sdao = this._studyDAO;
 
         // ArrayList studies = udao.findStudyByUser(ub.getName(), (ArrayList)
         // sdao.findAll());
@@ -141,7 +153,7 @@ public class CreateJobImportServlet extends SecureController {
             } else {
                 logger.info("found no validation errors, continuing");
                 int studyId = fp.getInt(STUDY_ID);
-                StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+                StudyDAO studyDAO = this._studyDAO;
                 StudyBean studyBean = (StudyBean) studyDAO.findByPK(studyId);
                 org.quartz.impl.triggers.SimpleTriggerImpl trigger = (org.quartz.impl.triggers.SimpleTriggerImpl) triggerService.generateImportTrigger(fp, sm.getUserBean(), studyBean, LocaleResolver.getLocale(request).getLanguage());
 

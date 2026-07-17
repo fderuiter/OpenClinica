@@ -1,5 +1,8 @@
 package org.akaza.openclinica.job;
 
+import org.akaza.openclinica.dao.managestudy.StudyDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
 import org.quartz.StatefulJob;
@@ -7,14 +10,20 @@ import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class XsltStatefulJob extends XsltTransformJob implements StatefulJob, InterruptableJob {
+    private StudyDAO _studyDAO;
+
 
     private static final Logger LOG = LoggerFactory.getLogger(XsltStatefulJob.class);
 
     protected JobTerminationMonitor jobTerminationMonitor;
 
-    public XsltStatefulJob() {
-        super();
+    @Autowired
+    public XsltStatefulJob(StudyDAO _studyDAO) {
+        super(_studyDAO, _studyDAO);
+        this._studyDAO = _studyDAO;
+
     }
 
     @Override

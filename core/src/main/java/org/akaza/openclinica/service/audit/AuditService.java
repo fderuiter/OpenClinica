@@ -1,5 +1,7 @@
 package org.akaza.openclinica.service.audit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.AuditEventBean;
 import org.akaza.openclinica.bean.managestudy.DiscrepancyNoteBean;
 import org.akaza.openclinica.dao.admin.AuditEventDAO;
@@ -7,11 +9,17 @@ import org.akaza.openclinica.dao.admin.AuditEventDAO;
 import javax.sql.DataSource;
 import java.util.Date;
 
+@Component
 public class AuditService {
+    private AuditEventDAO _auditEventDAO;
+
     private AuditEventDAO auditEventDAO;
 
-    public AuditService(DataSource dataSource) {
-        this.auditEventDAO = new AuditEventDAO(dataSource);
+    @Autowired
+    public AuditService(DataSource dataSource, AuditEventDAO _auditEventDAO) {
+        this._auditEventDAO = _auditEventDAO;
+
+        this.auditEventDAO = this._auditEventDAO;
     }
     
     public AuditService(AuditEventDAO auditEventDAO) {

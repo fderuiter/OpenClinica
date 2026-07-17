@@ -1,5 +1,7 @@
 package org.akaza.openclinica.logic.rulerunner;
 
+import org.springframework.stereotype.Component;
+import org.akaza.openclinica.dao.submit.SubjectDAO;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.managestudy.StudyEventBean;
@@ -43,7 +45,21 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+@Component
 public class RuleRunner {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private RuleActionDAO _ruleActionDAO;
+    private RuleSetDAO _ruleSetDAO;
+    private RuleSetRuleDAO _ruleSetRuleDAO;
+    private SectionDAO _sectionDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private RuleSetDAO ruleSetDao;
@@ -73,7 +89,21 @@ public class RuleRunner {
     };
 
 
-    public RuleRunner(DataSource ds, String requestURLMinusServletPath, String contextPath, JavaMailSenderImpl mailSender) {
+    @Autowired
+    public RuleRunner(DataSource ds, String requestURLMinusServletPath, String contextPath, JavaMailSenderImpl mailSender, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, ItemFormMetadataDAO _itemFormMetadataDAO, RuleActionDAO _ruleActionDAO, RuleSetDAO _ruleSetDAO, RuleSetRuleDAO _ruleSetRuleDAO, SectionDAO _sectionDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._ruleActionDAO = _ruleActionDAO;
+        this._ruleSetDAO = _ruleSetDAO;
+        this._ruleSetRuleDAO = _ruleSetRuleDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+
         this.ds = ds;
         this.requestURLMinusServletPath = requestURLMinusServletPath;
         this.contextPath = contextPath;
@@ -186,68 +216,71 @@ public class RuleRunner {
         }
     }
 
+    public void setExpressionService(ExpressionService expressionService) {
+        this.expressionService = expressionService;
+    }
+
     ExpressionService getExpressionService() {
-        expressionService = this.expressionService != null ? expressionService : new ExpressionService(ds);
         return expressionService;
     }
 
     RuleSetDAO getRuleSetDao() {
-        ruleSetDao = this.ruleSetDao != null ? ruleSetDao : new RuleSetDAO(ds);
+        ruleSetDao = this.ruleSetDao != null ? ruleSetDao : this._ruleSetDAO;
         return ruleSetDao;
     }
 
     CRFDAO getCrfDao() {
-        crfDao = this.crfDao != null ? crfDao : new CRFDAO(ds);
+        crfDao = this.crfDao != null ? crfDao : this._cRFDAO;
         return crfDao;
     }
 
     RuleSetRuleDAO getRuleSetRuleDao() {
-        ruleSetRuleDao = this.ruleSetRuleDao != null ? ruleSetRuleDao : new RuleSetRuleDAO(ds);
+        ruleSetRuleDao = this.ruleSetRuleDao != null ? ruleSetRuleDao : this._ruleSetRuleDAO;
         return ruleSetRuleDao;
     }
 
     RuleActionDAO getRuleActionDao() {
-        ruleActionDao = this.ruleActionDao != null ? ruleActionDao : new RuleActionDAO(ds);
+        ruleActionDao = this.ruleActionDao != null ? ruleActionDao : this._ruleActionDAO;
         return ruleActionDao;
     }
 
     StudyEventDAO getStudyEventDao() {
-        studyEventDao = this.studyEventDao != null ? studyEventDao : new StudyEventDAO(ds);
+        studyEventDao = this.studyEventDao != null ? studyEventDao : this._studyEventDAO;
         return studyEventDao;
     }
 
     ItemDataDAO getItemDataDao() {
-        itemDataDao = this.itemDataDao != null ? itemDataDao : new ItemDataDAO(ds);
+        itemDataDao = this.itemDataDao != null ? itemDataDao : this._itemDataDAO;
         return itemDataDao;
     }
 
     EventCRFDAO getEventCrfDao() {
-        eventCrfDao = this.eventCrfDao != null ? eventCrfDao : new EventCRFDAO(ds);
+        eventCrfDao = this.eventCrfDao != null ? eventCrfDao : this._eventCRFDAO;
         return eventCrfDao;
     }
 
     CRFVersionDAO getCrfVersionDao() {
-        crfVersionDao = this.crfVersionDao != null ? crfVersionDao : new CRFVersionDAO(ds);
+        crfVersionDao = this.crfVersionDao != null ? crfVersionDao : this._cRFVersionDAO;
         return crfVersionDao;
     }
 
     StudySubjectDAO getStudySubjectDao() {
-        studySubjectDao = this.studySubjectDao != null ? studySubjectDao : new StudySubjectDAO(ds);
+        studySubjectDao = this.studySubjectDao != null ? studySubjectDao : this._studySubjectDAO;
         return studySubjectDao;
     }
 
     ItemFormMetadataDAO getItemFormMetadataDAO() {
-        itemFormMetadataDao = this.itemFormMetadataDao != null ? itemFormMetadataDao : new ItemFormMetadataDAO(ds);
+        itemFormMetadataDao = this.itemFormMetadataDao != null ? itemFormMetadataDao : this._itemFormMetadataDAO;
         return itemFormMetadataDao;
     }
 
     SectionDAO getSectionDAO() {
-        sectionDao = this.sectionDao != null ? sectionDao : new SectionDAO(ds);
+        sectionDao = this.sectionDao != null ? sectionDao : this._sectionDAO;
         return sectionDao;
     }
 
     StudyDAO getStudyDao() {
-        studyDao = this.studyDao != null ? studyDao : new StudyDAO(ds);
+        studyDao = this.studyDao != null ? studyDao : this._studyDAO;
         return studyDao;
     }
 

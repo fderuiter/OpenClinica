@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.extract.FilterBean;
@@ -39,7 +41,15 @@ import java.util.List;
  * @author thickerson
  *
  */
+@Component
 public class ApplyFilterServlet extends SecureController {
+    private FilterDAO _filterDAO;
+
+    @Autowired
+    public ApplyFilterServlet(FilterDAO _filterDAO) {
+        this._filterDAO = _filterDAO;
+    }
+
 
     public static final String BEAN_YEARS = "years";
     public static final String BEAN_MONTHS = "months";
@@ -71,7 +81,7 @@ public class ApplyFilterServlet extends SecureController {
             HashMap errors = new HashMap();
             if (fp.getString("submit").equalsIgnoreCase(resword.getString("apply_filter"))) {
                 if (fp.getInt("filterId") > 0) {
-                    FilterDAO fdao = new FilterDAO(sm.getDataSource());
+                    FilterDAO fdao = this._filterDAO;
                     FilterBean fb = (FilterBean) fdao.findByPK(fp.getInt("filterId"));
                     request.setAttribute("newFilter", fb);
 
@@ -117,7 +127,7 @@ public class ApplyFilterServlet extends SecureController {
         } else if ("details".equalsIgnoreCase(action)) {
             FormProcessor fp = new FormProcessor(request);
             int filterId = fp.getInt("filterId");
-            FilterDAO fDAO = new FilterDAO(sm.getDataSource());
+            FilterDAO fDAO = this._filterDAO;
             FilterBean showFilter = (FilterBean) fDAO.findByPK(filterId);
             request.setAttribute(BEAN_FILTER, showFilter);
             forwardPage(Page.VIEW_FILTER_DETAILS);
@@ -184,7 +194,7 @@ public class ApplyFilterServlet extends SecureController {
 
     private EntityBeanTable getFilterTable() {
         FormProcessor fp = new FormProcessor(request);
-        FilterDAO fdao = new FilterDAO(sm.getDataSource());
+        FilterDAO fdao = this._filterDAO;
         EntityBeanTable table = fp.getEntityBeanTable();
 
         ArrayList filters = new ArrayList();

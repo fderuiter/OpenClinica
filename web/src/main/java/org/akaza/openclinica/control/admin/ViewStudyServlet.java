@@ -7,6 +7,9 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.akaza.openclinica.dao.submit.EventCRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean;
 import org.akaza.openclinica.control.core.SecureController;
@@ -33,7 +36,29 @@ import java.util.ArrayList;
  *
  * Processes the reuqest of 'view study details'
  */
+@Component
 public class ViewStudyServlet extends SecureController {
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ViewStudyServlet(EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyParameterValueDAO _studyParameterValueDAO, StudySubjectDAO _studySubjectDAO, UserAccountDAO _userAccountDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     /**
      * Checks whether the user has the correct privilege
      */
@@ -55,7 +80,7 @@ public class ViewStudyServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         FormProcessor fp = new FormProcessor(request);
         int studyId = fp.getInt("id");
         if (studyId == 0) {
@@ -73,7 +98,7 @@ public class ViewStudyServlet extends SecureController {
             StudyConfigService scs = new StudyConfigService(sm.getDataSource());
             study = scs.setParametersForStudy(study);
 
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+            StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
             String randomizationStatusInOC = spvdao.findByHandleAndStudy(study.getId(), "randomization").getValue();
             String participantStatusInOC = spvdao.findByHandleAndStudy(study.getId(), "participantPortal").getValue();
             if(participantStatusInOC=="") participantStatusInOC="disabled";
@@ -104,8 +129,8 @@ public class ViewStudyServlet extends SecureController {
 
             request.setAttribute("studyToView", study);
             if ("yes".equalsIgnoreCase(viewFullRecords)) {
-                UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
-                StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+                UserAccountDAO udao = this._userAccountDAO;
+                StudySubjectDAO ssdao = this._studySubjectDAO;
                 ArrayList sites = new ArrayList();
                 ArrayList userRoles = new ArrayList();
                 ArrayList subjects = new ArrayList();
@@ -120,9 +145,9 @@ public class ViewStudyServlet extends SecureController {
                 }
 
                 // find all subjects in the study, include ones in sites
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-                EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-                // StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+                StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
+                EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
+                // StudyEventDAO sedao = this._studyEventDAO;
 
 //                ArrayList displayStudySubs = new ArrayList();
 //                for (int i = 0; i < subjects.size(); i++) {
@@ -131,7 +156,7 @@ public class ViewStudyServlet extends SecureController {
 //                    ArrayList events = sedao.findAllByStudySubject(studySub);
 //
 //                    // find all eventcrfs for each event
-//                    EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+//                    EventCRFDAO ecdao = this._eventCRFDAO;
 //
 //                    DisplayStudySubjectBean dssb = new DisplayStudySubjectBean();
 //                    dssb.setStudyEvents(events);

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,7 +30,15 @@ import org.akaza.openclinica.web.bean.EntityBeanTable;
  *
  * @version CVS: $Id: ListStudyServlet.java 13702 2009-12-21 20:06:48Z kkrumlian $
  */
+@Component
 public class ListStudyServlet extends SecureController {
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public ListStudyServlet(StudyDAO _studyDAO) {
+        this._studyDAO = _studyDAO;
+    }
+
 
     Locale locale;
 
@@ -60,7 +70,7 @@ public class ListStudyServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         ArrayList studies = (ArrayList) sdao.findAll();
         // find all parent studies
         ArrayList parents = (ArrayList) sdao.findAllParents();

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.NumericComparisonOperator;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -36,7 +38,17 @@ import java.util.StringTokenizer;
  *          kkrumlian $
  * 
  */
+@Component
 public class UpdateStudyServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
+    @Autowired
+    public UpdateStudyServlet(StudyDAO _studyDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+    }
+
     public static final String INPUT_START_DATE = "startDate";
     public static final String INPUT_END_DATE = "endDate";
     public static final String INPUT_VER_DATE = "protocolDateVerification";
@@ -66,7 +78,7 @@ public class UpdateStudyServlet extends SecureController {
         panel.setIconInfoShown(true);
         panel.setManageSubject(false);
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         StudyBean study = (StudyBean) session.getAttribute("newStudy");
 
         if (study == null) {
@@ -435,8 +447,8 @@ public class UpdateStudyServlet extends SecureController {
     }
 
     private void submitStudy() {
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
 
         StudyBean study1 = (StudyBean) session.getAttribute("newStudy");
         logger.info("study bean to be updated:" + study1.getName());

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.core;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -38,7 +40,10 @@ import org.springframework.context.ApplicationContext;
  * @author Tom Hickerson
  * @author Jun Xu
  */
+@Component
 public class SessionManager {
+    private UserAccountDAO _userAccountDAO;
+
     private Connection con;
 
     private UserAccountBean ub;
@@ -65,7 +70,10 @@ public class SessionManager {
      * @param userName
      * @throws SQLException
      */
-    public SessionManager(UserAccountBean userFromSession, String userName) throws SQLException {
+    @Autowired
+    public SessionManager(UserAccountBean userFromSession, String userName, UserAccountDAO _userAccountDAO) throws SQLException {
+        this._userAccountDAO = _userAccountDAO;
+
         setupDataSource();
         setupUser(userFromSession, userName);
     }
@@ -93,7 +101,7 @@ public class SessionManager {
             // create a new user account bean form database
             SQLFactory factory = SQLFactory.getInstance();
 
-            uDAO = new UserAccountDAO(ds);
+            uDAO = this._userAccountDAO;
             if (userName == null) {
                 userName = "";
             }

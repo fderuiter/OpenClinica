@@ -9,6 +9,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -52,7 +54,25 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class ResolveDiscrepancyServlet extends SecureController {
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public ResolveDiscrepancyServlet(DiscrepancyNoteDAO _discrepancyNoteDAO, EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, ItemFormMetadataDAO _itemFormMetadataDAO, StudyEventDAO _studyEventDAO, StudySubjectDAO _studySubjectDAO) {
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
 
     private static final String INPUT_NOTE_ID = "noteId";
     private static final String CAN_ADMIN_EDIT = "canAdminEdit";
@@ -111,7 +131,7 @@ public class ResolveDiscrepancyServlet extends SecureController {
         String entityType = note.getEntityType().toLowerCase();
         int id = note.getEntityId();
         if ("subject".equalsIgnoreCase(entityType)) {
-            StudySubjectDAO ssdao = new StudySubjectDAO(ds);
+            StudySubjectDAO ssdao = this._studySubjectDAO;
             StudySubjectBean ssb = ssdao.findBySubjectIdAndStudy(id, currentStudy);
 
             request.setAttribute("action", "show");
@@ -123,7 +143,7 @@ public class ResolveDiscrepancyServlet extends SecureController {
         } else if ("eventcrf".equalsIgnoreCase(entityType)) {
             request.setAttribute("editInterview", "1");
 
-            EventCRFDAO ecdao = new EventCRFDAO(ds);
+            EventCRFDAO ecdao = this._eventCRFDAO;
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(id);
             request.setAttribute(TableOfContentsServlet.INPUT_EVENT_CRF_BEAN, ecb);
             // If the request is passed along to ViewSectionDataEntryServlet,
@@ -133,7 +153,7 @@ public class ResolveDiscrepancyServlet extends SecureController {
             // a ClassCastException without the casting to a String
             request.setAttribute(ViewSectionDataEntryServlet.EVENT_CRF_ID, ecb.getId() + "");
         } else if ("studyevent".equalsIgnoreCase(entityType)) {
-            StudyEventDAO sedao = new StudyEventDAO(ds);
+            StudyEventDAO sedao = this._studyEventDAO;
             StudyEventBean seb = (StudyEventBean) sedao.findByPK(id);
             request.setAttribute(EnterDataForStudyEventServlet.INPUT_EVENT_ID, String.valueOf(id));
             request.setAttribute(UpdateStudyEventServlet.EVENT_ID, String.valueOf(id));
@@ -142,22 +162,22 @@ public class ResolveDiscrepancyServlet extends SecureController {
 
         // this is for item data
         else if ("itemdata".equalsIgnoreCase(entityType)) {
-            ItemDataDAO iddao = new ItemDataDAO(ds);
+            ItemDataDAO iddao = this._itemDataDAO;
             ItemDataBean idb = (ItemDataBean) iddao.findByPK(id);
 
-            EventCRFDAO ecdao = new EventCRFDAO(ds);
+            EventCRFDAO ecdao = this._eventCRFDAO;
 
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(idb.getEventCRFId());
 
-            StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+            StudySubjectDAO ssdao = this._studySubjectDAO;
 
             StudySubjectBean ssb = (StudySubjectBean) ssdao.findByPK(ecb.getStudySubjectId());
 
-            ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(ds);
+            ItemFormMetadataDAO ifmdao = this._itemFormMetadataDAO;
             ItemFormMetadataBean ifmb = ifmdao.findByItemIdAndCRFVersionId(idb.getItemId(), ecb.getCRFVersionId());
 
             if (currentRole.getRole().equals(Role.MONITOR) || !isCompleted) {
-                StudyEventDAO sedao = new StudyEventDAO(ds);
+                StudyEventDAO sedao = this._studyEventDAO;
                 StudyEventBean seb = (StudyEventBean) sedao.findByPK(id);
                 request.setAttribute(EVENT_CRF_ID, String.valueOf(idb.getEventCRFId()));
                 request.setAttribute(STUDY_SUB_ID, String.valueOf(seb.getStudySubjectId()));
@@ -191,9 +211,9 @@ public class ResolveDiscrepancyServlet extends SecureController {
         String module = (String) session.getAttribute("module");
         // Integer subjectId = (Integer) session.getAttribute("subjectId");
 
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
 
-        DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+        DiscrepancyNoteDAO dndao = this._discrepancyNoteDAO;
         dndao.setFetchMapping(true);
 
         // check that the note exists
@@ -235,10 +255,10 @@ public class ResolveDiscrepancyServlet extends SecureController {
         boolean toView = false;
         boolean isCompleted = false;
         if ("itemdata".equalsIgnoreCase(entityType)) {
-            ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+            ItemDataDAO iddao = this._itemDataDAO;
             ItemDataBean idb = (ItemDataBean) iddao.findByPK(discrepancyNoteBean.getEntityId());
 
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+            EventCRFDAO ecdao = this._eventCRFDAO;
 
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(idb.getEventCRFId());
             StudySubjectBean studySubjectBean = (StudySubjectBean) studySubjectDAO.findByPK(ecb.getStudySubjectId());
@@ -266,7 +286,7 @@ public class ResolveDiscrepancyServlet extends SecureController {
                     .getString("the_discrepancy_note_triying_resolve_has_invalid_type"));
         }else if(p.getFileName().contains("InitialDataEntry")){ //Open form in data entry mode from dn page
 
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+            EventCRFDAO ecdao = this._eventCRFDAO;
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(discrepancyNoteBean.getEventCRFId());
 
             request.setAttribute("event", ecb);

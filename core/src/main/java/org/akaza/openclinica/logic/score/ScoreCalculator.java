@@ -8,6 +8,10 @@
 
 package org.akaza.openclinica.logic.score;
 
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.akaza.openclinica.dao.submit.EventCRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 /**
  * The ScoreCalculator acts as the Controller for scoring. Tasks performed as
  * following:
@@ -61,7 +65,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
 
+@Component
 public class ScoreCalculator {
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     private final SessionManager sm;
@@ -74,7 +83,12 @@ public class ScoreCalculator {
 
     private static int DEFAULT_DECIMAL = 4;
 
-    public ScoreCalculator(SessionManager sm, EventCRFBean ecb, UserAccountBean ub) {
+    @Autowired
+    public ScoreCalculator(SessionManager sm, EventCRFBean ecb, UserAccountBean ub, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, ItemFormMetadataDAO _itemFormMetadataDAO) {
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+
         this.sm = sm;
         this.ecb = ecb;
         this.ub = ub;
@@ -99,7 +113,7 @@ public class ScoreCalculator {
      * return errors. logger.error("In scoreCalculator doCalculations(), items
      * are empty!"); errors.add("Calculation cannot be started because needed
      * items are empty!"); return updateFailedItems; } ItemFormMetadataDAO
-     * ifmdao = new ItemFormMetadataDAO(sm.getDataSource()); ItemDAO idao = new
+     * ifmdao = this._itemFormMetadataDAO; ItemDAO idao = new
      * ItemDAO(sm.getDataSource()); ItemDataDAO iddao = new
      * ItemDataDAO(sm.getDataSource());
      * 
@@ -257,9 +271,9 @@ public class ScoreCalculator {
             errors.add("In ScoreCalculator redoCalculations(), 'changeItems' set is empty!");
             return updateFailedItems;
         }
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(sm.getDataSource());
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        ItemFormMetadataDAO ifmdao = this._itemFormMetadataDAO;
+        ItemDAO idao = this._itemDAO;
+        ItemDataDAO iddao = this._itemDataDAO;
 
         NumberFormat nf = NumberFormat.getInstance();
         Parser parser = new Parser(items, itemdata);
@@ -384,7 +398,7 @@ public class ScoreCalculator {
     }
 
     protected boolean writeToDB(ItemBean ib, ItemFormMetadataBean ifm, ItemDataBean idb, String exp, String value, StringBuffer err) {
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        ItemDataDAO iddao = this._itemDataDAO;
         NumberFormat nf = NumberFormat.getInstance();
 
         if (idb == null) {

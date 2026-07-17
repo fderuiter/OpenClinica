@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
@@ -46,7 +48,21 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  *         View a CRF version section data entry
  */
+@Component
 public class PrintCRFServlet extends DataEntryServlet {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private ItemGroupDAO _itemGroupDAO;
+    private SectionDAO _sectionDAO;
+
+    @Autowired
+    public PrintCRFServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemGroupDAO _itemGroupDAO, SectionDAO _sectionDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+        this._sectionDAO = _sectionDAO;
+    }
+
 
     Locale locale;
 
@@ -94,9 +110,9 @@ public class PrintCRFServlet extends DataEntryServlet {
         int eventDefinitionCRFId = fp.getInt("eventDefinitionCRFId");
         // EventDefinitionCRFDao findByStudyEventIdAndCRFVersionId(int
         // studyEventId, int crfVersionId)
-        SectionDAO sdao = new SectionDAO(getDataSource());
-        CRFVersionDAO crfVersionDAO = new CRFVersionDAO(getDataSource());
-        CRFDAO crfDao = new CRFDAO(getDataSource());
+        SectionDAO sdao = this._sectionDAO;
+        CRFVersionDAO crfVersionDAO = this._cRFVersionDAO;
+        CRFDAO crfDao = this._cRFDAO;
 
         ArrayList <SectionBean> allSectionBeans = new ArrayList<SectionBean>();
         ArrayList sectionBeans = new ArrayList();
@@ -111,7 +127,7 @@ public class PrintCRFServlet extends DataEntryServlet {
             // BWP 2/7/2008>> Find out if the CRF has grouped tables, and if so,
             // use
             // that dedicated JSP
-            ItemGroupDAO itemGroupDao = new ItemGroupDAO(getDataSource());
+            ItemGroupDAO itemGroupDao = this._itemGroupDAO;
             // Find truely grouped tables, not groups with a name of 'Ungrouped'
             List<ItemGroupBean> itemGroupBeans = itemGroupDao.findOnlyGroupsByCRFVersionID(crfVersionId);
 

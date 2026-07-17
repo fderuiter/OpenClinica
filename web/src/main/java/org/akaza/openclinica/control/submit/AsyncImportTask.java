@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.DataEntryStage;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -39,7 +41,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+@Component
 public class AsyncImportTask implements Runnable {
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
@@ -51,7 +57,11 @@ public class AsyncImportTask implements Runnable {
     private Locale locale;
     private ResourceBundle respage;
 
-    public AsyncImportTask(File f, UserAccountBean ub, StudyBean currentStudy, DataSource dataSource, ApplicationContext context, Locale locale) {
+    @Autowired
+    public AsyncImportTask(File f, UserAccountBean ub, StudyBean currentStudy, DataSource dataSource, ApplicationContext context, Locale locale, EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+
         this.f = f;
         this.ub = ub;
         this.currentStudy = currentStudy;
@@ -150,8 +160,8 @@ public class AsyncImportTask implements Runnable {
                                     List<ImportDataRuleRunnerContainer> containers = ruleRunSetup(dataSource, currentStudy, ruleSetService, odmContainer);
                                     
                                     CrfBusinessLogicHelper crfBusinessLogicHelper = new CrfBusinessLogicHelper(dataSource);
-                                    ItemDataDAO itemDataDao = new ItemDataDAO(dataSource);
-                                    EventCRFDAO eventCrfDao = new EventCRFDAO(dataSource);
+                                    ItemDataDAO itemDataDao = this._itemDataDAO;
+                                    EventCRFDAO eventCrfDao = this._eventCRFDAO;
 
                                     org.akaza.openclinica.dao.hibernate.ItemDataDao itemDataHibernateDao = (org.akaza.openclinica.dao.hibernate.ItemDataDao) context.getBean("itemDataDao");
                                     int itemDataCount = 0;

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.dao.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.extract.ArchivedDatasetFileBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -30,11 +32,17 @@ import javax.sql.DataSource;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class ArchivedDatasetFileDAO extends AuditableEntityDAO {
+    private UserAccountDAO _userAccountDAO;
+
     private DAODigester digester;
 
-    public ArchivedDatasetFileDAO(DataSource ds) {
+    @Autowired
+    public ArchivedDatasetFileDAO(DataSource ds, UserAccountDAO _userAccountDAO) {
         super(ds);
+        this._userAccountDAO = _userAccountDAO;
+
         digester = SQLFactory.getInstance().getDigester(digesterName);
         this.setQueryNames();
     }
@@ -114,7 +122,7 @@ public class ArchivedDatasetFileDAO extends AuditableEntityDAO {
         fb.setRunTime(((Integer) hm.get("run_time")).doubleValue());
         fb.setFileSize(((Integer) hm.get("file_size")).intValue());
         fb.setOwnerId(((Integer) hm.get("owner_id")).intValue());
-        UserAccountDAO uaDAO = new UserAccountDAO(this.ds);
+        UserAccountDAO uaDAO = this._userAccountDAO;
         UserAccountBean owner = (UserAccountBean) uaDAO.findByPK(fb.getOwnerId());
         fb.setOwner(owner);
         return fb;

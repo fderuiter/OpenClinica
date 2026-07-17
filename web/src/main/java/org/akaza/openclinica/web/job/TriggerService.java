@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.job;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,9 +25,15 @@ import org.akaza.openclinica.control.submit.ImportCRFInfoContainer;
 import org.quartz.JobDataMap;
 import org.quartz.SimpleTrigger;
 
+@Component
 public class TriggerService {
+    private StudyDAO _studyDAO;
 
-    public TriggerService() {
+
+    @Autowired
+    public TriggerService(StudyDAO _studyDAO) {
+        this._studyDAO = _studyDAO;
+
         // do nothing, for the moment
     }
 
@@ -111,7 +119,7 @@ public class TriggerService {
         // jobDataMap.get(ExampleSpringJob.CDISC13OC));
         jobDataMap.put(SPSS, spss);
         jobDataMap.put(USER_ID, userAccount.getId());
-        // StudyDAO studyDAO = new StudyDAO();
+        // StudyDAO studyDAO = this._studyDAO;
         jobDataMap.put(STUDY_ID, study.getId());
         jobDataMap.put(STUDY_NAME, study.getName());
         jobDataMap.put(STUDY_OID, study.getOid());

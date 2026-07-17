@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -35,7 +37,35 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  *
  * @author Krikor Krumlian
  */
+@Component
 public class ListStudySubjectsServlet extends SecureController {
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+
+    @Autowired
+    public ListStudySubjectsServlet(EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, StudyParameterValueDAO _studyParameterValueDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, SubjectGroupMapDAO _subjectGroupMapDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+    }
+
 
     // Shaoyu Su
     private static final long serialVersionUID = 1L;
@@ -157,7 +187,7 @@ public class ListStudySubjectsServlet extends SecureController {
     }
     
     public StudyParameterValueDAO getStudyParameterValueDAO() {
-        studyParameterValueDAO = this.studyParameterValueDAO == null ? new StudyParameterValueDAO(sm.getDataSource()) : studyParameterValueDAO;
+        studyParameterValueDAO = this.studyParameterValueDAO == null ? this._studyParameterValueDAO : studyParameterValueDAO;
 		return studyParameterValueDAO;
 	}
 
@@ -166,52 +196,52 @@ public class ListStudySubjectsServlet extends SecureController {
 	}
 
 	public StudyEventDefinitionDAO getStudyEventDefinitionDao() {
-        studyEventDefinitionDAO = studyEventDefinitionDAO == null ? new StudyEventDefinitionDAO(sm.getDataSource()) : studyEventDefinitionDAO;
+        studyEventDefinitionDAO = studyEventDefinitionDAO == null ? this._studyEventDefinitionDAO : studyEventDefinitionDAO;
         return studyEventDefinitionDAO;
     }
 
     public SubjectDAO getSubjectDAO() {
-        subjectDAO = this.subjectDAO == null ? new SubjectDAO(sm.getDataSource()) : subjectDAO;
+        subjectDAO = this.subjectDAO == null ? this._subjectDAO : subjectDAO;
         return subjectDAO;
     }
 
     public StudySubjectDAO getStudySubjectDAO() {
-        studySubjectDAO = this.studySubjectDAO == null ? new StudySubjectDAO(sm.getDataSource()) : studySubjectDAO;
+        studySubjectDAO = this.studySubjectDAO == null ? this._studySubjectDAO : studySubjectDAO;
         return studySubjectDAO;
     }
 
     public StudyGroupClassDAO getStudyGroupClassDAO() {
-        studyGroupClassDAO = this.studyGroupClassDAO == null ? new StudyGroupClassDAO(sm.getDataSource()) : studyGroupClassDAO;
+        studyGroupClassDAO = this.studyGroupClassDAO == null ? this._studyGroupClassDAO : studyGroupClassDAO;
         return studyGroupClassDAO;
     }
 
     public SubjectGroupMapDAO getSubjectGroupMapDAO() {
-        subjectGroupMapDAO = this.subjectGroupMapDAO == null ? new SubjectGroupMapDAO(sm.getDataSource()) : subjectGroupMapDAO;
+        subjectGroupMapDAO = this.subjectGroupMapDAO == null ? this._subjectGroupMapDAO : subjectGroupMapDAO;
         return subjectGroupMapDAO;
     }
 
     public StudyEventDAO getStudyEventDAO() {
-        studyEventDAO = this.studyEventDAO == null ? new StudyEventDAO(sm.getDataSource()) : studyEventDAO;
+        studyEventDAO = this.studyEventDAO == null ? this._studyEventDAO : studyEventDAO;
         return studyEventDAO;
     }
 
     public StudyDAO getStudyDAO() {
-        studyDAO = this.studyDAO == null ? new StudyDAO(sm.getDataSource()) : studyDAO;
+        studyDAO = this.studyDAO == null ? this._studyDAO : studyDAO;
         return studyDAO;
     }
 
     public EventCRFDAO getEventCRFDAO() {
-        eventCRFDAO = this.eventCRFDAO == null ? new EventCRFDAO(sm.getDataSource()) : eventCRFDAO;
+        eventCRFDAO = this.eventCRFDAO == null ? this._eventCRFDAO : eventCRFDAO;
         return eventCRFDAO;
     }
 
     public EventDefinitionCRFDAO getEventDefinitionCRFDAO() {
-        eventDefintionCRFDAO = this.eventDefintionCRFDAO == null ? new EventDefinitionCRFDAO(sm.getDataSource()) : eventDefintionCRFDAO;
+        eventDefintionCRFDAO = this.eventDefintionCRFDAO == null ? this._eventDefinitionCRFDAO : eventDefintionCRFDAO;
         return eventDefintionCRFDAO;
     }
 
     public StudyGroupDAO getStudyGroupDAO() {
-        studyGroupDAO = this.studyGroupDAO == null ? new StudyGroupDAO(sm.getDataSource()) : studyGroupDAO;
+        studyGroupDAO = this.studyGroupDAO == null ? this._studyGroupDAO : studyGroupDAO;
         return studyGroupDAO;
     }
 

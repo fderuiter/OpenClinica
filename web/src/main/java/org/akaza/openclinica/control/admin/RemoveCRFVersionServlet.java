@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -35,7 +37,23 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  * @author jxu
  *
  */
+@Component
 public class RemoveCRFVersionServlet extends SecureController {
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private SectionDAO _sectionDAO;
+
+    @Autowired
+    public RemoveCRFVersionServlet(CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDataDAO _itemDataDAO, SectionDAO _sectionDAO) {
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._sectionDAO = _sectionDAO;
+    }
+
     /**
      *
      */
@@ -57,7 +75,7 @@ public class RemoveCRFVersionServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
         FormProcessor fp = new FormProcessor(request);
         int versionId = fp.getInt("id", true);
         String module = fp.getString("module");
@@ -81,9 +99,9 @@ public class RemoveCRFVersionServlet extends SecureController {
                 return;
             }
 
-            SectionDAO secdao = new SectionDAO(sm.getDataSource());
+            SectionDAO secdao = this._sectionDAO;
 
-            EventCRFDAO evdao = new EventCRFDAO(sm.getDataSource());
+            EventCRFDAO evdao = this._eventCRFDAO;
             // find all event crfs by version id
             ArrayList eventCRFs = evdao.findUndeletedWithStudySubjectsByCRFVersion(versionId);
             if ("confirm".equalsIgnoreCase(action)) {
@@ -120,7 +138,7 @@ public class RemoveCRFVersionServlet extends SecureController {
                 }
 
                 // all item data related to event crfs
-                ItemDataDAO idao = new ItemDataDAO(sm.getDataSource());
+                ItemDataDAO idao = this._itemDataDAO;
                 for (int i = 0; i < eventCRFs.size(); i++) {
                     EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(i);
                     if (!eventCRF.getStatus().equals(Status.DELETED)) {
@@ -144,7 +162,7 @@ public class RemoveCRFVersionServlet extends SecureController {
 
                 ArrayList versionList = (ArrayList)cvdao.findAllByCRF(version.getCrfId());
                 if(versionList.size() > 0){
-                    EventDefinitionCRFDAO edCRFDao = new EventDefinitionCRFDAO(sm.getDataSource());
+                    EventDefinitionCRFDAO edCRFDao = this._eventDefinitionCRFDAO;
                     ArrayList edcList = (ArrayList)edCRFDao.findAllByCRF(version.getCrfId());
                     for(int i = 0; i < edcList.size(); i++){
                         EventDefinitionCRFBean edcBean = (EventDefinitionCRFBean)edcList.get(i);

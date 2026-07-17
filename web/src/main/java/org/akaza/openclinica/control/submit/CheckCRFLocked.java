@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.dao.login.UserAccountDAO;
@@ -12,7 +14,15 @@ import org.springframework.web.util.HtmlUtils;
  * Date: Apr 12, 2010
  * Time: 3:32:44 PM
  */
+@Component
 public class CheckCRFLocked extends SecureController {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public CheckCRFLocked(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     @Override
     protected void processRequest() throws Exception {
         int userId;
@@ -21,7 +31,7 @@ public class CheckCRFLocked extends SecureController {
             int crfId = Integer.parseInt(ecId);
             if (getCrfLocker().isLocked(crfId)) {
                 userId = getCrfLocker().getLockOwner(crfId);
-                UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+                UserAccountDAO udao = this._userAccountDAO;
                 UserAccountBean ubean = (UserAccountBean)udao.findByPK(userId);
                 response.getWriter().print(HtmlUtils.htmlEscape(resword.getString("CRF_unavailable")) +
                         "\n"+HtmlUtils.htmlEscape(ubean.getName()) + " "+ HtmlUtils.htmlEscape(resword.getString("Currently_entering_data"))

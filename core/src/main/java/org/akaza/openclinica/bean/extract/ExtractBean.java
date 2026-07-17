@@ -9,6 +9,10 @@
  */
 package org.akaza.openclinica.bean.extract;
 
+import org.akaza.openclinica.dao.submit.SubjectGroupMapDAO;
+import org.akaza.openclinica.dao.submit.EventCRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,7 +52,19 @@ import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class ExtractBean {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     public static final int SAS_FORMAT = 1;
@@ -187,7 +203,19 @@ public class ExtractBean {
     // Added By Hamid
     // EventCRFBean eventCRF = new EventCRFBean();
 
-    public ExtractBean(DataSource ds) {
+    @Autowired
+    public ExtractBean(DataSource ds, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, SubjectGroupMapDAO _subjectGroupMapDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+
         this.ds = ds;
         study = new StudyBean();
         parentStudy = new StudyBean();
@@ -797,14 +825,14 @@ public class ExtractBean {
      * called after DatasetDAO.getDatasetData();
      */
     public void getMetadata() {
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(ds);
-        CRFDAO cdao = new CRFDAO(ds);
-        CRFVersionDAO cvdao = new CRFVersionDAO(ds);
-        ItemDAO idao = new ItemDAO(ds);
-        ItemFormMetadataDAO ifmDAO = new ItemFormMetadataDAO(this.ds);
-        StudyGroupDAO studygroupDAO = new StudyGroupDAO(ds);
-        StudyGroupClassDAO studygroupclassDAO = new StudyGroupClassDAO(ds);
-        // SubjectGroupMapDAO subjectGroupMapDAO = new SubjectGroupMapDAO(ds);
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
+        CRFDAO cdao = this._cRFDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        ItemDAO idao = this._itemDAO;
+        ItemFormMetadataDAO ifmDAO = this._itemFormMetadataDAO;
+        StudyGroupDAO studygroupDAO = this._studyGroupDAO;
+        StudyGroupClassDAO studygroupclassDAO = this._studyGroupClassDAO;
+        // SubjectGroupMapDAO subjectGroupMapDAO = this._subjectGroupMapDAO;
         studyGroupClasses = new ArrayList();
         studyGroupMap = new HashMap();
         studyGroupMaps = new HashMap<Integer, ArrayList>();
@@ -1148,7 +1176,7 @@ public class ExtractBean {
             return;
         }
         // YW 08-21-2007 << fetch start_time_flag and end_time_flag
-        StudyEventDAO sedao = new StudyEventDAO(ds);
+        StudyEventDAO sedao = this._studyEventDAO;
         StudyEventBean se = (StudyEventBean) sedao.findByStudySubjectIdAndDefinitionIdAndOrdinal(studySubjectId, studyEventDefinitionId, sampleOrdinal);
         // YW >>
         if (se == null) {
@@ -1182,7 +1210,7 @@ public class ExtractBean {
         eventCRF.setDateInterviewed(dateInterviewed);
         // eventCRF.setStatus(status); //this is the one that we want, tbh
 
-        // EventCRFDAO ecrfdao = new EventCRFDAO(ds);
+        // EventCRFDAO ecrfdao = this._eventCRFDAO;
         // ArrayList events = ecrfdao.findAllByStudyEvent(se);
 
         CRFVersionBean crfVersion = new CRFVersionBean();

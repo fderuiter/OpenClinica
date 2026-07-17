@@ -1,5 +1,20 @@
 package org.akaza.openclinica.logic.rulerunner;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
+import org.akaza.openclinica.dao.managestudy.StudyEventDAO;
+import org.akaza.openclinica.dao.managestudy.StudyDAO;
+import org.akaza.openclinica.dao.submit.SectionDAO;
+import org.akaza.openclinica.dao.rule.RuleSetRuleDAO;
+import org.akaza.openclinica.dao.rule.RuleSetDAO;
+import org.akaza.openclinica.dao.rule.action.RuleActionDAO;
+import org.akaza.openclinica.dao.submit.ItemFormMetadataDAO;
+import org.akaza.openclinica.dao.submit.ItemDataDAO;
+import org.akaza.openclinica.dao.submit.EventCRFDAO;
+import org.akaza.openclinica.dao.submit.CRFVersionDAO;
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.DiscrepancyNoteBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -37,10 +52,38 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+@Component
 public class CrfBulkRuleRunner extends RuleRunner {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private RuleActionDAO _ruleActionDAO;
+    private RuleSetDAO _ruleSetDAO;
+    private RuleSetRuleDAO _ruleSetRuleDAO;
+    private SectionDAO _sectionDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudySubjectDAO _studySubjectDAO;
 
-    public CrfBulkRuleRunner(DataSource ds, String requestURLMinusServletPath, String contextPath, JavaMailSenderImpl mailSender) {
-        super(ds, requestURLMinusServletPath, contextPath, mailSender);
+
+    @Autowired
+    public CrfBulkRuleRunner(DataSource ds, String requestURLMinusServletPath, String contextPath, JavaMailSenderImpl mailSender, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, ItemFormMetadataDAO _itemFormMetadataDAO, RuleActionDAO _ruleActionDAO, RuleSetDAO _ruleSetDAO, RuleSetRuleDAO _ruleSetRuleDAO, SectionDAO _sectionDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudySubjectDAO _studySubjectDAO) {
+        super(ds, requestURLMinusServletPath, contextPath, mailSender, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDataDAO, _itemFormMetadataDAO, _ruleActionDAO, _ruleSetDAO, _ruleSetRuleDAO, _sectionDAO, _studyDAO, _studyEventDAO, _studySubjectDAO, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDataDAO, _itemFormMetadataDAO, _ruleActionDAO, _ruleSetDAO, _ruleSetRuleDAO, _sectionDAO, _studyDAO, _studyEventDAO, _studySubjectDAO);
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._ruleActionDAO = _ruleActionDAO;
+        this._ruleSetDAO = _ruleSetDAO;
+        this._ruleSetRuleDAO = _ruleSetRuleDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+
     }
 
     /**

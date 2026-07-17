@@ -7,6 +7,9 @@
  */
 package org.akaza.openclinica.dao.extract;
 
+import org.akaza.openclinica.dao.submit.ItemDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -94,12 +97,28 @@ import org.akaza.openclinica.logic.odmExport.MetadataUnit;
  * @author ywang (May, 2008)
  */
 
+@Component
 public class OdmExtractDAO extends DatasetDAO {
+    private ItemDAO _itemDAO;
+
+    private CRFDAO _cRFDAO;
+    private SectionDAO _sectionDAO;
+    private StudyDAO _studyDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
 
 	
 
-    public OdmExtractDAO(DataSource ds) {
-        super(ds);
+    @Autowired
+    public OdmExtractDAO(DataSource ds, CRFDAO _cRFDAO, SectionDAO _sectionDAO, StudyDAO _studyDAO, StudyParameterValueDAO _studyParameterValueDAO, ItemDAO _itemDAO) {
+        super(ds, _itemDAO, _itemDAO);
+        this._itemDAO = _itemDAO;
+
+        this._cRFDAO = _cRFDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studyDAO = _studyDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+
     }
 
     @Override
@@ -884,7 +903,7 @@ public class OdmExtractDAO extends DatasetDAO {
 
 	public FormDefBean fetchFormDetails(CRFVersionBean crfVBean,FormDefBean formDef){
     
-    	CRFDAO<String, ArrayList> crfDao = new CRFDAO(this.ds);
+    	CRFDAO<String, ArrayList> crfDao = this._cRFDAO;
     	CRFBean crfBean   = (CRFBean) crfDao.findByPK(crfVBean.getCrfId());  	
     	formDef.setOid(crfVBean.getOid());
     	formDef.setName(crfBean.getName() + " - " +crfVBean.getName());
@@ -1542,7 +1561,7 @@ public class OdmExtractDAO extends DatasetDAO {
         variables.put(new Integer(1), new Integer(crfVId));
         ArrayList<SectionDetails>sectionBeans = new ArrayList<SectionDetails>();
         
-        SectionDAO secdao = new SectionDAO(this.ds);
+        SectionDAO secdao = this._sectionDAO;
         ArrayList sections = secdao.findAllByCRFVersionId (crfVId);
     	Iterator iter = sections.iterator();
     	 while(iter.hasNext()){
@@ -1566,7 +1585,7 @@ public class OdmExtractDAO extends DatasetDAO {
         //StudyBean study = metadata.getStudy();
         //if(study.getId()>0) {
         //} else {
-        //    StudyDAO sdao = new StudyDAO(this.ds);
+        //    StudyDAO sdao = this._studyDAO;
         //    study = (StudyBean)sdao.findByPK(studyId);
         //}
         //StudyConfigService studyConfig = new StudyConfigService(this.ds);
@@ -2888,7 +2907,7 @@ private void fetchItemGroupMetaData(MetaDataVersionBean metadata,String cvIds, S
         HashMap<String, Integer> igpos = new HashMap<String, Integer>();
         String igprev = "";
         String oidPos = "";
-        StudyBean parentStudy = study.getParentStudyId() > 0 ? (StudyBean) new StudyDAO(this.ds).findByPK(study.getParentStudyId()) : study;
+        StudyBean parentStudy = study.getParentStudyId() > 0 ? (StudyBean) this._studyDAO.findByPK(study.getParentStudyId()) : study;
         setStudyParemeterConfig(parentStudy);
         HashSet<Integer> sgcIdSet = new HashSet<Integer>();
         HashMap<String, String> subOidPoses = new HashMap<String, String>();
@@ -3158,7 +3177,7 @@ private void fetchItemGroupMetaData(MetaDataVersionBean metadata,String cvIds, S
     }
 
     protected void setStudyParemeterConfig(StudyBean study) {
-        StudyParameterValueBean param = new StudyParameterValueDAO(this.ds).findByHandleAndStudy(study.getId(), "collectDob");
+        StudyParameterValueBean param = this._studyParameterValueDAO.findByHandleAndStudy(study.getId(), "collectDob");
         study.getStudyParameterConfig().setCollectDob(param.getValue());
     }
 

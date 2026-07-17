@@ -5,6 +5,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.extract.ArchivedDatasetFileBean;
 import org.akaza.openclinica.bean.extract.DatasetBean;
@@ -30,7 +32,17 @@ import java.util.Locale;
  * @author thickerson
  *
  */
+@Component
 public class ShowFileServlet extends SecureController {
+    private ArchivedDatasetFileDAO _archivedDatasetFileDAO;
+    private DatasetDAO _datasetDAO;
+
+    @Autowired
+    public ShowFileServlet(ArchivedDatasetFileDAO _archivedDatasetFileDAO, DatasetDAO _datasetDAO) {
+        this._archivedDatasetFileDAO = _archivedDatasetFileDAO;
+        this._datasetDAO = _datasetDAO;
+    }
+
 
     Locale locale;
 
@@ -45,10 +57,10 @@ public class ShowFileServlet extends SecureController {
         FormProcessor fp = new FormProcessor(request);
         int fileId = fp.getInt("fileId");
         int dsId = fp.getInt("datasetId");
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = this._datasetDAO;
         DatasetBean db = (DatasetBean) dsdao.findByPK(dsId);
 
-        ArchivedDatasetFileDAO asdfdao = new ArchivedDatasetFileDAO(sm.getDataSource());
+        ArchivedDatasetFileDAO asdfdao = this._archivedDatasetFileDAO;
         ArchivedDatasetFileBean asdfBean = (ArchivedDatasetFileBean) asdfdao.findByPK(fileId);
 
         ArrayList newFileList = new ArrayList();

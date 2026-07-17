@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.akaza.openclinica.bean.admin.CRFBean;
@@ -60,7 +62,25 @@ import java.util.Set;
  * 
  * @author jxu
  */
+@Component
 public class CreateCRFVersionServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+
+    @Autowired
+    public CreateCRFVersionServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+    }
+
 
     Locale locale;
     FileUploadHelper uploadHelper = new FileUploadHelper();
@@ -91,9 +111,9 @@ public class CreateCRFVersionServlet extends SecureController {
         resetPanel();
         panel.setStudyInfoShown(true);
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(sm.getDataSource());
+        CRFDAO cdao = this._cRFDAO;
+        CRFVersionDAO vdao = this._cRFVersionDAO;
+        EventDefinitionCRFDAO edao = this._eventDefinitionCRFDAO;
 
         FormProcessor fp = new FormProcessor(request);
         // checks which module the requests are from
@@ -251,7 +271,7 @@ public class CreateCRFVersionServlet extends SecureController {
                     // YW << for add a link to "View CRF Version Data Entry".
                     // For this purpose, CRFVersion id is needed.
                     // So the latest CRFVersion Id of A CRF Id is it.
-                    CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+                    CRFVersionDAO cvdao = this._cRFVersionDAO;
                     ArrayList crfvbeans = new ArrayList();
 
                     logger.debug("CRF-ID [" + version.getCrfId() + "]");
@@ -553,7 +573,7 @@ public class CreateCRFVersionServlet extends SecureController {
      * @return
      */
     private boolean canDeleteVersion(int previousVersionId) {
-        CRFVersionDAO cdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO cdao = this._cRFVersionDAO;
         ArrayList items = null;
         ArrayList itemsHaveData = new ArrayList();
         // boolean isItemUsedByOtherVersion =
@@ -563,7 +583,7 @@ public class CreateCRFVersionServlet extends SecureController {
         // cdao.findItemUsedByOtherVersion(previousVersionId);
         // session.setAttribute("itemsUsedByOtherVersion",itemsUsedByOtherVersion);
         // return false;
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+        EventCRFDAO ecdao = this._eventCRFDAO;
         ArrayList events = ecdao.findAllByCRFVersion(previousVersionId);
         if (!events.isEmpty()) {
             session.setAttribute("eventsForVersion", events);
@@ -602,7 +622,7 @@ public class CreateCRFVersionServlet extends SecureController {
      * @return the items found
      */
     private ArrayList isItemSame(HashMap items, CRFVersionBean version) {
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
+        ItemDAO idao = this._itemDAO;
         ArrayList diffItems = new ArrayList();
         Set names = items.keySet();
         Iterator it = names.iterator();
@@ -625,8 +645,8 @@ public class CreateCRFVersionServlet extends SecureController {
     }
 
     private ItemBean isResponseValid(HashMap items, CRFVersionBean version) {
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO metadao = new ItemFormMetadataDAO(sm.getDataSource());
+        ItemDAO idao = this._itemDAO;
+        ItemFormMetadataDAO metadao = this._itemFormMetadataDAO;
         Set names = items.keySet();
         Iterator it = names.iterator();
         while (it.hasNext()) {

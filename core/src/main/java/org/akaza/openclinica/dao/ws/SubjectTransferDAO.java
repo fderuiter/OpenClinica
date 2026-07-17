@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.dao.ws;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.SubjectTransferBean;
@@ -28,12 +30,18 @@ import java.util.Iterator;
 
 import javax.sql.DataSource;
 
+@Component
 public class SubjectTransferDAO extends EntityDAO {
+    private UserAccountDAO _userAccountDAO;
+
 
     UserAccountDAO userAccountDao;
 
-    public SubjectTransferDAO(DataSource ds) {
+    @Autowired
+    public SubjectTransferDAO(DataSource ds, UserAccountDAO _userAccountDAO) {
         super(ds);
+        this._userAccountDAO = _userAccountDAO;
+
         this.getCurrentPKName = "findCurrentPKValue";
         // this.getNextPKName = "getNextPK";
     }
@@ -60,7 +68,7 @@ public class SubjectTransferDAO extends EntityDAO {
     }
 
     private UserAccountDAO getUserAccountDao() {
-        return this.userAccountDao != null ? this.userAccountDao : new UserAccountDAO(ds);
+        return this.userAccountDao != null ? this.userAccountDao : this._userAccountDAO;
     }
 
     @Override

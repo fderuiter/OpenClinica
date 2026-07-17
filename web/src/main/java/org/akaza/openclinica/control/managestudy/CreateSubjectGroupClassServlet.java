@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.GroupClassType;
 import org.akaza.openclinica.bean.core.NumericComparisonOperator;
 import org.akaza.openclinica.bean.core.Role;
@@ -31,7 +33,17 @@ import java.io.IOException;
  *
  * Servlet to create a new subject group class
  */
+@Component
 public class CreateSubjectGroupClassServlet extends SecureController {
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+
+    @Autowired
+    public CreateSubjectGroupClassServlet(StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO) {
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+    }
+
     @Override
     public void mayProceed() throws InsufficientPermissionException {
         checkStudyLocked(Page.SUBJECT_GROUP_CLASS_LIST_SERVLET, respage.getString("current_study_locked"));
@@ -156,7 +168,7 @@ public class CreateSubjectGroupClassServlet extends SecureController {
     private void submitGroup() throws OpenClinicaException, IOException {
         StudyGroupClassBean group = (StudyGroupClassBean) session.getAttribute("group");
         ArrayList studyGroups = (ArrayList) session.getAttribute("studyGroups");
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
+        StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
         group.setStudyId(currentStudy.getId());
         group.setOwner(ub);
         group.setStatus(Status.AVAILABLE);
@@ -165,7 +177,7 @@ public class CreateSubjectGroupClassServlet extends SecureController {
         if (!group.isActive()) {
             addPageMessage(respage.getString("the_subject_group_class_not_created_database"));
         } else {
-            StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
+            StudyGroupDAO sgdao = this._studyGroupDAO;
             for (int i = 0; i < studyGroups.size(); i++) {
                 StudyGroupBean sg = (StudyGroupBean) studyGroups.get(i);
                 sg.setStudyGroupClassId(group.getId());

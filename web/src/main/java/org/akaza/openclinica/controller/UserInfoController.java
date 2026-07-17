@@ -39,6 +39,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping(value = "/userinfo")
 @ResponseStatus(value = org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
 public class UserInfoController {
+    private StudyDAO _studyDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public UserInfoController(StudyDAO _studyDAO, StudyParameterValueDAO _studyParameterValueDAO, StudySubjectDAO _studySubjectDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
 	@Autowired
 	@Qualifier("dataSource")
@@ -86,8 +99,8 @@ public class UserInfoController {
     public ResponseEntity<UserDTO> getCrcAccountBySession(@PathVariable("studyOid") String studyOid) throws Exception {
 
         ResourceBundleProvider.updateLocale(new Locale("en_US"));
-        sdao = new StudyDAO(dataSource);
-        udao = new UserAccountDAO(dataSource);
+        sdao = this._studyDAO;
+        udao = this._userAccountDAO;
         boolean isRequestValid = true;
         uDTO = null;
 
@@ -131,7 +144,7 @@ public class UserInfoController {
 	}
 
 public Boolean isApiKeyExist(String uuid) {
-    UserAccountDAO udao = new UserAccountDAO(dataSource);
+    UserAccountDAO udao = this._userAccountDAO;
     UserAccountBean uBean = (UserAccountBean) udao.findByApiKey(uuid);
     if (uBean == null || !uBean.isActive()) {
         return false;
@@ -153,25 +166,25 @@ private UserDTO buildUserDTO(UserAccountBean userAccountBean) {
 }
 
 	private UserAccountBean getUserAccount(String userName) {
-		udao = new UserAccountDAO(dataSource);
+		udao = this._userAccountDAO;
 		UserAccountBean userAccountBean = (UserAccountBean) udao.findByUserName(userName);
 		return userAccountBean;
 	}
 
 	private StudyBean getStudy(String oid) {
-		sdao = new StudyDAO(dataSource);
+		sdao = this._studyDAO;
 		StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
 		return studyBean;
 	}
 
 	private StudyBean getStudy(Integer id) {
-		sdao = new StudyDAO(dataSource);
+		sdao = this._studyDAO;
 		StudyBean studyBean = (StudyBean) sdao.findByPK(id);
 		return studyBean;
 	}
 
 	private StudySubjectBean getStudySubject(String label, StudyBean study) {
-		ssdao = new StudySubjectDAO(dataSource);
+		ssdao = this._studySubjectDAO;
 		StudySubjectBean studySubjectBean = (StudySubjectBean) ssdao.findByLabelAndStudy(label, study);
 		return studySubjectBean;
 	}
@@ -287,7 +300,7 @@ private UserDTO buildUserDTO(UserAccountBean userAccountBean) {
 		boolean accessPermission = false;
 		StudyBean siteStudy = getStudy(studyOid);
 		StudyBean study = getParentStudy(studyOid);
-		StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+		StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
 		StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
 		participantPortalRegistrar = new ParticipantPortalRegistrar();
 		String pManageStatus = participantPortalRegistrar.getRegistrationStatus(study.getOid()).toString(); // ACTIVE , PENDING , INACTIVE

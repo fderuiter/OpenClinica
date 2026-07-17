@@ -1,5 +1,9 @@
 package org.akaza.openclinica.logic.rulerunner;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.akaza.openclinica.dao.managestudy.StudyDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.managestudy.StudyEventBean;
 import org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean;
@@ -37,7 +41,19 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+@Component
 public class ImportDataRuleRunnerContainer {
+    private StudyDAO _studyDAO;
+
+    private StudyEventDAO _studyEventDAO;
+
+    @Autowired
+    public ImportDataRuleRunnerContainer(StudyEventDAO _studyEventDAO, StudyDAO _studyDAO) {
+        this._studyDAO = _studyDAO;
+
+        this._studyEventDAO = _studyEventDAO;
+    }
+
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     /**
      * Key is target itemOID
@@ -71,7 +87,7 @@ public class ImportDataRuleRunnerContainer {
                 new StudySubjectDAO<String, ArrayList>(ds).findByOid(studySubjectOid);
 
         HashMap<String, StudyEventDefinitionBean> seds = new HashMap<String, StudyEventDefinitionBean>();
-        HashMap<String, CRFVersionBean> cvs = new HashMap<String, CRFVersionBean>();
+        HashMap<String, CRFVersionBean> cvs = new HashMap<String, CRFVersionBean>(_studyDAO, _studyDAO);
         ArrayList<StudyEventDataBean> studyEventDataBeans = subjectDataBean.getStudyEventData();
         for (StudyEventDataBean studyEventDataBean : studyEventDataBeans) {
             String sedOid = studyEventDataBean.getStudyEventOID();
@@ -79,7 +95,7 @@ public class ImportDataRuleRunnerContainer {
             if(seds.containsKey(sedOid))
                 sed = seds.get(sedOid);
             else {
-                sed = new StudyEventDefinitionDAO<String, ArrayList>(ds).findByOid(sedOid);
+                sed = new StudyEventDefinitionDAO<String, ArrayList>(ds).findByOid(sedOid, _studyDAO, _studyDAO);
                 seds.put(sedOid, sed);
             }
             ArrayList<FormDataBean> formDataBeans = studyEventDataBean.getFormData();
@@ -94,7 +110,7 @@ public class ImportDataRuleRunnerContainer {
                 }
                 String sedOrd = studyEventDataBean.getStudyEventRepeatKey();
                 Integer sedOrdinal = sedOrd != null && !sedOrd.isEmpty() ? Integer.valueOf(sedOrd) : 1;
-                StudyEventBean studyEvent = (StudyEventBean)new StudyEventDAO(ds).findByStudySubjectIdAndDefinitionIdAndOrdinal(
+                StudyEventBean studyEvent = (StudyEventBean)this._studyEventDAO.findByStudySubjectIdAndDefinitionIdAndOrdinal(
                         studySubject.getId(), sed.getId(), sedOrdinal);
                 List<RuleSetBean> ruleSets = ruleSetService.getRuleSetsByCrfStudyAndStudyEventDefinition(studyBean, sed, crfVersion);
                 //Set<String> targetItemOids = new HashSet<String>();

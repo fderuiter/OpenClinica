@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.SubjectEventStatus;
 import org.akaza.openclinica.bean.managestudy.StudyEventBean;
 import org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean;
@@ -39,7 +41,21 @@ import java.util.Locale;
  *
  * Handles user request of "view study events"
  */
+@Component
 public class ViewStudyEventsServlet extends SecureController {
+    private EventCRFDAO _eventCRFDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public ViewStudyEventsServlet(EventCRFDAO _eventCRFDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
 
     Locale locale;
     // < ResourceBundlerestext;
@@ -136,7 +152,7 @@ public class ViewStudyEventsServlet extends SecureController {
 
         request.setAttribute(STATUS_MAP, SubjectEventStatus.toArrayList());
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
         ArrayList definitions = seddao.findAllByStudy(currentStudy);
         request.setAttribute(DEFINITION_MAP, definitions);
 
@@ -172,12 +188,12 @@ public class ViewStudyEventsServlet extends SecureController {
      * @return
      */
     private ArrayList genTables(FormProcessor fp, ArrayList definitions, Date startDate, Date endDate, int sedId, int definitionId, int statusId) {
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+        StudyEventDAO sedao = this._studyEventDAO;
+        EventCRFDAO ecdao = this._eventCRFDAO;
         ArrayList allEvents = new ArrayList();
         definitions = findDefinitionById(definitions, definitionId);
         // YW <<
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = this._studySubjectDAO;
         ArrayList studySubjects = ssdao.findAllByStudyId(currentStudy.getId());
         // YW >>
         for (int i = 0; i < definitions.size(); i++) {
@@ -314,12 +330,12 @@ public class ViewStudyEventsServlet extends SecureController {
      * @return
      */
     private ArrayList genEventsForPrint(FormProcessor fp, ArrayList definitions, Date startDate, Date endDate, int sedId, int definitionId, int statusId) {
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+        StudyEventDAO sedao = this._studyEventDAO;
+        EventCRFDAO ecdao = this._eventCRFDAO;
         ArrayList allEvents = new ArrayList();
         definitions = findDefinitionById(definitions, definitionId);
         // YW <<
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = this._studySubjectDAO;
         ArrayList studySubjects = ssdao.findAllByStudyId(currentStudy.getId());
         // YW >>
         for (int i = 0; i < definitions.size(); i++) {

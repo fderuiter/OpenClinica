@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.EntityAction;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
@@ -19,7 +21,15 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
 
 // allows both deletion and restoration of a study user role
 
+@Component
 public class DeleteStudyUserRoleServlet extends SecureController {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public DeleteStudyUserRoleServlet(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     public static final String PATH = "DeleteStudyUserRole";
     public static final String ARG_USERNAME = "userName";
     public static final String ARG_STUDYID = "studyId";
@@ -41,7 +51,7 @@ public class DeleteStudyUserRoleServlet extends SecureController {
 
     @Override
     protected void processRequest() throws Exception {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
 
         FormProcessor fp = new FormProcessor(request);
         int studyId = fp.getInt(ARG_STUDYID);
@@ -98,7 +108,7 @@ public class DeleteStudyUserRoleServlet extends SecureController {
     // }
     //
     // SQLFactory factory = SQLFactory.getInstance();
-    // UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+    // UserAccountDAO udao = this._userAccountDAO;
     //
     // FormProcessor fp = new FormProcessor(request);
     // int studyId = fp.getInt(ARG_STUDYID);

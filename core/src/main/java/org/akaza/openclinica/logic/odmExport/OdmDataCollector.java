@@ -9,6 +9,8 @@
 
 package org.akaza.openclinica.logic.odmExport;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,7 +36,10 @@ import org.slf4j.LoggerFactory;
  * @author ywang (May, 2008)
  */
 
+@Component
 public abstract class OdmDataCollector {
+    private StudyDAO _studyDAO;
+
     protected DataSource ds;
     protected DatasetBean dataset;
     private ODMBean odmbean;
@@ -45,7 +50,10 @@ public abstract class OdmDataCollector {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    public OdmDataCollector() {
+    @Autowired
+    public OdmDataCollector(StudyDAO _studyDAO) {
+        this._studyDAO = _studyDAO;
+
     }
 
     /**
@@ -133,7 +141,7 @@ public abstract class OdmDataCollector {
         }
         this.dataset = dataset;
         odmbean = new ODMBean();
-        StudyBean study = (StudyBean) new StudyDAO(ds).findByPK(dataset.getStudyId());
+        StudyBean study = (StudyBean) this._studyDAO.findByPK(dataset.getStudyId());
         if (currentStudy.isSite(currentStudy.getParentStudyId())) {
             this.studyBaseMap = new LinkedHashMap<String, OdmStudyBase>();
             this.studyBaseMap.put(study.getOid(), new OdmStudyBase(ds, study));
@@ -157,7 +165,7 @@ public abstract class OdmDataCollector {
      */
     public LinkedHashMap<String, OdmStudyBase> populateCompletedStudyBaseMap(int parentStudyId) {
         LinkedHashMap<String, OdmStudyBase> Bases = new LinkedHashMap<String, OdmStudyBase>();
-        StudyDAO sdao = new StudyDAO(this.ds);
+        StudyDAO sdao = this._studyDAO;
         for (StudyBean s : (ArrayList<StudyBean>) sdao.findAllByParentStudyIdOrderedByIdAsc(parentStudyId)) {
             Bases.put(s.getOid(), new OdmStudyBase(ds, s));
         }
@@ -173,7 +181,7 @@ public abstract class OdmDataCollector {
      */
     public LinkedHashMap<String, OdmStudyBase> populateStudyBaseMap(int studyId) {
         LinkedHashMap<String, OdmStudyBase> Bases = new LinkedHashMap<String, OdmStudyBase>();
-        StudyBean study = (StudyBean) new StudyDAO(this.ds).findByPK(studyId);
+        StudyBean study = (StudyBean) this._studyDAO.findByPK(studyId);
         Bases.put(study.getOid(), new OdmStudyBase(ds, study));
         return Bases;
     }

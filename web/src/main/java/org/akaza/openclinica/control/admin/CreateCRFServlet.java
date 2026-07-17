@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
@@ -29,7 +31,15 @@ import java.util.Locale;
  * 
  * @author jxu
  */
+@Component
 public class CreateCRFServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+
+    @Autowired
+    public CreateCRFServlet(CRFDAO _cRFDAO) {
+        this._cRFDAO = _cRFDAO;
+    }
+
 
     Locale locale;
 
@@ -65,7 +75,7 @@ public class CreateCRFServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFDAO cdao = this._cRFDAO;
         String action = request.getParameter("action");
 
         FormProcessor fp = new FormProcessor(request);

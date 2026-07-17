@@ -7,6 +7,9 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +45,15 @@ import org.akaza.openclinica.dao.submit.SubjectDAO;
  *         TODO To change the template for this generated type comment go to Window - Preferences - Java - Code Style -
  *         Code Templates
  */
+@Component
 public class DiscrepancyNoteDAO extends AuditableEntityDAO {
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
     // if true, we fetch the mapping along with the bean
     // only applies to functions which return a single bean
     private boolean fetchMapping = false;
@@ -67,8 +78,16 @@ public class DiscrepancyNoteDAO extends AuditableEntityDAO {
         getCurrentPKName = "getCurrentPrimaryKey";
     }
 
-    public DiscrepancyNoteDAO(DataSource ds) {
+    @Autowired
+    public DiscrepancyNoteDAO(DataSource ds, EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, StudyEventDAO _studyEventDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, UserAccountDAO _userAccountDAO) {
         super(ds);
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+
         setQueryNames();
     }
 
@@ -151,7 +170,7 @@ public class DiscrepancyNoteDAO extends AuditableEntityDAO {
         eb.setStudyId(selectInt(hm, "study_id"));
         eb.setAssignedUserId(selectInt(hm, "assigned_user_id"));
         if (eb.getAssignedUserId() > 0) {
-            UserAccountDAO userAccountDAO = new UserAccountDAO(ds);
+            UserAccountDAO userAccountDAO = this._userAccountDAO;
             UserAccountBean assignedUser = (UserAccountBean) userAccountDAO.findByPK(eb.getAssignedUserId());
             eb.setAssignedUser(assignedUser);
         }
@@ -1881,15 +1900,15 @@ public class DiscrepancyNoteDAO extends AuditableEntityDAO {
     public static AuditableEntityDAO getAEDAO(DiscrepancyNoteBean note, DataSource ds) {
         String entityType = note.getEntityType();
         if ("subject".equalsIgnoreCase(entityType)) {
-            return new SubjectDAO(ds);
+            return this._subjectDAO;
         } else if ("studySub".equalsIgnoreCase(entityType)) {
-            return new StudySubjectDAO(ds);
+            return this._studySubjectDAO;
         } else if ("eventCrf".equalsIgnoreCase(entityType)) {
-            return new EventCRFDAO(ds);
+            return this._eventCRFDAO;
         } else if ("studyEvent".equalsIgnoreCase(entityType)) {
-            return new StudyEventDAO(ds);
+            return this._studyEventDAO;
         } else if ("itemData".equalsIgnoreCase(entityType)) {
-            return new ItemDataDAO(ds);
+            return this._itemDataDAO;
         }
 
         return null;

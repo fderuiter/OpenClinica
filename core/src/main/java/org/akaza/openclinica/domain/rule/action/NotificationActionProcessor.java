@@ -1,5 +1,8 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +42,15 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
+@Component
 public class NotificationActionProcessor implements ActionProcessor, Runnable {
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 	DataSource ds;
@@ -64,8 +75,16 @@ public class NotificationActionProcessor implements ActionProcessor, Runnable {
 	String emailSubject;
 	String participateStatus;
 
-	public NotificationActionProcessor(DataSource ds, JavaMailSenderImpl mailSender, RuleActionBean ruleActionBean, ParticipantDTO pDTO, ParticipantPortalRegistrar participantPortalRegistrar,
-			String email) {
+	@Autowired
+    public NotificationActionProcessor(DataSource ds, JavaMailSenderImpl mailSender, RuleActionBean ruleActionBean, ParticipantDTO pDTO, ParticipantPortalRegistrar participantPortalRegistrar,
+			String email, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyParameterValueDAO _studyParameterValueDAO, StudySubjectDAO _studySubjectDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+
 		this.ds = ds;
 		this.mailSender = mailSender;
 		this.ruleActionBean = ruleActionBean;
@@ -92,9 +111,9 @@ public class NotificationActionProcessor implements ActionProcessor, Runnable {
 		this.ds = ds;
 		this.mailSender = mailSender;
 		this.ruleSetRule = ruleSetRule;
-		ssdao = new StudySubjectDAO(ds);
-		udao = new UserAccountDAO(ds);
-  	   spvdao = new StudyParameterValueDAO(ds);
+		ssdao = this._studySubjectDAO;
+		udao = this._userAccountDAO;
+  	   spvdao = this._studyParameterValueDAO;
 
 
 
@@ -314,19 +333,19 @@ public class NotificationActionProcessor implements ActionProcessor, Runnable {
 	}
 
 	public ArrayList<StudySubjectBean> getAllParticipantStudySubjectsPerStudy(int studyId, DataSource ds) {
-		StudySubjectDAO ssdao = new StudySubjectDAO(ds);
+		StudySubjectDAO ssdao = this._studySubjectDAO;
 		ArrayList<StudySubjectBean> ssBeans = ssdao.findAllByStudyId(studyId);
 		return ssBeans;
 	}
 
 	public StudyEventBean getStudyEvent(StudySubjectBean ssBean, DataSource ds) {
-		StudyEventDAO studyEventDao = new StudyEventDAO(ds);
+		StudyEventDAO studyEventDao = this._studyEventDAO;
 		StudyEventBean seBean = (StudyEventBean) studyEventDao.getNextScheduledEvent(ssBean.getOid());
 		return seBean;
 	}
 
 	private StudyBean getParentStudy(DataSource ds, StudyBean study) {
-		StudyDAO sdao = new StudyDAO(ds);
+		StudyDAO sdao = this._studyDAO;
 		if (study.getParentStudyId() == 0) {
 			return study;
 		} else {
@@ -337,12 +356,12 @@ public class NotificationActionProcessor implements ActionProcessor, Runnable {
 	}
 
 	public StudyEventDefinitionBean getStudyEventDefnBean(int sed_Id) {
-		StudyEventDefinitionDAO sedao = new StudyEventDefinitionDAO(ds);
+		StudyEventDefinitionDAO sedao = this._studyEventDefinitionDAO;
 		return (StudyEventDefinitionBean) sedao.findByPK(sed_Id);
 	};
 
 	public StudyBean getStudyBean(int studyId) {
-		StudyDAO sdao = new StudyDAO(ds);
+		StudyDAO sdao = this._studyDAO;
 		return (StudyBean) sdao.findByPK(studyId);
 
 	}

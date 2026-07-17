@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,7 +47,17 @@ import org.akaza.openclinica.web.SQLInitServlet;
  *
  * @author ssachs
  */
+@Component
 public class CreateUserAccountServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public CreateUserAccountServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     // < ResourceBundle restext;
     Locale locale;
@@ -85,7 +97,7 @@ public class CreateUserAccountServlet extends SecureController {
     protected void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         // YW 11-28-2007 << list sites under their studies
         ArrayList<StudyBean> all = (ArrayList<StudyBean>) sdao.findAll();
         ArrayList<StudyBean> finalList = new ArrayList<StudyBean>();
@@ -191,7 +203,7 @@ public class CreateUserAccountServlet extends SecureController {
             setPresetValues(presetValues);
             forwardPage(Page.CREATE_ACCOUNT);
         } else {
-            UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+            UserAccountDAO udao = this._userAccountDAO;
             Validator v = new Validator(request);
 
             // username must not be blank,
@@ -383,7 +395,7 @@ public class CreateUserAccountServlet extends SecureController {
     }
 
 	public Boolean isApiKeyExist(String uuid) {
-		UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+		UserAccountDAO udao = this._userAccountDAO;
 		UserAccountBean uBean = (UserAccountBean) udao.findByApiKey(uuid);
 		if (uBean == null || !uBean.isActive()) {
 			return false;

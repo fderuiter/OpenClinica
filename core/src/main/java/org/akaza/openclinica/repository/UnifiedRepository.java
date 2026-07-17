@@ -1,5 +1,10 @@
 package org.akaza.openclinica.repository;
 
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.akaza.openclinica.dao.submit.CRFVersionDAO;
+import org.akaza.openclinica.dao.submit.ItemDAO;
+
+
 import javax.sql.DataSource;
 
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -28,6 +33,15 @@ import java.util.ArrayList;
 
 @Repository
 public class UnifiedRepository {
+    private ItemDAO _itemDAO;
+
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+
+    private StudyDAO _studyDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
 
     private DataSource dataSource;
     
@@ -59,17 +73,26 @@ public class UnifiedRepository {
 
 
     @Autowired
-    public UnifiedRepository(DataSource dataSource) {
+    public UnifiedRepository(DataSource dataSource, StudyDAO _studyDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemDAO _itemDAO) {
+        this._itemDAO = _itemDAO;
+
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+
+        this._studyDAO = _studyDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+
         this.dataSource = dataSource;
-        this.studyDaoJdbc = new StudyDAO(dataSource);
-        this.studySubjectDaoJdbc = new StudySubjectDAO(dataSource);
-        this.subjectDaoJdbc = new SubjectDAO(dataSource);
+        this.studyDaoJdbc = this._studyDAO;
+        this.studySubjectDaoJdbc = this._studySubjectDAO;
+        this.subjectDaoJdbc = this._subjectDAO;
         this.crfDaoJdbc = new org.akaza.openclinica.dao.admin.CRFDAO(dataSource);
         this.crfVersionDaoJdbc = new org.akaza.openclinica.dao.submit.CRFVersionDAO(dataSource);
-        this.studyEventDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDAO(dataSource);
-        this.studyEventDefinitionDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO(dataSource);
+        this.studyEventDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDAO(dataSource, _cRFDAO, _cRFVersionDAO, _cRFDAO, _cRFVersionDAO);
+        this.studyEventDefinitionDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO(dataSource, _studyDAO, _studyDAO);
         this.itemDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDAO(dataSource);
-        this.itemDataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDataDAO(dataSource);
+        this.itemDataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDataDAO(dataSource, _itemDAO, _itemDAO);
         this.itemFormMetadataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemFormMetadataDAO(dataSource);
     }
     

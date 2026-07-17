@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,7 +59,31 @@ import org.akaza.openclinica.web.bean.FilterRow;
  * @author thickerson
  *
  */
+@Component
 public class CreateDatasetServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private DatasetDAO _datasetDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private FilterDAO _filterDAO;
+    private ItemDAO _itemDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+
+    @Autowired
+    public CreateDatasetServlet(CRFDAO _cRFDAO, DatasetDAO _datasetDAO, EventCRFDAO _eventCRFDAO, FilterDAO _filterDAO, ItemDAO _itemDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._datasetDAO = _datasetDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._filterDAO = _filterDAO;
+        this._itemDAO = _itemDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+    }
+
     public static final String BEAN_YEARS = "years";
 
     public static final String BEAN_MONTHS = "months";
@@ -123,8 +149,8 @@ public class CreateDatasetServlet extends SecureController {
      */
 
     public ArrayList setUpStudyGroups() {
-        StudyDAO studydao = new StudyDAO(sm.getDataSource());
-        StudyGroupClassDAO sgclassdao = new StudyGroupClassDAO(sm.getDataSource());
+        StudyDAO studydao = this._studyDAO;
+        StudyGroupClassDAO sgclassdao = this._studyGroupClassDAO;
         StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
         ArrayList sgclasses = sgclassdao.findAllActiveByStudy(theStudy);
         // StudyGroupClassBean sgclass = (StudyGroupClassBean)sgclasses.get(0);
@@ -156,9 +182,9 @@ public class CreateDatasetServlet extends SecureController {
             if ("begin".equalsIgnoreCase(action)) {
                 // step 2 -- select study events/crfs
 
-                StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-                EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                StudyEventDAO sedao = this._studyEventDAO;
+                StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
+                EventCRFDAO ecdao = this._eventCRFDAO;
                 StudyBean studyWithEventDefinitions = currentStudy;
                 if (currentStudy.getParentStudyId() > 0) {
                     studyWithEventDefinitions = new StudyBean();
@@ -167,7 +193,7 @@ public class CreateDatasetServlet extends SecureController {
                 }
                 ArrayList seds = seddao.findAllActiveByStudy(studyWithEventDefinitions);
 
-                CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+                CRFDAO crfdao = this._cRFDAO;
                 HashMap events = new LinkedHashMap();
                 for (int i = 0; i < seds.size(); i++) {
                     StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seds.get(i);
@@ -191,8 +217,8 @@ public class CreateDatasetServlet extends SecureController {
                     addPageMessage(respage.getString("not_have_study_definitions_assigned"));
                     forwardPage(Page.CREATE_DATASET_1);
                 } else {
-                    crfdao = new CRFDAO(sm.getDataSource());
-                    ItemDAO idao = new ItemDAO(sm.getDataSource());
+                    crfdao = this._cRFDAO;
+                    ItemDAO idao = this._itemDAO;
                     ArrayList sedItemIds = CreateDatasetServlet.allSedItemIdsInStudy(events, crfdao, idao);
 
                     request.setAttribute("numberOfStudyItems", Integer.toString(sedItemIds.size()));
@@ -319,7 +345,7 @@ public class CreateDatasetServlet extends SecureController {
                     request.setAttribute("newDataset", dsb);
 
                     if (fp.getString("submit").equals(resword.getString("continue_to_apply_filter"))) {
-                        // FilterDAO fdao = new FilterDAO(sm.getDataSource());
+                        // FilterDAO fdao = this._filterDAO;
                         // Collection filters = fdao.findAll();
                         // TODO make findAllByProject
                         // request.setAttribute("filters",filters);
@@ -373,7 +399,7 @@ public class CreateDatasetServlet extends SecureController {
                     if (((DatasetBean) session.getAttribute("newDataset")).getId() <= 0) {
                         // YW >>
                         // logger.info("dsName" + fp.getString("dsName"));
-                        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+                        DatasetDAO dsdao = this._datasetDAO;
                         DatasetBean dsBean = (DatasetBean) dsdao.findByNameAndStudy(fp.getString("dsName").trim(), currentStudy);
                         if (dsBean.getId() > 0) {
                             Validator.addError(errors, "dsName", restext.getString("dataset_name_used_by_another_choose_unique"));
@@ -421,7 +447,7 @@ public class CreateDatasetServlet extends SecureController {
                     // possibly done need to test, tbh 1/7/2005
                     FilterBean fb = (FilterBean) session.getAttribute("newFilter");
                     if (fb != null) {
-                        // FilterDAO fDAO = new FilterDAO(sm.getDataSource());
+                        // FilterDAO fDAO = this._filterDAO;
                         dsb.setSQLStatement(dsb.getSQLStatement() + " " + fb.getSQLStatement());
                     }
                     // YW 2-21-2008 << editing dataset becomes creating a new
@@ -460,7 +486,7 @@ public class CreateDatasetServlet extends SecureController {
                     // request.removeAttribute("newFilter");
                     forwardPage(Page.CREATE_DATASET_4);
                 } else {
-                    DatasetDAO ddao = new DatasetDAO(sm.getDataSource());
+                    DatasetDAO ddao = this._datasetDAO;
                     DatasetBean dsb = (DatasetBean) session.getAttribute("newDataset");
                     dsb.setStudyId(this.currentStudy.getId());
 
@@ -531,7 +557,7 @@ public class CreateDatasetServlet extends SecureController {
             db.getEventIds().add(new Integer(defId));
         }
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
         String defName = "";
         if (defId > 0 && crfId != -1) {
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(defId);
@@ -566,7 +592,7 @@ public class CreateDatasetServlet extends SecureController {
         }
 
         if (crfId != 0 && allItems != null) {
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFDAO cdao = this._cRFDAO;
             CRFBean crf = (CRFBean) cdao.findByPK(crfId);
 
             ArrayList newSelectItems = new ArrayList();
@@ -741,7 +767,7 @@ public class CreateDatasetServlet extends SecureController {
 
     private EntityBeanTable getFilterTable() {
         FormProcessor fp = new FormProcessor(request);
-        FilterDAO fdao = new FilterDAO(sm.getDataSource());
+        FilterDAO fdao = this._filterDAO;
         EntityBeanTable table = fp.getEntityBeanTable();
 
         ArrayList filters = (ArrayList) fdao.findAll();

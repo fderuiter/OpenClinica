@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.managestudy.StudyEventBean;
 import org.akaza.openclinica.bean.managestudy.StudySubjectBean;
@@ -33,7 +35,23 @@ import java.util.Date;
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
+@Component
 public class RemoveSubjectServlet extends SecureController {
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    @Autowired
+    public RemoveSubjectServlet(EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, StudyEventDAO _studyEventDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+    }
+
     /**
      *
      */
@@ -53,7 +71,7 @@ public class RemoveSubjectServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = this._subjectDAO;
         FormProcessor fp = new FormProcessor(request);
         int subjectId = fp.getInt("id");
 
@@ -66,11 +84,11 @@ public class RemoveSubjectServlet extends SecureController {
             SubjectBean subject = (SubjectBean) sdao.findByPK(subjectId);
 
             // find all study subjects
-            StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+            StudySubjectDAO ssdao = this._studySubjectDAO;
             ArrayList studySubs = ssdao.findAllBySubjectId(subjectId);
 
             // find study events
-            StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+            StudyEventDAO sedao = this._studyEventDAO;
             ArrayList events = sedao.findAllBySubjectId(subjectId);
             if ("confirm".equalsIgnoreCase(action)) {
                 request.setAttribute("subjectToRemove", subject);
@@ -97,7 +115,7 @@ public class RemoveSubjectServlet extends SecureController {
                     }
                 }
 
-                EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                EventCRFDAO ecdao = this._eventCRFDAO;
 
                 for (int j = 0; j < events.size(); j++) {
                     StudyEventBean event = (StudyEventBean) events.get(j);
@@ -109,7 +127,7 @@ public class RemoveSubjectServlet extends SecureController {
 
                         ArrayList eventCRFs = ecdao.findAllByStudyEvent(event);
 
-                        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                        ItemDataDAO iddao = this._itemDataDAO;
                         for (int k = 0; k < eventCRFs.size(); k++) {
                             EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(k);
                             if (!eventCRF.getStatus().equals(Status.DELETED)) {

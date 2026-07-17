@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
@@ -46,6 +48,13 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping(value="/InitialDataEntry")
 public class InitialDataEntryServlet extends DataEntryServlet {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public InitialDataEntryServlet(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     Locale locale;
 
@@ -93,7 +102,7 @@ public class InitialDataEntryServlet extends DataEntryServlet {
 //            }
 //        } else if (stage.equals(DataEntryStage.INITIAL_DATA_ENTRY)) {
 //            if (ub.getId() != ecb.getOwnerId() && !r.equals(Role.STUDYDIRECTOR) && !r.equals(Role.COORDINATOR)) {
-//                UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+//                UserAccountDAO udao = this._userAccountDAO;
 //                String ownerName = ((UserAccountBean) udao.findByPK(ecb.getOwnerId())).getName();
 //                this.session.setAttribute("mayProcessUploading", "false");
 //                MessageFormat mf = new MessageFormat("");

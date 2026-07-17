@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 // import org.akaza.openclinica.bean.core.Role;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -67,7 +69,33 @@ import org.slf4j.LoggerFactory;
  * @version CVS: $Id: AddNewSubjectServlet.java,v 1.15 2005/07/05 17:20:43 jxu
  *          Exp $
  */
+@Component
 public class AddNewSubjectServlet extends SecureController {
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+
+    @Autowired
+    public AddNewSubjectServlet(DiscrepancyNoteDAO _discrepancyNoteDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, StudyParameterValueDAO _studyParameterValueDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, SubjectGroupMapDAO _subjectGroupMapDAO) {
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+    }
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
@@ -136,9 +164,9 @@ public class AddNewSubjectServlet extends SecureController {
         checkStudyLocked(Page.LIST_STUDY_SUBJECTS, respage.getString("current_study_locked"));
         checkStudyFrozen(Page.LIST_STUDY_SUBJECTS, respage.getString("current_study_frozen"));
 
-        StudySubjectDAO ssd = new StudySubjectDAO(sm.getDataSource());
-        StudyDAO stdao = new StudyDAO(sm.getDataSource());
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
+        StudySubjectDAO ssd = this._studySubjectDAO;
+        StudyDAO stdao = this._studyDAO;
+        StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
         ArrayList classes = new ArrayList();
         panel.setStudyInfoShown(false);
         FormProcessor fp = new FormProcessor(request);
@@ -160,7 +188,7 @@ public class AddNewSubjectServlet extends SecureController {
             StudyBean parentStudy = (StudyBean) stdao.findByPK(parentStudyId);
             classes = sgcdao.findAllActiveByStudy(parentStudy);
         }
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean parentSPV = spvdao.findByHandleAndStudy(parentStudyId, "collectDob");
         currentStudy.getStudyParameterConfig().setCollectDob(parentSPV.getValue());
         parentSPV = spvdao.findByHandleAndStudy(parentStudyId, "genderRequired");
@@ -287,7 +315,7 @@ public class AddNewSubjectServlet extends SecureController {
 
             HashMap errors = v.validate();
 
-            SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+            SubjectDAO sdao = this._subjectDAO;
             String uniqueIdentifier = fp.getString(INPUT_UNIQUE_IDENTIFIER);// global
             // Id
             SubjectBean subjectWithSameId = new SubjectBean();
@@ -753,7 +781,7 @@ public class AddNewSubjectServlet extends SecureController {
                     studySubject = ssd.createWithoutGroup(studySubject);
                 }
                 if (!classes.isEmpty() && studySubject.isActive()) {
-                    SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
+                    SubjectGroupMapDAO sgmdao = this._subjectGroupMapDAO;
                     for (int i = 0; i < classes.size(); i++) {
                         StudyGroupClassBean group = (StudyGroupClassBean) classes.get(i);
                         int studyGroupId = group.getStudyGroupId();
@@ -778,7 +806,7 @@ public class AddNewSubjectServlet extends SecureController {
 
                 // save discrepancy notes into DB
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(FORM_DISCREPANCY_NOTES_NAME);
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = this._discrepancyNoteDAO;
 
                 String[] subjectFields = { INPUT_DOB, INPUT_YOB, INPUT_GENDER };
                 for (String element : subjectFields) {
@@ -895,8 +923,8 @@ public class AddNewSubjectServlet extends SecureController {
                 addPageMessage(restext.getString("not_a_valid_location"));
             } else {
                 logger.info("will create event with new subject");
-                StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+                StudyEventDAO sedao = this._studyEventDAO;
+                StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
                 StudyEventBean se = new StudyEventBean();
                 se.setLocation(location);
                 se.setDateStarted(startDate);
@@ -946,7 +974,7 @@ public class AddNewSubjectServlet extends SecureController {
     }
 
     protected void setUpBeans(ArrayList classes) throws Exception {
-        StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
+        StudyGroupDAO sgdao = this._studyGroupDAO;
         // addEntityList(BEAN_GROUPS, sgdao.findAllByStudy(currentStudy),
         // "A group must be available in order to add new subjects to this
         // study;

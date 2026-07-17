@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.managestudy.StudyEventBean;
 import org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean;
@@ -24,7 +26,15 @@ import java.util.Map;
  *
  * @author Douglas Rodrigues (drodrigues@openclinica.com)
  */
+@Component
 public class VariableSubstitutionHelper {
+    private ItemDAO _itemDAO;
+
+    @Autowired
+    public VariableSubstitutionHelper(ItemDAO _itemDAO) {
+        this._itemDAO = _itemDAO;
+    }
+
 
     private static final Logger LOG = LoggerFactory.getLogger(VariableSubstitutionHelper.class);
 
@@ -63,7 +73,7 @@ public class VariableSubstitutionHelper {
                                                       StudyBean study, StudyEventDefinitionBean eventDef,
                                                       StudyEventBean event, DataSource dataSource) {
 
-        ItemDAO itemDAO = new ItemDAO(dataSource);
+        ItemDAO itemDAO = this._itemDAO;
 
         List<ItemBean> items = itemDAO.findAllWithItemDataByCRFVersionId(
                 section.getCrfVersion().getId(), section.getEventCRF().getId());

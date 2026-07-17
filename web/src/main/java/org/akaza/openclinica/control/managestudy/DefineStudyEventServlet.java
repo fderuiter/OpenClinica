@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.NullValue;
 import org.akaza.openclinica.bean.core.NumericComparisonOperator;
@@ -53,7 +55,23 @@ import java.util.Map;
  * 
  * Defines a new study event
  */
+@Component
 public class DefineStudyEventServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
+    @Autowired
+    public DefineStudyEventServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+    }
+
     EventDefinitionCrfTagService eventDefinitionCrfTagService = null;
 
     /**
@@ -95,8 +113,8 @@ public class DefineStudyEventServlet extends SecureController {
         ArrayList crfsWithVersion = (ArrayList) session.getAttribute("crfsWithVersion");
         if (crfsWithVersion == null) {
             crfsWithVersion = new ArrayList();
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
-            CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+            CRFDAO cdao = this._cRFDAO;
+            CRFVersionDAO cvdao = this._cRFVersionDAO;
             ArrayList crfs = (ArrayList) cdao.findAllByStatus(Status.AVAILABLE);
 
             for (int i = 0; i < crfs.size(); i++) {
@@ -211,7 +229,7 @@ public class DefineStudyEventServlet extends SecureController {
             logger.debug("no errors in the first section");
             // logger.debug("actionName*******" + fp.getString("actionName"));
             //debugger.debug("pageNum*******" + fp.getString("pageNum"));
-            CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
+            CRFVersionDAO vdao = this._cRFVersionDAO;
             ArrayList crfArray = new ArrayList();
             /*
              * The tmpCRFIdMap will hold all the selected CRFs in the session
@@ -284,7 +302,7 @@ public class DefineStudyEventServlet extends SecureController {
 
         
         ArrayList eventDefinitionCRFs = new ArrayList();
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
         for (int i = 0; i < sed.getCrfs().size(); i++) {
             EventDefinitionCRFBean edcBean = new EventDefinitionCRFBean();
             int crfId = fp.getInt("crfId" + i);
@@ -388,7 +406,7 @@ public class DefineStudyEventServlet extends SecureController {
         
 
         
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;    
             String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();
              request.setAttribute("participateFormStatus",participateFormStatus );
              if (participateFormStatus.equals("enabled")) baseUrl();
@@ -400,7 +418,7 @@ public class DefineStudyEventServlet extends SecureController {
     
         ArrayList <EventDefinitionCRFBean>  edcsInSession = (ArrayList<EventDefinitionCRFBean>) session.getAttribute("edCRFs");
         int parentStudyId=sed.getStudyId();
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
         ArrayList <EventDefinitionCRFBean> eventDefCrfList =(ArrayList <EventDefinitionCRFBean>) edcdao.findAllActiveSitesAndStudiesPerParentStudy(parentStudyId);
        
         if(eventDefCrfList.size()!=0)
@@ -465,7 +483,7 @@ public class DefineStudyEventServlet extends SecureController {
 
     private void confirmDefinition2() throws Exception {
         FormProcessor fp = new FormProcessor(request);
-        CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO vdao = this._cRFVersionDAO;
         ArrayList crfArray = new ArrayList();
         Map tmpCRFIdMap = (HashMap) session.getAttribute("tmpCRFIdMap");
         // trying to avoid NPE not sure why we would get it there ((tmpCRFIdMap.containsKey(id))), tbh
@@ -523,7 +541,7 @@ public class DefineStudyEventServlet extends SecureController {
             }
         }
         request.removeAttribute("tmpCRFIdMap");
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;    
         
         if (crfArray.size() == 0) {// no crf seleted
             // addPageMessage("At least one CRF must be selected.");
@@ -566,7 +584,7 @@ public class DefineStudyEventServlet extends SecureController {
      * 
      */
     private void submitDefinition() throws NullPointerException {
-        StudyEventDefinitionDAO edao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO edao = this._studyEventDefinitionDAO;
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) session.getAttribute("definition");
         // added tbh 092007, to catch bug # 1531
         if (sed.getName() == "" || sed.getName() == null) {
@@ -588,9 +606,9 @@ public class DefineStudyEventServlet extends SecureController {
         sed.setStatus(Status.AVAILABLE);
         StudyEventDefinitionBean sed1 = (StudyEventDefinitionBean) edao.create(sed);
 
-        EventDefinitionCRFDAO cdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        EventDefinitionCRFDAO cdao = this._eventDefinitionCRFDAO;
+        CRFDAO crfdao = this._cRFDAO;
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
         ArrayList eventDefinitionCRFs = new ArrayList();
         if (session.getAttribute("edCRFs") != null) {
             eventDefinitionCRFs = (ArrayList) session.getAttribute("edCRFs");

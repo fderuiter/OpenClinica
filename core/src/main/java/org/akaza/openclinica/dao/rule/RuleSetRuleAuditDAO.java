@@ -7,6 +7,9 @@
  */
 package org.akaza.openclinica.dao.rule;
 
+import org.akaza.openclinica.dao.rule.RuleSetDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -29,14 +32,24 @@ import java.util.Iterator;
 
 import javax.sql.DataSource;
 
+@Component
 public class RuleSetRuleAuditDAO extends EntityDAO {
+    private RuleSetDAO _ruleSetDAO;
+    private RuleSetRuleDAO _ruleSetRuleDAO;
+    private UserAccountDAO _userAccountDAO;
+
 
     RuleSetDAO ruleSetDao;
     RuleSetRuleDAO ruleSetRuleDao;
     UserAccountDAO userAccountDao;
 
-    public RuleSetRuleAuditDAO(DataSource ds) {
+    @Autowired
+    public RuleSetRuleAuditDAO(DataSource ds, RuleSetDAO _ruleSetDAO, RuleSetRuleDAO _ruleSetRuleDAO, UserAccountDAO _userAccountDAO) {
         super(ds);
+        this._ruleSetDAO = _ruleSetDAO;
+        this._ruleSetRuleDAO = _ruleSetRuleDAO;
+        this._userAccountDAO = _userAccountDAO;
+
         this.getCurrentPKName = "findCurrentPKValue";
     }
 
@@ -62,15 +75,15 @@ public class RuleSetRuleAuditDAO extends EntityDAO {
     }
 
     private RuleSetDAO getRuleSetDao() {
-        return this.ruleSetDao != null ? this.ruleSetDao : new RuleSetDAO(ds);
+        return this.ruleSetDao != null ? this.ruleSetDao : this._ruleSetDAO;
     }
 
     private RuleSetRuleDAO getRuleSetRuleDao() {
-        return this.ruleSetRuleDao != null ? this.ruleSetRuleDao : new RuleSetRuleDAO(ds);
+        return this.ruleSetRuleDao != null ? this.ruleSetRuleDao : this._ruleSetRuleDAO;
     }
 
     private UserAccountDAO getUserAccountDao() {
-        return this.userAccountDao != null ? this.userAccountDao : new UserAccountDAO(ds);
+        return this.userAccountDao != null ? this.userAccountDao : this._userAccountDAO;
     }
 
     @Override

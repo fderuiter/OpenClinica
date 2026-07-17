@@ -1,5 +1,8 @@
 package org.akaza.openclinica.control.extract;
 
+import org.akaza.openclinica.dao.submit.EventCRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptySet;
 
@@ -55,7 +58,33 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @see ChooseDownloadFormat
  * @see org.akaza.openclinica.bean.extract.DownloadDiscrepancyNote
  */
+@Component
 public class DiscrepancyNoteOutputServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public DiscrepancyNoteOutputServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, DiscrepancyNoteDAO _discrepancyNoteDAO, EventCRFDAO _eventCRFDAO, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
     // These are the headers that must appear in the HTTP response, when sending a
     // file back to the user
     public static String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
@@ -264,16 +293,16 @@ public class DiscrepancyNoteOutputServlet extends SecureController {
         resword = ResourceBundleProvider.getWordsBundle(l);
         resformat = ResourceBundleProvider.getFormatBundle(l);
         SimpleDateFormat sdf = new SimpleDateFormat(resformat.getString("date_format_string"), ResourceBundleProvider.getLocale());
-        DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(sm.getDataSource());
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+        DiscrepancyNoteDAO dndao = this._discrepancyNoteDAO;
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+        StudyEventDAO sedao = this._studyEventDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        CRFDAO cdao = this._cRFDAO;
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
+        EventCRFDAO ecdao = this._eventCRFDAO;
+        ItemDataDAO iddao = this._itemDataDAO;
+        ItemDAO idao = this._itemDAO;
+        StudyDAO studyDao = this._studyDAO;
         ItemGroupMetadataDAO<String, ArrayList> igmdao = new ItemGroupMetadataDAO<String, ArrayList>(sm.getDataSource());
         ItemGroupDAO<String, ArrayList> igdao = new ItemGroupDAO<String, ArrayList>(sm.getDataSource());
 

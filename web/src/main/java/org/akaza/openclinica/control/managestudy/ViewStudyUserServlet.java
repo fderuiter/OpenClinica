@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -25,7 +27,17 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class ViewStudyUserServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ViewStudyUserServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     /**
      *
      */
@@ -46,7 +58,7 @@ public class ViewStudyUserServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
         String name = request.getParameter("name");
         String studyIdString = request.getParameter("studyId");
        
@@ -65,7 +77,7 @@ public class ViewStudyUserServlet extends SecureController {
             StudyUserRoleBean uRole = udao.findRoleByUserNameAndStudyId(name, studyId);
             request.setAttribute("uRole", uRole);
 
-            StudyDAO sdao = new StudyDAO(sm.getDataSource());
+            StudyDAO sdao = this._studyDAO;
             StudyBean study = (StudyBean) sdao.findByPK(studyId);
             request.setAttribute("uStudy", study);
             request.setAttribute("siteRoleMap", Role.siteRoleMap);

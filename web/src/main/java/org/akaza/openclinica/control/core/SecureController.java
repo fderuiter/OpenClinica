@@ -8,6 +8,8 @@
 
 package org.akaza.openclinica.control.core;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -149,7 +151,37 @@ import org.springframework.security.core.userdetails.UserDetails;
  *
  * @author ssachs
  */
+@Component
 public abstract class SecureController extends HttpServlet {
+    private ArchivedDatasetFileDAO _archivedDatasetFileDAO;
+    private CRFDAO _cRFDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public SecureController(ArchivedDatasetFileDAO _archivedDatasetFileDAO, CRFDAO _cRFDAO, EventCRFDAO _eventCRFDAO, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, StudyParameterValueDAO _studyParameterValueDAO, StudySubjectDAO _studySubjectDAO) {
+        this._archivedDatasetFileDAO = _archivedDatasetFileDAO;
+        this._cRFDAO = _cRFDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
     protected ServletContext context;
     protected SessionManager sm;
     // protected final Logger logger =
@@ -353,7 +385,7 @@ public abstract class SecureController extends HttpServlet {
 
     private String decodeLINKURL(String successMsg, Integer datasetId) {
 
-        ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(sm.getDataSource());
+        ArchivedDatasetFileDAO asdfDAO = this._archivedDatasetFileDAO;
 
         ArrayList<ArchivedDatasetFileBean> fileBeans = asdfDAO.findByDatasetId(datasetId);
 
@@ -426,10 +458,10 @@ public abstract class SecureController extends HttpServlet {
             ub = sm.getUserBean();
             session.setAttribute("userBean", ub);
 
-            StudyDAO sdao = new StudyDAO(sm.getDataSource());
+            StudyDAO sdao = this._studyDAO;
             if (currentStudy == null || currentStudy.getId() <= 0) {
                 if (ub.getId() > 0 && ub.getActiveStudyId() > 0) {
-                    StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+                    StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
                     currentStudy = (StudyBean) sdao.findByPK(ub.getActiveStudyId());
 
                     ArrayList studyParameters = spvdao.findParamConfigByStudy(currentStudy);
@@ -789,7 +821,7 @@ public abstract class SecureController extends HttpServlet {
      * @param ds javax.sql.DataSource
      */
     protected boolean entityIncluded(int entityId, String userName, AuditableEntityDAO adao, DataSource ds) {
-        StudyDAO sdao = new StudyDAO(ds);
+        StudyDAO sdao = this._studyDAO;
         ArrayList<StudyBean> studies = (ArrayList<StudyBean>) sdao.findAllByUserNotRemoved(userName);
         for (int i = 0; i < studies.size(); ++i) {
             if (adao.findByPKAndStudy(entityId, studies.get(i)).getId() > 0) {
@@ -872,8 +904,8 @@ public abstract class SecureController extends HttpServlet {
     }
 
     public ArrayList getEventDefinitionsByCurrentStudy() {
-        StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyDAO studyDAO = this._studyDAO;
+        StudyEventDefinitionDAO studyEventDefinitionDAO = this._studyEventDefinitionDAO;
         int parentStudyId = currentStudy.getParentStudyId();
         ArrayList allDefs = new ArrayList();
         if (parentStudyId > 0) {
@@ -887,9 +919,9 @@ public abstract class SecureController extends HttpServlet {
     }
 
     public ArrayList getStudyGroupClassesByCurrentStudy() {
-        StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
-        StudyGroupClassDAO studyGroupClassDAO = new StudyGroupClassDAO(sm.getDataSource());
-        StudyGroupDAO studyGroupDAO = new StudyGroupDAO(sm.getDataSource());
+        StudyDAO studyDAO = this._studyDAO;
+        StudyGroupClassDAO studyGroupClassDAO = this._studyGroupClassDAO;
+        StudyGroupDAO studyGroupDAO = this._studyGroupDAO;
         int parentStudyId = currentStudy.getParentStudyId();
         ArrayList studyGroupClasses = new ArrayList();
         if (parentStudyId > 0) {
@@ -1048,29 +1080,29 @@ public abstract class SecureController extends HttpServlet {
 
 
     public DiscrepancyNoteBean getNoteInfo(DiscrepancyNoteBean note) {
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = this._studySubjectDAO;
         if ("itemData".equalsIgnoreCase(note.getEntityType())) {
             int itemDataId = note.getEntityId();
-            ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+            ItemDataDAO iddao = this._itemDataDAO;
             ItemDataBean itemData = (ItemDataBean) iddao.findByPK(itemDataId);
-            ItemDAO idao = new ItemDAO(sm.getDataSource());
+            ItemDAO idao = this._itemDAO;
             if (StringUtil.isBlank(note.getEntityName())) {
                 ItemBean item = (ItemBean) idao.findByPK(itemData.getItemId());
                 note.setEntityName(item.getName());
                 request.setAttribute("item", item);
             }
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
+            EventCRFDAO ecdao = this._eventCRFDAO;
+            StudyEventDAO svdao = this._studyEventDAO;
 
             EventCRFBean ec = (EventCRFBean) ecdao.findByPK(itemData.getEventCRFId());
             StudyEventBean event = (StudyEventBean) svdao.findByPK(ec.getStudyEventId());
 
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+            StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(event.getStudyEventDefinitionId());
             note.setEventName(sed.getName());
             note.setEventStart(event.getDateStarted());
 
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFDAO cdao = this._cRFDAO;
             CRFBean crf = cdao.findByVersionId(ec.getCRFVersionId());
             note.setCrfName(crf.getName());
             note.setEventCRFId(ec.getId());
@@ -1087,18 +1119,18 @@ public abstract class SecureController extends HttpServlet {
 
         } else if ("eventCrf".equalsIgnoreCase(note.getEntityType())) {
             int eventCRFId = note.getEntityId();
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
+            EventCRFDAO ecdao = this._eventCRFDAO;
+            StudyEventDAO svdao = this._studyEventDAO;
 
             EventCRFBean ec = (EventCRFBean) ecdao.findByPK(eventCRFId);
             StudyEventBean event = (StudyEventBean) svdao.findByPK(ec.getStudyEventId());
 
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+            StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(event.getStudyEventDefinitionId());
             note.setEventName(sed.getName());
             note.setEventStart(event.getDateStarted());
 
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFDAO cdao = this._cRFDAO;
             CRFBean crf = cdao.findByVersionId(ec.getCRFVersionId());
             note.setCrfName(crf.getName());
             StudySubjectBean ss = (StudySubjectBean) ssdao.findByPK(ec.getStudySubjectId());
@@ -1107,10 +1139,10 @@ public abstract class SecureController extends HttpServlet {
 
         } else if ("studyEvent".equalsIgnoreCase(note.getEntityType())) {
             int eventId = note.getEntityId();
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
+            StudyEventDAO svdao = this._studyEventDAO;
             StudyEventBean event = (StudyEventBean) svdao.findByPK(eventId);
 
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+            StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(event.getStudyEventDefinitionId());
             note.setEventName(sed.getName());
             note.setEventStart(event.getDateStarted());

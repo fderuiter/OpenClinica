@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
@@ -47,7 +49,29 @@ import java.util.Map;
  * @author jxu
  *
  */
+@Component
 public class ListEventDefinitionServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ListEventDefinitionServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDataDAO _itemDataDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, UserAccountDAO _userAccountDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     Locale locale;
 
@@ -94,18 +118,18 @@ public class ListEventDefinitionServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyEventDefinitionDAO edao = new StudyEventDefinitionDAO(sm.getDataSource());
-        UserAccountDAO sdao = new UserAccountDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        CRFDAO crfDao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO crfVersionDao = new CRFVersionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO edao = this._studyEventDefinitionDAO;
+        UserAccountDAO sdao = this._userAccountDAO;
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
+        CRFDAO crfDao = this._cRFDAO;
+        CRFVersionDAO crfVersionDao = this._cRFVersionDAO;
         ArrayList seds = edao.findAllByStudy(currentStudy);
 
         // request.setAttribute("seds", seds);
 
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        StudyEventDAO sedao = this._studyEventDAO;
+        EventCRFDAO ecdao = this._eventCRFDAO;
+        ItemDataDAO iddao = this._itemDataDAO;
         for (int i = 0; i < seds.size(); i++) {
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seds.get(i);
             Collection eventDefinitionCRFlist = edcdao.findAllParentsByDefinition(sed.getId());

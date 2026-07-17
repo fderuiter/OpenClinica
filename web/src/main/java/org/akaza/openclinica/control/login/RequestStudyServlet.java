@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.login;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.core.TermType;
@@ -30,7 +32,15 @@ import java.util.HashMap;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class RequestStudyServlet extends SecureController {
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public RequestStudyServlet(StudyDAO _studyDAO) {
+        this._studyDAO = _studyDAO;
+    }
+
     @Override
     public void mayProceed() throws InsufficientPermissionException {
 
@@ -40,7 +50,7 @@ public class RequestStudyServlet extends SecureController {
     public void processRequest() throws Exception {
 
         String action = request.getParameter("action");
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         ArrayList studies = sdao.findAllByStatus(Status.AVAILABLE);
         ArrayList roles = Role.toArrayList();
         roles.remove(Role.ADMIN); // admin is not a user role, only used for
@@ -82,7 +92,7 @@ public class RequestStudyServlet extends SecureController {
             newRole.setRole(Role.get(fp.getInt("studyRoleId")));
         }
         newRole.setStudyId(fp.getInt("studyId"));
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         StudyBean studyRequested = (StudyBean) sdao.findByPK(newRole.getStudyId());
         newRole.setStudyName(studyRequested.getName());
         session.setAttribute("newRole", newRole);

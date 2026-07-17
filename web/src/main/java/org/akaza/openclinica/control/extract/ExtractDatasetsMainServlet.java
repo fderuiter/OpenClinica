@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.control.form.FormProcessor;
@@ -30,7 +32,15 @@ import java.util.HashMap;
  * @author thickerson
  *
  */
+@Component
 public class ExtractDatasetsMainServlet extends SecureController {
+    private DatasetDAO _datasetDAO;
+
+    @Autowired
+    public ExtractDatasetsMainServlet(DatasetDAO _datasetDAO) {
+        this._datasetDAO = _datasetDAO;
+    }
+
 
     public static final String PATH = "ExtractDatasetsMain";
     public static final String ARG_USER_ID = "userId";
@@ -42,7 +52,7 @@ public class ExtractDatasetsMainServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = this._datasetDAO;
         EntityBeanTable table = fp.getEntityBeanTable();
 
         ArrayList datasets = (ArrayList) dsdao.findTopFive(currentStudy);
@@ -63,7 +73,7 @@ public class ExtractDatasetsMainServlet extends SecureController {
 
         request.setAttribute("table", table);
         // the code above replaces the following lines:
-        // DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        // DatasetDAO dsdao = this._datasetDAO;
         // ArrayList datasets = (ArrayList)dsdao.findTopFive();
         // request.setAttribute("datasets", datasets);
         resetPanel();

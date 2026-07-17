@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.submit.CRFVersionBean;
 import org.akaza.openclinica.bean.submit.ItemBean;
@@ -33,7 +35,25 @@ import java.util.Locale;
  *
  * View all related metadata for an item
  */
+@Component
 public class ViewItemDetailServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private ItemGroupMetadataDAO _itemGroupMetadataDAO;
+    private SectionDAO _sectionDAO;
+
+    @Autowired
+    public ViewItemDetailServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO, ItemGroupMetadataDAO _itemGroupMetadataDAO, SectionDAO _sectionDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._itemGroupMetadataDAO = _itemGroupMetadataDAO;
+        this._sectionDAO = _sectionDAO;
+    }
+
 
     Locale locale;
     // < ResourceBundle respage;
@@ -63,12 +83,12 @@ public class ViewItemDetailServlet extends SecureController {
         FormProcessor fp = new FormProcessor(request);
         int itemId = fp.getInt(ITEM_ID);
         String itemOid = fp.getString(ITEM_OID);
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(sm.getDataSource());
-        ItemGroupMetadataDAO igmdao = new ItemGroupMetadataDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        SectionDAO sectionDao = new SectionDAO(sm.getDataSource());
+        ItemDAO idao = this._itemDAO;
+        ItemFormMetadataDAO ifmdao = this._itemFormMetadataDAO;
+        ItemGroupMetadataDAO igmdao = this._itemGroupMetadataDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        CRFDAO cdao = this._cRFDAO;
+        SectionDAO sectionDao = this._sectionDAO;
 
         if (itemId == 0 && itemOid == null) {
             addPageMessage(respage.getString("please_choose_an_item_first"));

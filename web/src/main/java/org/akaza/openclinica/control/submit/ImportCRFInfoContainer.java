@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +31,15 @@ import org.akaza.openclinica.dao.submit.EventCRFDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class ImportCRFInfoContainer {
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     // (Subject) (Event) (Form)
@@ -41,16 +51,24 @@ public class ImportCRFInfoContainer {
      * process them. 2. importCRFMap: A Map multi-layer map of Subject/Event/Form only populated when the subsequent
      * EventCRF passes the UpsertOn rules.
      */
-    public ImportCRFInfoContainer(ODMContainer odmContainer, DataSource ds) {
+    @Autowired
+    public ImportCRFInfoContainer(ODMContainer odmContainer, DataSource ds, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+
         importCRFList = new ArrayList<ImportCRFInfo>();
 
         ArrayList<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
         ArrayList<Integer> eventCRFBeanIds = new ArrayList<Integer>();
-        EventCRFDAO eventCrfDAO = new EventCRFDAO(ds);
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(ds);
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(ds);
-        StudyDAO studyDAO = new StudyDAO(ds);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(ds);
+        EventCRFDAO eventCrfDAO = this._eventCRFDAO;
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+        StudyEventDefinitionDAO studyEventDefinitionDAO = this._studyEventDefinitionDAO;
+        StudyDAO studyDAO = this._studyDAO;
+        StudyEventDAO studyEventDAO = this._studyEventDAO;
         UpsertOnBean upsert = odmContainer.getCrfDataPostImportContainer().getUpsertOn();
         final UpsertOnBean finalUpsert = upsert == null ? new UpsertOnBean() : upsert;
         // If Upsert bean is not present, create one with default settings
@@ -83,7 +101,7 @@ public void process(SubjectDataBean subjectDataBean) {
                 Map<String, String> formMap = new HashMap<String, String>();
                 for (FormDataBean formDataBean : formDataBeans) {
 
-                    CRFVersionDAO crfVersionDAO = new CRFVersionDAO(ds);
+                    CRFVersionDAO crfVersionDAO = this._cRFVersionDAO;
                     ArrayList<CRFVersionBean> crfVersionBeans = crfVersionDAO.findAllByOid(formDataBean.getFormOID());
                     for (CRFVersionBean crfVersionBean : crfVersionBeans) {
 

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -21,7 +23,17 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
 
 import java.util.ArrayList;
 
+@Component
 public class ViewUserAccountServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ViewUserAccountServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     public static final String PATH = "ViewUserAccount";
     public static final String ARG_USER_ID = "userId";
 
@@ -48,7 +60,7 @@ public class ViewUserAccountServlet extends SecureController {
     protected void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         int userId = fp.getInt(ARG_USER_ID, true);
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
 
         UserAccountBean user = getBean(udao, userId);
 
@@ -86,7 +98,7 @@ public class ViewUserAccountServlet extends SecureController {
     // int userId = fp.getInt(ARG_USER_ID);
     //
     // SQLFactory factory = SQLFactory.getInstance();
-    // UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+    // UserAccountDAO udao = this._userAccountDAO;
     //
     // UserAccountBean user = getBean(udao, userId);
     //
@@ -111,7 +123,7 @@ public class ViewUserAccountServlet extends SecureController {
 
     private UserAccountBean getBean(UserAccountDAO udao, int id) {
         UserAccountBean answer = (UserAccountBean) udao.findByPK(id);
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
 
         ArrayList roles = answer.getRoles();
 

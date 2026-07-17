@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.job;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.NewCRFBean;
 import org.akaza.openclinica.bean.submit.CRFVersionBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -35,7 +37,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import org.akaza.openclinica.bean.admin.CRFBean;
 
+@Component
 public class AsyncExcelImportJob extends QuartzJobBean {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public AsyncExcelImportJob(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, UserAccountDAO _userAccountDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
@@ -94,7 +108,7 @@ public class AsyncExcelImportJob extends QuartzJobBean {
         }
         
         MeasurementUnitDao measurementUnitDao = (MeasurementUnitDao) appContext.getBean("measurementUnitDao");
-        UserAccountDAO udao = new UserAccountDAO(dataSource);
+        UserAccountDAO udao = this._userAccountDAO;
         UserAccountBean ub = (UserAccountBean) udao.findByPK(userId);
 
         File f = new File(filePath);
@@ -131,7 +145,7 @@ public class AsyncExcelImportJob extends QuartzJobBean {
         nib.setCrfId(crfId);
 
         if (deletePrevious && previousVersionId > 0) {
-            CRFVersionDAO cdao = new CRFVersionDAO(dataSource);
+            CRFVersionDAO cdao = this._cRFVersionDAO;
             ArrayList items = cdao.findNotSharedItemsByVersion(previousVersionId);
             nib.setDeleteQueries(cdao.generateDeleteQueries(previousVersionId, items));
             nib.deleteInsertToDB();
@@ -140,7 +154,7 @@ public class AsyncExcelImportJob extends QuartzJobBean {
         }
 
         // Post-process logic from Servlet
-        CRFVersionDAO cvdao = new CRFVersionDAO(dataSource);
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
         int crfVersionId = 0;
         ArrayList crfvbeans = cvdao.findAllByCRFId(crfId);
         if (!crfvbeans.isEmpty()) {
@@ -158,7 +172,7 @@ public class AsyncExcelImportJob extends QuartzJobBean {
         }
         CRFVersionBean finalVersion = (CRFVersionBean) cvdao.findByPK(crfVersionId);
 
-        CRFDAO cdao = new CRFDAO(dataSource);
+        CRFDAO cdao = this._cRFDAO;
         CRFBean crfBean = (CRFBean) cdao.findByPK(crfId);
         crfBean.setUpdatedDate(new java.util.Date());
         crfBean.setUpdater(ub);
@@ -183,7 +197,7 @@ public class AsyncExcelImportJob extends QuartzJobBean {
             File f = new File(filePath);
 
             DataSource dataSource = (DataSource) appContext.getBean("dataSource");
-            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountDAO udao = this._userAccountDAO;
             UserAccountBean ub = (UserAccountBean) udao.findByPK(userId);
 
             OpenClinicaMailSender mailSender = (OpenClinicaMailSender) appContext.getBean("openClinicaMailSender");

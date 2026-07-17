@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 import org.akaza.openclinica.bean.admin.CRFBean;
@@ -26,7 +28,21 @@ import org.akaza.openclinica.dao.submit.EventCRFDAO;
 import org.akaza.openclinica.view.Page;
 import org.akaza.openclinica.web.InsufficientPermissionException;
 
+@Component
 public class LockCRFVersionServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+
+    @Autowired
+    public LockCRFVersionServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+    }
+
     /**
     *
     */
@@ -62,7 +78,7 @@ public class LockCRFVersionServlet extends SecureController {
            return;
        }
        
-       CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+       CRFVersionDAO cvdao = this._cRFVersionDAO;
        CRFDAO cdao = new CRFDAO (sm.getDataSource());
        
        CRFVersionBean version = (CRFVersionBean)cvdao.findByPK(crfVersionId);
@@ -76,7 +92,7 @@ public class LockCRFVersionServlet extends SecureController {
            return;
        }
       
-       EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+       EventCRFDAO ecdao = this._eventCRFDAO;
        ArrayList eventCRFs = ecdao.findAllStudySubjectByCRFVersion(crfVersionId);
        
        if (StringUtil.isBlank(action)) {
@@ -92,7 +108,7 @@ public class LockCRFVersionServlet extends SecureController {
 
            ArrayList versionList = (ArrayList)cvdao.findAllByCRF(version.getCrfId());
            if(versionList.size() > 0){
-               EventDefinitionCRFDAO edCRFDao = new EventDefinitionCRFDAO(sm.getDataSource());
+               EventDefinitionCRFDAO edCRFDao = this._eventDefinitionCRFDAO;
                ArrayList edcList = (ArrayList)edCRFDao.findAllByCRF(version.getCrfId());
                for(int i = 0; i < edcList.size(); i++){
                    EventDefinitionCRFBean edcBean = (EventDefinitionCRFBean)edcList.get(i);

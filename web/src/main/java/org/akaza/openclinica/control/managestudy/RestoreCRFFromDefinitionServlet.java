@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.managestudy.EventDefinitionCRFBean;
@@ -25,7 +27,15 @@ import java.util.ArrayList;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class RestoreCRFFromDefinitionServlet extends SecureController {
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
+    @Autowired
+    public RestoreCRFFromDefinitionServlet(StudyParameterValueDAO _studyParameterValueDAO) {
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+    }
+
     /**
      * Checks whether the user has the correct privilege
      */
@@ -53,7 +63,7 @@ public class RestoreCRFFromDefinitionServlet extends SecureController {
         logger.info("crf id:" + idString);
 
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) session.getAttribute("definition");
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;    
         String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();
     
         request.setAttribute("participateFormStatus",participateFormStatus );

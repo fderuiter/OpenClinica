@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
@@ -48,7 +50,29 @@ import java.util.Date;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class RemoveEventDefinitionServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
+    @Autowired
+    public RemoveEventDefinitionServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDataDAO _itemDataDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+    }
+
     EventDefinitionCrfTagService eventDefinitionCrfTagService = null;
 
     /**
@@ -75,7 +99,7 @@ public class RemoveEventDefinitionServlet extends SecureController {
         String idString = request.getParameter("id");
 
         int defId = Integer.valueOf(idString.trim()).intValue();
-        StudyEventDefinitionDAO sdao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sdao = this._studyEventDefinitionDAO;
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) sdao.findByPK(defId);
 
 //        checkRoleByUserAndStudy(ub.getName(), sed.getStudyId(), 0);
@@ -88,11 +112,11 @@ public class RemoveEventDefinitionServlet extends SecureController {
         
         
         // find all CRFs
-        EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edao = this._eventDefinitionCRFDAO;
         ArrayList eventDefinitionCRFs = (ArrayList) edao.findAllByDefinition(defId);
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        CRFDAO cdao = this._cRFDAO;
         for (int i = 0; i < eventDefinitionCRFs.size(); i++) {
             EventDefinitionCRFBean edc = (EventDefinitionCRFBean) eventDefinitionCRFs.get(i);
             ArrayList versions = (ArrayList) cvdao.findAllByCRF(edc.getCrfId());
@@ -109,7 +133,7 @@ public class RemoveEventDefinitionServlet extends SecureController {
         }
 
         // finds all events
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudyEventDAO sedao = this._studyEventDAO;
         ArrayList events = (ArrayList) sedao.findAllByDefinition(sed.getId());
 
         String action = request.getParameter("action");
@@ -124,7 +148,7 @@ public class RemoveEventDefinitionServlet extends SecureController {
                     forwardPage(Page.LIST_DEFINITION_SERVLET);
                     return;
                 }
-                StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+                StudyParameterValueDAO spvdao = this._studyParameterValueDAO;    
                 String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();
                 if (participateFormStatus.equals("enabled")) baseUrl();
             
@@ -156,7 +180,7 @@ public class RemoveEventDefinitionServlet extends SecureController {
                 }
                 // remove all events
 
-                EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                EventCRFDAO ecdao = this._eventCRFDAO;
 
                 for (int j = 0; j < events.size(); j++) {
                     StudyEventBean event = (StudyEventBean) events.get(j);
@@ -168,7 +192,7 @@ public class RemoveEventDefinitionServlet extends SecureController {
 
                         ArrayList eventCRFs = ecdao.findAllByStudyEvent(event);
                         // remove all the item data
-                        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                        ItemDataDAO iddao = this._itemDataDAO;
                         for (int k = 0; k < eventCRFs.size(); k++) {
                             EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(k);
                             if (!eventCRF.getStatus().equals(Status.DELETED)) {

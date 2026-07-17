@@ -9,6 +9,9 @@
 
 package org.akaza.openclinica.logic.odmExport;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -31,7 +34,10 @@ import org.akaza.openclinica.job.JobTerminationMonitor;
  * @author ywang (May, 2009)
  */
 
+@Component
 public class ClinicalDataCollector extends OdmDataCollector {
+    private StudySubjectDAO _studySubjectDAO;
+
     private LinkedHashMap<String, OdmClinicalDataBean> odmClinicalDataMap;
 
 
@@ -40,8 +46,11 @@ public class ClinicalDataCollector extends OdmDataCollector {
      * @param ds
      * @param dataset
      */
-    public ClinicalDataCollector(DataSource ds, DatasetBean dataset, StudyBean currentStudy) {
+    @Autowired
+    public ClinicalDataCollector(DataSource ds, DatasetBean dataset, StudyBean currentStudy, StudySubjectDAO _studySubjectDAO) {
         super(ds, dataset, currentStudy);
+        this._studySubjectDAO = _studySubjectDAO;
+
         this.odmClinicalDataMap = new LinkedHashMap<String, OdmClinicalDataBean>();
     }
 
@@ -58,7 +67,7 @@ public class ClinicalDataCollector extends OdmDataCollector {
             OdmStudyBase u = it.next();
             ClinicalDataUnit cdata = new ClinicalDataUnit(this.ds, this.dataset, this.getOdmbean(), u.getStudy(), this.getCategory());
             cdata.setCategory(this.getCategory());
-            StudySubjectDAO ssdao = new StudySubjectDAO(this.ds);
+            StudySubjectDAO ssdao = this._studySubjectDAO;
             cdata.setStudySubjectIds(ssdao.findStudySubjectIdsByStudyIds(u.getStudy().getId()+""));
             cdata.collectOdmClinicalData();
             odmClinicalDataMap.put(u.getStudy().getOid(), cdata.getOdmClinicalData());

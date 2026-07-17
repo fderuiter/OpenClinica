@@ -22,7 +22,11 @@ import java.util.Iterator;
  *This class has been created from the existing SecureController to implement the
  * set-up code for the existing view-related JSPs (sidebars, etc.).
  */
+@Component
 public class SetUpStudyRole {
+    private StudyDAO _studyDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
 /*
     @Autowired
     @Qualifier("dataSource")*/
@@ -30,7 +34,11 @@ public class SetUpStudyRole {
 
     public static final String STUDY_INFO_PANEL = "panel";
 
-    public SetUpStudyRole(DataSource dataSource) {
+    @Autowired
+    public SetUpStudyRole(DataSource dataSource, StudyDAO _studyDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+
         this.dataSource = dataSource;
     }
 
@@ -48,10 +56,10 @@ public class SetUpStudyRole {
         StudyBean currentStudy = new StudyBean();
         StudyInfoPanel panel = new StudyInfoPanel();
 
-        StudyDAO sdao = new StudyDAO(dataSource);
+        StudyDAO sdao = this._studyDAO;
 
         if (userAccountBean.getId() > 0 && userAccountBean.getActiveStudyId() > 0) {
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+            StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
             currentStudy = (StudyBean) sdao.findByPK(userAccountBean.getActiveStudyId());
 
             ArrayList studyParameters = spvdao.findParamConfigByStudy(currentStudy);

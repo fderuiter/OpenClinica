@@ -7,6 +7,7 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.akaza.openclinica.dao.submit.SubjectGroupMapDAO;
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.submit.SubjectGroupMapBean;
 import org.akaza.openclinica.dao.core.AuditableEntityDAO;

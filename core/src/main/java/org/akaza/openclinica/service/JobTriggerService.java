@@ -1,5 +1,6 @@
 package org.akaza.openclinica.service;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +29,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JobTriggerService {
+    private StudyDAO _studyDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public JobTriggerService(StudyDAO _studyDAO, StudySubjectDAO _studySubjectDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     @Autowired
     RuleSetDao ruleSetDao;
     @Autowired
@@ -86,15 +98,15 @@ public class JobTriggerService {
 
 
     public StudySubjectDAO getStudySubjecdao() {
-        return new StudySubjectDAO(ds);
+        return this._studySubjectDAO;
     }
 
     public UserAccountDAO getUserAccountDao() {
-        return new UserAccountDAO(ds);
+        return this._userAccountDAO;
     }
 
     public StudyDAO getStudyDao() {
-        return new StudyDAO(ds);
+        return this._studyDAO;
     }
 
 }

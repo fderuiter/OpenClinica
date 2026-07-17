@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,7 +45,25 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  * @author jxu
  *
  */
+@Component
 public class ViewEventDefinitionServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
+    @Autowired
+    public ViewEventDefinitionServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+    }
+
    EventDefinitionCrfTagService eventDefinitionCrfTagService = null;
    
     /**
@@ -66,8 +86,8 @@ public class ViewEventDefinitionServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyEventDefinitionDAO sdao = new StudyEventDefinitionDAO(sm.getDataSource());
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sdao = this._studyEventDefinitionDAO;
+        StudyDAO studyDao = this._studyDAO;
         FormProcessor fp = new FormProcessor(request);
         int defId = fp.getInt("id", true);
 
@@ -87,11 +107,11 @@ public class ViewEventDefinitionServlet extends SecureController {
             
             checkRoleByUserAndStudy(ub, sed.getStudyId(), 0);
 
-            EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(sm.getDataSource());
+            EventDefinitionCRFDAO edao = this._eventDefinitionCRFDAO;
             ArrayList eventDefinitionCRFs = (ArrayList) edao.findAllByDefinition(this.currentStudy, defId);
 
-            CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFVersionDAO cvdao = this._cRFVersionDAO;
+            CRFDAO cdao = this._cRFDAO;
 
             for (int i = 0; i < eventDefinitionCRFs.size(); i++) {
                 EventDefinitionCRFBean edc = (EventDefinitionCRFBean) eventDefinitionCRFs.get(i);
@@ -113,7 +133,7 @@ public class ViewEventDefinitionServlet extends SecureController {
                 edc.setOffline(getEventDefinitionCrfTagService().getEventDefnCrfOfflineStatus(2,crfPath,true));
             }
             
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+            StudyParameterValueDAO spvdao = this._studyParameterValueDAO;    
             String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();       
             request.setAttribute("participateFormStatus",participateFormStatus );       
             if (participateFormStatus.equals("enabled")) baseUrl();

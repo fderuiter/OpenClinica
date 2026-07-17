@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.login;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +34,15 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author ywang
  */
+@Component
 public class ResetPasswordServlet extends SecureController {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ResetPasswordServlet(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     /**
 	 * 
@@ -65,7 +75,7 @@ public class ResetPasswordServlet extends SecureController {
     public void processRequest() throws Exception {
         logger.info("Change expired password");
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
         Validator v = new Validator(request);
         errors.clear();
         FormProcessor fp = new FormProcessor(request);

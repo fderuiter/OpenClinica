@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.Date;
 
 import org.akaza.openclinica.bean.core.Role;
@@ -27,7 +29,17 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  *
  * Restores a removed study user role
  */
+@Component
 public class RestoreStudyUserRoleServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public RestoreStudyUserRoleServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     /**
      * Checks whether the user has the right permission to proceed function
      */
@@ -49,8 +61,8 @@ public class RestoreStudyUserRoleServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
+        UserAccountDAO udao = this._userAccountDAO;
         String name = request.getParameter("name");
         String studyIdString = request.getParameter("studyId");
         if (StringUtil.isBlank(name) || StringUtil.isBlank(studyIdString)) {

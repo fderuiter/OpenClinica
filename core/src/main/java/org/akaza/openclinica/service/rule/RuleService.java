@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.service.rule;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.oid.GenericOidGenerator;
 import org.akaza.openclinica.bean.oid.OidGenerator;
 import org.akaza.openclinica.bean.rule.RuleBean;
@@ -17,14 +19,20 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 
+@Component
 public class RuleService {
+    private RuleDAO _ruleDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     DataSource ds;
     private RuleDAO ruleDao;
     private OidGenerator oidGenerator;
 
-    public RuleService(DataSource ds) {
+    @Autowired
+    public RuleService(DataSource ds, RuleDAO _ruleDAO) {
+        this._ruleDAO = _ruleDAO;
+
         oidGenerator = new GenericOidGenerator();
         this.ds = ds;
     }
@@ -47,7 +55,7 @@ public class RuleService {
     }
 
     private RuleDAO getRuleDao() {
-        ruleDao = this.ruleDao != null ? ruleDao : new RuleDAO(ds);
+        ruleDao = this.ruleDao != null ? ruleDao : this._ruleDAO;
         return ruleDao;
     }
 

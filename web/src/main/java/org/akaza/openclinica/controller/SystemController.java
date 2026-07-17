@@ -67,6 +67,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping(value = "/auth/api/v1/system")
 @ResponseStatus(value = org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
 public class SystemController {
+    private StudyDAO _studyDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public SystemController(StudyDAO _studyDAO, StudyParameterValueDAO _studyParameterValueDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     // Add in Spring Cor files /healthcheck path to avoid firewall
     @Autowired
@@ -113,7 +124,7 @@ public class SystemController {
 
         DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
         try {
-            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountDAO udao = this._userAccountDAO;
             UserAccountBean uBean = (UserAccountBean) udao.findByPK(1);
 
             if (uBean.getFirstName().equals("Root") && uBean.getLastName().equals("User")) {
@@ -1179,19 +1190,19 @@ public class SystemController {
     }
 
     public ArrayList<StudyBean> getStudyList() {
-        StudyDAO sdao = new StudyDAO(dataSource);
+        StudyDAO sdao = this._studyDAO;
         ArrayList<StudyBean> sBeans = (ArrayList<StudyBean>) sdao.findAllParents();
         return sBeans;
     }
 
     public StudyParameterValueBean getParticipateMod(StudyBean studyBean, String value) {
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(studyBean.getId(), value);
         return pStatus;
     }
 
     public void getRandomizeMod() {
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
 
     }
 

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.dao.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.service.StudyParameter;
 import org.akaza.openclinica.bean.service.StudyParameterConfig;
@@ -20,12 +22,20 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
+@Component
 public class StudyConfigService {
+    private StudyDAO _studyDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
 
     private DataSource ds;
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    public StudyConfigService(DataSource ds) {
+    @Autowired
+    public StudyConfigService(DataSource ds, StudyDAO _studyDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+
         this.ds = ds;
     }
 
@@ -58,8 +68,8 @@ public class StudyConfigService {
      * @return
      */
     public String hasDefinedParameterValue(int studyId, String parameterHandle) {
-        StudyDAO sdao = new StudyDAO(ds);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(ds);
+        StudyDAO sdao = this._studyDAO;
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
 
         if (studyId <= 0 || StringUtil.isBlank(parameterHandle)) {
             return null;
@@ -92,7 +102,7 @@ public class StudyConfigService {
      * @return
      */
     public StudyBean setParametersForStudy(StudyBean study) {
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(ds);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         ArrayList parameters = spvdao.findAllParameters();
         StudyParameterConfig spc = new StudyParameterConfig();
 
@@ -151,7 +161,7 @@ public class StudyConfigService {
     }
 
     public StudyBean setParameterValuesForStudy(StudyBean study) {
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(ds);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         ArrayList theParameters = spvdao.findParamConfigByStudy(study);
         study.setStudyParameters(theParameters);
 
@@ -211,8 +221,8 @@ public class StudyConfigService {
     }
 
     public StudyBean setParametersForSite(StudyBean site) {
-        StudyDAO sdao = new StudyDAO(ds);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(ds);
+        StudyDAO sdao = this._studyDAO;
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyBean parent = (StudyBean) sdao.findByPK(site.getParentStudyId());
         parent = this.setParameterValuesForStudy(parent);
         site.setStudyParameterConfig(parent.getStudyParameterConfig());

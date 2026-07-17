@@ -1,5 +1,7 @@
 package org.akaza.openclinica.logic.importdata.batch;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.util.List;
@@ -17,11 +19,19 @@ import org.akaza.openclinica.dao.submit.ItemDataDAO;
  * Minimizes system downtime and maximizes data ingestion throughput for large-scale clinical trials.
  * Uses a staging area and JDBC batching to reduce database round-trips and lock duration.
  */
+@Component
 public class StagedBatchPersistence {
+    private AuditEventDAO _auditEventDAO;
+    private ItemDataDAO _itemDataDAO;
+
     private static final Logger logger = Logger.getLogger(StagedBatchPersistence.class.getName());
     private final JdbcTemplate jdbcTemplate;
 
-    public StagedBatchPersistence(DataSource dataSource) {
+    @Autowired
+    public StagedBatchPersistence(DataSource dataSource, AuditEventDAO _auditEventDAO, ItemDataDAO _itemDataDAO) {
+        this._auditEventDAO = _auditEventDAO;
+        this._itemDataDAO = _itemDataDAO;
+
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -35,8 +45,8 @@ public class StagedBatchPersistence {
     public void executeBatchInserts(List<Object> entities) {
         logger.info("Executing multi-row batch inserts to replace sequential row-level commits");
         
-        AuditEventDAO auditEventDAO = new AuditEventDAO(this.jdbcTemplate.getDataSource());
-        ItemDataDAO itemDataDAO = new ItemDataDAO(this.jdbcTemplate.getDataSource());
+        AuditEventDAO auditEventDAO = this._auditEventDAO;
+        ItemDataDAO itemDataDAO = this._itemDataDAO;
         
         java.util.List<AuditEventBean> audits = new java.util.ArrayList<>();
         java.util.List<ItemDataBean> items = new java.util.ArrayList<>();

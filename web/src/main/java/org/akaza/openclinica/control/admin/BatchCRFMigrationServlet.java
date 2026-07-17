@@ -6,6 +6,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 import org.akaza.openclinica.bean.admin.CRFBean;
@@ -29,7 +31,21 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  * Preferences - Java - Code Style - Code Templates
  */
 @SuppressWarnings("serial")
+@Component
 public class BatchCRFMigrationServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+
+    @Autowired
+    public BatchCRFMigrationServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+    }
+
 
     private static String CRF_ID = "crfId";
     private static String CRF = "crf";
@@ -71,8 +87,8 @@ public class BatchCRFMigrationServlet extends SecureController {
             addPageMessage(respage.getString("please_choose_a_CRF_to_view"));
             forwardPage(Page.CRF_LIST);
         } else {
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
-            CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
+            CRFDAO cdao = this._cRFDAO;
+            CRFVersionDAO vdao = this._cRFVersionDAO;
             CRFBean crf = (CRFBean) cdao.findByPK(crfId);
             request.setAttribute("crfName", crf.getName());
             ArrayList<CRFVersionBean> versions = (ArrayList<CRFVersionBean>) vdao.findAllByCRF(crfId);
@@ -121,12 +137,12 @@ public class BatchCRFMigrationServlet extends SecureController {
 
     @SuppressWarnings("rawtypes")
     private StudyDAO sdao() {
-        return new StudyDAO(sm.getDataSource());
+        return this._studyDAO;
     }
 
     @SuppressWarnings("rawtypes")
     private StudyEventDefinitionDAO seddao() {
-        return new StudyEventDefinitionDAO(sm.getDataSource());
+        return this._studyEventDefinitionDAO;
     }
 
 

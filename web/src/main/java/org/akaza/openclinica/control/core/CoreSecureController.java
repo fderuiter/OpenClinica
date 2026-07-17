@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.core;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -73,7 +75,25 @@ import org.springframework.security.core.userdetails.UserDetails;
  * @author jnyayapathi
  *
  */
+@Component
 public abstract class CoreSecureController extends HttpServlet {
+    private ArchivedDatasetFileDAO _archivedDatasetFileDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
+    @Autowired
+    public CoreSecureController(ArchivedDatasetFileDAO _archivedDatasetFileDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._archivedDatasetFileDAO = _archivedDatasetFileDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+    }
+
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CoreSecureController.class);
@@ -273,7 +293,7 @@ public abstract class CoreSecureController extends HttpServlet {
 
     private String decodeLINKURL(String successMsg, Integer datasetId) {
 
-        ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(getDataSource());
+        ArchivedDatasetFileDAO asdfDAO = this._archivedDatasetFileDAO;
 
         ArrayList<ArchivedDatasetFileBean> fileBeans = asdfDAO.findByDatasetId(datasetId);
 
@@ -363,10 +383,10 @@ public abstract class CoreSecureController extends HttpServlet {
             request.getSession().setAttribute("sm", sm);
             session.setAttribute("userBean", ub);
 
-            StudyDAO sdao = new StudyDAO(getDataSource());
+            StudyDAO sdao = this._studyDAO;
             if (currentStudy == null || currentStudy.getId() <= 0) {
                 if (ub.getId() > 0 && ub.getActiveStudyId() > 0) {
-                    StudyParameterValueDAO spvdao = new StudyParameterValueDAO(getDataSource());
+                    StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
                     currentStudy = (StudyBean) sdao.findByPK(ub.getActiveStudyId());
 
                     ArrayList studyParameters = spvdao.findParamConfigByStudy(currentStudy);
@@ -765,7 +785,7 @@ public abstract class CoreSecureController extends HttpServlet {
      *            javax.sql.DataSource
      */
     protected boolean entityIncluded(int entityId, String userName, AuditableEntityDAO adao, DataSource ds) {
-        StudyDAO sdao = new StudyDAO(ds);
+        StudyDAO sdao = this._studyDAO;
         ArrayList<StudyBean> studies = (ArrayList<StudyBean>) sdao.findAllByUserNotRemoved(userName);
         for (int i = 0; i < studies.size(); ++i) {
             if (adao.findByPKAndStudy(entityId, studies.get(i)).getId() > 0) {
@@ -853,8 +873,8 @@ public abstract class CoreSecureController extends HttpServlet {
     }
 
     public ArrayList getEventDefinitionsByCurrentStudy(HttpServletRequest request) {
-        StudyDAO studyDAO = new StudyDAO(getDataSource());
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(getDataSource());
+        StudyDAO studyDAO = this._studyDAO;
+        StudyEventDefinitionDAO studyEventDefinitionDAO = this._studyEventDefinitionDAO;
         StudyBean currentStudy = (StudyBean) request.getSession().getAttribute("study");
         int parentStudyId = currentStudy.getParentStudyId();
         ArrayList allDefs = new ArrayList();
@@ -869,9 +889,9 @@ public abstract class CoreSecureController extends HttpServlet {
     }
 
     public ArrayList getStudyGroupClassesByCurrentStudy(HttpServletRequest request) {
-        StudyDAO studyDAO = new StudyDAO(getDataSource());
-        StudyGroupClassDAO studyGroupClassDAO = new StudyGroupClassDAO(getDataSource());
-        StudyGroupDAO studyGroupDAO = new StudyGroupDAO(getDataSource());
+        StudyDAO studyDAO = this._studyDAO;
+        StudyGroupClassDAO studyGroupClassDAO = this._studyGroupClassDAO;
+        StudyGroupDAO studyGroupDAO = this._studyGroupDAO;
         StudyBean currentStudy = (StudyBean) request.getSession().getAttribute("study");
         int parentStudyId = currentStudy.getParentStudyId();
         ArrayList studyGroupClasses = new ArrayList();

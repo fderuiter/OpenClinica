@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,7 +61,23 @@ import org.springframework.transaction.support.TransactionTemplate;
  * 
  * @author Krikor Krumlian
  */
+@Component
 public class VerifyImportedCRFDataServlet extends SecureController {
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public VerifyImportedCRFDataServlet(DiscrepancyNoteDAO _discrepancyNoteDAO, EventCRFDAO _eventCRFDAO, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, StudySubjectDAO _studySubjectDAO) {
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
 
     Locale locale;
 
@@ -88,7 +106,7 @@ public class VerifyImportedCRFDataServlet extends SecureController {
             Integer parentId, UserAccountBean uab, DataSource ds, StudyBean study) {
         // DisplayItemBean displayItemBean) {
         DiscrepancyNoteBean note = new DiscrepancyNoteBean();
-        StudySubjectDAO ssdao = new StudySubjectDAO(ds);
+        StudySubjectDAO ssdao = this._studySubjectDAO;
         note.setDescription(message);
         note.setDetailedNotes("Failed Validation Check");
         note.setOwner(uab);
@@ -115,7 +133,7 @@ public class VerifyImportedCRFDataServlet extends SecureController {
         note.setEntityId(displayItemBean.getData().getId());
         note.setColumn("value");
 
-        DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(ds);
+        DiscrepancyNoteDAO dndao = this._discrepancyNoteDAO;
         note = (DiscrepancyNoteBean) dndao.create(note);
         // so that the below method works, need to set the entity above
         // System.out.println("trying to create mapping with " + note.getId() +
@@ -129,10 +147,10 @@ public class VerifyImportedCRFDataServlet extends SecureController {
     @Override
     @SuppressWarnings(value = "unchecked")
     public void processRequest() throws Exception {
-        ItemDataDAO itemDataDao = new ItemDataDAO(sm.getDataSource());
+        ItemDataDAO itemDataDao = this._itemDataDAO;
         itemDataDao.setFormatDates(false);
         itemDataDao.setBatchingEnabled(true);
-        EventCRFDAO eventCrfDao = new EventCRFDAO(sm.getDataSource());
+        EventCRFDAO eventCrfDao = this._eventCRFDAO;
         CrfBusinessLogicHelper crfBusinessLogicHelper = new CrfBusinessLogicHelper(sm.getDataSource());
         String action = request.getParameter("action");
 
@@ -270,7 +288,7 @@ public class VerifyImportedCRFDataServlet extends SecureController {
                         // "+displayItemBean.getData().getName());
                         // logger.info("continued:
                         // "+displayItemBean.getData().getItemId());
-                        ItemDAO idao = new ItemDAO(sm.getDataSource());
+                        ItemDAO idao = this._itemDAO;
                         ItemBean ibean = (ItemBean) idao.findByPK(displayItemBean.getData().getItemId());
                         // logger.info("continued2: getName " +
                         // ibean.getName());

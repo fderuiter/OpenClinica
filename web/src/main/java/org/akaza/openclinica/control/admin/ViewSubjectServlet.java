@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.submit.SubjectBean;
 import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.control.form.FormProcessor;
@@ -23,7 +25,17 @@ import java.util.ArrayList;
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
+@Component
 public class ViewSubjectServlet extends SecureController {
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    @Autowired
+    public ViewSubjectServlet(StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO) {
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+    }
+
     /**
      *
      */
@@ -41,7 +53,7 @@ public class ViewSubjectServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = this._subjectDAO;
         FormProcessor fp = new FormProcessor(request);
         int subjectId = fp.getInt("id");
 
@@ -52,7 +64,7 @@ public class ViewSubjectServlet extends SecureController {
             SubjectBean subject = (SubjectBean) sdao.findByPK(subjectId);
 
             // find all study subjects
-            StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+            StudySubjectDAO ssdao = this._studySubjectDAO;
             ArrayList studySubs = ssdao.findAllBySubjectId(subjectId);
 
             request.setAttribute("subject", subject);

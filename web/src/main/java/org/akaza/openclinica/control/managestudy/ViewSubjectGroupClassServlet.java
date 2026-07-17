@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.GroupClassType;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.managestudy.StudyGroupBean;
@@ -29,7 +31,21 @@ import java.util.ArrayList;
  *
  * Views details of a Subject Group Class
  */
+@Component
 public class ViewSubjectGroupClassServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+
+    @Autowired
+    public ViewSubjectGroupClassServlet(StudyDAO _studyDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, SubjectGroupMapDAO _subjectGroupMapDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+    }
+
     @Override
     public void mayProceed() throws InsufficientPermissionException {
         if (ub.isSysAdmin()) {
@@ -54,10 +70,10 @@ public class ViewSubjectGroupClassServlet extends SecureController {
             addPageMessage(respage.getString("please_choose_a_subject_group_class_to_view"));
             forwardPage(Page.SUBJECT_GROUP_CLASS_LIST_SERVLET);
         } else {
-            StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
-            StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
-            SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
-            StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+            StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
+            StudyGroupDAO sgdao = this._studyGroupDAO;
+            SubjectGroupMapDAO sgmdao = this._subjectGroupMapDAO;
+            StudyDAO studyDao = this._studyDAO;
 
             StudyGroupClassBean sgcb = (StudyGroupClassBean) sgcdao.findByPK(classId);
             StudyBean study = (StudyBean)studyDao.findByPK(sgcb.getStudyId());

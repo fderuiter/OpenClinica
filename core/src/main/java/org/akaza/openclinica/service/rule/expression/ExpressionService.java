@@ -7,6 +7,9 @@
  */
 package org.akaza.openclinica.service.rule.expression;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,7 +65,21 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class ExpressionService {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private ItemGroupDAO _itemGroupDAO;
+    private ItemGroupMetadataDAO _itemGroupMetadataDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final String SEPERATOR = ".";
@@ -111,7 +128,21 @@ public class ExpressionService {
     private HashMap<String, ItemGroupBean> itemGroups;
     private HashMap<String, ItemBean> items;
 
-    public ExpressionService(DataSource ds) {
+    @Autowired
+    public ExpressionService(DataSource ds, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, ItemFormMetadataDAO _itemFormMetadataDAO, ItemGroupDAO _itemGroupDAO, ItemGroupMetadataDAO _itemGroupMetadataDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+        this._itemGroupMetadataDAO = _itemGroupMetadataDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+
         init(ds, null);
     }
 
@@ -1453,70 +1484,70 @@ public class ExpressionService {
     }
 
     private ItemDAO getItemDao() {
-        // itemDao = this.itemDao != null ? itemDao : new ItemDAO(ds);
-        return new ItemDAO(ds);
+        // itemDao = this.itemDao != null ? itemDao : this._itemDAO;
+        return this._itemDAO;
     }
 
     private ItemDataDAO getItemDataDao() {
         // itemDataDao = this.itemDataDao != null ? itemDataDao : new
         // ItemDataDAO(ds);
-        return new ItemDataDAO(ds);
+        return this._itemDataDAO;
     }
 
     private CRFVersionDAO getCrfVersionDao() {
         // crfVersionDao = this.crfVersionDao != null ? crfVersionDao : new
         // CRFVersionDAO(ds);
-        return new CRFVersionDAO(ds);
+        return this._cRFVersionDAO;
     }
 
     private CRFDAO getCrfDao() {
-        // crfDao = this.crfDao != null ? crfDao : new CRFDAO(ds);
-        return new CRFDAO(ds);
+        // crfDao = this.crfDao != null ? crfDao : this._cRFDAO;
+        return this._cRFDAO;
     }
 
     private ItemGroupDAO getItemGroupDao() {
         // itemGroupDao = this.itemGroupDao != null ? itemGroupDao : new
         // ItemGroupDAO(ds);
-        return new ItemGroupDAO(ds);
+        return this._itemGroupDAO;
     }
 
     private ItemGroupMetadataDAO getItemGroupMetadataDao() {
         // itemGroupMetadataDao = this.itemGroupMetadataDao != null ?
-        // itemGroupMetadataDao : new ItemGroupMetadataDAO(ds);
+        // itemGroupMetadataDao : this._itemGroupMetadataDAO;
         // return itemGroupMetadataDao;
-        return new ItemGroupMetadataDAO(ds);
+        return this._itemGroupMetadataDAO;
     }
 
     private EventDefinitionCRFDAO getEventDefinitionCRFDao() {
         // eventDefinitionCRFDao = this.eventDefinitionCRFDao != null ?
-        // eventDefinitionCRFDao : new EventDefinitionCRFDAO(ds);
+        // eventDefinitionCRFDao : this._eventDefinitionCRFDAO;
         // return eventDefinitionCRFDao;
-        return new EventDefinitionCRFDAO(ds);
+        return this._eventDefinitionCRFDAO;
     }
 
     private StudyEventDefinitionDAO getStudyEventDefinitionDao() {
         // studyEventDefinitionDao = this.studyEventDefinitionDao != null ?
-        // studyEventDefinitionDao : new StudyEventDefinitionDAO(ds);
+        // studyEventDefinitionDao : this._studyEventDefinitionDAO;
         // return studyEventDefinitionDao;
-        return new StudyEventDefinitionDAO(ds);
+        return this._studyEventDefinitionDAO;
     }
 
     private StudyEventDAO getStudyEventDao() {
         // studyEventDao = this.studyEventDao != null ? studyEventDao : new
         // StudyEventDAO(ds);
         // return studyEventDao;
-        return new StudyEventDAO(ds);
+        return this._studyEventDAO;
     }
 
     private StudySubjectDAO getStudySubjectDao() {
-        return new StudySubjectDAO(ds);
+        return this._studySubjectDAO;
     }
 
     private EventCRFDAO getEventCRFDao() {
         // eventCRFDao = this.eventCRFDao != null ? eventCRFDao : new
         // EventCRFDAO(ds);
         // return eventCRFDao;
-        return new EventCRFDAO(ds);
+        return this._eventCRFDAO;
     }
 
     public void setExpressionWrapper(ExpressionObjectWrapper expressionWrapper) {
@@ -1524,7 +1555,7 @@ public class ExpressionService {
     }
 
     public ItemFormMetadataDAO getItemFormMetadataDao() {
-        return new ItemFormMetadataDAO(ds);
+        return this._itemFormMetadataDAO;
     }
 
 }

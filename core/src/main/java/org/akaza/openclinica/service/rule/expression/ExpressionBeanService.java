@@ -7,6 +7,9 @@
  */
 package org.akaza.openclinica.service.rule.expression;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,7 +34,10 @@ import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class ExpressionBeanService {
+    private StudySubjectDAO _studySubjectDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final String SEPERATOR = ".";
@@ -69,7 +75,10 @@ public class ExpressionBeanService {
     private HashMap<String, ItemGroupBean> itemGroups;
     private HashMap<String, ItemBean> items;
 
-    public ExpressionBeanService(DataSource ds) {
+    @Autowired
+    public ExpressionBeanService(DataSource ds, StudySubjectDAO _studySubjectDAO) {
+        this._studySubjectDAO = _studySubjectDAO;
+
         init(ds, null);
     }
 
@@ -153,7 +162,7 @@ public class ExpressionBeanService {
         }
 
     private StudySubjectDAO getStudySubjectDao() {
-        return  new StudySubjectDAO(ds);
+        return  this._studySubjectDAO;
     }
 
 }

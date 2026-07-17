@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.DisplayStudyBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
@@ -33,7 +35,21 @@ import java.util.Date;
  *
  * Assigns a study subject to another study
  */
+@Component
 public class ReassignStudySubjectServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+
+    @Autowired
+    public ReassignStudySubjectServlet(StudyDAO _studyDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, SubjectGroupMapDAO _subjectGroupMapDAO) {
+        this._studyDAO = _studyDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+    }
+
     /**
      *
      */
@@ -57,9 +73,9 @@ public class ReassignStudySubjectServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
         String action = request.getParameter("action");
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
-        SubjectDAO subdao = new SubjectDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
+        StudySubjectDAO ssdao = this._studySubjectDAO;
+        SubjectDAO subdao = this._subjectDAO;
         FormProcessor fp = new FormProcessor(request);
 
         int studySubId = fp.getInt("id");
@@ -74,7 +90,7 @@ public class ReassignStudySubjectServlet extends SecureController {
             SubjectBean subject = (SubjectBean) subdao.findByPK(subjectId);
             request.setAttribute("subject", subject);
 
-            SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
+            SubjectGroupMapDAO sgmdao = this._subjectGroupMapDAO;
             ArrayList groupMaps = (ArrayList) sgmdao.findAllByStudySubject(studySubId);
 
             if (StringUtil.isBlank(action)) {

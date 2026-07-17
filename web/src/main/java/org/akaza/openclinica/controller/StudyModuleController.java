@@ -63,6 +63,15 @@ import org.springframework.web.bind.support.SessionStatus;
 @RequestMapping("/studymodule")
 @SessionAttributes("studyModuleStatus")
 public class StudyModuleController {
+    private CRFDAO _cRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private RuleDAO _ruleDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private UserAccountDAO _userAccountDAO;
+
     @Autowired
     @Qualifier("sidebarInit")
     private SidebarInit sidebarInit;
@@ -94,15 +103,25 @@ public class StudyModuleController {
     @Autowired
     private JavaMailSenderImpl mailSender;
 
-    public StudyModuleController() {
+    @Autowired
+    public StudyModuleController(CRFDAO _cRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, RuleDAO _ruleDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyParameterValueDAO _studyParameterValueDAO, UserAccountDAO _userAccountDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._ruleDAO = _ruleDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._userAccountDAO = _userAccountDAO;
+
 
     }
 
     @RequestMapping(value = "/{study}/deactivate", method = RequestMethod.GET)
     public String deactivateParticipate(@PathVariable("study") String studyOid, HttpServletRequest request) throws Exception {
-        studyDao = new StudyDAO(dataSource);
+        studyDao = this._studyDAO;
         StudyBean study = studyDao.findByOid(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean spv = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         spv.setStudyId(study.getId());
         spv.setParameter("participantPortal");
@@ -120,9 +139,9 @@ public class StudyModuleController {
 
     @RequestMapping(value = "/{study}/deactivaterandomization", method = RequestMethod.GET)
     public String deactivateRandomization(@PathVariable("study") String studyOid, HttpServletRequest request) throws Exception {
-        studyDao = new StudyDAO(dataSource);
+        studyDao = this._studyDAO;
         StudyBean study = studyDao.findByOid(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean spv = spvdao.findByHandleAndStudy(study.getId(), "randomization");
         spv.setStudyId(study.getId());
         spv.setParameter("randomization");
@@ -140,9 +159,9 @@ public class StudyModuleController {
 
     @RequestMapping(value = "/{study}/reactivate", method = RequestMethod.GET)
     public String reactivateParticipate(@PathVariable("study") String studyOid, HttpServletRequest request) throws Exception {
-        studyDao = new StudyDAO(dataSource);
+        studyDao = this._studyDAO;
         StudyBean study = studyDao.findByOid(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean spv = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         spv.setStudyId(study.getId());
         spv.setParameter("participantPortal");
@@ -160,9 +179,9 @@ public class StudyModuleController {
 
     @RequestMapping(value = "/{study}/reactivaterandomization", method = RequestMethod.GET)
     public String reactivateRandomization(@PathVariable("study") String studyOid, HttpServletRequest request) throws Exception {
-        studyDao = new StudyDAO(dataSource);
+        studyDao = this._studyDAO;
         StudyBean study = studyDao.findByOid(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean spv = spvdao.findByHandleAndStudy(study.getId(), "randomization");
         spv.setStudyId(study.getId());
         spv.setParameter("randomization");
@@ -181,9 +200,9 @@ public class StudyModuleController {
 
     @RequestMapping(value = "/{study}/register", method = RequestMethod.POST)
     public String registerParticipate(@PathVariable("study") String studyOid, HttpServletRequest request) throws Exception {
-        studyDao = new StudyDAO(dataSource);
+        studyDao = this._studyDAO;
         StudyBean study = studyDao.findByOid(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean spv = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         ParticipantPortalRegistrar registrar = new ParticipantPortalRegistrar();
 
@@ -235,9 +254,9 @@ public class StudyModuleController {
 
     @RequestMapping(value = "/{study}/randomize", method = RequestMethod.POST)
     public String registerRandimization(@PathVariable("study") String studyOid, HttpServletRequest request) throws Exception {
-        studyDao = new StudyDAO(dataSource);
+        studyDao = this._studyDAO;
         StudyBean study = studyDao.findByOid(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean spv = spvdao.findByHandleAndStudy(study.getId(), "randomization");
         RandomizationRegistrar randomizationRegistrar = new RandomizationRegistrar();
 
@@ -294,13 +313,13 @@ public class StudyModuleController {
 
         StudyBean currentStudy = (StudyBean) request.getSession().getAttribute("study");
 
-        eventDefinitionCRFDao = new EventDefinitionCRFDAO(dataSource);
-        studyEventDefinitionDao = new StudyEventDefinitionDAO(dataSource);
-        crfDao = new CRFDAO(dataSource);
-        studyGroupClassDao = new StudyGroupClassDAO(dataSource);
-        studyDao = new StudyDAO(dataSource);
-        userDao = new UserAccountDAO(dataSource);
-        ruleDao = new RuleDAO(dataSource);
+        eventDefinitionCRFDao = this._eventDefinitionCRFDAO;
+        studyEventDefinitionDao = this._studyEventDefinitionDAO;
+        crfDao = this._cRFDAO;
+        studyGroupClassDao = this._studyGroupClassDAO;
+        studyDao = this._studyDAO;
+        userDao = this._userAccountDAO;
+        ruleDao = this._ruleDAO;
 
         StudyModuleStatus sms = studyModuleStatusDao.findByStudyId(currentStudy.getId());
         if (sms == null) {

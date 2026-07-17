@@ -7,6 +7,7 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.managestudy.StudySubjectBean;

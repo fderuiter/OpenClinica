@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.ItemDataType;
 import org.akaza.openclinica.bean.core.NullValue;
 import org.akaza.openclinica.bean.core.ResponseType;
@@ -62,7 +64,17 @@ import java.util.Map;
  *
  * @author Krikor krumlian
  */
+@Component
 public class TestRuleServlet extends SecureController {
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+
+    @Autowired
+    public TestRuleServlet(ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO) {
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+    }
+
 
     private static final long serialVersionUID = 9116068126651934226L;
     protected final Logger log = LoggerFactory.getLogger(TestRuleServlet.class);
@@ -488,12 +500,12 @@ else
     }
 
     private ItemDAO getItemDAO() {
-        itemDAO = this.itemDAO != null ? itemDAO : new ItemDAO(sm.getDataSource());
+        itemDAO = this.itemDAO != null ? itemDAO : this._itemDAO;
         return itemDAO;
     }
 
     private ItemFormMetadataDAO getItemFormMetadataDAO() {
-        itemFormMetadataDAO = this.itemFormMetadataDAO != null ? itemFormMetadataDAO : new ItemFormMetadataDAO(sm.getDataSource());
+        itemFormMetadataDAO = this.itemFormMetadataDAO != null ? itemFormMetadataDAO : this._itemFormMetadataDAO;
         return itemFormMetadataDAO;
     }
 

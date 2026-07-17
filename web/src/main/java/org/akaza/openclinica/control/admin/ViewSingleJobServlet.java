@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.AuditEventBean;
 import org.akaza.openclinica.bean.admin.TriggerBean;
 import org.akaza.openclinica.bean.extract.DatasetBean;
@@ -25,7 +27,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+@Component
 public class ViewSingleJobServlet extends SecureController {
+    private AuditEventDAO _auditEventDAO;
+    private DatasetDAO _datasetDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ViewSingleJobServlet(AuditEventDAO _auditEventDAO, DatasetDAO _datasetDAO, UserAccountDAO _userAccountDAO) {
+        this._auditEventDAO = _auditEventDAO;
+        this._datasetDAO = _datasetDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     // DRY consolidate from other servlet?
     private static String TRIGGER_GROUP = "DEFAULT";
@@ -90,7 +104,7 @@ public class ViewSingleJobServlet extends SecureController {
         logger.debug("found group name: " + groupName);
           TriggerBean triggerBean = new TriggerBean();
         JobDataMap dataMap = new JobDataMap();
-        AuditEventDAO auditEventDAO = new AuditEventDAO(sm.getDataSource());
+        AuditEventDAO auditEventDAO = this._auditEventDAO;
 
         try {
             triggerBean.setFullName(trigger.getKey().getName());
@@ -122,14 +136,14 @@ public class ViewSingleJobServlet extends SecureController {
                     int dsId = dataMap.getInt(ExampleSpringJob.DATASET_ID);
                     triggerBean.setExportFormat(exportFormat);
                     triggerBean.setPeriodToRun(periodToRun);
-                    DatasetDAO datasetDAO = new DatasetDAO(sm.getDataSource());
+                    DatasetDAO datasetDAO = this._datasetDAO;
                     DatasetBean dataset = (DatasetBean) datasetDAO.findByPK(dsId);
                     triggerBean.setDataset(dataset);
                 }
                 int userId = dataMap.getInt(ExampleSpringJob.USER_ID);
                 // need to set information, extract bean, user account bean
 
-                UserAccountDAO userAccountDAO = new UserAccountDAO(sm.getDataSource());
+                UserAccountDAO userAccountDAO = this._userAccountDAO;
 
                 triggerBean.setContactEmail(contactEmail);
 

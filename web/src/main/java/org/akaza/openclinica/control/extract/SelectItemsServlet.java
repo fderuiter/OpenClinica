@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.extract.DatasetBean;
@@ -38,7 +40,27 @@ import java.util.Locale;
  *
  *
  */
+@Component
 public class SelectItemsServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+
+    @Autowired
+    public SelectItemsServlet(CRFDAO _cRFDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+    }
+
 
     Locale locale;
     // < ResourceBundlerestext,resexception,respage;
@@ -74,12 +96,12 @@ public class SelectItemsServlet extends SecureController {
     public void setUpStudyGroupPage() {
         ArrayList sgclasses = (ArrayList) session.getAttribute("allSelectedGroups");
         if (sgclasses == null || sgclasses.size() == 0) {
-            StudyDAO studydao = new StudyDAO(sm.getDataSource());
-            StudyGroupClassDAO sgclassdao = new StudyGroupClassDAO(sm.getDataSource());
+            StudyDAO studydao = this._studyDAO;
+            StudyGroupClassDAO sgclassdao = this._studyGroupClassDAO;
             StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
             sgclasses = sgclassdao.findAllActiveByStudy(theStudy);
 
-            StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
+            StudyGroupDAO sgdao = this._studyGroupDAO;
 
             for (int i = 0; i < sgclasses.size(); i++) {
                 StudyGroupClassBean sgclass = (StudyGroupClassBean) sgclasses.get(i);
@@ -102,10 +124,10 @@ public class SelectItemsServlet extends SecureController {
         int CRFAttr = fp.getInt("CRFAttr");
         int groupAttr = fp.getInt("groupAttr");
         int discAttr = fp.getInt("discAttr");
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO imfdao = new ItemFormMetadataDAO(sm.getDataSource());
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        CRFDAO crfdao = this._cRFDAO;
+        ItemDAO idao = this._itemDAO;
+        ItemFormMetadataDAO imfdao = this._itemFormMetadataDAO;
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
 
         HashMap events = (HashMap) session.getAttribute(CreateDatasetServlet.EVENTS_FOR_CREATE_DATASET);
         if (events == null) {

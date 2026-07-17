@@ -6,6 +6,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.submit.CRFVersionBean;
 import org.akaza.openclinica.control.SpringServletAccess;
@@ -30,7 +32,15 @@ import jakarta.servlet.ServletOutputStream;
  *         TODO To change the template for this generated type comment go to Window - Preferences - Java - Code Style -
  *         Code Templates
  */
+@Component
 public class DownloadVersionSpreadSheetServlet extends SecureController {
+    private CRFVersionDAO _cRFVersionDAO;
+
+    @Autowired
+    public DownloadVersionSpreadSheetServlet(CRFVersionDAO _cRFVersionDAO) {
+        this._cRFVersionDAO = _cRFVersionDAO;
+    }
+
     public static String CRF_ID = "crfId";
 
     public static String CRF_VERSION_NAME = "crfVersionName";
@@ -71,7 +81,7 @@ public class DownloadVersionSpreadSheetServlet extends SecureController {
         String crfIdString = fp.getString(CRF_ID);
         int crfVersionId = fp.getInt(CRF_VERSION_ID);
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
 
         CRFVersionBean version = (CRFVersionBean) cvdao.findByPK(crfVersionId);
 

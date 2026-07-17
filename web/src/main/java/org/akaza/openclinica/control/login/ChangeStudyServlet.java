@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.login;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
@@ -51,7 +53,39 @@ import java.util.Locale;
  *
  * Processes the request of changing current study
  */
+@Component
 public class ChangeStudyServlet extends SecureController {
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ChangeStudyServlet(DiscrepancyNoteDAO _discrepancyNoteDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, StudyParameterValueDAO _studyParameterValueDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, SubjectGroupMapDAO _subjectGroupMapDAO, UserAccountDAO _userAccountDAO) {
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     /**
      * Checks whether the user has the correct privilege
      */
@@ -85,8 +119,8 @@ public class ChangeStudyServlet extends SecureController {
     public void processRequest() throws Exception {
 
         String action = request.getParameter("action");// action sent by user
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
+        StudyDAO sdao = this._studyDAO;
 
         ArrayList studies = udao.findStudyByUser(ub.getName(), (ArrayList) sdao.findAll());
         request.setAttribute("siteRoleMap", Role.siteRoleMap);
@@ -170,11 +204,11 @@ public class ChangeStudyServlet extends SecureController {
         int studyId = fp.getInt("studyId");
         int prevStudyId = currentStudy.getId();
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         StudyBean current = (StudyBean) sdao.findByPK(studyId);
 
         // reset study parameters -jxu 02/09/2007
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
 
         ArrayList studyParameters = spvdao.findParamConfigByStudy(current);
         current.setStudyParameters(studyParameters);
@@ -210,7 +244,7 @@ public class ChangeStudyServlet extends SecureController {
             session.setAttribute("study", current);
             currentStudy = current;
             // change user's active study id
-            UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+            UserAccountDAO udao = this._userAccountDAO;
             ub.setActiveStudyId(current.getId());
             ub.setUpdater(ub);
             ub.setUpdatedDate(new java.util.Date());
@@ -391,57 +425,57 @@ public class ChangeStudyServlet extends SecureController {
     }
 
     public StudyEventDefinitionDAO getStudyEventDefinitionDao() {
-        studyEventDefinitionDAO = studyEventDefinitionDAO == null ? new StudyEventDefinitionDAO(sm.getDataSource()) : studyEventDefinitionDAO;
+        studyEventDefinitionDAO = studyEventDefinitionDAO == null ? this._studyEventDefinitionDAO : studyEventDefinitionDAO;
         return studyEventDefinitionDAO;
     }
 
     public SubjectDAO getSubjectDAO() {
-        subjectDAO = this.subjectDAO == null ? new SubjectDAO(sm.getDataSource()) : subjectDAO;
+        subjectDAO = this.subjectDAO == null ? this._subjectDAO : subjectDAO;
         return subjectDAO;
     }
 
     public StudySubjectDAO getStudySubjectDAO() {
-        studySubjectDAO = this.studySubjectDAO == null ? new StudySubjectDAO(sm.getDataSource()) : studySubjectDAO;
+        studySubjectDAO = this.studySubjectDAO == null ? this._studySubjectDAO : studySubjectDAO;
         return studySubjectDAO;
     }
 
     public StudyGroupClassDAO getStudyGroupClassDAO() {
-        studyGroupClassDAO = this.studyGroupClassDAO == null ? new StudyGroupClassDAO(sm.getDataSource()) : studyGroupClassDAO;
+        studyGroupClassDAO = this.studyGroupClassDAO == null ? this._studyGroupClassDAO : studyGroupClassDAO;
         return studyGroupClassDAO;
     }
 
     public SubjectGroupMapDAO getSubjectGroupMapDAO() {
-        subjectGroupMapDAO = this.subjectGroupMapDAO == null ? new SubjectGroupMapDAO(sm.getDataSource()) : subjectGroupMapDAO;
+        subjectGroupMapDAO = this.subjectGroupMapDAO == null ? this._subjectGroupMapDAO : subjectGroupMapDAO;
         return subjectGroupMapDAO;
     }
 
     public StudyEventDAO getStudyEventDAO() {
-        studyEventDAO = this.studyEventDAO == null ? new StudyEventDAO(sm.getDataSource()) : studyEventDAO;
+        studyEventDAO = this.studyEventDAO == null ? this._studyEventDAO : studyEventDAO;
         return studyEventDAO;
     }
 
     public StudyDAO getStudyDAO() {
-        studyDAO = this.studyDAO == null ? new StudyDAO(sm.getDataSource()) : studyDAO;
+        studyDAO = this.studyDAO == null ? this._studyDAO : studyDAO;
         return studyDAO;
     }
 
     public EventCRFDAO getEventCRFDAO() {
-        eventCRFDAO = this.eventCRFDAO == null ? new EventCRFDAO(sm.getDataSource()) : eventCRFDAO;
+        eventCRFDAO = this.eventCRFDAO == null ? this._eventCRFDAO : eventCRFDAO;
         return eventCRFDAO;
     }
 
     public EventDefinitionCRFDAO getEventDefinitionCRFDAO() {
-        eventDefintionCRFDAO = this.eventDefintionCRFDAO == null ? new EventDefinitionCRFDAO(sm.getDataSource()) : eventDefintionCRFDAO;
+        eventDefintionCRFDAO = this.eventDefintionCRFDAO == null ? this._eventDefinitionCRFDAO : eventDefintionCRFDAO;
         return eventDefintionCRFDAO;
     }
 
     public StudyGroupDAO getStudyGroupDAO() {
-        studyGroupDAO = this.studyGroupDAO == null ? new StudyGroupDAO(sm.getDataSource()) : studyGroupDAO;
+        studyGroupDAO = this.studyGroupDAO == null ? this._studyGroupDAO : studyGroupDAO;
         return studyGroupDAO;
     }
 
     public DiscrepancyNoteDAO getDiscrepancyNoteDAO() {
-        discrepancyNoteDAO = this.discrepancyNoteDAO == null ? new DiscrepancyNoteDAO(sm.getDataSource()) : discrepancyNoteDAO;
+        discrepancyNoteDAO = this.discrepancyNoteDAO == null ? this._discrepancyNoteDAO : discrepancyNoteDAO;
         return discrepancyNoteDAO;
     }
 
@@ -450,7 +484,7 @@ public class ChangeStudyServlet extends SecureController {
     }
 
 	public StudyParameterValueDAO getStudyParameterValueDAO() {
-	     studyParameterValueDAO = this.studyParameterValueDAO == null ? new StudyParameterValueDAO(sm.getDataSource()) : studyParameterValueDAO;
+	     studyParameterValueDAO = this.studyParameterValueDAO == null ? this._studyParameterValueDAO : studyParameterValueDAO;
 		return studyParameterValueDAO;
 	}
 

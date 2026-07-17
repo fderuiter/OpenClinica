@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.DataEntryStage;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
@@ -38,7 +40,23 @@ import java.util.Locale;
 /**
  * @author ssachs
  */
+@Component
 public class MarkEventCRFCompleteServlet extends SecureController {
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private SectionDAO _sectionDAO;
+    private StudyEventDAO _studyEventDAO;
+
+    @Autowired
+    public MarkEventCRFCompleteServlet(EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDataDAO _itemDataDAO, SectionDAO _sectionDAO, StudyEventDAO _studyEventDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studyEventDAO = _studyEventDAO;
+    }
+
 
     Locale locale;
     // < ResourceBundleresexception,respage,resword;
@@ -71,19 +89,19 @@ public class MarkEventCRFCompleteServlet extends SecureController {
         fp = new FormProcessor(request);
         int eventCRFId = fp.getInt(INPUT_EVENT_CRF_ID);
 
-        ecdao = new EventCRFDAO(sm.getDataSource());
+        ecdao = this._eventCRFDAO;
         ecb = (EventCRFBean) ecdao.findByPK(eventCRFId);
     }
 
     private boolean isEachRequiredFieldFillout() {
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        ItemDataDAO iddao = this._itemDataDAO;
         ArrayList dataList = iddao.findAllBlankRequiredByEventCRFId(ecb.getId(), ecb.getCRFVersionId());
         // empty means all required fields got filled out,return true-jxu
         return dataList.isEmpty();
     }
 
     private boolean isEachSectionReviewedOnce() {
-        SectionDAO sdao = new SectionDAO(sm.getDataSource());
+        SectionDAO sdao = this._sectionDAO;
 
         DataEntryStage stage = ecb.getStage();
 
@@ -115,7 +133,7 @@ public class MarkEventCRFCompleteServlet extends SecureController {
     }
 
     private void getEventDefinitionCRFBean() {
-        edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        edcdao = this._eventDefinitionCRFDAO;
         edcb = edcdao.findForStudyByStudyEventIdAndCRFVersionId(ecb.getStudyEventId(), ecb.getCRFVersionId());
     }
 
@@ -224,16 +242,16 @@ public class MarkEventCRFCompleteServlet extends SecureController {
                 ecb = (EventCRFBean) ecdao.update(ecb);
                 ecdao.markComplete(ecb, ide);
 
-                ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                ItemDataDAO iddao = this._itemDataDAO;
                 iddao.updateStatusByEventCRF(ecb, newStatus);
 
                 // change status for event
-                StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+                StudyEventDAO sedao = this._studyEventDAO;
                 StudyEventBean seb = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
                 seb.setUpdatedDate(new Date());
                 seb.setUpdater(ub);
 
-                EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+                EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
                 ArrayList allCRFs = ecdao.findAllByStudyEvent(seb);
                 ArrayList allEDCs = edcdao.findAllActiveByEventDefinitionId(seb.getStudyEventDefinitionId());
                 boolean eventCompleted = true;

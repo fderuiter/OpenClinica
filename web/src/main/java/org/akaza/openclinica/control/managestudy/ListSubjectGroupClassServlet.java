@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.managestudy.StudyGroupClassBean;
@@ -32,7 +34,19 @@ import java.util.Locale;
  * @author jxu
  *
  */
+@Component
 public class ListSubjectGroupClassServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+
+    @Autowired
+    public ListSubjectGroupClassServlet(StudyDAO _studyDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+    }
+
 
     Locale locale;
 
@@ -70,9 +84,9 @@ public class ListSubjectGroupClassServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
+        StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
         // YW <<
-        StudyDAO stdao = new StudyDAO(sm.getDataSource());
+        StudyDAO stdao = this._studyDAO;
         int parentStudyId = currentStudy.getParentStudyId();
         ArrayList groups = new ArrayList();
         if (parentStudyId > 0) {
@@ -84,7 +98,7 @@ public class ListSubjectGroupClassServlet extends SecureController {
         // YW >>
         String isReadOnly = request.getParameter("read");
 
-        StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
+        StudyGroupDAO sgdao = this._studyGroupDAO;
         for (int i = 0; i < groups.size(); i++) {
             StudyGroupClassBean group = (StudyGroupClassBean) groups.get(i);
             ArrayList studyGroups = sgdao.findAllByGroupClass(group);

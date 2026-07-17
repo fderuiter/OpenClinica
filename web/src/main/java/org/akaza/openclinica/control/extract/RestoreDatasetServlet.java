@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.extract.DatasetBean;
@@ -28,7 +30,15 @@ import java.util.Locale;
  * @author thickerson
  *
  */
+@Component
 public class RestoreDatasetServlet extends SecureController {
+    private DatasetDAO _datasetDAO;
+
+    @Autowired
+    public RestoreDatasetServlet(DatasetDAO _datasetDAO) {
+        this._datasetDAO = _datasetDAO;
+    }
+
 
     Locale locale;
 
@@ -42,7 +52,7 @@ public class RestoreDatasetServlet extends SecureController {
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         int dsId = fp.getInt("dsId");
-        DatasetDAO dsDAO = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsDAO = this._datasetDAO;
         DatasetBean dataset = (DatasetBean) dsDAO.findByPK(dsId);
 
         String action = request.getParameter("action");
@@ -90,7 +100,7 @@ public class RestoreDatasetServlet extends SecureController {
         FormProcessor fp = new FormProcessor(request);
 
         EntityBeanTable table = fp.getEntityBeanTable();
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = this._datasetDAO;
         ArrayList datasets = new ArrayList();
         // if (ub.isSysAdmin()) {
         // datasets =

@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.filter;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.dao.hibernate.AuditUserLoginDao;
 import org.akaza.openclinica.dao.login.UserAccountDAO;
@@ -27,7 +29,15 @@ import org.akaza.openclinica.dao.hibernate.AuditLogEventDao;
  * 
  * @author Krikor Krumlian
  */
+@Component
 public class OpenClinicaSecurityContextLogoutHandler extends SecurityContextLogoutHandler {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public OpenClinicaSecurityContextLogoutHandler(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     AuditUserLoginDao auditUserLoginDao;
     UserAccountDAO userAccountDao;
@@ -96,7 +106,7 @@ public class OpenClinicaSecurityContextLogoutHandler extends SecurityContextLogo
     }
 
     public UserAccountDAO getUserAccountDao() {
-        return userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        return userAccountDao != null ? userAccountDao : this._userAccountDAO;
     }
 
     public AuditUserLoginDao getAuditUserLoginDao() {

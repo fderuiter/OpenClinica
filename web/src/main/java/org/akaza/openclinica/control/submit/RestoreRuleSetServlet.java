@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.control.SpringServletAccess;
 import org.akaza.openclinica.control.core.SecureController;
@@ -21,7 +23,15 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  * @author Krikor Krumlian
  *
  */
+@Component
 public class RestoreRuleSetServlet extends SecureController {
+    private RuleSetDAO _ruleSetDAO;
+
+    @Autowired
+    public RestoreRuleSetServlet(RuleSetDAO _ruleSetDAO) {
+        this._ruleSetDAO = _ruleSetDAO;
+    }
+
 
     private static final long serialVersionUID = 1L;
     RuleSetDAO ruleSetDao;
@@ -70,7 +80,7 @@ public class RestoreRuleSetServlet extends SecureController {
     }
 
     private RuleSetDAO getRuleSetDao() {
-        ruleSetDao = this.ruleSetDao != null ? ruleSetDao : new RuleSetDAO(sm.getDataSource());
+        ruleSetDao = this.ruleSetDao != null ? ruleSetDao : this._ruleSetDAO;
         return ruleSetDao;
     }
 

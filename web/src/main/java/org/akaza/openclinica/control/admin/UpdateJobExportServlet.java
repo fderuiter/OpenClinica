@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,7 +39,17 @@ import org.quartz.Trigger;
 import org.quartz.impl.StdScheduler;
 import org.quartz.impl.JobDetailImpl;
 
+@Component
 public class UpdateJobExportServlet extends SecureController {
+    private DatasetDAO _datasetDAO;
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public UpdateJobExportServlet(DatasetDAO _datasetDAO, StudyDAO _studyDAO) {
+        this._datasetDAO = _datasetDAO;
+        this._studyDAO = _studyDAO;
+    }
+
 
     private static String SCHEDULER = "schedulerFactoryBean";
 
@@ -79,7 +91,7 @@ public class UpdateJobExportServlet extends SecureController {
     private void setUpServlet(Trigger trigger) {
         FormProcessor fp2 = new FormProcessor(request);
 
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = this._datasetDAO;
         Collection dsList = dsdao.findAllOrderByStudyIdAndName();
         // TODO will have to dress this up to allow for sites then datasets
         request.setAttribute("datasets", dsList);
@@ -146,9 +158,9 @@ public class UpdateJobExportServlet extends SecureController {
                 forwardPage(Page.UPDATE_JOB_EXPORT);
             } else {
                 // change trigger, update in database
-                StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+                StudyDAO studyDAO = this._studyDAO;
                 StudyBean study = (StudyBean) studyDAO.findByPK(sm.getUserBean().getActiveStudyId());
-                DatasetDAO datasetDao = new DatasetDAO(sm.getDataSource());
+                DatasetDAO datasetDao = this._datasetDAO;
                 CoreResources cr =  new CoreResources();
                 UserAccountBean userBean = (UserAccountBean) request.getSession().getAttribute("userBean");
 

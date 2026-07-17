@@ -1,5 +1,7 @@
 package org.akaza.openclinica.logic.importdata;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.AuditableEntityBean;
 import org.akaza.openclinica.bean.core.EntityBean;
@@ -37,7 +39,29 @@ import java.util.HashMap;
  * @author Tom Hickerson, 04/2008
  * @category logic classes
  */
+@Component
 public class ImportDataHelper {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    @Autowired
+    public ImportDataHelper(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+    }
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     protected SessionManager sm;
@@ -70,14 +94,14 @@ public class ImportDataHelper {
         // << tbh
         int eventCRFId = 0;
 
-        EventCRFDAO eventCrfDao = new EventCRFDAO(sm.getDataSource());
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
-        StudySubjectDAO studySubjectDao = new StudySubjectDAO(sm.getDataSource());
-        StudyEventDefinitionDAO studyEventDefinistionDao = new StudyEventDefinitionDAO(sm.getDataSource());
-        CRFVersionDAO crfVersionDao = new CRFVersionDAO(sm.getDataSource());
-        StudyEventDAO studyEventDao = new StudyEventDAO(sm.getDataSource());
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
-        SubjectDAO subjectDao = new SubjectDAO(sm.getDataSource());
+        EventCRFDAO eventCrfDao = this._eventCRFDAO;
+        StudyDAO studyDao = this._studyDAO;
+        StudySubjectDAO studySubjectDao = this._studySubjectDAO;
+        StudyEventDefinitionDAO studyEventDefinistionDao = this._studyEventDefinitionDAO;
+        CRFVersionDAO crfVersionDao = this._cRFVersionDAO;
+        StudyEventDAO studyEventDao = this._studyEventDAO;
+        CRFDAO crfdao = this._cRFDAO;
+        SubjectDAO subjectDao = this._subjectDAO;
 
         StudyBean studyBean = (StudyBean) studyDao.findByName(studyName);
         // .findByPK(studyId);

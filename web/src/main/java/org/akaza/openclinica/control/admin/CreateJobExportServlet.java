@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,7 +40,17 @@ import org.quartz.impl.JobDetailImpl;
  * @author thickerson
  *
  */
+@Component
 public class CreateJobExportServlet extends SecureController {
+    private DatasetDAO _datasetDAO;
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public CreateJobExportServlet(DatasetDAO _datasetDAO, StudyDAO _studyDAO) {
+        this._datasetDAO = _datasetDAO;
+        this._studyDAO = _studyDAO;
+    }
+
     public static final String PERIOD = "periodToRun";
     public static final String FORMAT_ID = "formatId";
     public static final String DATASET_ID = "dsId";
@@ -94,7 +106,7 @@ public class CreateJobExportServlet extends SecureController {
         // }
         // // possible error with dates? yep
         // }
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = this._datasetDAO;
         Collection dsList = dsdao.findAllOrderByStudyIdAndName();
         // TODO will have to dress this up to allow for sites then datasets
         request.setAttribute("datasets", dsList);
@@ -151,8 +163,8 @@ public class CreateJobExportServlet extends SecureController {
             } else {
                 logger.info("found no validation errors, continuing");
 
-                StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
-                DatasetDAO datasetDao = new DatasetDAO(sm.getDataSource());
+                StudyDAO studyDAO = this._studyDAO;
+                DatasetDAO datasetDao = this._datasetDAO;
 
                 UserAccountBean userBean = (UserAccountBean) request.getSession().getAttribute("userBean");
                 CoreResources cr =  new CoreResources();

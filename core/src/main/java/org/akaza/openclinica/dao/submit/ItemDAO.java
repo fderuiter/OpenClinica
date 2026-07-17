@@ -7,6 +7,7 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.akaza.openclinica.dao.submit.ItemDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.Locale;
 
 import org.akaza.openclinica.bean.core.EntityAction;
@@ -24,7 +26,15 @@ import org.akaza.openclinica.web.SQLInitServlet;
 
 // allows both deletion and restoration of a study user role
 
+@Component
 public class UnLockUserServlet extends SecureController {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public UnLockUserServlet(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     private static final long serialVersionUID = 5028384981301316490L;
 
@@ -55,7 +65,7 @@ public class UnLockUserServlet extends SecureController {
 
     @Override
     protected void processRequest() throws Exception {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
 
         FormProcessor fp = new FormProcessor(request);
         int userId = fp.getInt(ARG_USERID);

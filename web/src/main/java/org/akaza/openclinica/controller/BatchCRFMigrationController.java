@@ -79,6 +79,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class BatchCRFMigrationController implements Runnable {
+    private AuditDAO _auditDAO;
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
 
     @Autowired
     private DataSource dataSource;
@@ -116,8 +127,20 @@ public class BatchCRFMigrationController implements Runnable {
     HttpServletRequest request;
     String urlBase;
 
-    public BatchCRFMigrationController() {
+    @Autowired
+    public BatchCRFMigrationController(AuditDAO _auditDAO, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO, UserAccountDAO _userAccountDAO) {
         super();
+        this._auditDAO = _auditDAO;
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+
     }
 
     public BatchCRFMigrationController(HelperObject helperObject) {
@@ -513,48 +536,48 @@ public class BatchCRFMigrationController implements Runnable {
 
     @SuppressWarnings("rawtypes")
     private StudyDAO sdao() {
-        return new StudyDAO(dataSource);
+        return this._studyDAO;
     }
 
     @SuppressWarnings("rawtypes")
     private EventCRFDAO ecdao() {
-        return new EventCRFDAO(dataSource);
+        return this._eventCRFDAO;
     }
 
     private StudyEventDAO sedao() {
-        return new StudyEventDAO(dataSource);
+        return this._studyEventDAO;
     }
 
     @SuppressWarnings("rawtypes")
     private StudyEventDefinitionDAO seddao() {
-        return new StudyEventDefinitionDAO(dataSource);
+        return this._studyEventDefinitionDAO;
     }
 
     @SuppressWarnings("rawtypes")
     private StudySubjectDAO ssdao() {
-        return new StudySubjectDAO(dataSource);
+        return this._studySubjectDAO;
     }
 
     private EventDefinitionCRFDAO edcdao() {
-        return new EventDefinitionCRFDAO(dataSource);
+        return this._eventDefinitionCRFDAO;
     }
 
     private UserAccountDAO uadao() {
-        return new UserAccountDAO(dataSource);
+        return this._userAccountDAO;
     }
 
     @SuppressWarnings("rawtypes")
     private CRFDAO cdao() {
-        return new CRFDAO(dataSource);
+        return this._cRFDAO;
     }
 
     @SuppressWarnings("rawtypes")
     private CRFVersionDAO cvdao() {
-        return new CRFVersionDAO(dataSource);
+        return this._cRFVersionDAO;
     }
 
     private AuditDAO auditDao() {
-        return new AuditDAO(dataSource);
+        return this._auditDAO;
     }
 
     private UserAccountBean getCurrentUser(HttpServletRequest request) {

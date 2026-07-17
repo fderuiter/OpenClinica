@@ -1,5 +1,9 @@
 package org.akaza.openclinica.bean.rule;
 
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.akaza.openclinica.dao.rule.RuleSetDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -19,14 +23,24 @@ import org.slf4j.LoggerFactory;
  * @author Krikor Krumlian
  */
 
+@Component
 public class RuleExecutionBusinessObject {
+    private EventCRFDAO _eventCRFDAO;
+    private RuleDAO _ruleDAO;
+    private RuleSetDAO _ruleSetDAO;
+
 
     private final SessionManager sm;
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     protected StudyBean currentStudy;
     protected UserAccountBean ub;
 
-    public RuleExecutionBusinessObject(SessionManager sm, StudyBean currentStudy, UserAccountBean ub) {
+    @Autowired
+    public RuleExecutionBusinessObject(SessionManager sm, StudyBean currentStudy, UserAccountBean ub, EventCRFDAO _eventCRFDAO, RuleDAO _ruleDAO, RuleSetDAO _ruleSetDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._ruleDAO = _ruleDAO;
+        this._ruleSetDAO = _ruleSetDAO;
+
         this.sm = sm;
         this.currentStudy = currentStudy;
         this.ub = ub;
@@ -73,17 +87,17 @@ public class RuleExecutionBusinessObject {
 
     // These are dao mostly calls see how to reduce redundancy
     private EventCRFBean getEventCRFBean(int eventCrfBeanId) {
-        EventCRFDAO eventCrfDao = new EventCRFDAO(sm.getDataSource());
+        EventCRFDAO eventCrfDao = this._eventCRFDAO;
         return eventCrfBeanId > 0 ? (EventCRFBean) eventCrfDao.findByPK(eventCrfBeanId) : null;
     }
 
     private RuleSetBean getRuleSetBean(EventCRFBean eventCrfBean) {
-        // RuleSetDAO ruleSetDao = new RuleSetDAO(sm.getDataSource());
+        // RuleSetDAO ruleSetDao = this._ruleSetDAO;
         return null;
     }
 
     private ArrayList<RuleBean> getRuleBeans(RuleSetBean ruleSet) {
-        RuleDAO ruleDao = new RuleDAO(sm.getDataSource());
+        RuleDAO ruleDao = this._ruleDAO;
         return ruleSet != null ? ruleDao.findByRuleSet(ruleSet) : new ArrayList<RuleBean>();
     }
 

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.service.crfdata;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.submit.DisplayItemBean;
 import org.akaza.openclinica.bean.submit.DisplayItemGroupBean;
 import org.akaza.openclinica.bean.submit.DisplayItemWithGroupBean;
@@ -30,12 +32,18 @@ import javax.sql.DataSource;
  * For instant-calculation func:onchange
  */
 //ywang (Aug. 2011)
+@Component
 public class InstantOnChangeService {
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     DataSource dataSource;
 
-    public InstantOnChangeService(DataSource dataSource) {
+    @Autowired
+    public InstantOnChangeService(DataSource dataSource, ItemFormMetadataDAO _itemFormMetadataDAO) {
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+
         this.dataSource = dataSource;
     }
 
@@ -202,7 +210,7 @@ public class InstantOnChangeService {
 
 
     public ItemFormMetadataDAO getItemFormMetadataDAO() {
-        return new ItemFormMetadataDAO(dataSource);
+        return this._itemFormMetadataDAO;
     }
 
     public DataSource getDataSource() {

@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.pform;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.ByteArrayInputStream;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
@@ -93,6 +95,21 @@ import org.w3c.dom.NodeList;
 @Path("/openrosa")
 @Component
 public class OpenRosaServices {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
+    @Autowired
+    public OpenRosaServices(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+    }
+
 
     public static final String INPUT_USER_SOURCE = "userSource";
     public static final String INPUT_FIRST_NAME = "Participant";
@@ -163,13 +180,13 @@ public class OpenRosaServices {
         if (!mayProceedPreview(studyOID))
             return null;
 
-        StudyDAO sdao = new StudyDAO(getDataSource());
+        StudyDAO sdao = this._studyDAO;
         StudyBean study = sdao.findByOid(studyOID);
 
-        CRFDAO cdao = new CRFDAO(getDataSource());
+        CRFDAO cdao = this._cRFDAO;
         Collection<CRFBean> crfs = cdao.findAll();
 
-        CRFVersionDAO cVersionDao = new CRFVersionDAO(getDataSource());
+        CRFVersionDAO cVersionDao = this._cRFVersionDAO;
         Collection<CRFVersionBean> crfVersions = cVersionDao.findAll();
 
         CrfVersionMediaDao mediaDao = (CrfVersionMediaDao) SpringServletAccess.getApplicationContext(context).getBean("crfVersionMediaDao");
@@ -248,7 +265,7 @@ public class OpenRosaServices {
         if (!mayProceedPreview(studyOID))
             return null;
 
-        CRFVersionDAO cVersionDao = new CRFVersionDAO(getDataSource());
+        CRFVersionDAO cVersionDao = this._cRFVersionDAO;
         CrfVersionMediaDao mediaDao = (CrfVersionMediaDao) SpringServletAccess.getApplicationContext(context).getBean("crfVersionMediaDao");
 
         CRFVersionBean crfVersion = cVersionDao.findByOid(crfOID);
@@ -320,7 +337,7 @@ public class OpenRosaServices {
         }
 
         try {
-            CRFVersionDAO versionDAO = new CRFVersionDAO(dataSource);
+            CRFVersionDAO versionDAO = this._cRFVersionDAO;
             CRFVersionBean crfVersion = versionDAO.findByOid(formId);
 
             if (crfVersion.getXform() != null && !crfVersion.getXform().equals("")){
@@ -477,9 +494,9 @@ public class OpenRosaServices {
 
         try {
             // Need to retrieve crf's for next event
-            StudyEventDAO eventDAO = new StudyEventDAO(getDataSource());
+            StudyEventDAO eventDAO = this._studyEventDAO;
             StudyEventBean nextEvent = (StudyEventBean) eventDAO.getNextScheduledEvent(ssoid);
-            CRFVersionDAO versionDAO = new CRFVersionDAO(getDataSource());
+            CRFVersionDAO versionDAO = this._cRFVersionDAO;
             ArrayList<CRFVersionBean> crfs = versionDAO.findDefCRFVersionsByStudyEvent(nextEvent.getStudyEventDefinitionId());
             PFormCache cache = PFormCache.getInstance(context);
             for (CRFVersionBean crfVersion : crfs) {
@@ -541,7 +558,7 @@ public class OpenRosaServices {
     }
 
     private StudyBean getStudy(String oid) {
-        sdao = new StudyDAO(dataSource);
+        sdao = this._studyDAO;
         StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
         return studyBean;
     }
@@ -620,7 +637,7 @@ public class OpenRosaServices {
     private boolean mayProceedSubmission(String studyOid, StudySubjectBean ssBean) throws Exception {
         boolean accessPermission = false;
         StudyBean study = getParentStudy(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         participantPortalRegistrar = new ParticipantPortalRegistrar();
         String pManageStatus = participantPortalRegistrar.getRegistrationStatus(studyOid).toString(); // ACTIVE ,
@@ -640,7 +657,7 @@ public class OpenRosaServices {
     private boolean mayProceedPreview(String studyOid) throws Exception {
         boolean accessPermission = false;
         StudyBean study = getParentStudy(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
 
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         participantPortalRegistrar = new ParticipantPortalRegistrar();

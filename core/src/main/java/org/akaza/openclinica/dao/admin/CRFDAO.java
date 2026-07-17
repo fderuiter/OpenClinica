@@ -7,6 +7,7 @@
  */
 package org.akaza.openclinica.dao.admin;
 
+import org.akaza.openclinica.dao.admin.CRFDAO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.managestudy.StudyGroupBean;
@@ -27,7 +29,19 @@ import java.util.ArrayList;
  *
  * Removes a subject group class from a study
  */
+@Component
 public class RemoveSubjectGroupClassServlet extends SecureController {
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+
+    @Autowired
+    public RemoveSubjectGroupClassServlet(StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, SubjectGroupMapDAO _subjectGroupMapDAO) {
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+    }
+
     /**
      *
      */
@@ -58,9 +72,9 @@ public class RemoveSubjectGroupClassServlet extends SecureController {
             addPageMessage(respage.getString("please_choose_a_subject_group_class_to_remove"));
             forwardPage(Page.SUBJECT_GROUP_CLASS_LIST_SERVLET);
         } else {
-            StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
-            StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
-            SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
+            StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
+            StudyGroupDAO sgdao = this._studyGroupDAO;
+            SubjectGroupMapDAO sgmdao = this._subjectGroupMapDAO;
 
             if (action.equalsIgnoreCase("confirm")) {
                 StudyGroupClassBean sgcb = (StudyGroupClassBean) sgcdao.findByPK(classId);

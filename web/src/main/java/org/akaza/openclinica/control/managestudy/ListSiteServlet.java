@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.control.form.FormProcessor;
@@ -27,7 +29,15 @@ import java.util.Locale;
  * @version CVS: $Id: ListSiteServlet.java 12787 2009-05-23 18:02:01Z kkrumlian
  *          $
  */
+@Component
 public class ListSiteServlet extends SecureController {
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public ListSiteServlet(StudyDAO _studyDAO) {
+        this._studyDAO = _studyDAO;
+    }
+
 
     Locale locale;
 
@@ -72,7 +82,7 @@ public class ListSiteServlet extends SecureController {
             forwardPage(Page.MENU_SERVLET);
         } else {
 
-            StudyDAO sdao = new StudyDAO(sm.getDataSource());
+            StudyDAO sdao = this._studyDAO;
             ArrayList studies = (ArrayList) sdao.findAllByParent(currentStudy.getId());
 
             EntityBeanTable table = fp.getEntityBeanTable();

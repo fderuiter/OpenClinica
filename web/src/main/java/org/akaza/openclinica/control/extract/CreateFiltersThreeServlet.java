@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.core.TermType;
@@ -37,7 +39,15 @@ import java.util.Locale;
  * @author thickerson
  *
  */
+@Component
 public class CreateFiltersThreeServlet extends SecureController {
+    private FilterDAO _filterDAO;
+
+    @Autowired
+    public CreateFiltersThreeServlet(FilterDAO _filterDAO) {
+        this._filterDAO = _filterDAO;
+    }
+
 
     Locale locale;
 
@@ -83,7 +93,7 @@ public class CreateFiltersThreeServlet extends SecureController {
                 fb.setOwner(ub);
                 // fb.setOwnerId(ub.getId());
                 logger.info("found owner id: " + fb.getOwner().getId());
-                FilterDAO fDAO = new FilterDAO(sm.getDataSource());
+                FilterDAO fDAO = this._filterDAO;
                 FilterBean fbFinal = (FilterBean) fDAO.create(fb);
                 addPageMessage(restext.getString("the_filter_named") +
                 // fp.getString("fName")+
@@ -97,7 +107,7 @@ public class CreateFiltersThreeServlet extends SecureController {
                     forwardPage(Page.CREATE_DATASET_4);
                 } else {
                     request.removeAttribute("newFilter");
-                    FilterDAO fdao = new FilterDAO(sm.getDataSource());
+                    FilterDAO fdao = this._filterDAO;
                     EntityBeanTable table = fp.getEntityBeanTable();
 
                     ArrayList filters = (ArrayList) fdao.findAll();

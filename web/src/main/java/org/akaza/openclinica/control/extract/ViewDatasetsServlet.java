@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.extract.DatasetBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -43,7 +45,27 @@ import java.util.Locale;
  *
  *
  */
+@Component
 public class ViewDatasetsServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private DatasetDAO _datasetDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+
+    @Autowired
+    public ViewDatasetsServlet(CRFDAO _cRFDAO, DatasetDAO _datasetDAO, EventCRFDAO _eventCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._datasetDAO = _datasetDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+    }
+
 
     Locale locale;
 
@@ -55,7 +77,7 @@ public class ViewDatasetsServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = this._datasetDAO;
         String action = request.getParameter("action");
         resetPanel();
         request.setAttribute(STUDY_INFO_PANEL, panel);
@@ -67,9 +89,9 @@ public class ViewDatasetsServlet extends SecureController {
         // YW >>
         if (StringUtil.isBlank(action)) {
             // YW 08-2008 << 2529 fix
-            StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+            StudyEventDAO sedao = this._studyEventDAO;
+            StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
+            EventCRFDAO ecdao = this._eventCRFDAO;
             StudyBean studyWithEventDefinitions = currentStudy;
             if (currentStudy.getParentStudyId() > 0) {
                 studyWithEventDefinitions = new StudyBean();
@@ -77,7 +99,7 @@ public class ViewDatasetsServlet extends SecureController {
 
             }
             ArrayList seds = seddao.findAllActiveByStudy(studyWithEventDefinitions);
-            CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+            CRFDAO crfdao = this._cRFDAO;
             HashMap events = new LinkedHashMap();
             for (int i = 0; i < seds.size(); i++) {
                 StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seds.get(i);
@@ -153,7 +175,7 @@ public class ViewDatasetsServlet extends SecureController {
                 int datasetId = fp.getInt("datasetId");
 
                 DatasetBean db = initializeAttributes(datasetId);
-                StudyDAO sdao = new StudyDAO(sm.getDataSource());
+                StudyDAO sdao = this._studyDAO;
                 StudyBean study = (StudyBean)sdao.findByPK(db.getStudyId());
 
                 if (study.getId() != currentStudy.getId() && study.getParentStudyId() != currentStudy.getId()) {
@@ -209,13 +231,13 @@ public class ViewDatasetsServlet extends SecureController {
      */
     // @author ywang (Feb, 2008)
     public DatasetBean initializeAttributes(int datasetId) {
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = this._datasetDAO;
         DatasetBean db = dsdao.initialDatasetData(datasetId);
         request.setAttribute("newDataset", db);
         request.setAttribute("allItems", db.getItemDefCrf().clone());
         request.setAttribute("allSelectedItems", db.getItemDefCrf().clone());
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
-        StudyDAO studydao = new StudyDAO(sm.getDataSource());
+        StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
+        StudyDAO studydao = this._studyDAO;
         StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
         ArrayList<StudyGroupClassBean> allSelectedGroups = sgcdao.findAllActiveByStudy(theStudy);
         ArrayList<Integer> selectedSubjectGroupIds = db.getSubjectGroupIds();

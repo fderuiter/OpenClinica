@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.TermType;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
@@ -27,7 +29,17 @@ import java.util.*;
  *
  * Servlet for creating a user account.
  */
+@Component
 public class EditStudyUserRoleServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public EditStudyUserRoleServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     public static final String INPUT_ROLE = "role";
 
     public static final String PATH = "EditStudyUserRole";
@@ -51,7 +63,7 @@ public class EditStudyUserRoleServlet extends SecureController {
 
     @Override
     protected void processRequest() throws Exception {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
 
         FormProcessor fp = new FormProcessor(request);
 
@@ -63,7 +75,7 @@ public class EditStudyUserRoleServlet extends SecureController {
         
         techAdminProtect(user);
         
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         StudyBean sb = (StudyBean) sdao.findByPK(studyUserRole.getStudyId());
         if (sb != null) {
             studyUserRole.setStudyName(sb.getName());
@@ -185,7 +197,7 @@ public class EditStudyUserRoleServlet extends SecureController {
     // }
     //
     // SQLFactory factory = SQLFactory.getInstance();
-    // UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+    // UserAccountDAO udao = this._userAccountDAO;
     //
     // FormProcessor fp = new FormProcessor(request);
     //
@@ -194,7 +206,7 @@ public class EditStudyUserRoleServlet extends SecureController {
     // StudyUserRoleBean studyUserRole =
     // udao.findRoleByUserNameAndStudyId(uName, studyId);
     //
-    // StudyDAO sdao = new StudyDAO(sm.getDataSource());
+    // StudyDAO sdao = this._studyDAO;
     // StudyBean sb = (StudyBean) sdao.findByPK(studyUserRole.getStudyId());
     // if (sb != null) {
     // studyUserRole.setStudyName(sb.getName());

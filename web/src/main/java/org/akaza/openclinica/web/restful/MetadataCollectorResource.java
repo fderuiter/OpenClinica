@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.restful;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -30,7 +32,11 @@ import org.akaza.openclinica.logic.odmExport.MetaDataCollector;
  * @author jnyayapathi
  *
  */
+@Component
 public class MetadataCollectorResource {
+    private StudyDAO _studyDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
 
     private static final int INDENT_LEVEL = 2;
 	private DataSource dataSource;
@@ -80,7 +86,7 @@ public void setRuleSetRuleDao(RuleSetRuleDao ruleSetRuleDao) {
 
 
 	public StudyDAO getStudyDao() {
-		return new StudyDAO(dataSource);
+		return this._studyDAO;
 	}
 
 
@@ -103,7 +109,11 @@ public void setRuleSetRuleDao(RuleSetRuleDao ruleSetRuleDao) {
 
 
 
-	public MetadataCollectorResource(){
+	@Autowired
+    public MetadataCollectorResource(StudyDAO _studyDAO, StudyParameterValueDAO _studyParameterValueDAO){
+        this._studyDAO = _studyDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+
 		
 	}
 	
@@ -241,7 +251,7 @@ public void setRuleSetRuleDao(RuleSetRuleDao ruleSetRuleDao) {
 	        return report;
 	}
 	private StudyBean populateStudyBean(StudyBean studyBean) {
-		 StudyParameterValueDAO spvdao = new StudyParameterValueDAO(this.dataSource);
+		 StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
 		  @SuppressWarnings("rawtypes")
 		ArrayList studyParameters = spvdao.findParamConfigByStudy(studyBean);
 

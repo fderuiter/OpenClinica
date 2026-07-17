@@ -1,5 +1,14 @@
 package org.akaza.openclinica.core.migration;
 
+import org.akaza.openclinica.dao.submit.ItemDataDAO;
+import org.akaza.openclinica.dao.submit.ItemGroupDAO;
+import org.akaza.openclinica.dao.submit.ItemFormMetadataDAO;
+import org.akaza.openclinica.dao.submit.ItemDAO;
+import org.akaza.openclinica.dao.submit.CRFVersionDAO;
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.akaza.openclinica.dao.login.UserAccountDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.FileInputStream;
 import java.util.Locale;
 import java.util.Date;
@@ -14,7 +23,35 @@ import org.akaza.openclinica.bean.admin.NewCRFBean;
 import org.akaza.openclinica.dao.hibernate.MeasurementUnitDao;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 
+@Component
 public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigration {
+    private ItemDataDAO _itemDataDAO;
+
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private ItemGroupDAO _itemGroupDAO;
+
+    private UserAccountDAO _userAccountDAO;
+
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public ClinicalTemplateSeederMigration(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO, ItemGroupDAO _itemGroupDAO, ItemDataDAO _itemDataDAO) {
+        this._itemDataDAO = _itemDataDAO;
+
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+
+        this._userAccountDAO = _userAccountDAO;
+
+        this._studyDAO = _studyDAO;
+    }
+
 
     @Override
     protected void doMigration() throws Exception {
@@ -34,15 +71,15 @@ public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigr
         System.out.println("Starting interactive clinical data seeding from template: " + templatePath);
         
         // 1. Create a Seeded Study
-        StudyDAO studyDAO = new StudyDAO(dataSource);
-        StudyBean study = new StudyBean();
+        StudyDAO studyDAO = this._studyDAO;
+        StudyBean study = new StudyBean(_cRFDAO, _cRFVersionDAO, _itemDAO, _itemFormMetadataDAO, _itemGroupDAO);
         study.setName("Seeded Study " + System.currentTimeMillis());
         study.setIdentifier("SEED-" + System.currentTimeMillis());
         study.setOid("S_" + study.getIdentifier());
         study.setSummary("Study automatically generated during seeding");
         study.setStatus(Status.AVAILABLE);
         study.setOwner(systemUser);
-        study.setCreatedDate(new Date());
+        study.setCreatedDate(new Date(), _cRFDAO, _cRFVersionDAO, _itemDAO, _itemDataDAO, _itemGroupDAO, _cRFDAO, _cRFVersionDAO, _itemDAO, _itemDataDAO, _itemGroupDAO);
         
         // Required constraints step one
         study.setExpectedTotalEnrollment(100);
@@ -61,7 +98,7 @@ public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigr
         }
 
         FileInputStream inStream = new FileInputStream(templatePath);
-        SpreadSheetTableRepeating htab = new SpreadSheetTableRepeating(inStream, systemUser, "1.0", Locale.ENGLISH, study.getId());
+        SpreadSheetTableRepeating htab = new SpreadSheetTableRepeating(inStream, systemUser, "1.0", Locale.ENGLISH, study.getId(), _cRFDAO, _cRFVersionDAO, _itemDAO, _itemFormMetadataDAO, _itemGroupDAO, _cRFDAO, _cRFVersionDAO, _itemDAO, _itemFormMetadataDAO, _itemGroupDAO);
         // Note: MeasurementUnitDao requires SessionFactory, but wait! We can bypass it if it's not strictly used or we can initialize it?
         // Actually spreadSheetTableRepeating only needs it if we use units. We can try bypassing or getting it from Spring.
         // Let's get it from ApplicationContextProvider!
@@ -73,7 +110,7 @@ public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigr
             nib = htab.toNewCRF(dataSource, resPageMsg);
         } else {
             FileInputStream inStreamClassic = new FileInputStream(templatePath);
-            SpreadSheetTableClassic sstc = new SpreadSheetTableClassic(inStreamClassic, systemUser, "1.0", Locale.ENGLISH, study.getId());
+            SpreadSheetTableClassic sstc = new SpreadSheetTableClassic(inStreamClassic, systemUser, "1.0", Locale.ENGLISH, study.getId(), _cRFDAO, _cRFVersionDAO, _itemDAO, _itemDataDAO, _itemGroupDAO, _cRFDAO, _cRFVersionDAO, _itemDAO, _itemDataDAO, _itemGroupDAO);
             sstc.setMeasurementUnitDao(muDao);
             nib = sstc.toNewCRF(dataSource, resPageMsg);
             inStreamClassic.close();

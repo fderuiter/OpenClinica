@@ -1,5 +1,8 @@
 package org.akaza.openclinica.core.migration;
 
+import org.akaza.openclinica.dao.login.UserAccountDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
@@ -10,7 +13,19 @@ import java.util.Date;
 import org.akaza.openclinica.dao.submit.ItemDataDAO;
 import org.akaza.openclinica.bean.submit.ItemDataBean;
 
+@Component
 public class DuplicateClinicalRecordsCleanupMigration extends AbstractJavaManagedDataMigration {
+    private UserAccountDAO _userAccountDAO;
+
+    private ItemDataDAO _itemDataDAO;
+
+    @Autowired
+    public DuplicateClinicalRecordsCleanupMigration(ItemDataDAO _itemDataDAO, UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+
+        this._itemDataDAO = _itemDataDAO;
+    }
+
 
     private static class DuplicatePair {
         int minId;
@@ -20,7 +35,7 @@ public class DuplicateClinicalRecordsCleanupMigration extends AbstractJavaManage
     @Override
     protected void doMigration() throws Exception {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        ItemDataDAO itemDataDAO = new ItemDataDAO(dataSource);
+        ItemDataDAO itemDataDAO = this._itemDataDAO;
 
         boolean hasDuplicates = true;
         while (hasDuplicates) {

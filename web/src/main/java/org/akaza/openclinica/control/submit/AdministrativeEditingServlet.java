@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +46,15 @@ import org.slf4j.LoggerFactory;
  *         Performs 'administrative editing' action for study director/study
  *         coordinator
  */
+@Component
 public class AdministrativeEditingServlet extends DataEntryServlet {
+    private StudyEventDAO _studyEventDAO;
+
+    @Autowired
+    public AdministrativeEditingServlet(StudyEventDAO _studyEventDAO) {
+        this._studyEventDAO = _studyEventDAO;
+    }
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdministrativeEditingServlet.class);
 
@@ -186,7 +196,7 @@ public class AdministrativeEditingServlet extends DataEntryServlet {
         this.checkUpdateDataPermission(request);
         request.setAttribute("fromResolvingNotes", fromResolvingNotes);
         LOGGER.debug(" +++++++++++++++++++ " + ecb.getStudyEventId());
-        // StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        // StudyEventDAO sedao = this._studyEventDAO;
         // StudyEventBean sEvent = (StudyEventBean)
         // sedao.findByPK(ecb.getStudyEventId());
         // if (sEvent.getSubjectEventStatus().equals(SubjectEventStatus.SIGNED))

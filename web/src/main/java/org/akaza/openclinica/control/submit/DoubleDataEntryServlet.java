@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +50,17 @@ import org.slf4j.LoggerFactory;
 /**
  * @author ssachs
  */
+@Component
 public class DoubleDataEntryServlet extends DataEntryServlet {
+    private ItemDataDAO _itemDataDAO;
+    private SectionDAO _sectionDAO;
+
+    @Autowired
+    public DoubleDataEntryServlet(ItemDataDAO _itemDataDAO, SectionDAO _sectionDAO) {
+        this._itemDataDAO = _itemDataDAO;
+        this._sectionDAO = _sectionDAO;
+    }
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DoubleDataEntryServlet.class);
 
@@ -125,7 +137,7 @@ public class DoubleDataEntryServlet extends DataEntryServlet {
                 tabNumber = fp.getInt("tab");
             }
         }
-        SectionDAO sectionDao = new SectionDAO(getDataSource());
+        SectionDAO sectionDao = this._sectionDAO;
         int crfVersionId = ecb.getCRFVersionId();
         int eventCRFId = ecb.getId();
         ArrayList sections = sectionDao.findAllByCRFVersionId(crfVersionId);
@@ -424,7 +436,7 @@ public class DoubleDataEntryServlet extends DataEntryServlet {
     protected DisplayItemBean validateCalcTypeDisplayItemBean(ScoreItemValidator sv, DisplayItemBean dib, String inputName, HttpServletRequest request) {
 
         org.akaza.openclinica.bean.core.ResponseType rt = dib.getMetadata().getResponseSet().getResponseType();
-        ItemDataDAO iddao = new ItemDataDAO(getDataSource());
+        ItemDataDAO iddao = this._itemDataDAO;
         boolean isSingleItem = false;
         HttpSession session = request.getSession();
         if (StringUtil.isBlank(inputName)) {// for single items

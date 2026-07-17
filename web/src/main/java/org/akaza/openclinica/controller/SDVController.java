@@ -1,5 +1,6 @@
 package org.akaza.openclinica.controller;
 
+import org.akaza.openclinica.dao.submit.EventCRFDAO;
 import static org.jmesa.facade.TableFacadeFactory.createTableFacade;
 
 import org.akaza.openclinica.bean.core.Role;
@@ -54,6 +55,11 @@ import javax.sql.DataSource;
  */
 @Controller("sdvController")
 public class SDVController {
+    private EventCRFDAO _eventCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
     public final static String SUBJECT_SDV_TABLE_ATTRIBUTE = "sdvTableAttribute";
     @Autowired
     @Qualifier("dataSource")
@@ -73,7 +79,13 @@ public class SDVController {
     @Qualifier("sidebarInit")
     private SidebarInit sidebarInit;
 
-    public SDVController() {
+    @Autowired
+    public SDVController(EventCRFDAO _eventCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudySubjectDAO _studySubjectDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+
     }
 
     @RequestMapping("/viewSubjectAggregate")
@@ -128,7 +140,7 @@ public class SDVController {
     public ModelMap viewSubjectHandler(HttpServletRequest request, @RequestParam("studySubjectId") int studySubjectId, @RequestParam("studyId") int studyId) {
 
         ModelMap gridMap = new ModelMap();
-        /*EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        /*EventCRFDAO eventCRFDAO = this._eventCRFDAO;
         List<EventCRFBean> eventCRFBeans = eventCRFDAO.findAllByStudySubject(studySubjectId);*/
 
         request.setAttribute("studyId", studyId);
@@ -215,8 +227,8 @@ public class SDVController {
     public ModelMap viewAllSubjectFormHandler(HttpServletRequest request, HttpServletResponse response, @RequestParam("studyId") int studyId) {
 
         ModelMap gridMap = new ModelMap();
-        StudyDAO studyDAO = new StudyDAO(dataSource);
-        // StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+        StudyDAO studyDAO = this._studyDAO;
+        // StudyEventDAO studyEventDAO = this._studyEventDAO;
         StudyBean studyBean = (StudyBean) studyDAO.findByPK(studyId);
         String pattern = "MM/dd/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
@@ -502,7 +514,7 @@ public class SDVController {
     */
     private String renderSubjectsTable(List<EventCRFBean> eventCRFBeans, int studySubjectId, HttpServletRequest request) {
 
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
         StudySubjectBean subjectBean = (StudySubjectBean) studySubjectDAO.findByPK(studySubjectId);
 
         Collection<SubjectSDVContainer> items = sdvUtil.getSubjectRows(eventCRFBeans, request);

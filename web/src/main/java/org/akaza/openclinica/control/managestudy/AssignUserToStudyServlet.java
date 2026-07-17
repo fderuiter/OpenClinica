@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
@@ -37,7 +39,17 @@ import java.util.Set;
  * @author jxu
  * 
  */
+@Component
 public class AssignUserToStudyServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public AssignUserToStudyServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     /**
      *
@@ -134,7 +146,7 @@ public class AssignUserToStudyServlet extends SecureController {
 
     private void addUser(ArrayList users) throws Exception {
         String pageMass = "";
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
         FormProcessor fp = new FormProcessor(request);
         Map tmpSelectedUsersMap = (HashMap) session.getAttribute("tmpSelectedUsersMap");
         Set addedUsers = new HashSet();
@@ -242,7 +254,7 @@ public class AssignUserToStudyServlet extends SecureController {
      * @return
      */
     private ArrayList findUsers() {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
         ArrayList userList = (ArrayList) udao.findAll();
         ArrayList userAvailable = new ArrayList();
         for (int i = 0; i < userList.size(); i++) {
@@ -267,7 +279,7 @@ public class AssignUserToStudyServlet extends SecureController {
 
                 } else {
                     // find all the sites for this top study
-                    StudyDAO sdao = new StudyDAO(sm.getDataSource());
+                    StudyDAO sdao = this._studyDAO;
                     ArrayList sites = (ArrayList) sdao.findAllByParent(currentStudy.getId());
                     String notes = "";
                     for (int j = 0; j < sites.size(); j++) {

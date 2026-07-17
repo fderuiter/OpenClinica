@@ -37,6 +37,19 @@ import java.util.*;
 @Controller
 @RequestMapping(value = "/auth/api/v1/fhir")
 public class NativeFhirIngestionController {
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public NativeFhirIngestionController(EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
@@ -54,7 +67,7 @@ public class NativeFhirIngestionController {
 
             // Get UserAccountBean
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+            UserAccountDAO userAccountDAO = this._userAccountDAO;
             UserAccountBean ub = (UserAccountBean) userAccountDAO.findByUserName(userDetails.getUsername());
 
             // Build mapping
@@ -68,7 +81,7 @@ public class NativeFhirIngestionController {
             }
 
             String studyOid = odmContainer.getCrfDataPostImportContainer().getStudyOID();
-            StudyDAO studyDao = new StudyDAO(dataSource);
+            StudyDAO studyDao = this._studyDAO;
             StudyBean studyBean = studyDao.findByOid(studyOid);
             if (studyBean == null) {
                 return new ResponseEntity<String>("Study OID " + studyOid + " not found.", HttpStatus.BAD_REQUEST);
@@ -111,8 +124,8 @@ public class NativeFhirIngestionController {
 
             // 4. Save data
             CrfBusinessLogicHelper crfBusinessLogicHelper = new CrfBusinessLogicHelper(dataSource);
-            ItemDataDAO itemDataDao = new ItemDataDAO(dataSource);
-            EventCRFDAO eventCrfDao = new EventCRFDAO(dataSource);
+            ItemDataDAO itemDataDao = this._itemDataDAO;
+            EventCRFDAO eventCrfDao = this._eventCRFDAO;
 
             for (DisplayItemBeanWrapper wrapper : wrappers) {
                 boolean resetSDV = false;

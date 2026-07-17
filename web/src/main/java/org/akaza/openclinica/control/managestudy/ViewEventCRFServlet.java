@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.managestudy.StudySubjectBean;
 import org.akaza.openclinica.bean.submit.DisplayItemBean;
@@ -34,7 +36,27 @@ import java.util.ArrayList;
  *
  * Views the detail of an event CRF
  */
+@Component
 public class ViewEventCRFServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private SectionDAO _sectionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public ViewEventCRFServlet(CRFDAO _cRFDAO, EventCRFDAO _eventCRFDAO, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, ItemFormMetadataDAO _itemFormMetadataDAO, SectionDAO _sectionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
     /**
      *
      */
@@ -49,13 +71,13 @@ public class ViewEventCRFServlet extends SecureController {
         int eventCRFId = fp.getInt("id", true);
         int studySubId = fp.getInt("studySubId", true);
 
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        SectionDAO secdao = new SectionDAO(sm.getDataSource());
+        StudySubjectDAO subdao = this._studySubjectDAO;
+        EventCRFDAO ecdao = this._eventCRFDAO;
+        ItemDataDAO iddao = this._itemDataDAO;
+        ItemDAO idao = this._itemDAO;
+        ItemFormMetadataDAO ifmdao = this._itemFormMetadataDAO;
+        CRFDAO cdao = this._cRFDAO;
+        SectionDAO secdao = this._sectionDAO;
 
         if (eventCRFId == 0) {
             addPageMessage(respage.getString("please_choose_an_event_CRF_to_view"));

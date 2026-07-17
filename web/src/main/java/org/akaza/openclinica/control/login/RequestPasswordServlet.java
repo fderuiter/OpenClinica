@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.login;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.login.PwdChallengeQuestion;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.control.SpringServletAccess;
@@ -33,7 +35,15 @@ import java.util.Date;
  * 
  *          Servlet of requesting password
  */
+@Component
 public class RequestPasswordServlet extends SecureController {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public RequestPasswordServlet(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     @Override
     public void mayProceed() throws InsufficientPermissionException {
@@ -89,7 +99,7 @@ public class RequestPasswordServlet extends SecureController {
 
         sm = new SessionManager(null, ubForm.getName(), SpringServletAccess.getApplicationContext(context));
 
-        UserAccountDAO uDAO = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO uDAO = this._userAccountDAO;
         // see whether this user in the DB
         UserAccountBean ubDB = (UserAccountBean) uDAO.findByUserName(ubForm.getName());
 

@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.filter;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.Locale;
 
@@ -21,7 +23,15 @@ import org.akaza.openclinica.domain.datamap.AuditLogEvent;
 import org.akaza.openclinica.domain.datamap.AuditLogEventType;
 import org.akaza.openclinica.dao.hibernate.AuditLogEventDao;
 
+@Component
 public class OpenClinicaSessionRegistryImpl extends SessionRegistryImpl {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public OpenClinicaSessionRegistryImpl(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     AuditUserLoginDao auditUserLoginDao;
     UserAccountDAO userAccountDao;
@@ -90,7 +100,7 @@ public class OpenClinicaSessionRegistryImpl extends SessionRegistryImpl {
     }
 
     public UserAccountDAO getUserAccountDao() {
-        return userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        return userAccountDao != null ? userAccountDao : this._userAccountDAO;
     }
 
     public AuditUserLoginDao getAuditUserLoginDao() {

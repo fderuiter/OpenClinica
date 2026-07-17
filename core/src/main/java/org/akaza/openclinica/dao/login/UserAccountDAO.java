@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.dao.login;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,7 +48,10 @@ import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
  *         <P>
  *         expand on query to get all that from a select star?
  */
+@Component
 public class UserAccountDAO extends AuditableEntityDAO {
+    private StudyDAO _studyDAO;
+
     // private DataSource ds;
     // private DAODigester digester;
 
@@ -60,8 +65,11 @@ public class UserAccountDAO extends AuditableEntityDAO {
         getNextPKName = "getNextPK";
     }
 
-    public UserAccountDAO(DataSource ds) {
+    @Autowired
+    public UserAccountDAO(DataSource ds, StudyDAO _studyDAO) {
         super(ds);
+        this._studyDAO = _studyDAO;
+
         setQueryNames();
     }
 
@@ -686,7 +694,7 @@ public class UserAccountDAO extends AuditableEntityDAO {
 
         ArrayList answer = new ArrayList();
 
-        StudyDAO sdao = new StudyDAO(ds);
+        StudyDAO sdao = this._studyDAO;
 
         HashMap childrenByParentId = sdao.getChildrenByParentIds(allStudies);
 

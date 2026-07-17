@@ -1,5 +1,6 @@
 package org.akaza.openclinica.web.filter;
 
+import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.StringTokenizer;
@@ -23,7 +24,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 /**
  * Created by krikorkrumlian on 8/7/15.
  */
+@Component
 public class ApiSecurityFilter extends OncePerRequestFilter {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ApiSecurityFilter(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     private String realm = "Protected";
 
@@ -64,7 +73,7 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
 
         if (apiKey != null && !apiKey.trim().isEmpty()) {
             apiKey = apiKey.trim();
-            UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+            UserAccountDAO userAccountDAO = this._userAccountDAO;
             UserAccountBean ub = (UserAccountBean) userAccountDAO.findByApiKey(apiKey);
             if (ub != null && ub.getId() != 0) {
                 request.getSession().setAttribute("userBean", ub);

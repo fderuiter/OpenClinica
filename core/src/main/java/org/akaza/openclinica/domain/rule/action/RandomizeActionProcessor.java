@@ -1,5 +1,7 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -21,7 +23,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 
+@Component
 public class RandomizeActionProcessor implements ActionProcessor {
+    private StudyDAO _studyDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
 
     DataSource ds;
     DynamicsMetadataService itemMetadataService;
@@ -33,8 +39,12 @@ public class RandomizeActionProcessor implements ActionProcessor {
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
 
+    @Autowired
     public RandomizeActionProcessor(DataSource ds, DynamicsMetadataService itemMetadataService, RuleActionRunLogDao ruleActionRunLogDao, RuleSetBean ruleSet,
-            RuleSetRuleBean ruleSetRule) {
+            RuleSetRuleBean ruleSetRule, StudyDAO _studyDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+
         this.itemMetadataService = itemMetadataService;
         this.ruleSet = ruleSet;
         this.ruleSetRule = ruleSetRule;
@@ -117,7 +127,7 @@ public class RandomizeActionProcessor implements ActionProcessor {
         boolean accessPermission = false;
         StudyBean siteStudy = getStudy(studyOid);
         StudyBean study = getParentStudy(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(ds);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "randomization");
 
         randomizationRegistrar = new RandomizationRegistrar();
@@ -137,7 +147,7 @@ public class RandomizeActionProcessor implements ActionProcessor {
     }
 
     private StudyBean getStudy(String oid) {
-        sdao = new StudyDAO(ds);
+        sdao = this._studyDAO;
         StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
         return studyBean;
     }

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.NumericComparisonOperator;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.core.SubjectEventStatus;
@@ -47,7 +49,21 @@ import javax.sql.DataSource;
 
 // TODO: support YYYY-MM-DD HH:MM time formats
 
+@Component
 public class CreateNewStudyEventServlet extends SecureController {
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public CreateNewStudyEventServlet(DiscrepancyNoteDAO _discrepancyNoteDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
 
     Locale locale;
     // < ResourceBundlerestext,respage,resexception;
@@ -103,7 +119,7 @@ public class CreateNewStudyEventServlet extends SecureController {
         int studyEventDefinitionId = fp.getInt(INPUT_STUDY_EVENT_DEFINITION);
 
         // TODO: make this sensitive to permissions
-        StudySubjectDAO sdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO sdao = this._studySubjectDAO;
         StudySubjectBean ssb;
         if (studySubjectId <= 0) {
             ssb = (StudySubjectBean) request.getAttribute(INPUT_STUDY_SUBJECT);
@@ -127,7 +143,7 @@ public class CreateNewStudyEventServlet extends SecureController {
         // ArrayList subjects = sdao.findAllActiveByStudyOrderByLabel(currentStudy);
 
         // TODO: make this sensitive to permissions
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
 
         StudyBean studyWithEventDefinitions = currentStudy;
         if (currentStudy.getParentStudyId() > 0) {
@@ -163,7 +179,7 @@ public class CreateNewStudyEventServlet extends SecureController {
         ArrayList eventDefinitionsScheduled = eventDefinitions;
 
         if (!fp.isSubmitted()) {
-            // StudyEventDAO sed = new StudyEventDAO(sm.getDataSource());
+            // StudyEventDAO sed = this._studyEventDAO;
             // sed.updateSampleOrdinals_v092();
 
             HashMap presetValues = new HashMap();
@@ -474,7 +490,7 @@ public class CreateNewStudyEventServlet extends SecureController {
                 forwardPage(Page.CREATE_NEW_STUDY_EVENT);
             } else {
             	logger.debug("error is empty");
-                StudyEventDAO sed = new StudyEventDAO(sm.getDataSource());
+                StudyEventDAO sed = this._studyEventDAO;
 
                 StudyEventBean studyEvent = new StudyEventBean();
                 studyEvent.setStudyEventDefinitionId(definition.getId());
@@ -527,7 +543,7 @@ public class CreateNewStudyEventServlet extends SecureController {
 
                 // save discrepancy notes into DB
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = this._discrepancyNoteDAO;
                 String[] eventFields = { INPUT_LOCATION, INPUT_STARTDATE_PREFIX, INPUT_ENDDATE_PREFIX };
                 for (String element : eventFields) {
                     AddNewSubjectServlet.saveFieldNotes(element, fdn, dndao, studyEvent.getId(), "studyEvent", currentStudy);
@@ -670,7 +686,7 @@ public class CreateNewStudyEventServlet extends SecureController {
             return true;
         }
 
-        StudyEventDAO sedao = new StudyEventDAO(ds);
+        StudyEventDAO sedao = this._studyEventDAO;
         ArrayList allEvents = sedao.findAllByDefinitionAndSubject(studyEventDefinition, studySubject);
 
         if (allEvents.size() > 0) {

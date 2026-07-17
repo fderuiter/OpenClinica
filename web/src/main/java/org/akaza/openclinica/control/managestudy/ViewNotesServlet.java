@@ -9,6 +9,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,7 +54,39 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @author ssachs
  * @author jxu
  */
+@Component
 public class ViewNotesServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ViewNotesServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, DiscrepancyNoteDAO _discrepancyNoteDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, UserAccountDAO _userAccountDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     public static final String PRINT = "print";
     public static final String RESOLUTION_STATUS = "resolutionStatus";
     public static final String TYPE = "discNoteType";
@@ -117,8 +151,8 @@ public class ViewNotesServlet extends SecureController {
         String viewForOne = fp.getString("viewForOne");
         boolean isForOneSubjectsNotes = "y".equalsIgnoreCase(viewForOne);
 
-        DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
-        StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+        DiscrepancyNoteDAO dndao = this._discrepancyNoteDAO;
+        StudyDAO studyDAO = this._studyDAO;
         dndao.setFetchMapping(true);
 
         int resolutionStatus = 0;
@@ -154,20 +188,20 @@ public class ViewNotesServlet extends SecureController {
             request.setAttribute(RESOLUTION_STATUS, resolutionStatusIds);
         }
 
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+        StudySubjectDAO subdao = this._studySubjectDAO;
+        StudyDAO studyDao = this._studyDAO;
 
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = this._subjectDAO;
 
-        UserAccountDAO uadao = new UserAccountDAO(sm.getDataSource());
-        CRFVersionDAO crfVersionDao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO crfDao = new CRFDAO(sm.getDataSource());
-        StudyEventDAO studyEventDao = new StudyEventDAO(sm.getDataSource());
-        StudyEventDefinitionDAO studyEventDefinitionDao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO eventDefinitionCRFDao = new EventDefinitionCRFDAO(sm.getDataSource());
-        ItemDataDAO itemDataDao = new ItemDataDAO(sm.getDataSource());
-        ItemDAO itemDao = new ItemDAO(sm.getDataSource());
-        EventCRFDAO eventCRFDao = new EventCRFDAO(sm.getDataSource());
+        UserAccountDAO uadao = this._userAccountDAO;
+        CRFVersionDAO crfVersionDao = this._cRFVersionDAO;
+        CRFDAO crfDao = this._cRFDAO;
+        StudyEventDAO studyEventDao = this._studyEventDAO;
+        StudyEventDefinitionDAO studyEventDefinitionDao = this._studyEventDefinitionDAO;
+        EventDefinitionCRFDAO eventDefinitionCRFDao = this._eventDefinitionCRFDAO;
+        ItemDataDAO itemDataDao = this._itemDataDAO;
+        ItemDAO itemDao = this._itemDAO;
+        EventCRFDAO eventCRFDao = this._eventCRFDAO;
 
 
 
@@ -279,7 +313,7 @@ public class ViewNotesServlet extends SecureController {
         boolean filterByRes = resolutionStatus >= 1 && resolutionStatus <= 5;
 
         ArrayList<DiscrepancyNoteBean> filteredNotes = new ArrayList<DiscrepancyNoteBean>();
-        StudySubjectDAO subjectDao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO subjectDao = this._studySubjectDAO;
         StudySubjectBean studySubjBean = (StudySubjectBean) subjectDao.findByPK(subjectId);
 
         for (DiscrepancyNoteBean discBean : allNotes) {

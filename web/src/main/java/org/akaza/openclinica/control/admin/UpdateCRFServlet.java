@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.NumericComparisonOperator;
 import org.akaza.openclinica.bean.core.Role;
@@ -27,7 +29,15 @@ import java.util.Date;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class UpdateCRFServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+
+    @Autowired
+    public UpdateCRFServlet(CRFDAO _cRFDAO) {
+        this._cRFDAO = _cRFDAO;
+    }
+
 
     private static String CRF = "crf";
 
@@ -132,7 +142,7 @@ public class UpdateCRFServlet extends SecureController {
         errors = v.validate();
 
         if (!StringUtil.isBlank(fp.getString("name"))) {
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFDAO cdao = this._cRFDAO;
 
             CRFBean crf = (CRFBean) session.getAttribute(CRF);
             CRFBean crf1 = (CRFBean) cdao.findAnotherByName(fp.getString("name").trim(), crf.getId());
@@ -166,7 +176,7 @@ public class UpdateCRFServlet extends SecureController {
      *
      */
     private void submitCRF() {
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFDAO cdao = this._cRFDAO;
         CRFBean crf = (CRFBean) session.getAttribute(CRF);
         logger.info("CRF bean to be updated:" + crf.getName());
 

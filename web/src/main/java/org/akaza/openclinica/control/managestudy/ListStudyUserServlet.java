@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.odmbeans.UserBean;
@@ -31,7 +33,15 @@ import java.util.HashMap;
  *          thickerson $
  * 
  */
+@Component
 public class ListStudyUserServlet extends SecureController {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ListStudyUserServlet(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     /**
      *
@@ -54,7 +64,7 @@ public class ListStudyUserServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
         ArrayList users = udao.findAllAssignedUsersByStudy(currentStudy.getId());
 
         EntityBeanTable table = fp.getEntityBeanTable();

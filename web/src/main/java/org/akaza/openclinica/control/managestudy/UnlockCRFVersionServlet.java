@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 import org.akaza.openclinica.bean.admin.CRFBean;
@@ -22,7 +24,19 @@ import org.akaza.openclinica.dao.submit.EventCRFDAO;
 import org.akaza.openclinica.view.Page;
 import org.akaza.openclinica.web.InsufficientPermissionException;
 
+@Component
 public class UnlockCRFVersionServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+
+    @Autowired
+    public UnlockCRFVersionServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+    }
+
     /**
     *
     */
@@ -58,13 +72,13 @@ public class UnlockCRFVersionServlet extends SecureController {
            return;
        }
        
-       CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+       CRFVersionDAO cvdao = this._cRFVersionDAO;
        CRFDAO cdao = new CRFDAO (sm.getDataSource());
        
        CRFVersionBean version = (CRFVersionBean)cvdao.findByPK(crfVersionId);
        CRFBean crf = (CRFBean)cdao.findByPK(version.getCrfId());
        
-       EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+       EventCRFDAO ecdao = this._eventCRFDAO;
        ArrayList eventCRFs = ecdao.findAllStudySubjectByCRFVersion(crfVersionId);
        
        if (StringUtil.isBlank(action)) {

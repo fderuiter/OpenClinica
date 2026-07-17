@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.job;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.control.submit.AsyncImportTask;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -17,7 +19,17 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.util.Locale;
 
+@Component
 public class AsyncXmlImportJob extends QuartzJobBean {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public AsyncXmlImportJob(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
@@ -37,10 +49,10 @@ public class AsyncXmlImportJob extends QuartzJobBean {
             String localeStr = dataMap.getString(LOCALE);
 
             DataSource dataSource = (DataSource) appContext.getBean("dataSource");
-            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountDAO udao = this._userAccountDAO;
             UserAccountBean ub = (UserAccountBean) udao.findByPK(userId);
 
-            StudyDAO sdao = new StudyDAO(dataSource);
+            StudyDAO sdao = this._studyDAO;
             StudyBean study = (StudyBean) sdao.findByPK(studyId);
 
             Locale locale = new Locale(localeStr);

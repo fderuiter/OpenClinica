@@ -9,6 +9,8 @@
 
 package org.akaza.openclinica.logic.odmExport;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean;
 import org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO;
@@ -25,13 +27,19 @@ import javax.sql.DataSource;
  * @author ywang (May, 2009)
  */
 
+@Component
 public class OdmStudyBase {
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+
     private StudyBean study;
     private List<StudyEventDefinitionBean> sedBeansInStudy;
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    public OdmStudyBase() {
+    @Autowired
+    public OdmStudyBase(StudyEventDefinitionDAO _studyEventDefinitionDAO) {
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+
     }
 
     /**
@@ -47,17 +55,17 @@ public class OdmStudyBase {
         }
         this.study = study;
         int parentStudyId = this.study.getParentStudyId() > 0 ? this.study.getParentStudyId() : this.study.getId();
-        this.sedBeansInStudy = new StudyEventDefinitionDAO(ds).findAllActiveByParentStudyId(parentStudyId);
+        this.sedBeansInStudy = this._studyEventDefinitionDAO.findAllActiveByParentStudyId(parentStudyId);
     }
 
     public OdmStudyBase setOdmStudyBean(DataSource ds, StudyBean study) {
-        OdmStudyBase studyBase = new OdmStudyBase();
+        OdmStudyBase studyBase = new OdmStudyBase(_studyEventDefinitionDAO, _studyEventDefinitionDAO);
         if (study == null) {
             logger.info("Study is null!");
         } else {
             this.study = study;
             int parentStudyId = this.study.getParentStudyId() > 0 ? this.study.getParentStudyId() : this.study.getId();
-            this.sedBeansInStudy = new StudyEventDefinitionDAO(ds).findAllActiveByParentStudyId(parentStudyId);
+            this.sedBeansInStudy = this._studyEventDefinitionDAO.findAllActiveByParentStudyId(parentStudyId);
         }
         return studyBase;
     }

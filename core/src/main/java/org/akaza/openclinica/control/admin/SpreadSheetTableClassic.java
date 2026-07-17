@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.FileInputStream;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -64,7 +66,14 @@ import org.slf4j.LoggerFactory;
  * @version CVS: $Id: SpreadSheetTable.java,v 1.28 2006/09/01 00:37:19 jxu Exp $
  */
 
-public class SpreadSheetTableClassic implements SpreadSheetTable {// extends
+@Component
+public class SpreadSheetTableClassic implements SpreadSheetTable {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private ItemGroupDAO _itemGroupDAO;
+// extends
     // SpreadSheetTable
     // {
 
@@ -93,7 +102,14 @@ public class SpreadSheetTableClassic implements SpreadSheetTable {// extends
     // the default; all crf ids should be > 0, tbh 8-29 :-)
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    public SpreadSheetTableClassic(FileInputStream parseStream, UserAccountBean ub, String versionName, Locale locale, int studyId) throws IOException {
+    @Autowired
+    public SpreadSheetTableClassic(FileInputStream parseStream, UserAccountBean ub, String versionName, Locale locale, int studyId, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, ItemGroupDAO _itemGroupDAO) throws IOException {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+
         // super();
         this.wb = WorkbookFactory.create(parseStream);
         this.ub = ub;
@@ -143,13 +159,13 @@ public class SpreadSheetTableClassic implements SpreadSheetTable {// extends
         ArrayList<String> itemGroupOids = new ArrayList<String>();
         ArrayList<String> itemOids = new ArrayList<String>();
 
-        CRFDAO cdao = new CRFDAO(ds);
+        CRFDAO cdao = this._cRFDAO;
         CRFBean crf = (CRFBean) cdao.findByPK(crfId);
 
-        ItemDataDAO iddao = new ItemDataDAO(ds);
-        ItemDAO idao = new ItemDAO(ds);
-        CRFVersionDAO cvdao = new CRFVersionDAO(ds);
-        ItemGroupDAO itemGroupDao = new ItemGroupDAO(ds);
+        ItemDataDAO iddao = this._itemDataDAO;
+        ItemDAO idao = this._itemDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        ItemGroupDAO itemGroupDao = this._itemGroupDAO;
 
         int validSheetNum = 0;
         for (int j = 0; j < numSheets; j++) {

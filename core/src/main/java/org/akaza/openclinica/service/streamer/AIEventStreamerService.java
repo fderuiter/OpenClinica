@@ -1,5 +1,7 @@
 package org.akaza.openclinica.service.streamer;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.submit.ItemDataBean;
 import org.akaza.openclinica.dao.submit.ItemDataDAO;
 import org.akaza.openclinica.core.ApplicationContextProvider;
@@ -18,6 +20,13 @@ import jakarta.annotation.PreDestroy;
 
 @Service("aiEventStreamerService")
 public class AIEventStreamerService {
+    private ItemDataDAO _itemDataDAO;
+
+    @Autowired
+    public AIEventStreamerService(ItemDataDAO _itemDataDAO) {
+        this._itemDataDAO = _itemDataDAO;
+    }
+
 
     private static final Logger logger = LoggerFactory.getLogger(AIEventStreamerService.class);
 
@@ -59,7 +68,7 @@ public class AIEventStreamerService {
 
         try {
             DataSource ds = (DataSource) ApplicationContextProvider.getApplicationContext().getBean("dataSource");
-            ItemDataDAO itemDataDao = new ItemDataDAO(ds);
+            ItemDataDAO itemDataDao = this._itemDataDAO;
             ArrayList<ItemDataBean> items = itemDataDao.findAllByEventCRFId(eventCrfId);
             
             Map<String, Object> payload = new HashMap<>();

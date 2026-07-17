@@ -1,5 +1,8 @@
 package org.akaza.openclinica.service.crfdata;
 
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.managestudy.DisplayEventDefinitionCRFBean;
 import org.akaza.openclinica.bean.managestudy.DisplayStudyEventBean;
@@ -19,7 +22,15 @@ import javax.sql.DataSource;
  * user logged in at the site level cannot view/use CRFs that are marked as
  * "hidden." User: bruceperry Date: Feb 9, 2009
  */
+@Component
 public class HideCRFManager {
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+
+    @Autowired
+    public HideCRFManager(EventDefinitionCRFDAO _eventDefinitionCRFDAO) {
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+    }
+
     public static org.akaza.openclinica.service.crfdata.HideCRFManager createHideCRFManager() {
         return new org.akaza.openclinica.service.crfdata.HideCRFManager();
     }
@@ -169,7 +180,7 @@ public class HideCRFManager {
         if (crfBeans == null || crfBeans.isEmpty()) {
             return newBeans;
         }
-        EventDefinitionCRFDAO eventDefinitionCRFDAO = new EventDefinitionCRFDAO(dataSource);
+        EventDefinitionCRFDAO eventDefinitionCRFDAO = this._eventDefinitionCRFDAO;
         EventDefinitionCRFBean tempBean = new EventDefinitionCRFBean();
         for (CRFBean crfBean : crfBeans) {
             tempBean = eventDefinitionCRFDAO.findByStudyEventDefinitionIdAndCRFId(study, studyEventBean.getId(), crfBean.getId());

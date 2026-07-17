@@ -1,5 +1,15 @@
 package org.akaza.openclinica.bean.extract;
 
+
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.akaza.openclinica.dao.managestudy.DiscrepancyNoteDAO;
+import org.akaza.openclinica.dao.submit.EventCRFDAO;
+import org.akaza.openclinica.dao.managestudy.EventDefinitionCRFDAO;
+import org.akaza.openclinica.dao.managestudy.StudyDAO;
+import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -38,7 +48,14 @@ import com.lowagie.text.pdf.PdfWriter;
  * @author Bruce W. Perry
  *
  */
+@Component
 public class DownloadDiscrepancyNote implements DownLoadBean{
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
     public static String CSV ="text/plain; charset=UTF-8";
     public static String PDF = "application/pdf";
     public static String COMMA = ",";
@@ -59,9 +76,17 @@ public class DownloadDiscrepancyNote implements DownLoadBean{
     private final List<DiscrepancyNoteBean> discrepancyBeanList =
       new ArrayList<DiscrepancyNoteBean>();
 
-    public DownloadDiscrepancyNote() {
+    
+    @Autowired
+    public DownloadDiscrepancyNote(DiscrepancyNoteDAO discrepancyNoteDAO, EventCRFDAO eventCRFDAO, EventDefinitionCRFDAO eventDefinitionCRFDAO, StudyDAO studyDAO, StudySubjectDAO studySubjectDAO) {
+        this._discrepancyNoteDAO = discrepancyNoteDAO;
+        this._eventCRFDAO = eventCRFDAO;
+        this._eventDefinitionCRFDAO = eventDefinitionCRFDAO;
+        this._studyDAO = studyDAO;
+        this._studySubjectDAO = studySubjectDAO;
         this.firstColumnHeaderLine = false;
     }
+
 
     public DownloadDiscrepancyNote(boolean firstColumnHeaderLine) {
         this.firstColumnHeaderLine = firstColumnHeaderLine;
@@ -620,7 +645,7 @@ public class DownloadDiscrepancyNote implements DownLoadBean{
         //Get information for the header; the resolution status, however, has to be the latest
         //resolution status for the DN thread
         DiscrepancyNoteBean dnBean = discNoteThread.getLinkedNoteList().getFirst();
-        DiscrepancyNoteUtil discUtil = new DiscrepancyNoteUtil();
+        DiscrepancyNoteUtil discUtil = new DiscrepancyNoteUtil(_discrepancyNoteDAO, _eventCRFDAO, _eventDefinitionCRFDAO, _studyDAO, _studySubjectDAO);
         String latestResolutionStatus = discUtil.getResolutionStatusName(
                 discNoteThread.getLinkedNoteList().getFirst().getResolutionStatusId());
 
@@ -754,7 +779,7 @@ public class DownloadDiscrepancyNote implements DownLoadBean{
         cell = new Cell("Parent note ID: "+(discBean.getParentDnId()>0? discBean.getParentDnId():""));
         table.addCell(cell);
         cell = new Cell("Resolution status: "+
-          new DiscrepancyNoteUtil().getResolutionStatusName(discBean.getResolutionStatusId()));
+          new DiscrepancyNoteUtil(_discrepancyNoteDAO, _eventCRFDAO, _eventDefinitionCRFDAO, _studyDAO, _studySubjectDAO).getResolutionStatusName(discBean.getResolutionStatusId()));
         table.addCell(cell);
         cell = new Cell("Detailed notes: "+discBean.getDetailedNotes());
         table.addCell(cell);

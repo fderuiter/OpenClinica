@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.managestudy.EventDefinitionCRFBean;
@@ -30,7 +32,23 @@ import java.util.ArrayList;
  * @author jxu
  *
  */
+@Component
 public class ViewEventDefinitionReadOnlyServlet extends ViewEventDefinitionServlet {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
+    @Autowired
+    public ViewEventDefinitionReadOnlyServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+    }
+
     EventDefinitionCrfTagService eventDefinitionCrfTagService = null;
 
     public static String EVENT_ID = "id";
@@ -39,7 +57,7 @@ public class ViewEventDefinitionReadOnlyServlet extends ViewEventDefinitionServl
     @Override
     public void processRequest() throws Exception {
 
-        StudyEventDefinitionDAO sdao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sdao = this._studyEventDefinitionDAO;
         FormProcessor fp = new FormProcessor(request);
         int defId = fp.getInt(EVENT_ID, true);
         String eventOid = fp.getString(EVENT_OID);
@@ -53,11 +71,11 @@ public class ViewEventDefinitionReadOnlyServlet extends ViewEventDefinitionServl
         // definition id
         StudyEventDefinitionBean sed = defId > 0 ? (StudyEventDefinitionBean) sdao.findByPK(defId) : (StudyEventDefinitionBean) sdao.findByOid(eventOid);
 
-        EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edao = this._eventDefinitionCRFDAO;
         ArrayList eventDefinitionCRFs = (ArrayList) edao.findAllByDefinition(this.currentStudy, sed.getId());
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        CRFDAO cdao = this._cRFDAO;
 
         for (int i = 0; i < eventDefinitionCRFs.size(); i++) {
             EventDefinitionCRFBean edc = (EventDefinitionCRFBean) eventDefinitionCRFs.get(i);
@@ -78,7 +96,7 @@ public class ViewEventDefinitionReadOnlyServlet extends ViewEventDefinitionServl
             CRFVersionBean defaultVersion = (CRFVersionBean) cvdao.findByPK(edc.getDefaultVersionId());
             edc.setDefaultVersionName(defaultVersion.getName());
         }
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;    
         String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();
     
         request.setAttribute("participateFormStatus",participateFormStatus );

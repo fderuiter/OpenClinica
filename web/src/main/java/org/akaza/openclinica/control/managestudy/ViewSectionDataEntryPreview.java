@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -58,7 +60,23 @@ import org.slf4j.LoggerFactory;
  * on ViewSectionDataEntryServlet; Except that it's designed to provide a
  * preview of a crf before the crfversion is inserted into the database.
  */
+@Component
 public class ViewSectionDataEntryPreview extends DataEntryServlet {
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    @Autowired
+    public ViewSectionDataEntryPreview(StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+    }
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ViewSectionDataEntryPreview.class);
 
@@ -387,19 +405,19 @@ public class ViewSectionDataEntryPreview extends DataEntryServlet {
         String age = "";
         EventCRFBean ecb = (EventCRFBean)request.getAttribute(INPUT_EVENT_CRF);
 
-        StudySubjectDAO ssdao = new StudySubjectDAO(getDataSource());
+        StudySubjectDAO ssdao = this._studySubjectDAO;
         StudySubjectBean sub = (StudySubjectBean) ssdao.findByPK(ecb.getStudySubjectId());
         // This is the SubjectBean
-        SubjectDAO subjectDao = new SubjectDAO(getDataSource());
+        SubjectDAO subjectDao = this._subjectDAO;
         int subjectId = sub.getSubjectId();
         int studyId = sub.getStudyId();
         SubjectBean subject = (SubjectBean) subjectDao.findByPK(subjectId);
         StudyBean currentStudy =    (StudyBean)  request.getSession().getAttribute("study");
         // Let us process the age
         if (currentStudy.getStudyParameterConfig().getCollectDob().equals("1")) {
-            StudyEventDAO sedao = new StudyEventDAO(getDataSource());
+            StudyEventDAO sedao = this._studyEventDAO;
             StudyEventBean se = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(getDataSource());
+            StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(se.getStudyEventDefinitionId());
             se.setStudyEventDefinition(sed);
             request.setAttribute("studyEvent", se);
@@ -407,7 +425,7 @@ public class ViewSectionDataEntryPreview extends DataEntryServlet {
             age = Utils.getInstacne().processAge(sub.getEnrollmentDate(), subject.getDateOfBirth());
         }
         // Get the study then the parent study
-        StudyDAO studydao = new StudyDAO(getDataSource());
+        StudyDAO studydao = this._studyDAO;
         StudyBean study = (StudyBean) studydao.findByPK(studyId);
 
         if (study.getParentStudyId() > 0) {

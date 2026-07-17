@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
@@ -44,7 +46,25 @@ import java.util.ArrayList;
  * @version CVS: $Id: InitUpdateSubStudyServlet.java 9834 2007-09-05 22:28:31Z
  *          jxu $
  */
+@Component
 public class InitUpdateSubStudyServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
+    @Autowired
+    public InitUpdateSubStudyServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+    }
+
     EventDefinitionCrfTagService eventDefinitionCrfTagService = null;
 
     /**
@@ -69,7 +89,7 @@ public class InitUpdateSubStudyServlet extends SecureController {
     public void processRequest() throws Exception {
     	//baseUrl();
         String userName = request.getRemoteUser();
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         String idString = request.getParameter("id");
         logger.info("study id:" + idString);
         if (StringUtil.isBlank(idString)) {
@@ -94,7 +114,7 @@ public class InitUpdateSubStudyServlet extends SecureController {
                 ArrayList parentConfigs = currentStudy.getStudyParameters();
                 // logger.info("parentConfigs size:" + parentConfigs.size());
                 ArrayList configs = new ArrayList();
-                StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+                StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
                 for (int i = 0; i < parentConfigs.size(); i++) {
                     StudyParamsConfig scg = (StudyParamsConfig) parentConfigs.get(i);
                     if (scg != null) {
@@ -147,14 +167,14 @@ public class InitUpdateSubStudyServlet extends SecureController {
 
     private void createEventDefinitions(StudyBean parentStudy) throws MalformedURLException {
         FormProcessor fp = new FormProcessor(request);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;    
 
         int siteId = Integer.valueOf(request.getParameter("id").trim());
         ArrayList<StudyEventDefinitionBean> seds = new ArrayList<StudyEventDefinitionBean>();
-        StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sedDao = this._studyEventDefinitionDAO;
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        CRFDAO cdao = this._cRFDAO;
         seds = sedDao.findAllByStudy(parentStudy);
         int start = 0;
         for (StudyEventDefinitionBean sed : seds) {

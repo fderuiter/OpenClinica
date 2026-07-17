@@ -18,7 +18,15 @@ import javax.sql.DataSource;
  * An "interceptor" class that sets up a UserAccount and stores it in the Session, before
  * another class is initialized and potentially uses that UserAccount.
  */
+@Component
 public class SetUpUserInterceptor implements org.springframework.web.servlet.HandlerInterceptor {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public SetUpUserInterceptor(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     public static final String USER_BEAN_NAME = "userBean";
 
@@ -39,7 +47,7 @@ public class SetUpUserInterceptor implements org.springframework.web.servlet.Han
         UserAccountBean userBean = (UserAccountBean) currentSession.getAttribute("userBean");
         String userName = "";
         boolean userBeanIsInvalid;
-        UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+        UserAccountDAO userAccountDAO = this._userAccountDAO;
 
         if (userBean == null) {
 

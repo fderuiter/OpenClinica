@@ -1,5 +1,8 @@
 package org.akaza.openclinica.service;
 
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +22,14 @@ import org.akaza.openclinica.dao.managestudy.StudyEventDAO;
 import org.akaza.openclinica.dao.submit.CRFVersionDAO;
 import org.akaza.openclinica.dao.submit.EventCRFDAO;
 
+@Component
 public class ParticipantEventService {
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+
 
     private DataSource dataSource = null;
     private StudyDAO studyDAO = null;
@@ -28,7 +38,14 @@ public class ParticipantEventService {
     private EventDefinitionCRFDAO eventDefCRFDAO = null;
     private CRFVersionDAO crfVersionDAO = null;
     
-    public ParticipantEventService(DataSource dataSource) { 
+    @Autowired
+    public ParticipantEventService(DataSource dataSource, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO) {
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+ 
         this.dataSource = dataSource;
     }
     
@@ -122,7 +139,7 @@ public class ParticipantEventService {
      * @return the StudyDAO
      */
     private StudyDAO getStudyDAO() {
-        studyDAO = studyDAO != null ? studyDAO : new StudyDAO(dataSource);
+        studyDAO = studyDAO != null ? studyDAO : this._studyDAO;
         return studyDAO;
     }
 
@@ -130,7 +147,7 @@ public class ParticipantEventService {
      * @return the StudyEventDAO
      */
     private StudyEventDAO getStudyEventDAO() {
-        studyEventDAO = studyEventDAO != null ? studyEventDAO : new StudyEventDAO(dataSource);
+        studyEventDAO = studyEventDAO != null ? studyEventDAO : this._studyEventDAO;
         return studyEventDAO;
     }
 
@@ -138,7 +155,7 @@ public class ParticipantEventService {
      * @return the EventCRFDAO
      */
     private EventCRFDAO getEventCRFDAO() {
-        eventCRFDAO = eventCRFDAO != null ? eventCRFDAO : new EventCRFDAO(dataSource);
+        eventCRFDAO = eventCRFDAO != null ? eventCRFDAO : this._eventCRFDAO;
         return eventCRFDAO;
     }
 
@@ -146,7 +163,7 @@ public class ParticipantEventService {
      * @return the EventDefinitionCRFDAO
      */
     private EventDefinitionCRFDAO getEventDefCRFDAO() {
-        eventDefCRFDAO = eventDefCRFDAO != null ? eventDefCRFDAO : new EventDefinitionCRFDAO(dataSource);
+        eventDefCRFDAO = eventDefCRFDAO != null ? eventDefCRFDAO : this._eventDefinitionCRFDAO;
         return eventDefCRFDAO;
     }
 
@@ -154,7 +171,7 @@ public class ParticipantEventService {
      * @return the CRFVersionDAO
      */
     private CRFVersionDAO getCRFVersionDAO() {
-        crfVersionDAO = crfVersionDAO != null ? crfVersionDAO : new CRFVersionDAO(dataSource);
+        crfVersionDAO = crfVersionDAO != null ? crfVersionDAO : this._cRFVersionDAO;
         return crfVersionDAO;
     }
 

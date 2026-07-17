@@ -62,6 +62,17 @@ import java.util.Locale;
 @Controller
 @RequestMapping(value = "/odmss")
 public class OdmStudySubjectController {
+    private StudyDAO _studyDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public OdmStudySubjectController(StudyDAO _studyDAO, StudyParameterValueDAO _studyParameterValueDAO, StudySubjectDAO _studySubjectDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
 
 	@Autowired
 	@Qualifier("dataSource")
@@ -100,8 +111,8 @@ public class OdmStudySubjectController {
 
 	private ODM getODM(String studyOID, String studySubjectLabel, String crcUserName) {
 
-		StudyDAO studyDAO = new StudyDAO(dataSource);
-		StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+		StudyDAO studyDAO = this._studyDAO;
+		StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
 		StudyBean studyBean = null;
 		StudySubjectBean studySubjectBean = null;
 		try {
@@ -181,7 +192,7 @@ public class OdmStudySubjectController {
 	}
 
 	private StudyBean getStudy(String oid) {
-		sdao = new StudyDAO(dataSource);
+		sdao = this._studyDAO;
 		StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
 		return studyBean;
 	}
@@ -200,7 +211,7 @@ public class OdmStudySubjectController {
 	private boolean mayProceed(String studyOid, StudySubjectBean ssBean) throws Exception {
 		boolean accessPermission = false;
 		StudyBean study = getParentStudy(studyOid);
-		StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+		StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
 		StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
 		participantPortalRegistrar = new ParticipantPortalRegistrar();
 		String pManageStatus = participantPortalRegistrar.getRegistrationStatus(studyOid).toString(); // ACTIVE , PENDING , INACTIVE

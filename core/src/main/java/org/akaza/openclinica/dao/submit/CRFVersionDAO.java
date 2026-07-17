@@ -8,6 +8,7 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.akaza.openclinica.dao.submit.CRFVersionDAO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

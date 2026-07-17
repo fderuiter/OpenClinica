@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.dao.login.UserAccountDAO;
 import org.akaza.openclinica.dao.managestudy.StudyDAO;
@@ -23,7 +25,21 @@ import java.util.Locale;
  *
  * @author jxu
  */
+@Component
 public class ListSubjectServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ListSubjectServlet(StudyDAO _studyDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     Locale locale;
 
     /**
@@ -45,11 +61,11 @@ public class ListSubjectServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = this._subjectDAO;
 
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
-        UserAccountDAO uadao = new UserAccountDAO(sm.getDataSource());
+        StudySubjectDAO subdao = this._studySubjectDAO;
+        StudyDAO studyDao = this._studyDAO;
+        UserAccountDAO uadao = this._userAccountDAO;
 
         ListSubjectTableFactory factory = new ListSubjectTableFactory();
         factory.setSubjectDao(sdao);

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -44,7 +46,25 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  * @author Krikor krumlian
  */
+@Component
 public class ViewRuleAssignmentNewServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+
+    @Autowired
+    public ViewRuleAssignmentNewServlet(CRFDAO _cRFDAO, EventCRFDAO _eventCRFDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+    }
+
 
     private static final long serialVersionUID = 9116068126651934226L;
     protected final Logger log = LoggerFactory.getLogger(ViewRuleAssignmentNewServlet.class);
@@ -77,17 +97,17 @@ public class ViewRuleAssignmentNewServlet extends SecureController {
 
     private void createStudyEventForInfoPanel() {
 
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        ItemDAO itemdao = new ItemDAO(sm.getDataSource());
+        StudyEventDAO sedao = this._studyEventDAO;
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
+        EventCRFDAO ecdao = this._eventCRFDAO;
+        ItemDAO itemdao = this._itemDAO;
         StudyBean studyWithEventDefinitions = currentStudy;
         if (currentStudy.getParentStudyId() > 0) {
             studyWithEventDefinitions = new StudyBean();
             studyWithEventDefinitions.setId(currentStudy.getParentStudyId());
 
         }
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+        CRFDAO crfdao = this._cRFDAO;
         ArrayList seds = seddao.findAllActiveByStudy(studyWithEventDefinitions);
 
         HashMap events = new LinkedHashMap();
@@ -186,7 +206,7 @@ public class ViewRuleAssignmentNewServlet extends SecureController {
     }
 
     public ItemFormMetadataDAO getItemFormMetadataDAO() {
-        itemFormMetadataDAO = this.itemFormMetadataDAO == null ? new ItemFormMetadataDAO(sm.getDataSource()) : itemFormMetadataDAO;
+        itemFormMetadataDAO = this.itemFormMetadataDAO == null ? this._itemFormMetadataDAO : itemFormMetadataDAO;
         return itemFormMetadataDAO;
     }
 

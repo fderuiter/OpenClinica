@@ -37,6 +37,33 @@ import java.util.Set;
 
 @Controller
 public class ListDiscNotesSubjectController {
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+
+    @Autowired
+    public ListDiscNotesSubjectController(DiscrepancyNoteDAO _discrepancyNoteDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, SubjectGroupMapDAO _subjectGroupMapDAO) {
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+    }
+
 
     @Autowired
     @Qualifier("dataSource")
@@ -125,18 +152,18 @@ public class ListDiscNotesSubjectController {
         Set mapKeys = stats.keySet();
         request.setAttribute("mapKeys", mapKeys);
 
-        StudyDAO studyDAO = new StudyDAO(dataSource);
-        StudySubjectDAO sdao = new StudySubjectDAO(dataSource);
-        StudyEventDAO sedao = new StudyEventDAO(dataSource);
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(dataSource);
-        SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(dataSource);
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(dataSource);
-        StudyGroupDAO sgdao = new StudyGroupDAO(dataSource);
-        StudySubjectDAO ssdao = new StudySubjectDAO(dataSource);
-        EventCRFDAO edao = new EventCRFDAO(dataSource);
-        EventDefinitionCRFDAO eddao = new EventDefinitionCRFDAO(dataSource);
-        SubjectDAO subdao = new SubjectDAO(dataSource);
-        DiscrepancyNoteDAO dnDAO = new DiscrepancyNoteDAO(dataSource);
+        StudyDAO studyDAO = this._studyDAO;
+        StudySubjectDAO sdao = this._studySubjectDAO;
+        StudyEventDAO sedao = this._studyEventDAO;
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
+        SubjectGroupMapDAO sgmdao = this._subjectGroupMapDAO;
+        StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
+        StudyGroupDAO sgdao = this._studyGroupDAO;
+        StudySubjectDAO ssdao = this._studySubjectDAO;
+        EventCRFDAO edao = this._eventCRFDAO;
+        EventDefinitionCRFDAO eddao = this._eventDefinitionCRFDAO;
+        SubjectDAO subdao = this._subjectDAO;
+        DiscrepancyNoteDAO dnDAO = this._discrepancyNoteDAO;
 
         ListDiscNotesSubjectTableFactory factory = new ListDiscNotesSubjectTableFactory(ResourceBundleProvider.getTermsBundle(locale));
         factory.setStudyEventDefinitionDao(seddao);

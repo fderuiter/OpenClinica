@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean;
 import org.akaza.openclinica.control.form.FormProcessor;
 import org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO;
@@ -17,14 +19,22 @@ import org.akaza.openclinica.view.Page;
  *
  * @author jxu
  */
+@Component
 public class ChangeDefinitionOrdinalServlet extends ChangeOrdinalServlet {
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+
+    @Autowired
+    public ChangeDefinitionOrdinalServlet(StudyEventDefinitionDAO _studyEventDefinitionDAO) {
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+    }
+
 
     @Override
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         int current = fp.getInt("current");
         int previous = fp.getInt("previous");
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
         increase(current, previous, seddao);
         String url=response.encodeRedirectURL("ListEventDefinition");
         response.sendRedirect(url);

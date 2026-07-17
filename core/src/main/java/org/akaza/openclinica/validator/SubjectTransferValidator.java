@@ -1,5 +1,8 @@
 package org.akaza.openclinica.validator;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -18,14 +21,24 @@ import java.util.Date;
 
 import javax.sql.DataSource;
 
+@Component
 public class SubjectTransferValidator implements Validator {
+    private StudyDAO _studyDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
 
     DataSource dataSource;
     StudyDAO studyDAO;
     StudySubjectDAO studySubjectDAO;
     StudyParameterValueDAO studyParameterValueDAO;
 
-    public SubjectTransferValidator(DataSource dataSource) {
+    @Autowired
+    public SubjectTransferValidator(DataSource dataSource, StudyDAO _studyDAO, StudyParameterValueDAO _studyParameterValueDAO, StudySubjectDAO _studySubjectDAO) {
+        this._studyDAO = _studyDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+
         this.dataSource = dataSource;
     }
 
@@ -143,15 +156,15 @@ public class SubjectTransferValidator implements Validator {
     }
 
     public StudyDAO getStudyDAO() {
-        return this.studyDAO != null ? studyDAO : new StudyDAO(dataSource);
+        return this.studyDAO != null ? studyDAO : this._studyDAO;
     }
 
     public StudySubjectDAO getStudySubjectDAO() {
-        return this.studySubjectDAO != null ? studySubjectDAO : new StudySubjectDAO(dataSource);
+        return this.studySubjectDAO != null ? studySubjectDAO : this._studySubjectDAO;
     }
 
     public StudyParameterValueDAO getStudyParameterValueDAO() {
-        return this.studyParameterValueDAO != null ? studyParameterValueDAO : new StudyParameterValueDAO(dataSource);
+        return this.studyParameterValueDAO != null ? studyParameterValueDAO : this._studyParameterValueDAO;
     }
 
 }

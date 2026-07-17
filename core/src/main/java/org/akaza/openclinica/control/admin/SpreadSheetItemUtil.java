@@ -8,6 +8,8 @@
 
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +24,10 @@ import org.akaza.openclinica.core.util.CrfTemplateColumnNameEnum;
 import org.akaza.openclinica.core.util.ItemGroupCrvVersionUtil;
 import org.akaza.openclinica.dao.submit.ItemDAO;
 
+@Component
 public class SpreadSheetItemUtil {
+    private ItemDAO _itemDAO;
+
 	
 	
 	
@@ -58,7 +63,10 @@ public class SpreadSheetItemUtil {
 //	private String simple_conditional_display;//27
 	
 	
-	public SpreadSheetItemUtil(){}
+	@Autowired
+    public SpreadSheetItemUtil(ItemDAO _itemDAO){
+        this._itemDAO = _itemDAO;
+}
 	
 	private String cleanProperty(String property){
 		if (property == null){property="";}
@@ -684,7 +692,7 @@ public class SpreadSheetItemUtil {
             		*/
 		
 		//get all items with group / version info from db 
-		 ItemDAO idao = new ItemDAO(ds);
+		 ItemDAO idao = this._itemDAO;
 		 int row_count = 1; int check_group_count = 0;
 		 StringBuffer item_messages = null;
 		 ArrayList<ItemGroupCrvVersionUtil> item_group_crf_records= idao.findAllWithItemGroupCRFVersionMetadataByCRFId(   crfName) ;

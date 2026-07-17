@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.managestudy.EventDefinitionCRFBean;
@@ -41,7 +43,25 @@ import java.util.ArrayList;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class ViewSiteServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+
+    @Autowired
+    public ViewSiteServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyParameterValueDAO _studyParameterValueDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+    }
+
     EventDefinitionCrfTagService eventDefinitionCrfTagService = null;
 
     /**
@@ -67,7 +87,7 @@ public class ViewSiteServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         String idString = "";
         if (request.getAttribute("siteId") == null) {
             idString = request.getParameter("id");
@@ -86,7 +106,7 @@ public class ViewSiteServlet extends SecureController {
             // if (currentStudy.getId() != study.getId()) {
 
             ArrayList configs = new ArrayList();
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+            StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
             configs = spvdao.findParamConfigByStudy(study);
             study.setStudyParameters(configs);
 
@@ -109,14 +129,14 @@ public class ViewSiteServlet extends SecureController {
     private void viewSiteEventDefinitions(StudyBean siteToView) throws MalformedURLException {
         int siteId = siteToView.getId();
         ArrayList<StudyEventDefinitionBean> seds = new ArrayList<StudyEventDefinitionBean>();
-        StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sedDao = this._studyEventDefinitionDAO;
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        CRFDAO cdao = this._cRFDAO;
         seds = sedDao.findAllByStudy(siteToView);
         int start = 0;
         for (StudyEventDefinitionBean sed : seds) {
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+            StudyParameterValueDAO spvdao = this._studyParameterValueDAO;    
             String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();       
             request.setAttribute("participateFormStatus",participateFormStatus );            
             if (participateFormStatus.equals("enabled")) baseUrl();

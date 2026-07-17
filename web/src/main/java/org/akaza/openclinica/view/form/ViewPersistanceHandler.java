@@ -1,5 +1,7 @@
 package org.akaza.openclinica.view.form;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.submit.DisplayItemBean;
 import org.akaza.openclinica.bean.submit.ItemDataBean;
 import org.akaza.openclinica.core.SessionManager;
@@ -16,12 +18,18 @@ import java.util.TreeMap;
  * A class that handles persistent values that must appear in forms when they
  * are generated.
  */
+@Component
 public class ViewPersistanceHandler {
+    private ItemDataDAO _itemDataDAO;
+
     private List<ItemDataBean> itemDataBeans;
     private ViewBuilderUtil viewBuilderUtil;
 
-    public ViewPersistanceHandler() {
+    @Autowired
+    public ViewPersistanceHandler(ItemDataDAO _itemDataDAO) {
         super();
+        this._itemDataDAO = _itemDataDAO;
+
         itemDataBeans = new ArrayList<ItemDataBean>();
         viewBuilderUtil = new ViewBuilderUtil();
     }
@@ -29,7 +37,7 @@ public class ViewPersistanceHandler {
     public List<ItemDataBean> fetchPersistedData(int sectionId, int eventcrfId) {
 
         //SessionManager sessionManager = new SessionManager();
-        ItemDataDAO itemDataDAO = new ItemDataDAO(SessionManager.getStaticDataSource());
+        ItemDataDAO itemDataDAO = this._itemDataDAO;
         List<ItemDataBean> itemDataBeans = itemDataDAO.findAllActiveBySectionIdAndEventCRFId(sectionId, eventcrfId);
         return itemDataBeans == null ? new ArrayList<ItemDataBean>() : itemDataBeans;
     }

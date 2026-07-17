@@ -8,6 +8,9 @@
 
 package org.akaza.openclinica.dao.rule.action;
 
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.rule.RuleBean;
@@ -42,7 +45,15 @@ import javax.sql.DataSource;
  * @author Krikor Krumlian
  * 
  */
+@Component
 public class RuleActionDAO extends AuditableEntityDAO {
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private RuleDAO _ruleDAO;
+    private RuleSetDAO _ruleSetDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+
 
     private EventCRFDAO eventCrfDao;
     private RuleSetDAO ruleSetDao;
@@ -56,33 +67,41 @@ public class RuleActionDAO extends AuditableEntityDAO {
         this.getCurrentPKName = "getCurrentPK";
     }
 
-    public RuleActionDAO(DataSource ds) {
+    @Autowired
+    public RuleActionDAO(DataSource ds, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, RuleDAO _ruleDAO, RuleSetDAO _ruleSetDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO) {
         super(ds);
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._ruleDAO = _ruleDAO;
+        this._ruleSetDAO = _ruleSetDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+
         setQueryNames();
     }
 
     private StudyEventDefinitionDAO getStudyEventDefinitionDao() {
-        return this.studyEventDefinitionDao != null ? this.studyEventDefinitionDao : new StudyEventDefinitionDAO(ds);
+        return this.studyEventDefinitionDao != null ? this.studyEventDefinitionDao : this._studyEventDefinitionDAO;
     }
 
     private RuleSetDAO getRuleSetDao() {
-        return this.ruleSetDao != null ? this.ruleSetDao : new RuleSetDAO(ds);
+        return this.ruleSetDao != null ? this.ruleSetDao : this._ruleSetDAO;
     }
 
     private RuleDAO getRuleDao() {
-        return this.ruleDao != null ? this.ruleDao : new RuleDAO(ds);
+        return this.ruleDao != null ? this.ruleDao : this._ruleDAO;
     }
 
     private EventCRFDAO getEventCrfDao() {
-        return this.eventCrfDao != null ? this.eventCrfDao : new EventCRFDAO(ds);
+        return this.eventCrfDao != null ? this.eventCrfDao : this._eventCRFDAO;
     }
 
     private CRFVersionDAO getCrfVersionDao() {
-        return this.crfVersionDao != null ? this.crfVersionDao : new CRFVersionDAO(ds);
+        return this.crfVersionDao != null ? this.crfVersionDao : this._cRFVersionDAO;
     }
 
     private ItemDataDAO getItemDataDao() {
-        return this.itemDataDao != null ? this.itemDataDao : new ItemDataDAO(ds);
+        return this.itemDataDao != null ? this.itemDataDao : this._itemDataDAO;
     }
 
     public RuleActionDAO(DataSource ds, DAODigester digester) {

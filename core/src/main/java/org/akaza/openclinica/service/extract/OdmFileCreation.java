@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.service.extract;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -49,7 +53,21 @@ import org.slf4j.LoggerFactory;
  * @author Doug Rodrigues (douglas.rodrigues@openclinica.com)
  *
  */
+@Component
 public class OdmFileCreation {
+    private StudySubjectDAO _studySubjectDAO;
+
+    private ArchivedDatasetFileDAO _archivedDatasetFileDAO;
+    private DatasetDAO _datasetDAO;
+
+    @Autowired
+    public OdmFileCreation(ArchivedDatasetFileDAO _archivedDatasetFileDAO, DatasetDAO _datasetDAO, StudySubjectDAO _studySubjectDAO) {
+        this._studySubjectDAO = _studySubjectDAO;
+
+        this._archivedDatasetFileDAO = _archivedDatasetFileDAO;
+        this._datasetDAO = _datasetDAO;
+    }
+
 
     private static final Logger LOG = LoggerFactory.getLogger(OdmFileCreation.class);
 
@@ -68,7 +86,7 @@ public class OdmFileCreation {
         Integer ssNumber = getStudySubjectNumber(studySubjectNumber);
         MetaDataCollector mdc = new MetaDataCollector(dataSource, datasetBean, currentStudy,ruleSetRuleDao);
         AdminDataCollector adc = new AdminDataCollector(dataSource, datasetBean, currentStudy);
-        ClinicalDataCollector cdc = new ClinicalDataCollector(dataSource, datasetBean, currentStudy);
+        ClinicalDataCollector cdc = new ClinicalDataCollector(dataSource, datasetBean, currentStudy, _studySubjectDAO, _studySubjectDAO);
 
         MetaDataCollector.setTextLength(200);
         if(deleteOld){
@@ -168,7 +186,7 @@ public class OdmFileCreation {
         //////////////////////////////////////////
         ////////// ClinicalData Extraction ///////
 
-        DatasetDAO dsdao = new DatasetDAO(dataSource);
+        DatasetDAO dsdao = this._datasetDAO;
         String sql = eb.getDataset().getSQLStatement();
         String st_sed_in = dsdao.parseSQLDataset(sql, true, true);
         String st_itemid_in = dsdao.parseSQLDataset(sql, false, true);
@@ -352,7 +370,7 @@ public class OdmFileCreation {
                 // logger.info("ODM setOwnerId: " + sm.getUserBean().getId() );
                 fb.setDateCreated(new Date(System.currentTimeMillis()));
                 boolean write = true;
-                ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(dataSource);
+                ArchivedDatasetFileDAO asdfDAO = this._archivedDatasetFileDAO;
                 // eliminating all checks so that we create multiple files, tbh 6-7
                 if (write) {
                     fbFinal = (ArchivedDatasetFileBean) asdfDAO.create(fb);

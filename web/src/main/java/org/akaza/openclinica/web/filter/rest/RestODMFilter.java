@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.filter.rest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -24,7 +26,17 @@ import org.akaza.openclinica.dao.login.UserAccountDAO;
 import org.akaza.openclinica.dao.managestudy.StudyDAO;
 
 @Provider
+@Component
 public class RestODMFilter implements ContainerRequestFilter {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public RestODMFilter(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
 	@Context
 	HttpServletRequest request;
@@ -99,16 +111,16 @@ public class RestODMFilter implements ContainerRequestFilter {
 	}
 	
 	private StudyBean getStudyByOID(String OID,DataSource ds){
-		StudyDAO studyDAO= new StudyDAO(ds);
+		StudyDAO studyDAO= this._studyDAO;
 		return studyDAO.findByOid(OID);
 	}
 	private StudyUserRoleBean getRoleByStudy(StudyBean studyBean,DataSource ds,UserAccountBean userBean){
-		UserAccountDAO userAccountDAO = new UserAccountDAO(ds);
+		UserAccountDAO userAccountDAO = this._userAccountDAO;
 		return userAccountDAO.findRoleByUserNameAndStudyId(userBean.getName(), studyBean.getId());
 		
 	}
 	private StudyBean getStudyByID(int id,DataSource ds){
-		StudyDAO studyDAO = new StudyDAO(ds);
+		StudyDAO studyDAO = this._studyDAO;
 		return (StudyBean) studyDAO.findByPK(id);
 	}
 }

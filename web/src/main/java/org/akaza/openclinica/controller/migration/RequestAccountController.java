@@ -36,6 +36,15 @@ import org.akaza.openclinica.i18n.core.LocaleResolver;
 
 @Controller
 public class RequestAccountController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public RequestAccountController(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     @Autowired
     @Qualifier("dataSource")
@@ -45,7 +54,7 @@ public class RequestAccountController {
     public String requestAccount(HttpServletRequest request, HttpSession session) throws Exception {
         String action = request.getParameter("action");
 
-        StudyDAO sdao = new StudyDAO(dataSource);
+        StudyDAO sdao = this._studyDAO;
         ArrayList studies = (ArrayList) sdao.findAll();
         ArrayList roles = Role.toArrayList();
         roles.remove(Role.ADMIN);
@@ -88,11 +97,11 @@ public class RequestAccountController {
             request.setAttribute("formMessages", errors);
             return "login/requestAccount";
         } else {
-            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountDAO udao = this._userAccountDAO;
             UserAccountBean ubDB = (UserAccountBean) udao.findByUserName(ubForm.getName());
 
             if (ubDB == null || StringUtil.isBlank(ubDB.getName())) {
-                StudyDAO sdao = new StudyDAO(dataSource);
+                StudyDAO sdao = this._studyDAO;
                 StudyBean study = (StudyBean) sdao.findByPK(ubForm.getActiveStudyId());
                 String studyName = study.getName();
                 request.setAttribute("studyName", studyName);

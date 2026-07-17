@@ -52,6 +52,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OdmService {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public OdmService(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyParameterValueDAO _studyParameterValueDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
 
     @Autowired
     @Qualifier("dataSource")
@@ -74,12 +95,12 @@ public class OdmService {
             return null;
         }
 
-        CRFVersionDAO versionDAO = new CRFVersionDAO(dataSource);
-        StudyDAO studyDAO = new StudyDAO(dataSource);
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        ItemDataDAO itemDataDAO = new ItemDataDAO(dataSource);
-        CRFDAO crfDAO = new CRFDAO(dataSource);
+        CRFVersionDAO versionDAO = this._cRFVersionDAO;
+        StudyDAO studyDAO = this._studyDAO;
+        StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
+        EventCRFDAO eventCRFDAO = this._eventCRFDAO;
+        ItemDataDAO itemDataDAO = this._itemDataDAO;
+        CRFDAO crfDAO = this._cRFDAO;
         List<ODMcomplexTypeDefinitionFormData> formDatas = new ArrayList<>();
         try {
             StudySubjectBean studySubjectBean = studySubjectDAO.findByOid(ssoid);
@@ -147,7 +168,7 @@ public class OdmService {
     }
 
     private StudyEventDefinitionBean getStudyEventDefinitionBean(int ID) {
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(dataSource);
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
         StudyEventDefinitionBean studyEventDefinitionBean = (StudyEventDefinitionBean) seddao.findByPK(ID);
         return studyEventDefinitionBean;
     }
@@ -256,7 +277,7 @@ public class OdmService {
     }
 
     private StudyBean getStudy(String oid) {
-        sdao = new StudyDAO(dataSource);
+        sdao = this._studyDAO;
         StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
         return studyBean;
     }
@@ -284,7 +305,7 @@ public class OdmService {
     private boolean mayProceed(String studyOid) throws Exception {
         boolean accessPermission = false;
         StudyBean study = getParentStudy(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = this._studyParameterValueDAO;
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         participantPortalRegistrar = new ParticipantPortalRegistrar();
         String pManageStatus = participantPortalRegistrar.getRegistrationStatus(studyOid).toString(); 

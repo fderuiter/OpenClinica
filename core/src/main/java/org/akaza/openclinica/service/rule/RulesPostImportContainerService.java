@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.service.rule;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.EventDefinitionCRFBean;
@@ -78,7 +80,11 @@ import javax.sql.DataSource;
  * @author Krikor Krumlian
  *
  */
+@Component
 public class RulesPostImportContainerService {
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     DataSource ds;
@@ -95,7 +101,11 @@ public class RulesPostImportContainerService {
     private RandomizeActionValidator randomizeActionValidator;
     ResourceBundle respage;
 
-    public RulesPostImportContainerService(DataSource ds, StudyBean currentStudy) {
+    @Autowired
+    public RulesPostImportContainerService(DataSource ds, StudyBean currentStudy, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO) {
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+
         oidGenerator = new GenericOidGenerator();
         this.ds = ds;
         this.currentStudy = currentStudy;
@@ -468,7 +478,7 @@ public class RulesPostImportContainerService {
                          if (param.startsWith(prefix)){
                         String gcName= param.substring(21,param.indexOf("\"]"));
 
-                     StudyGroupClassDAO studyGroupClassDAO =new StudyGroupClassDAO(ds);
+                     StudyGroupClassDAO studyGroupClassDAO =this._studyGroupClassDAO;
                      ArrayList <StudyGroupClassBean> studyGroupClasses = studyGroupClassDAO.findAllByStudy(currentStudy);
                      for (StudyGroupClassBean studyGroupClass :studyGroupClasses){
                            if (studyGroupClass.getName().equalsIgnoreCase(gcName.trim())){
@@ -619,7 +629,7 @@ public class RulesPostImportContainerService {
 
 	public boolean isEventTypeRepeating(String event) {
 		boolean isRepeating = false;
-		StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(ds);
+		StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
 		StudyEventDefinitionBean studyEventDefinition = (StudyEventDefinitionBean) seddao.findByOid(event);
 		return studyEventDefinition.isRepeating();
 	}

@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
@@ -47,7 +49,27 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author Shamim
   * Date: Dec 15, 2009
  */
+@Component
 public class PrintAllEventCRFServlet extends DataEntryServlet {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemGroupDAO _itemGroupDAO;
+    private SectionDAO _sectionDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+
+    @Autowired
+    public PrintAllEventCRFServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemGroupDAO _itemGroupDAO, SectionDAO _sectionDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+    }
+
     Locale locale;
 
     /**
@@ -78,11 +100,11 @@ public class PrintAllEventCRFServlet extends DataEntryServlet {
         ArrayList<SectionBean> allSectionBeans;
         // The PrintDataEntry servlet handles this parameter
         boolean isSubmitted = false;
-        StudyEventDefinitionDAO sedao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sedao = this._studyEventDefinitionDAO;
+        EventDefinitionCRFDAO edao = this._eventDefinitionCRFDAO;
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
 
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+        StudyDAO studyDao = this._studyDAO;
         StudyBean currentStudy = (StudyBean) request.getSession().getAttribute("study");
 
         ArrayList<StudyEventDefinitionBean> seds = new ArrayList<StudyEventDefinitionBean>();
@@ -90,8 +112,8 @@ public class PrintAllEventCRFServlet extends DataEntryServlet {
 
         //        ArrayList eventDefinitionCRFs = (ArrayList) edao.findAllByStudy(site);
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
+        CRFDAO cdao = this._cRFDAO;
 
         ArrayList<EventDefinitionCRFBean> edcs = new ArrayList();
         for (StudyEventDefinitionBean sed : seds) {
@@ -130,9 +152,9 @@ public class PrintAllEventCRFServlet extends DataEntryServlet {
             request.setAttribute("isInternetExplorer", "true");
         }
 
-        SectionDAO sdao = new SectionDAO(sm.getDataSource());
-        CRFVersionDAO crfVersionDAO = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO crfDao = new CRFDAO(sm.getDataSource());
+        SectionDAO sdao = this._sectionDAO;
+        CRFVersionDAO crfVersionDAO = this._cRFVersionDAO;
+        CRFDAO crfDao = this._cRFDAO;
         Map sedCrfBeans = null;
 
         for (Iterator it = eventDefinitionDefaultVersions.keySet().iterator(); it.hasNext();) {
@@ -145,7 +167,7 @@ public class PrintAllEventCRFServlet extends DataEntryServlet {
                 allSectionBeans = new ArrayList<SectionBean>();
                 ArrayList sectionBeans = new ArrayList();
 
-                ItemGroupDAO itemGroupDao = new ItemGroupDAO(sm.getDataSource());
+                ItemGroupDAO itemGroupDao = this._itemGroupDAO;
                 // Find truely grouped tables, not groups with a name of 'Ungrouped'
                 List<ItemGroupBean> itemGroupBeans = itemGroupDao.findOnlyGroupsByCRFVersionID(crfVersionBean.getId());
                 CRFBean crfBean = crfDao.findByVersionId(crfVersionBean.getId());

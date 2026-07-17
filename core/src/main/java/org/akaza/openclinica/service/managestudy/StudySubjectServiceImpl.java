@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.service.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,7 +48,27 @@ import org.akaza.openclinica.dao.submit.EventCRFDAO;
  * @author Doug Rodrigues (douglas.rodrigues@openclinica.com)
  * 
  */
+@Component
 public class StudySubjectServiceImpl implements StudySubjectService {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+
+    @Autowired
+    public StudySubjectServiceImpl(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+    }
+
 
     private DataSource dataSource;
 
@@ -55,13 +77,13 @@ public class StudySubjectServiceImpl implements StudySubjectService {
     public List<DisplayStudyEventBean> getDisplayStudyEventsForStudySubject(StudySubjectBean studySubject, UserAccountBean userAccount,
             StudyUserRoleBean currentRole) {
 
-        StudyEventDAO studyEventDao = new StudyEventDAO(dataSource);
-        StudyEventDefinitionDAO studyEventDefinitionDao = new StudyEventDefinitionDAO(dataSource);
-        StudyDAO studyDao = new StudyDAO(dataSource);
-        EventDefinitionCRFDAO eventDefinitionCrfDao = new EventDefinitionCRFDAO(dataSource);
-        EventCRFDAO eventCrfDao = new EventCRFDAO(dataSource);
-        CRFDAO crfDao = new CRFDAO(dataSource);
-        CRFVersionDAO crfVersionDao = new CRFVersionDAO(dataSource);
+        StudyEventDAO studyEventDao = this._studyEventDAO;
+        StudyEventDefinitionDAO studyEventDefinitionDao = this._studyEventDefinitionDAO;
+        StudyDAO studyDao = this._studyDAO;
+        EventDefinitionCRFDAO eventDefinitionCrfDao = this._eventDefinitionCRFDAO;
+        EventCRFDAO eventCrfDao = this._eventCRFDAO;
+        CRFDAO crfDao = this._cRFDAO;
+        CRFVersionDAO crfVersionDao = this._cRFVersionDAO;
 
         ArrayList events = studyEventDao.findAllByStudySubject(studySubject);
 
@@ -262,7 +284,7 @@ public class StudySubjectServiceImpl implements StudySubjectService {
     public void populateUncompletedCRFsWithCRFAndVersions(ArrayList<DisplayEventDefinitionCRFBean> uncompletedEventDefinitionCRFs,
             Map<Integer, CRFVersionBean> crfVersionById, Map<Integer, CRFBean> crfById) {
 
-        CRFVersionDAO crfVersionDao = new CRFVersionDAO(dataSource);
+        CRFVersionDAO crfVersionDao = this._cRFVersionDAO;
 
         int size = uncompletedEventDefinitionCRFs.size();
         for (int i = 0; i < size; i++) {

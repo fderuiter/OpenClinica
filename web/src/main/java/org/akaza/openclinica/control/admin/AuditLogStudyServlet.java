@@ -6,6 +6,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.managestudy.StudyEventBean;
@@ -37,7 +39,35 @@ import java.util.Locale;
  * 
  * 
  */
+@Component
 public class AuditLogStudyServlet extends SecureController {
+    private AuditDAO _auditDAO;
+    private AuditEventDAO _auditEventDAO;
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    @Autowired
+    public AuditLogStudyServlet(AuditDAO _auditDAO, AuditEventDAO _auditEventDAO, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO) {
+        this._auditDAO = _auditDAO;
+        this._auditEventDAO = _auditEventDAO;
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+    }
+
 
     Locale locale;
 
@@ -68,19 +98,19 @@ public class AuditLogStudyServlet extends SecureController {
     protected void processRequest() throws Exception {
         int studyId = currentStudy.getId();
 
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
-        AuditDAO adao = new AuditDAO(sm.getDataSource());
+        StudySubjectDAO subdao = this._studySubjectDAO;
+        SubjectDAO sdao = this._subjectDAO;
+        AuditDAO adao = this._auditDAO;
 
         FormProcessor fp = new FormProcessor(request);
 
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        StudyDAO studydao = new StudyDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        StudyEventDAO sedao = this._studyEventDAO;
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
+        EventCRFDAO ecdao = this._eventCRFDAO;
+        StudyDAO studydao = this._studyDAO;
+        CRFDAO cdao = this._cRFDAO;
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
 
         HashMap eventCRFAuditsHashMap = new HashMap();
         HashMap eventsHashMap = new HashMap();
@@ -160,7 +190,7 @@ public class AuditLogStudyServlet extends SecureController {
 
         // FormProcessor fp = new FormProcessor(request);
         //
-        // AuditEventDAO aeDAO = new AuditEventDAO(sm.getDataSource());
+        // AuditEventDAO aeDAO = this._auditEventDAO;
         // ArrayList al = aeDAO.findAllByStudyId(currentStudy.getId());
         //
         // EntityBeanTable table = fp.getEntityBeanTable();

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.EventDefinitionCRFBean;
 import org.akaza.openclinica.control.form.FormProcessor;
@@ -21,7 +23,17 @@ import java.util.ArrayList;
  * 
  * @author jxu
  */
+@Component
 public class ChangeDefinitionCRFOrdinalServlet extends ChangeOrdinalServlet {
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public ChangeDefinitionCRFOrdinalServlet(EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO) {
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+    }
+
 
     /**
      * Override processRequest in super class
@@ -35,9 +47,9 @@ public class ChangeDefinitionCRFOrdinalServlet extends ChangeOrdinalServlet {
         int prevOrdinal = fp.getInt("previousOrdinal");
 
         int definitionId = fp.getInt("id");
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
         increase(current, previous, currOrdinal, prevOrdinal, definitionId, edcdao);
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         int siteId = fp.getInt("siteId");
         if (siteId > 0) {
             request.setAttribute("idToSort", new Integer(definitionId).toString());

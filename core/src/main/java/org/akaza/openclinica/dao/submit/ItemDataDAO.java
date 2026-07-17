@@ -7,6 +7,9 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.akaza.openclinica.dao.submit.ItemDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +48,10 @@ import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
  * 
  * 
  */
+@Component
 public class ItemDataDAO extends AuditableEntityDAO {
+    private ItemDAO _itemDAO;
+
 
     boolean formatDates = true;
 
@@ -98,8 +104,11 @@ public class ItemDataDAO extends AuditableEntityDAO {
         getNextPKName = "getNextPK";
     }
 
-    public ItemDataDAO(DataSource ds) {
+    @Autowired
+    public ItemDataDAO(DataSource ds, ItemDAO _itemDAO) {
         super(ds);
+        this._itemDAO = _itemDAO;
+
         setQueryNames();
         if (this.locale == null) {
             this.locale = ResourceBundleProvider.getLocale(); // locale still might be null.
@@ -547,7 +556,7 @@ public class ItemDataDAO extends AuditableEntityDAO {
         if (dataTypeCache.containsKey(itemId)) {
             return dataTypeCache.get(itemId);
         }
-        ItemDAO itemDAO = new ItemDAO(this.getDs());
+        ItemDAO itemDAO = this._itemDAO;
         ItemBean itemBean = (ItemBean) itemDAO.findByPK(itemId);
         ItemDataType dt = itemBean.getDataType();
         dataTypeCache.put(itemId, dt);
@@ -555,7 +564,7 @@ public class ItemDataDAO extends AuditableEntityDAO {
     }
 
     // public boolean isPDateType(int itemId) {
-    // ItemDAO itemDAO = new ItemDAO(this.getDs());
+    // ItemDAO itemDAO = this._itemDAO;
     // ItemBean itemBean = (ItemBean)itemDAO.findByPK(itemId);
     // if (itemBean.getDataType().equals(ItemDataType.PDATE)) {
     // return true;

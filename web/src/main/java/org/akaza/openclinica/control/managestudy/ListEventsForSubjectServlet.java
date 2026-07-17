@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.managestudy.DisplayStudyEventBean;
 import org.akaza.openclinica.bean.managestudy.DisplayStudySubjectBean;
@@ -45,7 +47,31 @@ import java.util.Locale;
 /**
  * @author jxu
  */
+@Component
 public class ListEventsForSubjectServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+
+    @Autowired
+    public ListEventsForSubjectServlet(CRFDAO _cRFDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudySubjectDAO _studySubjectDAO, SubjectGroupMapDAO _subjectGroupMapDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+    }
+
 
     Locale locale;
 
@@ -109,18 +135,18 @@ public class ListEventsForSubjectServlet extends SecureController {
             return;
         }
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(definitionId);
 
-        StudySubjectDAO sdao = new StudySubjectDAO(sm.getDataSource());
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudySubjectDAO sdao = this._studySubjectDAO;
+        StudyEventDAO sedao = this._studyEventDAO;
 
-        SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
+        SubjectGroupMapDAO sgmdao = this._subjectGroupMapDAO;
+        StudyGroupClassDAO sgcdao = this._studyGroupClassDAO;
 
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+        EventCRFDAO ecdao = this._eventCRFDAO;
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
+        CRFDAO crfdao = this._cRFDAO;
 
         // find all the groups in the current study
         ArrayList studyGroupClasses = sgcdao.findAllActiveByStudy(currentStudy);
@@ -131,7 +157,7 @@ public class ListEventsForSubjectServlet extends SecureController {
 
         if (currentStudy.getParentStudyId() > 0) {
 
-            StudyDAO stdao = new StudyDAO(sm.getDataSource());
+            StudyDAO stdao = this._studyDAO;
             StudyBean parent = (StudyBean) stdao.findByPK(currentStudy.getParentStudyId());
 
             allDefs = seddao.findAllActiveByStudy(parent);

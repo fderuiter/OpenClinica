@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -24,7 +26,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+@Component
 public class ListUserAccountsServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public ListUserAccountsServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     public static final String PATH = "ListUserAccounts";
     public static final String ARG_MESSAGE = "message";
 
@@ -42,7 +54,7 @@ public class ListUserAccountsServlet extends SecureController {
     protected void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
         EntityBeanTable table = fp.getEntityBeanTable();
         // table.setSortingIfNotExplicitlySet(1, false);
 
@@ -92,7 +104,7 @@ public class ListUserAccountsServlet extends SecureController {
      *            UserAccountBean.
      */
     private void setStudyNamesInStudyUserRoles(ArrayList users) {
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         ArrayList allStudies = (ArrayList) sdao.findAll();
         HashMap studiesById = new HashMap();
 

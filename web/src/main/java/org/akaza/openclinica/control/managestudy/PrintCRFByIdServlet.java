@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -22,7 +24,17 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  * 
  * @author Krikor Krumlian
  */
+@Component
 public class PrintCRFByIdServlet extends PrintCRFServlet {
+    private CRFVersionDAO _cRFVersionDAO;
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public PrintCRFByIdServlet(CRFVersionDAO _cRFVersionDAO, StudyDAO _studyDAO) {
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._studyDAO = _studyDAO;
+    }
+
 
     private static final long serialVersionUID = 1L;
 
@@ -43,9 +55,9 @@ public class PrintCRFByIdServlet extends PrintCRFServlet {
     public void processRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
         StudyBean currentStudy =    (StudyBean) request.getSession().getAttribute("study");
-        StudyDAO studyDao = new StudyDAO(getDataSource());
+        StudyDAO studyDao = this._studyDAO;
         currentStudy = (StudyBean) studyDao.findByPK(1);
-        CRFVersionDAO crfVersionDao = new CRFVersionDAO(getDataSource());
+        CRFVersionDAO crfVersionDao = this._cRFVersionDAO;
         if (request.getParameter("id") == null) {
             forwardPage(Page.LOGIN, request, response);
         }

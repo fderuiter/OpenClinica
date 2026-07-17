@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.StudyUserRoleBean;
@@ -28,7 +30,17 @@ import java.util.Date;
  *
  * Removes a study user role
  */
+@Component
 public class RemoveStudyUserRoleServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public RemoveStudyUserRoleServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     /**
      * Checks whether the user has the right permission to proceed function
      */
@@ -50,7 +62,7 @@ public class RemoveStudyUserRoleServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
         String name = request.getParameter("name");
         String studyIdString = request.getParameter("studyId");
         if (StringUtil.isBlank(name) || StringUtil.isBlank(studyIdString)) {
@@ -67,7 +79,7 @@ public class RemoveStudyUserRoleServlet extends SecureController {
                 StudyUserRoleBean uRole = udao.findRoleByUserNameAndStudyId(name, studyId);
                 request.setAttribute("uRole", uRole);
 
-                StudyDAO sdao = new StudyDAO(sm.getDataSource());
+                StudyDAO sdao = this._studyDAO;
                 StudyBean study = (StudyBean) sdao.findByPK(studyId);
                 request.setAttribute("uStudy", study);
                 forwardPage(Page.REMOVE_USER_ROLE_IN_STUDY);
@@ -103,7 +115,7 @@ public class RemoveStudyUserRoleServlet extends SecureController {
      */
     private String sendEmail(UserAccountBean u, StudyUserRoleBean sub) throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         StudyBean study = (StudyBean) sdao.findByPK(sub.getStudyId());
         logger.info("Sending email...");
         String body =

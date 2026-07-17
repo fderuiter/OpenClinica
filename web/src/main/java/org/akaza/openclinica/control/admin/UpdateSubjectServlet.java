@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,7 +35,17 @@ import org.apache.commons.lang.StringUtils;
  * @author jxu
  *
  */
+@Component
 public class UpdateSubjectServlet extends SecureController {
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private SubjectDAO _subjectDAO;
+
+    @Autowired
+    public UpdateSubjectServlet(DiscrepancyNoteDAO _discrepancyNoteDAO, SubjectDAO _subjectDAO) {
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._subjectDAO = _subjectDAO;
+    }
+
     
     /**
 	 * 
@@ -62,7 +74,7 @@ public class UpdateSubjectServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = this._subjectDAO;
         FormProcessor fp = new FormProcessor(request);
         FormDiscrepancyNotes discNotes = new FormDiscrepancyNotes();
 
@@ -159,7 +171,7 @@ public class UpdateSubjectServlet extends SecureController {
                 subjectService.updateSubject(subject, ub, theNote != null ? theNote.getDescription() : "Subject updated via UI", theNote);
 
                 // save discrepancy notes into DB
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = this._discrepancyNoteDAO;
             	
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
                 AddNewSubjectServlet.saveFieldNotes("gender", fdn, dndao, subject.getId(), "subject", currentStudy);
@@ -306,7 +318,7 @@ public class UpdateSubjectServlet extends SecureController {
 	        		Validator.addError(errors, "uniqueIdentifier", descr);
 	        		
 	        	}
-	            SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+	            SubjectDAO sdao = this._subjectDAO;
 	            SubjectBean sub1 = (SubjectBean) sdao.findAnotherByIdentifier(uniqueIdentifier, subject.getId());
 	            if (sub1.getId() > 0) {
 	            	  Validator.addError(errors, "uniqueIdentifier", resexception.getString("person_ID_used_by_another_choose_unique"));
@@ -351,7 +363,7 @@ public class UpdateSubjectServlet extends SecureController {
     }
     
     private void setDNFlag(int subjectId){
-    	DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+    	DiscrepancyNoteDAO dndao = this._discrepancyNoteDAO;
     	
     	 request.setAttribute("genderDNFlag","icon_noNote");
          request.setAttribute("birthDNFlag","icon_noNote");

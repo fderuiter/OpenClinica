@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.managestudy.StudyEventDefinitionBean;
@@ -33,7 +35,19 @@ import javax.sql.DataSource;
  *
  * @author jxu
  */
+@Component
 public class ViewTableOfContentServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private SectionDAO _sectionDAO;
+
+    @Autowired
+    public ViewTableOfContentServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, SectionDAO _sectionDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._sectionDAO = _sectionDAO;
+    }
+
     /**
      * Checks whether the user has the correct privilege
      */
@@ -68,15 +82,15 @@ public class ViewTableOfContentServlet extends SecureController {
     public static DisplayTableOfContentsBean getDisplayBean(DataSource ds, int crfVersionId) {
         DisplayTableOfContentsBean answer = new DisplayTableOfContentsBean();
 
-        SectionDAO sdao = new SectionDAO(ds);
+        SectionDAO sdao = this._sectionDAO;
         ArrayList sections = getSections(crfVersionId, ds);
         answer.setSections(sections);
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(ds);
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
         CRFVersionBean cvb = (CRFVersionBean) cvdao.findByPK(crfVersionId);
         answer.setCrfVersion(cvb);
 
-        CRFDAO cdao = new CRFDAO(ds);
+        CRFDAO cdao = this._cRFDAO;
         CRFBean cb = (CRFBean) cdao.findByPK(cvb.getCrfId());
         answer.setCrf(cb);
 
@@ -88,7 +102,7 @@ public class ViewTableOfContentServlet extends SecureController {
     }
 
     public static ArrayList getSections(int crfVersionId, DataSource ds) {
-        SectionDAO sdao = new SectionDAO(ds);
+        SectionDAO sdao = this._sectionDAO;
 
         HashMap numItemsBySectionId = sdao.getNumItemsBySectionId();
         ArrayList sections = sdao.findAllByCRFVersionId(crfVersionId);

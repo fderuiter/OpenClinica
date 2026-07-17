@@ -1,5 +1,16 @@
 package org.akaza.openclinica.service.extract;
 
+import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
+import org.akaza.openclinica.dao.submit.SubjectGroupMapDAO;
+import org.akaza.openclinica.dao.managestudy.StudyGroupDAO;
+import org.akaza.openclinica.dao.managestudy.StudyGroupClassDAO;
+import org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO;
+import org.akaza.openclinica.dao.managestudy.StudyEventDAO;
+import org.akaza.openclinica.dao.submit.EventCRFDAO;
+import org.akaza.openclinica.dao.submit.CRFVersionDAO;
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +52,24 @@ import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class GenerateExtractFileService {
+    private StudySubjectDAO _studySubjectDAO;
+
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudyGroupClassDAO _studyGroupClassDAO;
+    private StudyGroupDAO _studyGroupDAO;
+    private SubjectGroupMapDAO _subjectGroupMapDAO;
+
+    private ArchivedDatasetFileDAO _archivedDatasetFileDAO;
+    private DatasetDAO _datasetDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+
 
     private static final Logger logger = LoggerFactory.getLogger(GenerateExtractFileService.class);
     private final DataSource ds;
@@ -53,8 +81,25 @@ public class GenerateExtractFileService {
     private static List<File> oldFiles = new LinkedList<File>();
     private final RuleSetRuleDao ruleSetRuleDao;
 
+    @Autowired
     public GenerateExtractFileService(DataSource ds, java.util.Locale requestLocale, CoreResources coreResources,
-            RuleSetRuleDao ruleSetRuleDao) {
+            RuleSetRuleDao ruleSetRuleDao, ArchivedDatasetFileDAO _archivedDatasetFileDAO, DatasetDAO _datasetDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, SubjectGroupMapDAO _subjectGroupMapDAO, StudySubjectDAO _studySubjectDAO) {
+        this._studySubjectDAO = _studySubjectDAO;
+
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studyGroupClassDAO = _studyGroupClassDAO;
+        this._studyGroupDAO = _studyGroupDAO;
+        this._subjectGroupMapDAO = _subjectGroupMapDAO;
+
+        this._archivedDatasetFileDAO = _archivedDatasetFileDAO;
+        this._datasetDAO = _datasetDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+
         this.ds = ds;
         this.requestLocale = requestLocale;
         this.coreResources = coreResources;
@@ -87,7 +132,7 @@ public class GenerateExtractFileService {
 
         TabReportBean answer = new TabReportBean();
 
-        DatasetDAO dsdao = new DatasetDAO(ds);
+        DatasetDAO dsdao = this._datasetDAO;
         // create the extract bean here, tbh
         eb = dsdao.getDatasetData(eb, activeStudyId, parentStudyId);
         eb.getMetadata();
@@ -138,7 +183,7 @@ public class GenerateExtractFileService {
             StudyBean currentStudy, String generalFileDirCopy,ExtractBean eb,
             Integer currentStudyId, Integer parentStudyId, String studySubjectNumber, boolean zipped, boolean saveToDB, boolean deleteOld, String odmType, UserAccountBean userBean){
 
-        return new OdmFileCreation().createODMFile(odmVersion, sysTimeBegin, generalFileDir, datasetBean,
+        return new OdmFileCreation(_archivedDatasetFileDAO, _datasetDAO).createODMFile(odmVersion, sysTimeBegin, generalFileDir, datasetBean,
                 currentStudy, generalFileDirCopy, eb,
                 currentStudyId, parentStudyId, studySubjectNumber, zipped, saveToDB, deleteOld, odmType, userBean);
     }
@@ -166,7 +211,7 @@ public class GenerateExtractFileService {
 
         SPSSVariableNameValidator svnv = new SPSSVariableNameValidator();
         answer.setDatFileName(SPSSFileName);
-        // DatasetDAO dsdao = new DatasetDAO(ds);
+        // DatasetDAO dsdao = this._datasetDAO;
 
         // create the extract bean here, tbh
         // ExtractBean eb = this.generateExtractBean(db, currentStudy,
@@ -183,8 +228,8 @@ public class GenerateExtractFileService {
         // itemMetadata
 
         // set up response sets for each item here
-        ItemDAO itemdao = new ItemDAO(ds);
-        ItemFormMetadataDAO imfdao = new ItemFormMetadataDAO(ds);
+        ItemDAO itemdao = this._itemDAO;
+        ItemFormMetadataDAO imfdao = this._itemFormMetadataDAO;
         ArrayList items = answer.getItems();
         for (int i = 0; i < items.size(); i++) {
             DisplayItemHeaderBean dih = (DisplayItemHeaderBean) items.get(i);
@@ -331,7 +376,7 @@ public class GenerateExtractFileService {
                 fb.setDateCreated(new Date(System.currentTimeMillis()));
 
                 boolean write = true;
-                ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(ds);
+                ArchivedDatasetFileDAO asdfDAO = this._archivedDatasetFileDAO;
 
                 if (write) {
                     fbFinal = (ArchivedDatasetFileBean) asdfDAO.create(fb);
@@ -434,7 +479,7 @@ public class GenerateExtractFileService {
                 // logger.info("ODM setOwnerId: " + sm.getUserBean().getId() );
                 fb.setDateCreated(new Date(System.currentTimeMillis()));
                 boolean write = true;
-                ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(ds);
+                ArchivedDatasetFileDAO asdfDAO = this._archivedDatasetFileDAO;
                 // eliminating all checks so that we create multiple files, tbh 6-7
                 if (write) {
                     fbFinal = (ArchivedDatasetFileBean) asdfDAO.create(fb);
@@ -554,7 +599,7 @@ public class GenerateExtractFileService {
                 // logger.info("ODM setOwnerId: " + sm.getUserBean().getId() );
                 fb.setDateCreated(new Date(System.currentTimeMillis()));
                 boolean write = true;
-                ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(ds);
+                ArchivedDatasetFileDAO asdfDAO = this._archivedDatasetFileDAO;
                 // eliminating all checks so that we create multiple files, tbh 6-7
                 if (write) {
                     fbFinal = (ArchivedDatasetFileBean) asdfDAO.create(fb);
@@ -567,7 +612,7 @@ public class GenerateExtractFileService {
         } catch (Exception e) {
             String username = userBean != null ? userBean.getName() : "unknown";
             logger.error("Export failure in module Extract/Export for user " + username + " : " + e.getMessage(), e);
-            throw new org.akaza.openclinica.exception.ExportException("Failed to create file (zip): " + e.getMessage(), e);
+            throw new org.akaza.openclinica.exception.ExportException("Failed to create file (zip): " + e.getMessage(), e, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDAO, _itemFormMetadataDAO, _studyEventDAO, _studyEventDefinitionDAO, _studyGroupClassDAO, _studyGroupDAO, _subjectGroupMapDAO, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDAO, _itemFormMetadataDAO, _studyEventDAO, _studyEventDefinitionDAO, _studyGroupClassDAO, _studyGroupDAO, _subjectGroupMapDAO);
         }
 
         return fbFinal.getId();

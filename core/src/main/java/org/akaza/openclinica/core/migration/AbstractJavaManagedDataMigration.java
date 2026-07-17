@@ -1,5 +1,7 @@
 package org.akaza.openclinica.core.migration;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
 import liquibase.exception.CustomChangeException;
@@ -13,7 +15,15 @@ import org.akaza.openclinica.dao.login.UserAccountDAO;
 
 import javax.sql.DataSource;
 
+@Component
 public abstract class AbstractJavaManagedDataMigration implements CustomTaskChange {
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public AbstractJavaManagedDataMigration(UserAccountDAO _userAccountDAO) {
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     protected ResourceAccessor resourceAccessor;
     protected UserAccountBean systemUser;
@@ -38,7 +48,7 @@ public abstract class AbstractJavaManagedDataMigration implements CustomTaskChan
         
         this.dataSource = ApplicationContextProvider.getApplicationContext().getBean("dataSource", DataSource.class);
         
-        UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+        UserAccountDAO userAccountDAO = this._userAccountDAO;
         systemUser = (UserAccountBean) userAccountDAO.findByUserName("root");
         if (systemUser == null || systemUser.getId() <= 0) {
             systemUser = new UserAccountBean();

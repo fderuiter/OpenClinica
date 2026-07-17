@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.extract.FilterBean;
@@ -36,7 +38,15 @@ import java.util.Locale;
  * @author thickerson
  *
  */
+@Component
 public class RemoveFilterServlet extends SecureController {
+    private FilterDAO _filterDAO;
+
+    @Autowired
+    public RemoveFilterServlet(FilterDAO _filterDAO) {
+        this._filterDAO = _filterDAO;
+    }
+
 
     Locale locale;
     // < ResourceBundleresmessage,restext,resword,resexception;
@@ -52,7 +62,7 @@ public class RemoveFilterServlet extends SecureController {
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         int filterId = fp.getInt("filterId");
-        FilterDAO fDAO = new FilterDAO(sm.getDataSource());
+        FilterDAO fDAO = this._filterDAO;
         FilterBean filter = (FilterBean) fDAO.findByPK(filterId);
 
         String action = request.getParameter("action");
@@ -103,7 +113,7 @@ public class RemoveFilterServlet extends SecureController {
 
     private EntityBeanTable getFilterTable() {
         FormProcessor fp = new FormProcessor(request);
-        FilterDAO fdao = new FilterDAO(sm.getDataSource());
+        FilterDAO fdao = this._filterDAO;
         EntityBeanTable table = fp.getEntityBeanTable();
 
         ArrayList filters = (ArrayList) fdao.findAll();

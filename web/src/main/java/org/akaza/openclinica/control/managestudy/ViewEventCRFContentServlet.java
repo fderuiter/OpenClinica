@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.AuditableEntityBean;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -30,7 +32,21 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  * 
  *         Views the content of an event CRF
  */
+@Component
 public class ViewEventCRFContentServlet extends SecureController {
+    private EventCRFDAO _eventCRFDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public ViewEventCRFContentServlet(EventCRFDAO _eventCRFDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
 
     public static final String BEAN_STUDY_EVENT = "studyEvent";
 
@@ -58,7 +74,7 @@ public class ViewEventCRFContentServlet extends SecureController {
      */
     private StudyEventBean getStudyEvent(int eventId) throws Exception {
 
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudyEventDAO sedao = this._studyEventDAO;
         StudyBean studyWithSED = currentStudy;
         if (currentStudy.getParentStudyId() > 0) {
             studyWithSED = new StudyBean();
@@ -76,7 +92,7 @@ public class ViewEventCRFContentServlet extends SecureController {
 
         StudyEventBean seb = (StudyEventBean) aeb;
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
         StudyEventDefinitionBean sedb = (StudyEventDefinitionBean) seddao.findByPK(seb.getStudyEventDefinitionId());
         seb.setStudyEventDefinition(sedb);
         return seb;
@@ -96,11 +112,11 @@ public class ViewEventCRFContentServlet extends SecureController {
 
         StudyEventBean seb = getStudyEvent(eventId);
 
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO subdao = this._studySubjectDAO;
         StudySubjectBean studySub = (StudySubjectBean) subdao.findByPK(studySubId);
         request.setAttribute("studySub", studySub);
 
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+        EventCRFDAO ecdao = this._eventCRFDAO;
         EventCRFBean eventCRF = (EventCRFBean) ecdao.findByPK(eventCRFId);
         DisplayTableOfContentsBean displayBean = TableOfContentsServlet.getDisplayBean(eventCRF, sm.getDataSource(), currentStudy);
         request.setAttribute("toc", displayBean);

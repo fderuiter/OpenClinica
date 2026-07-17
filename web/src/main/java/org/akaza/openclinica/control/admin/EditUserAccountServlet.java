@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -32,7 +34,17 @@ import org.akaza.openclinica.web.SQLInitServlet;
  *
  *         Servlet for creating a user account.
  */
+@Component
 public class EditUserAccountServlet extends SecureController {
+    private StudyDAO _studyDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public EditUserAccountServlet(StudyDAO _studyDAO, UserAccountDAO _userAccountDAO) {
+        this._studyDAO = _studyDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
     public static final String INPUT_FIRST_NAME = "firstName";
 
     public static final String INPUT_LAST_NAME = "lastName";
@@ -72,7 +84,7 @@ public class EditUserAccountServlet extends SecureController {
     public static final String USER_ACCOUNT_NOTIFICATION = "notifyPassword";
 
     private ArrayList getAllStudies() {
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         return (ArrayList) sdao.findAll();
     }
 
@@ -101,7 +113,7 @@ public class EditUserAccountServlet extends SecureController {
         int userId = fp.getInt(ARG_USERID);
         
         
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
         UserAccountBean user = (UserAccountBean) udao.findByPK(userId);
 
         techAdminProtect(user);
@@ -239,7 +251,7 @@ public class EditUserAccountServlet extends SecureController {
     // }
     //
     // SQLFactory factory = SQLFactory.getInstance();
-    // UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+    // UserAccountDAO udao = this._userAccountDAO;
     //
     // HashMap presetValues;
     // } catch (Exception e) {
@@ -318,7 +330,7 @@ public class EditUserAccountServlet extends SecureController {
     }
 
 	public Boolean isApiKeyExist(String uuid) {
-		UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+		UserAccountDAO udao = this._userAccountDAO;
 		UserAccountBean uBean = (UserAccountBean) udao.findByApiKey(uuid);
 		if (uBean == null || !uBean.isActive()) {
 			return false;

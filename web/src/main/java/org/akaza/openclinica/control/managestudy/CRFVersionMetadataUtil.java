@@ -1,5 +1,7 @@
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,12 +22,26 @@ import org.akaza.openclinica.dao.submit.SectionDAO;
 /**
  * Utility class with method for retrieving the metadata for a CRFVersion.
  */
+@Component
 public class CRFVersionMetadataUtil {
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private ItemGroupDAO _itemGroupDAO;
+    private ItemGroupMetadataDAO _itemGroupMetadataDAO;
+    private SectionDAO _sectionDAO;
+
 
 	private DataSource dataSource = null;
 	
-	public CRFVersionMetadataUtil(DataSource dataSource)
+	@Autowired
+    public CRFVersionMetadataUtil(DataSource dataSource, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO, ItemGroupDAO _itemGroupDAO, ItemGroupMetadataDAO _itemGroupMetadataDAO, SectionDAO _sectionDAO)
 	{
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+        this._itemGroupMetadataDAO = _itemGroupMetadataDAO;
+        this._sectionDAO = _sectionDAO;
+
 		this.dataSource = dataSource;
 	}
 	/**
@@ -33,13 +49,13 @@ public class CRFVersionMetadataUtil {
 	 */
     public ArrayList<SectionBean> retrieveFormMetadata(CRFVersionBean version) throws Exception {
 
-        ItemDAO idao = new ItemDAO(dataSource);
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(dataSource);
+        ItemDAO idao = this._itemDAO;
+        ItemFormMetadataDAO ifmdao = this._itemFormMetadataDAO;
 
             // tbh, 102007
-            SectionDAO sdao = new SectionDAO(dataSource);
-            ItemGroupDAO igdao = new ItemGroupDAO(dataSource);
-            ItemGroupMetadataDAO igmdao = new ItemGroupMetadataDAO(dataSource);
+            SectionDAO sdao = this._sectionDAO;
+            ItemGroupDAO igdao = this._itemGroupDAO;
+            ItemGroupMetadataDAO igmdao = this._itemGroupMetadataDAO;
             ArrayList sections = (ArrayList) sdao.findByVersionId(version.getId());
             HashMap versionMap = new HashMap();
             for (int i = 0; i < sections.size(); i++) {

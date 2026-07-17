@@ -1,5 +1,7 @@
 package org.akaza.openclinica.job;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,7 +74,15 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
  * @author thickerson
  *
  */
+@Component
 public class XsltTransformJob extends QuartzJobBean {
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public XsltTransformJob(StudyDAO _studyDAO) {
+        this._studyDAO = _studyDAO;
+    }
+
 
     private static final Logger logger = LoggerFactory.getLogger(XsltTransformJob.class);
 
@@ -624,7 +634,7 @@ public class XsltTransformJob extends QuartzJobBean {
             auditEventDAO = ctx.getBean(AuditEventDAO.class);
             datasetDao = ctx.getBean(DatasetDAO.class);
             userAccountDao = ctx.getBean(UserAccountDAO.class);
-            studyDao = new StudyDAO(dataSource);
+            studyDao = this._studyDAO;
             archivedDatasetFileDao = ctx.getBean(ArchivedDatasetFileDAO.class);
             generateFileService = ctx.getBean(GenerateExtractFileService.class);
             odmFileCreation = ctx.getBean(OdmFileCreation.class);

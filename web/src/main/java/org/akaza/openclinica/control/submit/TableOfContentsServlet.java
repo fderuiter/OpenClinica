@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.admin.CRFBean;
 import org.akaza.openclinica.bean.core.AuditableEntityBean;
 import org.akaza.openclinica.bean.core.DataEntryStage;
@@ -65,7 +67,35 @@ import javax.sql.DataSource;
 
 // TODO: make it possible to input an event crf bean to this servlet rather than
 // an int
+@Component
 public class TableOfContentsServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemGroupDAO _itemGroupDAO;
+    private SectionDAO _sectionDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public TableOfContentsServlet(CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, DiscrepancyNoteDAO _discrepancyNoteDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemGroupDAO _itemGroupDAO, SectionDAO _sectionDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     public static final String BEAN_DISPLAY = "toc";
 
@@ -119,7 +149,7 @@ public class TableOfContentsServlet extends SecureController {
     private String action;
 
     private void getEventCRFAndAction() {
-        ecdao = new EventCRFDAO(sm.getDataSource());
+        ecdao = this._eventCRFDAO;
 
         ecb = (EventCRFBean) request.getAttribute(INPUT_EVENT_CRF_BEAN);
 
@@ -193,7 +223,7 @@ public class TableOfContentsServlet extends SecureController {
      */
     private EventCRFBean createEventCRF() throws Exception {
         EventCRFBean ecb;
-        ecdao = new EventCRFDAO(sm.getDataSource());
+        ecdao = this._eventCRFDAO;
 
         int crfVersionId = fp.getInt(INPUT_CRF_VERSION_ID);
         int studyEventId = fp.getInt(INPUT_STUDY_EVENT_ID);
@@ -204,28 +234,28 @@ public class TableOfContentsServlet extends SecureController {
         logger.info("Creating event CRF within Table of Contents.  Study id: " + currentStudy.getId() + "; CRF Version id: " + crfVersionId
             + "; Study Event id: " + studyEventId + "; Event Definition CRF id: " + eventDefinitionCRFId + "; Subject: " + subjectId);
 
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = this._studySubjectDAO;
         StudySubjectBean ssb = ssdao.findBySubjectIdAndStudy(subjectId, currentStudy);
 
         if (!ssb.isActive()) {
             throw new InconsistentStateException(Page.LIST_STUDY_SUBJECTS_SERVLET, resexception.getString("trying_to_begin_DE1"));
         }
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
         StudyEventDefinitionBean sedb = seddao.findByEventDefinitionCRFId(eventDefinitionCRFId);
 
         if (!ssb.isActive() || !sedb.isActive()) {
             throw new InconsistentStateException(Page.LIST_STUDY_SUBJECTS_SERVLET, resexception.getString("trying_to_begin_DE2"));
         }
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
         EntityBean eb = cvdao.findByPK(crfVersionId);
 
         if (!eb.isActive()) {
             throw new InconsistentStateException(Page.LIST_STUDY_SUBJECTS_SERVLET, resexception.getString("trying_to_begin_DE3"));
         }
 
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudyEventDAO sedao = this._studyEventDAO;
         StudyEventBean sEvent = (StudyEventBean) sedao.findByPK(studyEventId);
 
         StudyBean studyWithSED = currentStudy;
@@ -365,14 +395,14 @@ public class TableOfContentsServlet extends SecureController {
                 ecb.setDateInterviewed(fp.getDate(INPUT_INTERVIEW_DATE));
 
                 if (ecdao == null) {
-                    ecdao = new EventCRFDAO(sm.getDataSource());
+                    ecdao = this._eventCRFDAO;
                 }
 
                 ecb = (EventCRFBean) ecdao.update(ecb);
 
                 // save discrepancy notes into DB
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = this._discrepancyNoteDAO;
 
                 AddNewSubjectServlet.saveFieldNotes(INPUT_INTERVIEWER, fdn, dndao, ecb.getId(), "EventCRF", currentStudy);
                 AddNewSubjectServlet.saveFieldNotes(INPUT_INTERVIEW_DATE, fdn, dndao, ecb.getId(), "EventCRF", currentStudy);
@@ -403,7 +433,7 @@ public class TableOfContentsServlet extends SecureController {
         DisplayTableOfContentsBean displayBean = getDisplayBean(ecb, sm.getDataSource(), currentStudy);
 
         // this is for generating side info panel
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = this._studySubjectDAO;
         StudySubjectBean ssb = (StudySubjectBean) ssdao.findByPK(ecb.getStudySubjectId());
         ArrayList beans = ViewStudySubjectServlet.getDisplayStudyEventsForStudySubject(ssb, sm.getDataSource(), ub, currentRole);
         request.setAttribute("studySubject", ssb);
@@ -582,8 +612,8 @@ public class TableOfContentsServlet extends SecureController {
     }
 
     public static ArrayList getSections(EventCRFBean ecb, DataSource ds) {
-        SectionDAO sdao = new SectionDAO(ds);
-        ItemGroupDAO igdao = new ItemGroupDAO(ds);
+        SectionDAO sdao = this._sectionDAO;
+        ItemGroupDAO igdao = this._itemGroupDAO;
 
         HashMap numItemsBySectionId = sdao.getNumItemsBySectionId();
         HashMap numItemsPlusRepeatBySectionId = sdao.getNumItemsPlusRepeatBySectionId(ecb);
@@ -636,33 +666,33 @@ public class TableOfContentsServlet extends SecureController {
         answer.setEventCRF(ecb);
 
         // get data
-        StudySubjectDAO ssdao = new StudySubjectDAO(ds);
+        StudySubjectDAO ssdao = this._studySubjectDAO;
         StudySubjectBean ssb = (StudySubjectBean) ssdao.findByPK(ecb.getStudySubjectId());
         answer.setStudySubject(ssb);
 
-        StudyEventDAO sedao = new StudyEventDAO(ds);
+        StudyEventDAO sedao = this._studyEventDAO;
         StudyEventBean seb = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
         answer.setStudyEvent(seb);
 
-        SectionDAO sdao = new SectionDAO(ds);
+        SectionDAO sdao = this._sectionDAO;
         ArrayList sections = getSections(ecb, ds);
         answer.setSections(sections);
 
         // get metadata
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(ds);
+        StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
         StudyEventDefinitionBean sedb = (StudyEventDefinitionBean) seddao.findByPK(seb.getStudyEventDefinitionId());
         answer.setStudyEventDefinition(sedb);
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(ds);
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
         CRFVersionBean cvb = (CRFVersionBean) cvdao.findByPK(ecb.getCRFVersionId());
         answer.setCrfVersion(cvb);
 
-        CRFDAO cdao = new CRFDAO(ds);
+        CRFDAO cdao = this._cRFDAO;
         CRFBean cb = (CRFBean) cdao.findByPK(cvb.getCrfId());
         answer.setCrf(cb);
 
-        StudyBean studyForStudySubject = new StudyDAO(ds).findByStudySubjectId(ssb.getId());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(ds);
+        StudyBean studyForStudySubject = this._studyDAO.findByStudySubjectId(ssb.getId());
+        EventDefinitionCRFDAO edcdao = this._eventDefinitionCRFDAO;
         EventDefinitionCRFBean edcb = edcdao.findByStudyEventDefinitionIdAndCRFId(studyForStudySubject, sedb.getId(), cb.getId());
         answer.setEventDefinitionCRF(edcb);
 
@@ -685,7 +715,7 @@ public class TableOfContentsServlet extends SecureController {
             return displayTableOfContentsBean;
         }
         EventCRFBean ecb = displayTableOfContentsBean.getEventCRF();
-        SectionDAO sectionDAO = new SectionDAO(ds);
+        SectionDAO sectionDAO = this._sectionDAO;
         ArrayList<SectionBean> sectionBeans = getSections(ecb, ds);
         ArrayList<SectionBean> showSections = new ArrayList<SectionBean>();
         if(sectionBeans != null && sectionBeans.size()>0) {

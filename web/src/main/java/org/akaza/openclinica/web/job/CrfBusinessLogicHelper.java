@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.job;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.DataEntryStage;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.core.SubjectEventStatus;
@@ -29,13 +31,35 @@ import javax.sql.DataSource;
 /*
  * Helper methods will be placed in this class - DRY
  */
+@Component
 public class CrfBusinessLogicHelper {
+    private CRFDAO _cRFDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
 
     // SessionManager sm;
     DataSource ds;
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    // public CrfBusinessLogicHelper(SessionManager sm) {
+    // @Autowired
+    public CrfBusinessLogicHelper(SessionManager sm, CRFDAO _cRFDAO, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+
     // this.sm = sm;
     // }
 
@@ -46,17 +70,17 @@ public class CrfBusinessLogicHelper {
 
     private EventDefinitionCRFBean getEventDefinitionCrfByStudyEventAndCrfVersion(EventCRFBean eventCrf, StudyBean study) {
 
-        EventDefinitionCRFDAO eventDefinitionCrfDao = new EventDefinitionCRFDAO(ds);
+        EventDefinitionCRFDAO eventDefinitionCrfDao = this._eventDefinitionCRFDAO;
         // TODO we have to get that id before we can continue
-        eventDefinitionCrfDao = new EventDefinitionCRFDAO(ds);
+        eventDefinitionCrfDao = this._eventDefinitionCRFDAO;
         EventDefinitionCRFBean eventDefinitionCrf = eventDefinitionCrfDao.findByStudyEventIdAndCRFVersionId(study, eventCrf.getStudyEventId(),
                 eventCrf.getCRFVersionId());
         return eventDefinitionCrf;
     }
 
     protected boolean isEachRequiredFieldFillout(EventCRFBean ecb) {
-        ItemDataDAO iddao = new ItemDataDAO(ds);
-        ItemDAO idao = new ItemDAO(ds);
+        ItemDataDAO iddao = this._itemDataDAO;
+        ItemDAO idao = this._itemDAO;
         int allRequiredNum = idao.findAllRequiredByCRFVersionId(ecb.getCRFVersionId());
         int allRequiredFilledOut = iddao.findAllRequiredByEventCRFId(ecb);
         if (allRequiredNum > allRequiredFilledOut) {
@@ -71,8 +95,8 @@ public class CrfBusinessLogicHelper {
     }
 
     protected boolean areAllCompleted(StudyEventBean seBean, StudyBean study) {
-        EventDefinitionCRFDAO edcDao = new EventDefinitionCRFDAO(ds);
-        EventCRFDAO eventCrfDao = new EventCRFDAO(ds);
+        EventDefinitionCRFDAO edcDao = this._eventDefinitionCRFDAO;
+        EventCRFDAO eventCrfDao = this._eventCRFDAO;
         ArrayList allCRFs = eventCrfDao.findAllByStudyEvent(seBean);
         ArrayList allEDCs = (ArrayList) edcDao.findAllActiveByEventDefinitionId(study, seBean.getStudyEventDefinitionId());
         boolean eventCompleted = true;
@@ -93,8 +117,8 @@ public class CrfBusinessLogicHelper {
     }
 
     protected boolean areAllRequiredCompleted(StudyEventBean seBean, StudyBean study) {
-        EventDefinitionCRFDAO edcDao = new EventDefinitionCRFDAO(ds);
-        EventCRFDAO eventCrfDao = new EventCRFDAO(ds);
+        EventDefinitionCRFDAO edcDao = this._eventDefinitionCRFDAO;
+        EventCRFDAO eventCrfDao = this._eventCRFDAO;
         ArrayList allCRFs = eventCrfDao.findAllByStudyEvent(seBean);
         ArrayList allEDCs = (ArrayList) edcDao.findAllActiveByEventDefinitionId(study, seBean.getStudyEventDefinitionId());
         boolean eventRequiredCompleted = true;
@@ -127,7 +151,7 @@ public class CrfBusinessLogicHelper {
 
     protected boolean noneAreRequired(StudyEventBean seBean, StudyBean study) {
         boolean noneAreRequired = true;
-        EventDefinitionCRFDAO edcDao = new EventDefinitionCRFDAO(ds);
+        EventDefinitionCRFDAO edcDao = this._eventDefinitionCRFDAO;
         ArrayList allEDCs = (ArrayList) edcDao.findAllActiveByEventDefinitionId(study, seBean.getStudyEventDefinitionId());
         logger.info("found all EDCs: " + allEDCs.size());
         for (int i = 0; i < allEDCs.size(); i++) {
@@ -143,8 +167,8 @@ public class CrfBusinessLogicHelper {
     }
 
     protected boolean areAllRequired(StudyEventBean seBean, StudyBean study) {
-        EventDefinitionCRFDAO edcDao = new EventDefinitionCRFDAO(ds);
-        // EventCRFDAO eventCrfDao = new EventCRFDAO(ds);
+        EventDefinitionCRFDAO edcDao = this._eventDefinitionCRFDAO;
+        // EventCRFDAO eventCrfDao = this._eventCRFDAO;
         // ArrayList allCRFs = eventCrfDao.findAllByStudyEvent(seBean);
         ArrayList allEDCs = (ArrayList) edcDao.findAllActiveByEventDefinitionId(study, seBean.getStudyEventDefinitionId());
         boolean areAllRequired = true;
@@ -178,21 +202,21 @@ public class CrfBusinessLogicHelper {
         // getEventCRFBean();
         // getEventDefinitionCRFBean();
         DataEntryStage stage = ecb.getStage();
-        EventCRFDAO eventCrfDao = new EventCRFDAO(ds);
-        ItemDataDAO itemDataDao = new ItemDataDAO(ds);
-        StudyDAO sdao = new StudyDAO(ds);
-        StudySubjectDAO ssdao = new StudySubjectDAO(ds);
+        EventCRFDAO eventCrfDao = this._eventCRFDAO;
+        ItemDataDAO itemDataDao = this._itemDataDAO;
+        StudyDAO sdao = this._studyDAO;
+        StudySubjectDAO ssdao = this._studySubjectDAO;
         StudyBean study = sdao.findByStudySubjectId(ecb.getStudySubjectId());
         EventDefinitionCRFBean edcb = getEventDefinitionCrfByStudyEventAndCrfVersion(ecb, study);
 
-        // StudyEventDAO studyEventDao = new StudyEventDAO(ds);
+        // StudyEventDAO studyEventDao = this._studyEventDAO;
         // StudyEventBean studyEventBean = (StudyEventBean)
         // studyEventDao.findByPK(ecb.getStudyEventId());
         // Status studyEventStatus = studyEventBean.getStatus();
 
-        StudyEventDefinitionDAO studyEventDefinitionDao = new StudyEventDefinitionDAO(ds);
+        StudyEventDefinitionDAO studyEventDefinitionDao = this._studyEventDefinitionDAO;
         StudyEventDefinitionBean sedBean = (StudyEventDefinitionBean) studyEventDefinitionDao.findByPK(edcb.getStudyEventDefinitionId());
-        CRFDAO crfDao = new CRFDAO(ds);
+        CRFDAO crfDao = this._cRFDAO;
         ArrayList crfs = (ArrayList) crfDao.findAllActiveByDefinition(sedBean);
         sedBean.setCrfs(crfs);
         // request.setAttribute(TableOfContentsServlet.INPUT_EVENT_CRF_BEAN,
@@ -304,7 +328,7 @@ public class CrfBusinessLogicHelper {
         itemDataDao.updateStatusByEventCRF(ecb, newStatus);
 
         // change status for study event
-        StudyEventDAO sedao = new StudyEventDAO(ds);
+        StudyEventDAO sedao = this._studyEventDAO;
         StudyEventBean seb = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
         seb.setUpdatedDate(new Date());
         seb.setUpdater(ub);
@@ -384,14 +408,14 @@ public class CrfBusinessLogicHelper {
      * @return
      */
     public boolean markCRFStarted(EventCRFBean ecb, UserAccountBean ub) throws Exception {
-        EventCRFDAO eventCrfDao = new EventCRFDAO(ds);
-        StudyDAO sdao = new StudyDAO(ds);
+        EventCRFDAO eventCrfDao = this._eventCRFDAO;
+        StudyDAO sdao = this._studyDAO;
         StudyBean study = sdao.findByStudySubjectId(ecb.getStudySubjectId());
         EventDefinitionCRFBean edcb = getEventDefinitionCrfByStudyEventAndCrfVersion(ecb, study);
 
-        StudyEventDefinitionDAO studyEventDefinitionDao = new StudyEventDefinitionDAO(ds);
+        StudyEventDefinitionDAO studyEventDefinitionDao = this._studyEventDefinitionDAO;
         StudyEventDefinitionBean sedBean = (StudyEventDefinitionBean) studyEventDefinitionDao.findByPK(edcb.getStudyEventDefinitionId());
-        CRFDAO crfDao = new CRFDAO(ds);
+        CRFDAO crfDao = this._cRFDAO;
         ArrayList crfs = (ArrayList) crfDao.findAllActiveByDefinition(sedBean);
         sedBean.setCrfs(crfs);
 
@@ -409,7 +433,7 @@ public class CrfBusinessLogicHelper {
         ecb = (EventCRFBean) eventCrfDao.update(ecb);
         logger.debug("just updated event crf id: " + ecb.getId());
 
-        StudyEventDAO sedao = new StudyEventDAO(ds);
+        StudyEventDAO sedao = this._studyEventDAO;
         StudyEventBean seb = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
         if (seb.getSubjectEventStatus().isScheduled() || seb.getSubjectEventStatus().isNotScheduled() || seb.getSubjectEventStatus().isDE_Started()) {
             // change status for study event

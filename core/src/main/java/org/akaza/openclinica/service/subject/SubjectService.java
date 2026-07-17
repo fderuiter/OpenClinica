@@ -1,5 +1,15 @@
 package org.akaza.openclinica.service.subject;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+
+
+import org.akaza.openclinica.dao.submit.ItemDAO;
+import org.akaza.openclinica.dao.submit.CRFVersionDAO;
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
+import org.akaza.openclinica.dao.managestudy.StudyDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -18,7 +28,19 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+@Component
 public class SubjectService implements SubjectServiceInterface {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private ItemDAO _itemDAO;
+
+    private StudyDAO _studyDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    private StudyParameterValueDAO _studyParameterValueDAO;
+    private UserAccountDAO _userAccountDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     org.akaza.openclinica.repository.UnifiedRepository unifiedRepository;
@@ -31,7 +53,19 @@ public class SubjectService implements SubjectServiceInterface {
         this.enrollmentManager = enrollmentManager;
     }
 
-    public SubjectService(DataSource dataSource) {
+    @Autowired
+    public SubjectService(DataSource dataSource, StudyParameterValueDAO _studyParameterValueDAO, UserAccountDAO _userAccountDAO, StudyDAO _studyDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemDAO _itemDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._itemDAO = _itemDAO;
+
+        this._studyDAO = _studyDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+
+        this._studyParameterValueDAO = _studyParameterValueDAO;
+        this._userAccountDAO = _userAccountDAO;
+
         this.dataSource = dataSource;
     }
 
@@ -51,7 +85,7 @@ public class SubjectService implements SubjectServiceInterface {
      */
     public String createSubject(SubjectBean subjectBean, StudyBean studyBean, Date enrollmentDate, String secondaryId) {
         if (this.enrollmentManager == null) {
-            this.enrollmentManager = new EnrollmentManager(dataSource);
+            this.enrollmentManager = new EnrollmentManager(dataSource, _studyParameterValueDAO, _studyParameterValueDAO, _studyDAO, _studySubjectDAO, _subjectDAO);
         }
         return this.enrollmentManager.enrollSubject(subjectBean, studyBean, enrollmentDate, secondaryId);
     }
@@ -82,7 +116,7 @@ public class SubjectService implements SubjectServiceInterface {
 
     public String generateSubjectId(StudyBean studyBean) {
         if (this.enrollmentManager == null) {
-            this.enrollmentManager = new EnrollmentManager(dataSource);
+            this.enrollmentManager = new EnrollmentManager(dataSource, _studyParameterValueDAO, _studyParameterValueDAO, _studyDAO, _studySubjectDAO, _subjectDAO);
         }
         return this.enrollmentManager.generateSubjectId(studyBean);
     }
@@ -105,7 +139,7 @@ public class SubjectService implements SubjectServiceInterface {
 
     
     public StudyParameterValueDAO getStudyParameterValueDAO() {
-        return this.studyParameterValueDAO != null ? studyParameterValueDAO : new StudyParameterValueDAO(dataSource);
+        return this.studyParameterValueDAO != null ? studyParameterValueDAO : this._studyParameterValueDAO;
     }
 
 
@@ -114,7 +148,7 @@ public class SubjectService implements SubjectServiceInterface {
      * @return the UserAccountDao
      */
     public UserAccountDAO getUserAccountDao() {
-        userAccountDao = userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        userAccountDao = userAccountDao != null ? userAccountDao : this._userAccountDAO;
         return userAccountDao;
     }
 
@@ -142,7 +176,7 @@ public class SubjectService implements SubjectServiceInterface {
     }
 
     public SubjectBean updateSubject(SubjectBean subjectBean, UserAccountBean updater, String reasonForChange, org.akaza.openclinica.bean.managestudy.DiscrepancyNoteBean note) {
-        org.akaza.openclinica.dao.submit.SubjectDAO sdao = new org.akaza.openclinica.dao.submit.SubjectDAO(dataSource);
+        org.akaza.openclinica.dao.submit.SubjectDAO sdao = new org.akaza.openclinica.dao.submit.SubjectDAO(dataSource, _studyDAO, _subjectDAO, _userAccountDAO, _studyDAO, _subjectDAO, _userAccountDAO, _studyDAO, _subjectDAO, _userAccountDAO, _studyDAO, _subjectDAO, _userAccountDAO);
         
         SubjectBean oldSubject = (SubjectBean) sdao.findByPK(subjectBean.getId());
         subjectBean.setUpdater(updater);

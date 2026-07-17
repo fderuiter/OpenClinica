@@ -6,6 +6,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.DiscrepancyNoteType;
 import org.akaza.openclinica.bean.core.NumericComparisonOperator;
 import org.akaza.openclinica.bean.core.ResolutionStatus;
@@ -49,7 +51,29 @@ import jakarta.servlet.http.HttpSession;
  * Create a discrepancy note
  *
  */
+@Component
 public class CreateOneDiscrepancyNoteServlet extends SecureController {
+    private DiscrepancyNoteDAO _discrepancyNoteDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public CreateOneDiscrepancyNoteServlet(DiscrepancyNoteDAO _discrepancyNoteDAO, EventCRFDAO _eventCRFDAO, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudySubjectDAO _studySubjectDAO, UserAccountDAO _userAccountDAO) {
+        this._discrepancyNoteDAO = _discrepancyNoteDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     Locale locale;
     // < ResourceBundleresexception,respage;
@@ -95,7 +119,7 @@ public class CreateOneDiscrepancyNoteServlet extends SecureController {
     @Override
     protected void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
-        DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+        DiscrepancyNoteDAO dndao = this._discrepancyNoteDAO;
 
         int eventCRFId = fp.getInt(CreateDiscrepancyNoteServlet.EVENT_CRF_ID);
         request.setAttribute(CreateDiscrepancyNoteServlet.EVENT_CRF_ID, new Integer(eventCRFId));
@@ -259,13 +283,13 @@ public class CreateOneDiscrepancyNoteServlet extends SecureController {
 
                     // generate message here
                     EmailEngine em = new EmailEngine(EmailEngine.getSMTPHost());
-                    UserAccountDAO userAccountDAO = new UserAccountDAO(sm.getDataSource());
-                    ItemDAO itemDAO = new ItemDAO(sm.getDataSource());
-                    ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                    UserAccountDAO userAccountDAO = this._userAccountDAO;
+                    ItemDAO itemDAO = this._itemDAO;
+                    ItemDataDAO iddao = this._itemDataDAO;
                     ItemBean item = new ItemBean();
                     ItemDataBean itemData = new ItemDataBean();
 
-                    StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+                    StudyDAO studyDAO = this._studyDAO;
                     UserAccountBean assignedUser = (UserAccountBean) userAccountDAO.findByPK(dn.getAssignedUserId());
                     String alertEmail = assignedUser.getEmail();
                     message.append(MessageFormat.format(respage.getString("mailDNHeader"), assignedUser.getFirstName(),assignedUser.getLastName()));
@@ -373,11 +397,11 @@ public class CreateOneDiscrepancyNoteServlet extends SecureController {
     private void updateStudySubjectStatus(String entityType, int entityId) {
         if ("itemData".equalsIgnoreCase(entityType)) {
             int itemDataId = entityId;
-            ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+            ItemDataDAO iddao = this._itemDataDAO;
             ItemDataBean itemData = (ItemDataBean) iddao.findByPK(itemDataId);
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
-            StudySubjectDAO studySubjectDAO = new StudySubjectDAO(sm.getDataSource());
+            EventCRFDAO ecdao = this._eventCRFDAO;
+            StudyEventDAO svdao = this._studyEventDAO;
+            StudySubjectDAO studySubjectDAO = this._studySubjectDAO;
             EventCRFBean ec = (EventCRFBean) ecdao.findByPK(itemData.getEventCRFId());
             StudyEventBean event = (StudyEventBean) svdao.findByPK(ec.getStudyEventId());
             StudySubjectBean studySubject = (StudySubjectBean) studySubjectDAO.findByPK(event.getStudySubjectId());
@@ -402,10 +426,10 @@ public class CreateOneDiscrepancyNoteServlet extends SecureController {
     private void updateStudyEvent(String entityType, int entityId) {
         if ("itemData".equalsIgnoreCase(entityType)) {
             int itemDataId = entityId;
-            ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+            ItemDataDAO iddao = this._itemDataDAO;
             ItemDataBean itemData = (ItemDataBean) iddao.findByPK(itemDataId);
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
+            EventCRFDAO ecdao = this._eventCRFDAO;
+            StudyEventDAO svdao = this._studyEventDAO;
             EventCRFBean ec = (EventCRFBean) ecdao.findByPK(itemData.getEventCRFId());
             StudyEventBean event = (StudyEventBean) svdao.findByPK(ec.getStudyEventId());
             if (event.getSubjectEventStatus().equals(SubjectEventStatus.SIGNED)) {
@@ -416,8 +440,8 @@ public class CreateOneDiscrepancyNoteServlet extends SecureController {
             }
         } else if ("eventCrf".equalsIgnoreCase(entityType)) {
             int eventCRFId = entityId;
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
+            EventCRFDAO ecdao = this._eventCRFDAO;
+            StudyEventDAO svdao = this._studyEventDAO;
 
             EventCRFBean ec = (EventCRFBean) ecdao.findByPK(eventCRFId);
             StudyEventBean event = (StudyEventBean) svdao.findByPK(ec.getStudyEventId());

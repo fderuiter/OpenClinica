@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.dao.extract;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.DatasetItemStatus;
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.extract.DatasetBean;
@@ -38,7 +40,10 @@ import javax.sql.DataSource;
  *
  *
  */
+@Component
 public class DatasetDAO extends AuditableEntityDAO {
+    private ItemDAO _itemDAO;
+
 
     // private DataSource ds;
     // private DAODigester digester;
@@ -57,8 +62,11 @@ public class DatasetDAO extends AuditableEntityDAO {
      *
      * @param ds
      */
-    public DatasetDAO(DataSource ds) {
+    @Autowired
+    public DatasetDAO(DataSource ds, ItemDAO _itemDAO) {
         super(ds);
+        this._itemDAO = _itemDAO;
+
         this.setQueryNames();
     }
 
@@ -663,7 +671,7 @@ public class DatasetDAO extends AuditableEntityDAO {
      * @author ywang (Feb., 2008)
      */
     public DatasetBean initialDatasetData(int datasetId) {
-        ItemDAO idao = new ItemDAO(ds);
+        ItemDAO idao = this._itemDAO;
         DatasetBean db = (DatasetBean) findByPK(datasetId);
         String sql = db.getSQLStatement();
         sql = sql.split("study_event_definition_id in")[1];

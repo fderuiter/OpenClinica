@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.control.core.SecureController;
@@ -22,7 +24,15 @@ import org.akaza.openclinica.web.InsufficientPermissionException;
  * @author jxu
  * @version CVS: $Id: InitUpdateStudyServlet.java 13689 2009-12-16 21:10:37Z kkrumlian $
  */
+@Component
 public class InitUpdateStudyServlet extends SecureController {
+    private StudyDAO _studyDAO;
+
+    @Autowired
+    public InitUpdateStudyServlet(StudyDAO _studyDAO) {
+        this._studyDAO = _studyDAO;
+    }
+
 
     /**
      *
@@ -44,7 +54,7 @@ public class InitUpdateStudyServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         String idString = request.getParameter("id");
         logger.info("study id:" + idString);
         if (StringUtil.isBlank(idString)) {

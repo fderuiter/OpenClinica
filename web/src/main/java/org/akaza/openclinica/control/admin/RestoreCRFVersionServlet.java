@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.submit.CRFVersionBean;
@@ -32,7 +34,21 @@ import java.util.Date;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class RestoreCRFVersionServlet extends SecureController {
+    private CRFVersionDAO _cRFVersionDAO;
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private SectionDAO _sectionDAO;
+
+    @Autowired
+    public RestoreCRFVersionServlet(CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, SectionDAO _sectionDAO) {
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._sectionDAO = _sectionDAO;
+    }
+
     /**
      *
      */
@@ -54,7 +70,7 @@ public class RestoreCRFVersionServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = this._cRFVersionDAO;
         FormProcessor fp = new FormProcessor(request);
         // checks which module the requests are from
         String module = fp.getString(MODULE);
@@ -74,9 +90,9 @@ public class RestoreCRFVersionServlet extends SecureController {
             }
             CRFVersionBean version = (CRFVersionBean) cvdao.findByPK(versionId);
 
-            SectionDAO secdao = new SectionDAO(sm.getDataSource());
+            SectionDAO secdao = this._sectionDAO;
 
-            EventCRFDAO evdao = new EventCRFDAO(sm.getDataSource());
+            EventCRFDAO evdao = this._eventCRFDAO;
             // find all event crfs by version id
             ArrayList eventCRFs = evdao.findAllByCRFVersion(versionId);
             if ("confirm".equalsIgnoreCase(action)) {
@@ -103,7 +119,7 @@ public class RestoreCRFVersionServlet extends SecureController {
                 }
 
                 // all item data related to event crfs
-                ItemDataDAO idao = new ItemDataDAO(sm.getDataSource());
+                ItemDataDAO idao = this._itemDataDAO;
                 for (int i = 0; i < eventCRFs.size(); i++) {
                     EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(i);
                     if (eventCRF.getStatus().equals(Status.AUTO_DELETED)) {

@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.Role;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -36,7 +38,25 @@ import java.util.Date;
  *
  * Removes a study subject and all the related data
  */
+@Component
 public class RemoveStudySubjectServlet extends SecureController {
+    private EventCRFDAO _eventCRFDAO;
+    private ItemDataDAO _itemDataDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    @Autowired
+    public RemoveStudySubjectServlet(EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+    }
+
     /**
      *
      */
@@ -64,8 +84,8 @@ public class RemoveStudySubjectServlet extends SecureController {
         String subIdString = request.getParameter("subjectId");
         String studyIdString = request.getParameter("studyId");
 
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = this._subjectDAO;
+        StudySubjectDAO subdao = this._studySubjectDAO;
 
         if (StringUtil.isBlank(studySubIdString) || StringUtil.isBlank(subIdString) || StringUtil.isBlank(studyIdString)) {
             addPageMessage(respage.getString("please_choose_a_study_subject_to_remove"));
@@ -79,13 +99,13 @@ public class RemoveStudySubjectServlet extends SecureController {
 
             StudySubjectBean studySub = (StudySubjectBean) subdao.findByPK(studySubId);
 
-            StudyDAO studydao = new StudyDAO(sm.getDataSource());
+            StudyDAO studydao = this._studyDAO;
             StudyBean study = (StudyBean) studydao.findByPK(studyId);
 
             checkRoleByUserAndStudy(ub, study.getParentStudyId(), study.getId());
 
             // find study events
-            StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+            StudyEventDAO sedao = this._studyEventDAO;
 //            ArrayList events = sedao.findAllByStudyAndStudySubjectId(study, studySubId);
             ArrayList<DisplayStudyEventBean> displayEvents = ViewStudySubjectServlet.getDisplayStudyEventsForStudySubject(studySub, sm.getDataSource(), ub, currentRole);
             String action = request.getParameter("action");
@@ -113,7 +133,7 @@ public class RemoveStudySubjectServlet extends SecureController {
 
                 // remove all study events
                 // remove all event crfs
-                EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                EventCRFDAO ecdao = this._eventCRFDAO;
 
                 for (int j = 0; j < displayEvents.size(); j++) {
                     DisplayStudyEventBean dispEvent = displayEvents.get(j);
@@ -126,7 +146,7 @@ public class RemoveStudySubjectServlet extends SecureController {
 
                         ArrayList eventCRFs = ecdao.findAllByStudyEvent(event);
 
-                        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                        ItemDataDAO iddao = this._itemDataDAO;
                         for (int k = 0; k < eventCRFs.size(); k++) {
                             EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(k);
                             if (!eventCRF.getStatus().equals(Status.DELETED)) {

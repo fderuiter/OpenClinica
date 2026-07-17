@@ -1,5 +1,7 @@
 package org.akaza.openclinica.view.display;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,14 @@ import jakarta.servlet.ServletContext;
  * DisplaySectionBeans for a form, such as for a CRF that will be printed. The
  * class is used by PrintCRFServlet and PrintDataEntryServlet.
  */
+@Component
 public class DisplaySectionBeanHandler {
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private SectionDAO _sectionDAO;
+    private StudyDAO _studyDAO;
+    private StudyEventDAO _studyEventDAO;
+
     private boolean hasStoredData = false;
     private int crfVersionId;
     private int eventCRFId;
@@ -35,7 +44,14 @@ public class DisplaySectionBeanHandler {
     private ServletContext context;
     private DataSource dataSource;
 
-    public DisplaySectionBeanHandler(boolean dataEntry) {
+    @Autowired
+    public DisplaySectionBeanHandler(boolean dataEntry, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, SectionDAO _sectionDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studyDAO = _studyDAO;
+        this._studyEventDAO = _studyEventDAO;
+
         this.hasStoredData = dataEntry;
     }
 
@@ -93,7 +109,7 @@ public class DisplaySectionBeanHandler {
                 return displaySectionBeans;
             }
 
-            sectionDao = new SectionDAO(dataSource);
+            sectionDao = this._sectionDAO;
             allCrfSections = (ArrayList) sectionDao.findByVersionId(this.crfVersionId);
 
             // for the purposes of null values, try to obtain a valid
@@ -101,13 +117,13 @@ public class DisplaySectionBeanHandler {
             EventDefinitionCRFBean eventDefBean = null;
             EventCRFBean eventCRFBean = new EventCRFBean();
             if (eventCRFId > 0) {
-                EventCRFDAO ecdao = new EventCRFDAO(dataSource);
+                EventCRFDAO ecdao = this._eventCRFDAO;
                 eventCRFBean = (EventCRFBean) ecdao.findByPK(eventCRFId);
-                StudyEventDAO sedao = new StudyEventDAO(dataSource);
+                StudyEventDAO sedao = this._studyEventDAO;
                 StudyEventBean studyEvent = (StudyEventBean) sedao.findByPK(eventCRFBean.getStudyEventId());
 
-                EventDefinitionCRFDAO eventDefinitionCRFDAO = new EventDefinitionCRFDAO(dataSource);
-                StudyDAO sdao = new StudyDAO(dataSource);
+                EventDefinitionCRFDAO eventDefinitionCRFDAO = this._eventDefinitionCRFDAO;
+                StudyDAO sdao = this._studyDAO;
                 StudyBean study = sdao.findByStudySubjectId(eventCRFBean.getStudySubjectId());
                 eventDefBean = eventDefinitionCRFDAO.findByStudyEventIdAndCRFVersionId(study, studyEvent.getId(), this.crfVersionId);
             }

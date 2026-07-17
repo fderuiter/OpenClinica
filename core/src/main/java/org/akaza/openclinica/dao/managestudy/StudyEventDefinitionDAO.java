@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +32,10 @@ import org.akaza.openclinica.dao.core.TypeNames;
  * @author thickerson
  * @author jsampson
  */
+@Component
 public class StudyEventDefinitionDAO<K extends String,V extends ArrayList> extends AuditableEntityDAO {
+    private StudyDAO _studyDAO;
+
 
     private void setQueryNames() {
         findAllByStudyName = "findAllByStudy";
@@ -38,8 +43,11 @@ public class StudyEventDefinitionDAO<K extends String,V extends ArrayList> exten
         findByPKAndStudyName = "findByPKAndStudy";
     }
 
-    public StudyEventDefinitionDAO(DataSource ds) {
+    @Autowired
+    public StudyEventDefinitionDAO(DataSource ds, StudyDAO _studyDAO) {
         super(ds);
+        this._studyDAO = _studyDAO;
+
         setQueryNames();
     }
 
@@ -269,7 +277,7 @@ public class StudyEventDefinitionDAO<K extends String,V extends ArrayList> exten
     @Override
     public ArrayList findAllByStudy(StudyBean study) {
 
-        StudyDAO studyDao = new StudyDAO(this.getDs());
+        StudyDAO studyDao = this._studyDAO;
 
         if (study.getParentStudyId() > 0) {
             // If the study has a parent than it is a site, in this case we

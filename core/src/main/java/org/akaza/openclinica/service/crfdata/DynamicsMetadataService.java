@@ -1,5 +1,10 @@
 package org.akaza.openclinica.service.crfdata;
 
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.akaza.openclinica.dao.submit.CRFVersionDAO;
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,7 +82,18 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+@Component
 public class DynamicsMetadataService implements MetadataServiceInterface {
+    private EventCRFDAO _eventCRFDAO;
+    private EventDefinitionCRFDAO _eventDefinitionCRFDAO;
+    private ItemDAO _itemDAO;
+    private ItemDataDAO _itemDataDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private ItemGroupDAO _itemGroupDAO;
+    private ItemGroupMetadataDAO _itemGroupMetadataDAO;
+    private SectionDAO _sectionDAO;
+    private StudyEventDAO _studyEventDAO;
+
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final String ESCAPED_SEPERATOR = "\\.";
     private DynamicsItemFormMetadataDao dynamicsItemFormMetadataDao;
@@ -96,7 +112,18 @@ public class DynamicsMetadataService implements MetadataServiceInterface {
     private ExpressionService expressionService;
     private RandomizeService randomizeService;
     
-    public DynamicsMetadataService(DataSource ds) {
+    @Autowired
+    public DynamicsMetadataService(DataSource ds, EventCRFDAO _eventCRFDAO, EventDefinitionCRFDAO _eventDefinitionCRFDAO, ItemDAO _itemDAO, ItemDataDAO _itemDataDAO, ItemFormMetadataDAO _itemFormMetadataDAO, ItemGroupDAO _itemGroupDAO, ItemGroupMetadataDAO _itemGroupMetadataDAO, SectionDAO _sectionDAO, StudyEventDAO _studyEventDAO) {
+        this._eventCRFDAO = _eventCRFDAO;
+        this._eventDefinitionCRFDAO = _eventDefinitionCRFDAO;
+        this._itemDAO = _itemDAO;
+        this._itemDataDAO = _itemDataDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+        this._itemGroupMetadataDAO = _itemGroupMetadataDAO;
+        this._sectionDAO = _sectionDAO;
+        this._studyEventDAO = _studyEventDAO;
+
         // itemsAlreadyShown = new ArrayList<Integer>();
         this.ds = ds;
     }
@@ -1045,50 +1072,50 @@ public class DynamicsMetadataService implements MetadataServiceInterface {
 
 
     private EventCRFDAO getEventCRFDAO() {
-    /*    eventCRFDAO = this.eventCRFDAO != null ? eventCRFDAO : new EventCRFDAO(ds);
+    /*    eventCRFDAO = this.eventCRFDAO != null ? eventCRFDAO : this._eventCRFDAO;
         return eventCRFDAO;*/
-        return  new EventCRFDAO(ds);
+        return  this._eventCRFDAO;
     }
 
     private ItemDataDAO getItemDataDAO() {
-    /*    itemDataDAO = this.itemDataDAO != null ? itemDataDAO : new ItemDataDAO(ds);
+    /*    itemDataDAO = this.itemDataDAO != null ? itemDataDAO : this._itemDataDAO;
         return itemDataDAO;*/
-        return new ItemDataDAO(ds);
+        return this._itemDataDAO;
     }
 
     private ItemDAO getItemDAO() {
-        /*itemDAO = this.itemDAO != null ? itemDAO : new ItemDAO(ds);
+        /*itemDAO = this.itemDAO != null ? itemDAO : this._itemDAO;
         return itemDAO;*/
-        return new ItemDAO(ds);
+        return this._itemDAO;
     }
 
     private ItemGroupDAO getItemGroupDAO() {
-        //itemGroupDAO = this.itemGroupDAO != null ? itemGroupDAO : new ItemGroupDAO(ds);
-        return new ItemGroupDAO(ds);
+        //itemGroupDAO = this.itemGroupDAO != null ? itemGroupDAO : this._itemGroupDAO;
+        return this._itemGroupDAO;
     }
 
     private SectionDAO getSectionDAO() {
-     //   sectionDAO = this.sectionDAO != null ? sectionDAO : new SectionDAO(ds);
-        return new SectionDAO(ds);
+     //   sectionDAO = this.sectionDAO != null ? sectionDAO : this._sectionDAO;
+        return this._sectionDAO;
     }
 
     private ItemFormMetadataDAO getItemFormMetadataDAO() {
-     //   itemFormMetadataDAO = this.itemFormMetadataDAO != null ? itemFormMetadataDAO : new ItemFormMetadataDAO(ds);
-        return new ItemFormMetadataDAO(ds);
+     //   itemFormMetadataDAO = this.itemFormMetadataDAO != null ? itemFormMetadataDAO : this._itemFormMetadataDAO;
+        return this._itemFormMetadataDAO;
     }
 
     private ItemGroupMetadataDAO getItemGroupMetadataDAO() {
-        //itemGroupMetadataDAO = this.itemGroupMetadataDAO != null ? itemGroupMetadataDAO : new ItemGroupMetadataDAO(ds);
-        return new ItemGroupMetadataDAO(ds);
+        //itemGroupMetadataDAO = this.itemGroupMetadataDAO != null ? itemGroupMetadataDAO : this._itemGroupMetadataDAO;
+        return this._itemGroupMetadataDAO;
     }
 
     public StudyEventDAO getStudyEventDAO() {
-        //studyEventDAO = this.studyEventDAO != null ? studyEventDAO : new StudyEventDAO(ds);
-        return new StudyEventDAO(ds);
+        //studyEventDAO = this.studyEventDAO != null ? studyEventDAO : this._studyEventDAO;
+        return this._studyEventDAO;
     }
 
     public EventDefinitionCRFDAO getEventDefinitionCRfDAO() {
-        eventDefinitionCRFDAO = this.eventDefinitionCRFDAO != null ? eventDefinitionCRFDAO : new EventDefinitionCRFDAO(ds);
+        eventDefinitionCRFDAO = this.eventDefinitionCRFDAO != null ? eventDefinitionCRFDAO : this._eventDefinitionCRFDAO;
         return eventDefinitionCRFDAO;
     }
 

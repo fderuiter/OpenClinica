@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.dao.admin.CRFDAO;
 import org.akaza.openclinica.dao.login.UserAccountDAO;
@@ -25,7 +27,21 @@ import java.util.Locale;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Component
 public class AdminSystemServlet extends SecureController {
+    private CRFDAO _cRFDAO;
+    private StudyDAO _studyDAO;
+    private SubjectDAO _subjectDAO;
+    private UserAccountDAO _userAccountDAO;
+
+    @Autowired
+    public AdminSystemServlet(CRFDAO _cRFDAO, StudyDAO _studyDAO, SubjectDAO _subjectDAO, UserAccountDAO _userAccountDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._studyDAO = _studyDAO;
+        this._subjectDAO = _subjectDAO;
+        this._userAccountDAO = _userAccountDAO;
+    }
+
 
     Locale locale;
 
@@ -39,25 +55,25 @@ public class AdminSystemServlet extends SecureController {
     protected void processRequest() throws Exception {
 
         // find last 5 modifed studies
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = this._studyDAO;
         ArrayList studies = (ArrayList) sdao.findAllByLimit(true);
         request.setAttribute("studies", studies);
         ArrayList allStudies = (ArrayList) sdao.findAll();
         request.setAttribute("allStudyNumber", new Integer(allStudies.size()));
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = this._userAccountDAO;
         ArrayList users = (ArrayList) udao.findAllByLimit(true);
         request.setAttribute("users", users);
         ArrayList allUsers = (ArrayList) udao.findAll();
         request.setAttribute("allUserNumber", new Integer(allUsers.size()));
 
-        SubjectDAO subdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO subdao = this._subjectDAO;
         ArrayList subjects = (ArrayList) subdao.findAllByLimit(true);
         request.setAttribute("subjects", subjects);
         ArrayList allSubjects = (ArrayList) subdao.findAllByPermission(ub, 1);
         request.setAttribute("allSubjectNumber", new Integer(allSubjects.size()));
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFDAO cdao = this._cRFDAO;
         ArrayList crfs = (ArrayList) cdao.findAllByLimit(true);
         request.setAttribute("crfs", crfs);
         ArrayList allCrfs = (ArrayList) cdao.findAllByPermission(ub, 1);

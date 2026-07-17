@@ -1,5 +1,7 @@
 package org.akaza.openclinica.web.pform;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.io.Reader;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
@@ -67,7 +69,16 @@ import org.w3c.dom.Element;
  * @author joekeremian
  * 
  */
+@Component
 public class OpenRosaXmlGenerator {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private ItemDAO _itemDAO;
+    private ItemFormMetadataDAO _itemFormMetadataDAO;
+    private ItemGroupDAO _itemGroupDAO;
+    private ItemGroupMetadataDAO _itemGroupMetadataDAO;
+    private SectionDAO _sectionDAO;
+
 
     private DataSource dataSource = null;
     protected final Logger log = LoggerFactory.getLogger(OpenRosaXmlGenerator.class);
@@ -81,7 +92,16 @@ public class OpenRosaXmlGenerator {
     private SectionDAO sdao;
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    public OpenRosaXmlGenerator(CoreResources core, DataSource dataSource, RuleActionPropertyDao ruleActionPropertyDao) throws Exception {
+    @Autowired
+    public OpenRosaXmlGenerator(CoreResources core, DataSource dataSource, RuleActionPropertyDao ruleActionPropertyDao, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemDAO _itemDAO, ItemFormMetadataDAO _itemFormMetadataDAO, ItemGroupDAO _itemGroupDAO, ItemGroupMetadataDAO _itemGroupMetadataDAO, SectionDAO _sectionDAO) throws Exception {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._itemDAO = _itemDAO;
+        this._itemFormMetadataDAO = _itemFormMetadataDAO;
+        this._itemGroupDAO = _itemGroupDAO;
+        this._itemGroupMetadataDAO = _itemGroupMetadataDAO;
+        this._sectionDAO = _sectionDAO;
+
         this.dataSource = dataSource;
         this.coreResources = core;
         this.ruleActionPropertyDao = ruleActionPropertyDao;
@@ -94,9 +114,9 @@ public class OpenRosaXmlGenerator {
      */
     public String buildForm(String formId) throws Exception {
         try {
-            CRFVersionDAO versionDAO = new CRFVersionDAO(dataSource);
+            CRFVersionDAO versionDAO = this._cRFVersionDAO;
             CRFVersionBean crfVersion = versionDAO.findByOid(formId);
-            CRFDAO crfDAO = new CRFDAO(dataSource);
+            CRFDAO crfDAO = this._cRFDAO;
             CRFBean crf = (CRFBean) crfDAO.findByPK(crfVersion.getCrfId());
             CRFVersionMetadataUtil metadataUtil = new CRFVersionMetadataUtil(dataSource);
             ArrayList<SectionBean> crfSections = metadataUtil.retrieveFormMetadata(crfVersion);
@@ -129,7 +149,7 @@ public class OpenRosaXmlGenerator {
     private ArrayList<ItemGroupBean> getItemGroupBeans(SectionBean section) throws Exception {
         ArrayList<ItemGroupBean> itemGroupBeans = null;
 
-        igdao = new ItemGroupDAO(dataSource);
+        igdao = this._itemGroupDAO;
         itemGroupBeans = (ArrayList<ItemGroupBean>) igdao.findGroupBySectionId(section.getId());
         return itemGroupBeans;
     }
@@ -138,7 +158,7 @@ public class OpenRosaXmlGenerator {
     private ArrayList<ItemGroupBean> getItemGroupBeansByCrfVersion(CRFVersionBean crfVersion) throws Exception {
         ArrayList<ItemGroupBean> itemGroupBeans = null;
 
-        igdao = new ItemGroupDAO(dataSource);
+        igdao = this._itemGroupDAO;
         itemGroupBeans = (ArrayList<ItemGroupBean>) igdao.findGroupByCRFVersionID(crfVersion.getId());
         return itemGroupBeans;
     }
@@ -146,14 +166,14 @@ public class OpenRosaXmlGenerator {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private ItemGroupBean getItemGroupBeanByItemId(Integer itemId) {
         ArrayList<ItemGroupBean> itemGroupBean = null;
-        igdao = new ItemGroupDAO(dataSource);
+        igdao = this._itemGroupDAO;
 
         itemGroupBean = (ArrayList<ItemGroupBean>) igdao.findGroupsByItemID(itemId);
         return itemGroupBean.get(0);
     }
 
     private SectionBean getSectionBean(Integer ID) {
-        sdao = new SectionDAO(dataSource);
+        sdao = this._sectionDAO;
         SectionBean sBean = (SectionBean) sdao.findByPK(ID);
         return sBean;
     }
@@ -161,21 +181,21 @@ public class OpenRosaXmlGenerator {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private ItemBean getItemBean(String itemOid) {
         ArrayList<ItemBean> itemBean = null;
-        idao = new ItemDAO(dataSource);
+        idao = this._itemDAO;
         itemBean = (ArrayList<ItemBean>) idao.findByOid(itemOid);
         return itemBean.get(0);
     }
 
     private ItemBean getItemBean(int itemId) {
         ItemBean itemBean = null;
-        idao = new ItemDAO(dataSource);
+        idao = this._itemDAO;
         itemBean = (ItemBean) idao.findByPK(itemId);
         return itemBean;
     }
 
     @SuppressWarnings({ "unused", "rawtypes" })
     private ItemFormMetadataBean getItemFormMetadataBeanById(Integer id) throws OpenClinicaException {
-        itemFormMetadataDAO = new ItemFormMetadataDAO(dataSource);
+        itemFormMetadataDAO = this._itemFormMetadataDAO;
         ItemFormMetadataBean itemFormMetadataBean = (ItemFormMetadataBean) itemFormMetadataDAO.findByPK(id);
         return itemFormMetadataBean;
     }
@@ -184,7 +204,7 @@ public class OpenRosaXmlGenerator {
     private ItemFormMetadataBean getItemFormMetadata(ItemBean item, CRFVersionBean crfVersion) throws Exception {
         ItemFormMetadataBean itemFormMetadataBean = null;
 
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(dataSource);
+        ItemFormMetadataDAO ifmdao = this._itemFormMetadataDAO;
         itemFormMetadataBean = ifmdao.findByItemIdAndCRFVersionId(item.getId(), crfVersion.getId());
 
         return itemFormMetadataBean;
@@ -194,7 +214,7 @@ public class OpenRosaXmlGenerator {
     private ItemGroupMetadataBean getItemGroupMetadata(ItemGroupBean itemGroupBean, CRFVersionBean crfVersion, SectionBean section) throws Exception {
         ArrayList<ItemGroupMetadataBean> itemGroupMetadataBean = null;
 
-        ItemGroupMetadataDAO itemGroupMetadataDAO = new ItemGroupMetadataDAO(dataSource);
+        ItemGroupMetadataDAO itemGroupMetadataDAO = this._itemGroupMetadataDAO;
         itemGroupMetadataBean = (ArrayList<ItemGroupMetadataBean>) itemGroupMetadataDAO.findMetaByGroupAndSection(itemGroupBean.getId(), crfVersion.getId(),
                 section.getId());
 
@@ -205,7 +225,7 @@ public class OpenRosaXmlGenerator {
     private ItemGroupMetadataBean getItemGroupMetadataByGroup(ItemGroupBean itemGroupBean, CRFVersionBean crfVersion) throws Exception {
         ArrayList<ItemGroupMetadataBean> itemGroupMetadataBean = null;
 
-        ItemGroupMetadataDAO itemGroupMetadataDAO = new ItemGroupMetadataDAO(dataSource);
+        ItemGroupMetadataDAO itemGroupMetadataDAO = this._itemGroupMetadataDAO;
         itemGroupMetadataBean = (ArrayList<ItemGroupMetadataBean>) itemGroupMetadataDAO.findMetaByGroupAndCrfVersion(itemGroupBean.getId(), crfVersion.getId());
 
         return itemGroupMetadataBean.get(0);
@@ -283,7 +303,7 @@ public class OpenRosaXmlGenerator {
     private HashMap<String, Object> getGroupInfo(ItemGroupBean itemGroupBean, CRFVersionBean crfVersion, SectionBean section, WidgetFactory factory,
             ArrayList<Bind> bindList) throws Exception {
         boolean expressionEvaluate = true;
-        igmdao = new ItemGroupMetadataDAO(dataSource);
+        igmdao = this._itemGroupMetadataDAO;
         List<ItemGroupMetadataBean> itemGroupMetadata = igmdao.findMetaByGroupAndSection(itemGroupBean.getId(), crfVersion.getId(), section.getId());
 
         HashMap<String, Object> map = new HashMap<String, Object>();
@@ -353,7 +373,7 @@ public class OpenRosaXmlGenerator {
             singleSection.setRef(ref);
             String sectionExpression = null;
 
-            igdao = new ItemGroupDAO(dataSource);
+            igdao = this._itemGroupDAO;
             ArrayList<ItemGroupBean> groupBeans = (ArrayList<ItemGroupBean>) igdao.findGroupBySectionId(section.getId());
             int count = 0;
             if (groupBeans.size() > 0) {
@@ -387,7 +407,7 @@ public class OpenRosaXmlGenerator {
                 Group group = null;
                 Repeat repeat = null;
 
-                idao = new ItemDAO(dataSource);
+                idao = this._itemDAO;
                 ArrayList<ItemBean> items = (ArrayList<ItemBean>) idao.findAllBySectionIdOrderedByItemFormMetadataOrdinal(section.getId());
 
                 Integer itemGroupId = 0;
@@ -479,7 +499,7 @@ public class OpenRosaXmlGenerator {
             }
             crfElement.appendChild(groupElement);
 
-            idao = new ItemDAO(dataSource);
+            idao = this._itemDAO;
             ArrayList<ItemBean> items = (ArrayList<ItemBean>) idao.findAllItemsByGroupIdOrdered(itemGroupBean.getId(), crfVersion.getId());
             for (ItemBean item : items) {
                 ItemFormMetadataBean itemMetaData = getItemFormMetadata(item, crfVersion);
@@ -615,7 +635,7 @@ public class OpenRosaXmlGenerator {
                 ItemBean itemBean = getItemBean(itemOid);
 
                 ItemGroupBean itemGroupBean = getItemGroupBeanByItemId(itemBean.getId());
-                itemFormMetadataDAO = new ItemFormMetadataDAO(dataSource);
+                itemFormMetadataDAO = this._itemFormMetadataDAO;
                 ItemFormMetadataBean ifmBean = (ItemFormMetadataBean) itemFormMetadataDAO.findByItemIdAndCRFVersionId(itemBean.getId(), version.getId());
 
                 if (ifmBean.getResponseSet().getResponseTypeId() == 3 || ifmBean.getResponseSet().getResponseTypeId() == 7) {

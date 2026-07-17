@@ -1,5 +1,12 @@
 package org.akaza.openclinica.service;
 
+import org.akaza.openclinica.dao.submit.ItemDAO;
+import org.akaza.openclinica.dao.submit.CRFVersionDAO;
+import org.akaza.openclinica.dao.admin.CRFDAO;
+import org.springframework.stereotype.Component;
+import org.akaza.openclinica.dao.submit.SubjectDAO;
+import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
+import org.akaza.openclinica.dao.managestudy.StudyDAO;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -44,7 +51,20 @@ import org.akaza.openclinica.exception.OpenClinicaSystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class EventService implements EventServiceInterface {
+    private CRFDAO _cRFDAO;
+    private CRFVersionDAO _cRFVersionDAO;
+    private ItemDAO _itemDAO;
+
+    private StudyDAO _studyDAO;
+    private StudySubjectDAO _studySubjectDAO;
+    private SubjectDAO _subjectDAO;
+
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private UserAccountDAO _userAccountDAO;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     UserAccountDAO userAccountDao;
@@ -68,7 +88,20 @@ public class EventService implements EventServiceInterface {
 
 
 
-    public EventService(DataSource dataSource) {
+    @Autowired
+    public EventService(DataSource dataSource, StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, UserAccountDAO _userAccountDAO, StudyDAO _studyDAO, StudySubjectDAO _studySubjectDAO, SubjectDAO _subjectDAO, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, ItemDAO _itemDAO) {
+        this._cRFDAO = _cRFDAO;
+        this._cRFVersionDAO = _cRFVersionDAO;
+        this._itemDAO = _itemDAO;
+
+        this._studyDAO = _studyDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+        this._subjectDAO = _subjectDAO;
+
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._userAccountDAO = _userAccountDAO;
+
         this.dataSource = dataSource;
     }
 
@@ -205,7 +238,7 @@ public class EventService implements EventServiceInterface {
      * @return the UserAccountDao
      */
     public UserAccountDAO getUserAccountDao() {
-        userAccountDao = userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        userAccountDao = userAccountDao != null ? userAccountDao : this._userAccountDAO;
         return userAccountDao;
     }
 
@@ -213,7 +246,7 @@ public class EventService implements EventServiceInterface {
      * @return the StudyEventDefinitionDao
      */
     public StudyEventDefinitionDAO getStudyEventDefinitionDao() {
-        studyEventDefinitionDao = studyEventDefinitionDao != null ? studyEventDefinitionDao : new StudyEventDefinitionDAO(dataSource);
+        studyEventDefinitionDao = studyEventDefinitionDao != null ? studyEventDefinitionDao : this._studyEventDefinitionDAO;
         return studyEventDefinitionDao;
     }
 
@@ -221,7 +254,7 @@ public class EventService implements EventServiceInterface {
      * @return the StudyEventDao
      */
     public StudyEventDAO getStudyEventDao() {
-        studyEventDao = studyEventDao != null ? studyEventDao : new StudyEventDAO(dataSource);
+        studyEventDao = studyEventDao != null ? studyEventDao : this._studyEventDAO;
         return studyEventDao;
     }
 

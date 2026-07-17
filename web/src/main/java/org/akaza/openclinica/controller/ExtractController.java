@@ -40,6 +40,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller("extractController")
 @RequestMapping("/extract")
 public class ExtractController {
+    private DatasetDAO _datasetDAO;
+
     @Autowired
     @Qualifier("sidebarInit")
     private SidebarInit sidebarInit;
@@ -56,7 +58,10 @@ public class ExtractController {
     public static String TRIGGER_GROUP_NAME = "XsltTriggers";
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    public ExtractController() {
+    @Autowired
+    public ExtractController(DatasetDAO _datasetDAO) {
+        this._datasetDAO = _datasetDAO;
+
 
     }
 
@@ -89,7 +94,7 @@ public class ExtractController {
         // get extract id
         // get dataset id
         // if id is a number and dataset id is a number ...
-        datasetDao = new DatasetDAO(dataSource);
+        datasetDao = this._datasetDAO;
         UserAccountBean userBean = (UserAccountBean) request.getSession().getAttribute("userBean");
         CoreResources cr =  new CoreResources();
 

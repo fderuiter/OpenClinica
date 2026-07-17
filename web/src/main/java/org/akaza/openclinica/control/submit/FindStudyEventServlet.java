@@ -7,6 +7,8 @@
  */
 package org.akaza.openclinica.control.submit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.control.form.FormProcessor;
@@ -31,7 +33,19 @@ import java.util.Locale;
  * chooses a subject or study event definition whose study events he wants to
  * see Step 3 - the user chooses the study event he wants to add data to
  */
+@Component
 public class FindStudyEventServlet extends SecureController {
+    private StudyEventDAO _studyEventDAO;
+    private StudyEventDefinitionDAO _studyEventDefinitionDAO;
+    private StudySubjectDAO _studySubjectDAO;
+
+    @Autowired
+    public FindStudyEventServlet(StudyEventDAO _studyEventDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, StudySubjectDAO _studySubjectDAO) {
+        this._studyEventDAO = _studyEventDAO;
+        this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
+        this._studySubjectDAO = _studySubjectDAO;
+    }
+
 
     Locale locale;
     // < ResourceBundleresexception,respage;
@@ -78,10 +92,10 @@ public class FindStudyEventServlet extends SecureController {
             ArrayList allDisplayEntities = new ArrayList();
 
             if (browseBy.equals(ARG_BROWSEBY_SUBJECT)) {
-                StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+                StudySubjectDAO ssdao = this._studySubjectDAO;
                 allDisplayEntities = ssdao.findAllWithStudyEvent(currentStudy);
             } else {
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+                StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
                 allDisplayEntities = seddao.findAllWithStudyEvent(currentStudy);
             }
 
@@ -110,19 +124,19 @@ public class FindStudyEventServlet extends SecureController {
 
         // User is coming from Step 2, is going to Step 3
         else {
-            StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+            StudyEventDAO sedao = this._studyEventDAO;
             ArrayList events = new ArrayList();
 
             EntityBean entityWithStudyEvents;
             if (browseBy.equals(ARG_BROWSEBY_SUBJECT)) {
                 events = sedao.findAllByStudyAndStudySubjectId(currentStudy, id);
 
-                StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+                StudySubjectDAO ssdao = this._studySubjectDAO;
                 entityWithStudyEvents = ssdao.findByPK(id);
             } else {
                 events = sedao.findAllByStudyAndEventDefinitionId(currentStudy, id);
 
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+                StudyEventDefinitionDAO seddao = this._studyEventDefinitionDAO;
                 entityWithStudyEvents = seddao.findByPK(id);
             }
 
