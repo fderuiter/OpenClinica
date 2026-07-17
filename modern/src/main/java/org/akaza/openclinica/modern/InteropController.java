@@ -116,4 +116,11 @@ public class InteropController {
         log.info("Commit action: user 'system' committed recordId: {}", recordId);
         return ResponseEntity.ok(new ApiResponse<>("Data committed"));
     }
+
+    @PostMapping("/pipeline/batch-commit")
+    public ResponseEntity<ApiResponse<String>> pipelineBatchCommit(@RequestBody List<String> recordIds) {
+        interopService.batchCommit(recordIds);
+        log.info("Commit action: user 'system' committed batch of {} records", recordIds.size());
+        return ResponseEntity.ok(new ApiResponse<>(recordIds.size() + " records batch committed"));
+    }
 }
