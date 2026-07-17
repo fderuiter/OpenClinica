@@ -7,7 +7,7 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       input: {
-        listuseraccounts: resolve(__dirname, 'listuseraccounts.html')
+        index: resolve(__dirname, "index.html")
       }
     }
   }

@@ -7,12 +7,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 
-@WebMvcTest(DataEntryController.class)
+@WebMvcTest(SpaController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class DataEntryControllerTest {
+public class SpaControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -21,6 +21,13 @@ public class DataEntryControllerTest {
     public void testDataEntryEndpoint() throws Exception {
         mockMvc.perform(get("/DataEntry"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").value("Modern Data Entry Workflow"));
+                .andExpect(forwardedUrl("/index.html"));
+    }
+
+    @Test
+    public void testCrfEndpoint() throws Exception {
+        mockMvc.perform(get("/CRF/123"))
+                .andExpect(status().isOk())
+                .andExpect(forwardedUrl("/index.html"));
     }
 }

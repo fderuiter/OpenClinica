@@ -9,21 +9,21 @@ public class AccountUiController {
 
     @GetMapping("/ListUserAccounts")
     public String listUserAccounts() {
-        return "forward:/listuseraccounts.html";
+        return "forward:/index.html";
     }
 
     @GetMapping("/CreateUserAccount")
     public String createUserAccount() {
-        return "forward:/listuseraccounts.html";
+        return "forward:/index.html";
     }
 
     @GetMapping("/EditUserAccount")
     public String editUserAccount() {
-        return "forward:/listuseraccounts.html";
+        return "forward:/index.html";
     }
 
     @GetMapping("/ViewUserAccount")
     public String viewUserAccount() {
-        return "forward:/listuseraccounts.html";
+        return "forward:/index.html";
     }
 }
