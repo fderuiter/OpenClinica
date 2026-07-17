@@ -445,6 +445,9 @@
                 <configuration>
                     <webResources>
                         <resource>
+                            <directory>../core/src/main/webapp</directory>
+                        </resource>
+                        <resource>
                             <directory>target/vite-resources</directory>
                         </resource>
                     </webResources>

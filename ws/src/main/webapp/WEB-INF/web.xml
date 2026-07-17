@@ -82,4 +82,16 @@
         <extension>xsd</extension>
         <mime-type>text/xml</mime-type>
     </mime-mapping>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Restricted Web UI Paths</web-resource-name>
+            <url-pattern>/pages/*</url-pattern>
+            <url-pattern>*.jsp</url-pattern>
+            <url-pattern>*.html</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <!-- No roles defined means no one can access these paths -->
+        </auth-constraint>
+    </security-constraint>
 </web-app>
