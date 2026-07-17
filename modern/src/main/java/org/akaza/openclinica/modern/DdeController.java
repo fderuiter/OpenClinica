@@ -1,10 +1,12 @@
 package org.akaza.openclinica.modern;
 
+import org.akaza.openclinica.modern.dto.DdeValidationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
@@ -18,11 +20,11 @@ public class DdeController {
     private JdbcTemplate jdbcTemplate;
 
     @PostMapping("/validate")
-    public ResponseEntity<String> validateDde(@RequestBody Map<String, String> payload) {
-        String subjectOid = payload.get("subjectOid");
-        String itemOid = payload.get("itemOid");
-        String value = payload.get("value");
-        boolean override = Boolean.parseBoolean(payload.getOrDefault("override", "false"));
+    public ResponseEntity<String> validateDde(@Valid @RequestBody DdeValidationRequest payload) {
+        String subjectOid = payload.getSubjectOid();
+        String itemOid = payload.getItemOid();
+        String value = payload.getValue();
+        boolean override = Boolean.parseBoolean(payload.getOverride() != null ? payload.getOverride() : "false");
 
         // Check if record exists
         String checkSql = "SELECT * FROM dde_records WHERE subject_oid = ? AND item_oid = ?";
