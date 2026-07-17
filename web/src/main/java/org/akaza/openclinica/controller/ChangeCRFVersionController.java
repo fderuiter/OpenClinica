@@ -528,7 +528,7 @@ public class ChangeCRFVersionController {
  	            		studySubBean.setStatus(subjectStatus);
  	            	 }
 	                 studySubBean.setUpdater(getCurrentUser(request));
-	                 studySubDao.update(studySubBean, con);
+	                 studySubDao.update(studySubBean);
 	        	 }
 	        	 st_event_bean.setUpdater(getCurrentUser(request));
             	 st_event_bean.setUpdatedDate(new Date());
