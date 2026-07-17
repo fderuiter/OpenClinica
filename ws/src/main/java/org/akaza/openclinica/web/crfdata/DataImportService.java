@@ -277,7 +277,43 @@ public class DataImportService {
                        eventCrfBean.setCRFVersionId(newCRFVersionId);
                      }
       			    
-                    boolean localResetSDV = itemDataHibernateDao.saveOrUpdateFromBean(displayItemBean.getData(), userBean, wrapper.isOverwrite());
+                    boolean localResetSDV = false;
+                    org.akaza.openclinica.domain.datamap.ItemData idData = itemDataHibernateDao.findByItemEventCrfOrdinal(displayItemBean.getData().getItemId(), displayItemBean.getData().getEventCRFId(), displayItemBean.getData().getOrdinal());
+                    if (wrapper.isOverwrite() && idData != null && idData.getStatus() != null) {
+                        if (!idData.getValue().equals(displayItemBean.getData().getValue())) {
+                            localResetSDV = true;
+                        }
+                        idData.setDateUpdated(new java.util.Date());
+                        idData.setUpdateId(userBean.getId());
+                        idData.setValue(displayItemBean.getData().getValue());
+                        if (displayItemBean.getData().getStatus() != null) {
+                            idData.setStatus((org.akaza.openclinica.domain.Status) itemDataHibernateDao.getEntityManager().getReference(org.akaza.openclinica.domain.Status.class, displayItemBean.getData().getStatus().getId()));
+                        }
+                    } else if (idData == null) {
+                        localResetSDV = true;
+                        idData = new org.akaza.openclinica.domain.datamap.ItemData();
+                        idData.setDateCreated(new java.util.Date());
+                        idData.setItem((org.akaza.openclinica.domain.datamap.Item) itemDataHibernateDao.getEntityManager().getReference(org.akaza.openclinica.domain.datamap.Item.class, displayItemBean.getData().getItemId()));
+                        idData.setEventCrf((org.akaza.openclinica.domain.datamap.EventCrf) itemDataHibernateDao.getEntityManager().getReference(org.akaza.openclinica.domain.datamap.EventCrf.class, displayItemBean.getData().getEventCRFId()));
+                        idData.setUserAccount((org.akaza.openclinica.domain.user.UserAccount) itemDataHibernateDao.getEntityManager().getReference(org.akaza.openclinica.domain.user.UserAccount.class, userBean.getId()));
+                        idData.setValue(displayItemBean.getData().getValue());
+                        idData.setOrdinal(displayItemBean.getData().getOrdinal());
+                        int statusId = (displayItemBean.getData().getStatus() != null) ? displayItemBean.getData().getStatus().getId() : 1;
+                        idData.setStatus((org.akaza.openclinica.domain.Status) itemDataHibernateDao.getEntityManager().getReference(org.akaza.openclinica.domain.Status.class, statusId));
+                    }
+                    
+                    if (localResetSDV) {
+                        org.springframework.context.ApplicationContext appCtx = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                        org.akaza.openclinica.domain.datamap.Study study = appCtx.getBean(org.akaza.openclinica.dao.hibernate.StudyDao.class).findById(studyBean.getId());
+                        org.akaza.openclinica.domain.user.UserAccount userAcc = appCtx.getBean(org.akaza.openclinica.dao.hibernate.UserAccountDao.class).findById(userBean.getId());
+                        org.akaza.openclinica.domain.datamap.StudySubject ss = appCtx.getBean(org.akaza.openclinica.dao.hibernate.StudySubjectDao.class).findById(eventCrfBean.getStudySubjectId());
+                        org.akaza.openclinica.domain.datamap.EventCrf evCrf = appCtx.getBean(org.akaza.openclinica.dao.hibernate.EventCrfDao.class).findById(eventCrfBean.getId());
+                        
+                        org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService unifiedService = appCtx.getBean(org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService.class);
+                        org.akaza.openclinica.domain.datamap.ItemData savedData = unifiedService.saveItemData(idData, evCrf, study, userAcc, ss);
+                        displayItemBean.getData().setId(savedData.getItemDataId());
+                        unifiedService.executeRulesAndMetadata(evCrf, study, userAcc);
+                    }
                     
                     try {
                         org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService unifiedService = 
