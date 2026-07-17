@@ -88,7 +88,7 @@ public class RandomizeService extends RandomizationRegistrar {
 
 
     @Autowired
-    public RandomizeService(DataSource ds, ItemDataDAO _itemDataDAO, StudyDAO _studyDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, SubjectDAO _subjectDAO, UserAccountDAO _userAccountDAO) {
+    public RandomizeService(DataSource ds, ItemDataDAO _itemDataDAO, StudyDAO _studyDAO, StudyGroupClassDAO _studyGroupClassDAO, StudyGroupDAO _studyGroupDAO, SubjectDAO _subjectDAO, UserAccountDAO _userAccountDAO, org.akaza.openclinica.service.rule.expression.ExpressionService expressionService) {
         this._itemDataDAO = _itemDataDAO;
         this._studyDAO = _studyDAO;
         this._studyGroupClassDAO = _studyGroupClassDAO;
@@ -97,7 +97,7 @@ public class RandomizeService extends RandomizationRegistrar {
         this._userAccountDAO = _userAccountDAO;
 
         this.ds = ds;
-        this.expressionService = new ExpressionService(ds);
+        this.expressionService = expressionService;
     }
 
     // Rest Call to OCUI to get Randomization

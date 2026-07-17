@@ -87,7 +87,7 @@ public class ImportDataRuleRunnerContainer {
                 new StudySubjectDAO<String, ArrayList>(ds).findByOid(studySubjectOid);
 
         HashMap<String, StudyEventDefinitionBean> seds = new HashMap<String, StudyEventDefinitionBean>();
-        HashMap<String, CRFVersionBean> cvs = new HashMap<String, CRFVersionBean>(_studyDAO, _studyDAO);
+        HashMap<String, CRFVersionBean> cvs = new HashMap<String, CRFVersionBean>();
         ArrayList<StudyEventDataBean> studyEventDataBeans = subjectDataBean.getStudyEventData();
         for (StudyEventDataBean studyEventDataBean : studyEventDataBeans) {
             String sedOid = studyEventDataBean.getStudyEventOID();
@@ -95,7 +95,7 @@ public class ImportDataRuleRunnerContainer {
             if(seds.containsKey(sedOid))
                 sed = seds.get(sedOid);
             else {
-                sed = new StudyEventDefinitionDAO<String, ArrayList>(ds).findByOid(sedOid, _studyDAO, _studyDAO);
+                sed = new StudyEventDefinitionDAO<String, ArrayList>(ds, _studyDAO).findByOid(sedOid);
                 seds.put(sedOid, sed);
             }
             ArrayList<FormDataBean> formDataBeans = studyEventDataBean.getFormData();

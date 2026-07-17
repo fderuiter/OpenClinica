@@ -57,7 +57,7 @@ public class MetaDataCollector extends OdmDataCollector {
         this._studyDAO = _studyDAO;
 
         this.ruleSetRuleDao = ruleSetRuleDao;
-        odmStudyMap = new LinkedHashMap<String, OdmStudyBean>(_studyDAO, _studyDAO);
+        odmStudyMap = new LinkedHashMap<String, OdmStudyBean>();
     }
 
     public MetaDataCollector(DataSource ds, DatasetBean dataset, StudyBean currentStudy,RuleSetRuleDao ruleSetRuleDao) {

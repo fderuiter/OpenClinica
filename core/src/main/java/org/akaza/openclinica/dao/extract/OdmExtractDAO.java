@@ -111,7 +111,7 @@ public class OdmExtractDAO extends DatasetDAO {
 
     @Autowired
     public OdmExtractDAO(DataSource ds, CRFDAO _cRFDAO, SectionDAO _sectionDAO, StudyDAO _studyDAO, StudyParameterValueDAO _studyParameterValueDAO, ItemDAO _itemDAO) {
-        super(ds, _itemDAO, _itemDAO);
+        super(ds, _itemDAO);
         this._itemDAO = _itemDAO;
 
         this._cRFDAO = _cRFDAO;
@@ -1588,7 +1588,7 @@ public class OdmExtractDAO extends DatasetDAO {
         //    StudyDAO sdao = this._studyDAO;
         //    study = (StudyBean)sdao.findByPK(studyId);
         //}
-        //StudyConfigService studyConfig = new StudyConfigService(this.ds);
+        //StudyConfigService studyConfig = new StudyConfigService(dataSource, _studyDAO, _studyParameterValueDAO);
         //study = studyConfig.setParametersForStudy(study);
 
 

@@ -21,6 +21,7 @@ public class DuplicateClinicalRecordsCleanupMigration extends AbstractJavaManage
 
     @Autowired
     public DuplicateClinicalRecordsCleanupMigration(ItemDataDAO _itemDataDAO, UserAccountDAO _userAccountDAO) {
+        super(_userAccountDAO);
         this._userAccountDAO = _userAccountDAO;
 
         this._itemDataDAO = _itemDataDAO;

@@ -67,7 +67,7 @@ public class DataEntryRuleRunner extends RuleRunner {
 
     @Autowired
     public DataEntryRuleRunner(DataSource ds, String requestURLMinusServletPath, String contextPath, JavaMailSenderImpl mailSender, EventCRFBean ecb, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, ItemFormMetadataDAO _itemFormMetadataDAO, RuleActionDAO _ruleActionDAO, RuleSetDAO _ruleSetDAO, RuleSetRuleDAO _ruleSetRuleDAO, SectionDAO _sectionDAO, StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, StudySubjectDAO _studySubjectDAO) {
-        super(ds, requestURLMinusServletPath, contextPath, mailSender, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDataDAO, _itemFormMetadataDAO, _ruleActionDAO, _ruleSetDAO, _ruleSetRuleDAO, _sectionDAO, _studyDAO, _studyEventDAO, _studySubjectDAO, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDataDAO, _itemFormMetadataDAO, _ruleActionDAO, _ruleSetDAO, _ruleSetRuleDAO, _sectionDAO, _studyDAO, _studyEventDAO, _studySubjectDAO);
+        super(ds, requestURLMinusServletPath, contextPath, mailSender, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDataDAO, _itemFormMetadataDAO, _ruleActionDAO, _ruleSetDAO, _ruleSetRuleDAO, _sectionDAO, _studyDAO, _studyEventDAO, _studySubjectDAO);
         this._cRFDAO = _cRFDAO;
         this._cRFVersionDAO = _cRFVersionDAO;
         this._eventCRFDAO = _eventCRFDAO;

@@ -58,14 +58,16 @@ public class UnifiedWorkflowEnforcementService {
     private StudyDAO _studyDAO;
     private StudyEventDefinitionDAO _studyEventDefinitionDAO;
     private UserAccountDAO _userAccountDAO;
+    private org.akaza.openclinica.service.audit.AuditService auditService;
 
     @Autowired
-    public UnifiedWorkflowEnforcementService(CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, UserAccountDAO _userAccountDAO) {
+    public UnifiedWorkflowEnforcementService(CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, StudyDAO _studyDAO, StudyEventDefinitionDAO _studyEventDefinitionDAO, UserAccountDAO _userAccountDAO, org.akaza.openclinica.service.audit.AuditService auditService) {
         this._cRFVersionDAO = _cRFVersionDAO;
         this._eventCRFDAO = _eventCRFDAO;
         this._studyDAO = _studyDAO;
         this._studyEventDefinitionDAO = _studyEventDefinitionDAO;
         this._userAccountDAO = _userAccountDAO;
+        this.auditService = auditService;
     }
 
 
@@ -162,7 +164,7 @@ public class UnifiedWorkflowEnforcementService {
 
         // Audit Logging
         try {
-            org.akaza.openclinica.service.audit.AuditService auditService = new org.akaza.openclinica.service.audit.AuditService(dataSource);
+            
             org.akaza.openclinica.bean.admin.AuditEventBean auditEvent = new org.akaza.openclinica.bean.admin.AuditEventBean();
             auditEvent.setAuditDate(new Date());
             auditEvent.setAuditTable("item_data");

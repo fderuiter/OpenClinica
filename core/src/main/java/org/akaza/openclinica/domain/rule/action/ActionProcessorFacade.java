@@ -30,7 +30,7 @@ public class ActionProcessorFacade {
             throws OpenClinicaSystemException {
         switch (actionType) {
         case FILE_DISCREPANCY_NOTE:
-            return new DiscrepancyNoteActionProcessor(ds, ruleActionRunLogDao, ruleSetRule, _studyDAO, _studyParameterValueDAO, _studyDAO, _studyParameterValueDAO);
+            return new DiscrepancyNoteActionProcessor(ds, ruleActionRunLogDao, ruleSetRule);
         case EMAIL:
             return new EmailActionProcessor(ds, mailSender, ruleActionRunLogDao, ruleSetRule);
         case NOTIFICATION:
@@ -42,7 +42,7 @@ public class ActionProcessorFacade {
         case INSERT:
             return new InsertActionProcessor(ds, itemMetadataService, ruleActionRunLogDao, ruleSet, ruleSetRule);
         case RANDOMIZE:
-            return new RandomizeActionProcessor(ds, itemMetadataService, ruleActionRunLogDao, ruleSet, ruleSetRule, _studyDAO, _studyParameterValueDAO, _studyDAO, _studyParameterValueDAO);
+            return new RandomizeActionProcessor(ds, itemMetadataService, ruleActionRunLogDao, ruleSet, ruleSetRule, new org.akaza.openclinica.dao.managestudy.StudyDAO(ds), new org.akaza.openclinica.dao.service.StudyParameterValueDAO(ds));
         default:
             throw new OpenClinicaSystemException("actionType", "Unrecognized action type!");
         }

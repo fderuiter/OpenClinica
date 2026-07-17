@@ -65,6 +65,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
     private ExpressionDAO expressionDao;
     private CRFDAO crfDao;
     private CRFVersionDAO crfVersionDao;
+    @org.springframework.beans.factory.annotation.Autowired
     private ExpressionService expressionService;
     private RuleSetRuleDAO ruleSetRuleDao;
     private RuleSetAuditDAO ruleSetAuditDao;
@@ -118,7 +119,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
     }
 
     private ExpressionService getExpressionService() {
-        return this.expressionService != null ? this.expressionService : new ExpressionService(ds);
+        return this.expressionService;
     }
 
     private RuleSetRuleDAO getRuleSetRuleDao() {

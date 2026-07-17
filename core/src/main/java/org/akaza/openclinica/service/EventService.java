@@ -276,7 +276,7 @@ public class EventService implements EventServiceInterface {
 
     private org.akaza.openclinica.repository.UnifiedRepository getUnifiedRepository() {
         if (this.unifiedRepository == null) {
-            this.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(dataSource);
+            this.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(dataSource, _studyDAO, _studySubjectDAO, _subjectDAO, _cRFDAO, _cRFVersionDAO, _itemDAO);
         }
         return this.unifiedRepository;
     }

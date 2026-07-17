@@ -86,7 +86,7 @@ public class OdmFileCreation {
         Integer ssNumber = getStudySubjectNumber(studySubjectNumber);
         MetaDataCollector mdc = new MetaDataCollector(dataSource, datasetBean, currentStudy,ruleSetRuleDao);
         AdminDataCollector adc = new AdminDataCollector(dataSource, datasetBean, currentStudy);
-        ClinicalDataCollector cdc = new ClinicalDataCollector(dataSource, datasetBean, currentStudy, _studySubjectDAO, _studySubjectDAO);
+        ClinicalDataCollector cdc = new ClinicalDataCollector(dataSource, datasetBean, currentStudy, _studySubjectDAO);
 
         MetaDataCollector.setTextLength(200);
         if(deleteOld){

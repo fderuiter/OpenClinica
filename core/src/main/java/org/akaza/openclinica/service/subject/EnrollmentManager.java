@@ -54,7 +54,7 @@ public class EnrollmentManager {
 
         this._studyParameterValueDAO = _studyParameterValueDAO;
 
-        this.unifiedRepository = new UnifiedRepository(dataSource);
+        this.unifiedRepository = new UnifiedRepository(dataSource, _studyDAO, _studySubjectDAO, _subjectDAO, _cRFDAO, _cRFVersionDAO, _itemDAO);
         this.studyParameterValueDAO = this._studyParameterValueDAO;
         if (dataSource != null) {
             this.jdbcTemplate = new JdbcTemplate(dataSource);

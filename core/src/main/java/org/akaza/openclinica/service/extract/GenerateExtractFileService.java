@@ -183,7 +183,7 @@ public class GenerateExtractFileService {
             StudyBean currentStudy, String generalFileDirCopy,ExtractBean eb,
             Integer currentStudyId, Integer parentStudyId, String studySubjectNumber, boolean zipped, boolean saveToDB, boolean deleteOld, String odmType, UserAccountBean userBean){
 
-        return new OdmFileCreation(_archivedDatasetFileDAO, _datasetDAO).createODMFile(odmVersion, sysTimeBegin, generalFileDir, datasetBean,
+        return new OdmFileCreation(_archivedDatasetFileDAO, _datasetDAO, _studySubjectDAO).createODMFile(odmVersion, sysTimeBegin, generalFileDir, datasetBean,
                 currentStudy, generalFileDirCopy, eb,
                 currentStudyId, parentStudyId, studySubjectNumber, zipped, saveToDB, deleteOld, odmType, userBean);
     }
@@ -612,14 +612,14 @@ public class GenerateExtractFileService {
         } catch (Exception e) {
             String username = userBean != null ? userBean.getName() : "unknown";
             logger.error("Export failure in module Extract/Export for user " + username + " : " + e.getMessage(), e);
-            throw new org.akaza.openclinica.exception.ExportException("Failed to create file (zip): " + e.getMessage(), e, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDAO, _itemFormMetadataDAO, _studyEventDAO, _studyEventDefinitionDAO, _studyGroupClassDAO, _studyGroupDAO, _subjectGroupMapDAO, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDAO, _itemFormMetadataDAO, _studyEventDAO, _studyEventDefinitionDAO, _studyGroupClassDAO, _studyGroupDAO, _subjectGroupMapDAO);
+            throw new org.akaza.openclinica.exception.ExportException("Failed to create file (zip): " + e.getMessage(), e);
         }
 
         return fbFinal.getId();
     }
 
     public ExtractBean generateExtractBean(DatasetBean dsetBean, StudyBean currentStudy, StudyBean parentStudy) {
-        ExtractBean eb = new ExtractBean(ds);
+        ExtractBean eb = new ExtractBean(ds, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDAO, _itemFormMetadataDAO, _studyEventDAO, _studyEventDefinitionDAO, _studyGroupClassDAO, _studyGroupDAO, _subjectGroupMapDAO);
         eb.setDataset(dsetBean);
         eb.setShowUniqueId(CoreResources.getField("show_unique_id"));
         eb.setStudy(currentStudy);

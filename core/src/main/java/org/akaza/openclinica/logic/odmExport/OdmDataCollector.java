@@ -51,6 +51,8 @@ public abstract class OdmDataCollector {
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     @Autowired
+    public OdmDataCollector() {}
+
     public OdmDataCollector(StudyDAO _studyDAO) {
         this._studyDAO = _studyDAO;
 

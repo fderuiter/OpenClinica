@@ -89,10 +89,10 @@ public class UnifiedRepository {
         this.subjectDaoJdbc = this._subjectDAO;
         this.crfDaoJdbc = new org.akaza.openclinica.dao.admin.CRFDAO(dataSource);
         this.crfVersionDaoJdbc = new org.akaza.openclinica.dao.submit.CRFVersionDAO(dataSource);
-        this.studyEventDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDAO(dataSource, _cRFDAO, _cRFVersionDAO, _cRFDAO, _cRFVersionDAO);
-        this.studyEventDefinitionDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO(dataSource, _studyDAO, _studyDAO);
+        this.studyEventDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDAO(dataSource, _cRFDAO, _cRFVersionDAO);
+        this.studyEventDefinitionDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO(dataSource, _studyDAO);
         this.itemDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDAO(dataSource);
-        this.itemDataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDataDAO(dataSource, _itemDAO, _itemDAO);
+        this.itemDataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDataDAO(dataSource, _itemDAO);
         this.itemFormMetadataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemFormMetadataDAO(dataSource);
     }
     

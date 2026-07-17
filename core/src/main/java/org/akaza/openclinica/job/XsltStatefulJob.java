@@ -21,7 +21,7 @@ public class XsltStatefulJob extends XsltTransformJob implements StatefulJob, In
 
     @Autowired
     public XsltStatefulJob(StudyDAO _studyDAO) {
-        super(_studyDAO, _studyDAO);
+        super(_studyDAO);
         this._studyDAO = _studyDAO;
 
     }

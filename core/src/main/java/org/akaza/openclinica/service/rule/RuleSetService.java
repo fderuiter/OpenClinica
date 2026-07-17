@@ -114,10 +114,11 @@ public class RuleSetService implements RuleSetServiceInterface {
     private StudyEventDAO _studyEventDAO;
 
     @Autowired
-    public RuleSetService(StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, ItemFormMetadataDAO _itemFormMetadataDAO, RuleActionDAO _ruleActionDAO, RuleSetDAO _ruleSetDAO, RuleSetRuleDAO _ruleSetRuleDAO, SectionDAO _sectionDAO, StudySubjectDAO _studySubjectDAO) {
+    public RuleSetService(StudyDAO _studyDAO, StudyEventDAO _studyEventDAO, CRFDAO _cRFDAO, CRFVersionDAO _cRFVersionDAO, EventCRFDAO _eventCRFDAO, ItemDataDAO _itemDataDAO, ItemFormMetadataDAO _itemFormMetadataDAO, RuleActionDAO _ruleActionDAO, RuleSetDAO _ruleSetDAO, RuleSetRuleDAO _ruleSetRuleDAO, SectionDAO _sectionDAO, StudySubjectDAO _studySubjectDAO, ExpressionService expressionService) {
         this._cRFDAO = _cRFDAO;
         this._cRFVersionDAO = _cRFVersionDAO;
         this._eventCRFDAO = _eventCRFDAO;
+        this.expressionService = expressionService;
         this._itemDataDAO = _itemDataDAO;
         this._itemFormMetadataDAO = _itemFormMetadataDAO;
         this._ruleActionDAO = _ruleActionDAO;
@@ -392,7 +393,7 @@ public class RuleSetService implements RuleSetServiceInterface {
      */
     public MessageContainer runRulesInDataEntry(List<RuleSetBean> ruleSets, Boolean dryRun, StudyBean currentStudy, UserAccountBean ub,
             HashMap<String, String> variableAndValue, Phase phase,EventCRFBean ecb, Map<String, Object> request) {
-        DataEntryRuleRunner ruleRunner = new DataEntryRuleRunner(dataSource, requestURLMinusServletPath, contextPath, mailSender, eventCRF, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDataDAO, _itemFormMetadataDAO, _ruleActionDAO, _ruleSetDAO, _ruleSetRuleDAO, _sectionDAO, _studyDAO, _studyEventDAO, _studySubjectDAO);
+        DataEntryRuleRunner ruleRunner = new DataEntryRuleRunner(dataSource, requestURLMinusServletPath, contextPath, mailSender, ecb, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDataDAO, _itemFormMetadataDAO, _ruleActionDAO, _ruleSetDAO, _ruleSetRuleDAO, _sectionDAO, _studyDAO, _studyEventDAO, _studySubjectDAO);
         dynamicsMetadataService.setExpressionService(getExpressionService());
         ruleRunner.setDynamicsMetadataService(dynamicsMetadataService);
         ruleRunner.setExpressionService(getExpressionService());
@@ -1051,7 +1052,6 @@ public class RuleSetService implements RuleSetServiceInterface {
 
 
     private ExpressionService getExpressionService() {
-        expressionService = this.expressionService != null ? expressionService : new ExpressionService(dataSource);
         return expressionService;
     }
     //JN:No reason to use global variables, they could cause potential concurrency issues.
@@ -1115,7 +1115,7 @@ public class RuleSetService implements RuleSetServiceInterface {
         if (dataSource instanceof org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy) {
             this.dataSource = dataSource;
         } else {
-            this.dataSource = new org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy(dataSource, _studyDAO, _studyEventDAO, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDataDAO, _itemFormMetadataDAO, _ruleActionDAO, _ruleSetDAO, _ruleSetRuleDAO, _sectionDAO, _studySubjectDAO, _studyDAO, _studyEventDAO, _cRFDAO, _cRFVersionDAO, _eventCRFDAO, _itemDataDAO, _itemFormMetadataDAO, _ruleActionDAO, _ruleSetDAO, _ruleSetRuleDAO, _sectionDAO, _studySubjectDAO);
+            this.dataSource = new org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy(dataSource);
         }
     }
 

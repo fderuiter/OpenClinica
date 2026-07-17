@@ -1897,7 +1897,7 @@ public class DiscrepancyNoteDAO extends AuditableEntityDAO {
         return null;
     }
 
-    public static AuditableEntityDAO getAEDAO(DiscrepancyNoteBean note, DataSource ds) {
+    public AuditableEntityDAO getAEDAO(DiscrepancyNoteBean note, DataSource ds) {
         String entityType = note.getEntityType();
         if ("subject".equalsIgnoreCase(entityType)) {
             return this._subjectDAO;

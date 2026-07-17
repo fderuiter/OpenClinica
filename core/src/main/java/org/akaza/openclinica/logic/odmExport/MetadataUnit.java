@@ -198,7 +198,7 @@ public class MetadataUnit extends OdmUnit {
 
         StudyBean study = studyBase.getStudy();
      
-        StudyConfigService studyConfig = new StudyConfigService(this.ds, _studyDAO, _studyParameterValueDAO, _studyDAO, _studyParameterValueDAO, _studyDAO, _studyParameterValueDAO, _studyDAO, _studyParameterValueDAO);
+        StudyConfigService studyConfig = new StudyConfigService(ds, _studyDAO, _studyParameterValueDAO);
         study = studyConfig.setParametersForStudy(study);
    
         MetaDataVersionBean metadata = this.odmStudy.getMetaDataVersion();

@@ -54,12 +54,13 @@ public class OdmStudyBase {
             return;
         }
         this.study = study;
+        this._studyEventDefinitionDAO = new org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO(ds, new org.akaza.openclinica.dao.managestudy.StudyDAO(ds));
         int parentStudyId = this.study.getParentStudyId() > 0 ? this.study.getParentStudyId() : this.study.getId();
         this.sedBeansInStudy = this._studyEventDefinitionDAO.findAllActiveByParentStudyId(parentStudyId);
     }
 
     public OdmStudyBase setOdmStudyBean(DataSource ds, StudyBean study) {
-        OdmStudyBase studyBase = new OdmStudyBase(_studyEventDefinitionDAO, _studyEventDefinitionDAO);
+        OdmStudyBase studyBase = new OdmStudyBase(ds, study);
         if (study == null) {
             logger.info("Study is null!");
         } else {
@@ -83,6 +84,7 @@ public class OdmStudyBase {
             return;
         }
         this.study = study;
+        this._studyEventDefinitionDAO = new org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO(ds, new org.akaza.openclinica.dao.managestudy.StudyDAO(ds));
         int parentStudyId = this.study.getParentStudyId() > 0 ? this.study.getParentStudyId() : this.study.getId();
         this.sedBeansInStudy = seds;
     }

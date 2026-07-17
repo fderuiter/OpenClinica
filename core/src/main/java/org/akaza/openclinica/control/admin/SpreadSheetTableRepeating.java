@@ -280,7 +280,7 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
                         int cellIndex = 0;
                        
                         Cell cell = sheet.getRow(k).getCell((short) 0);
-                        item_from_row =  new SpreadSheetItemUtil(_itemDAO, _itemDAO, _itemDAO, _itemDAO);
+                        item_from_row =  new SpreadSheetItemUtil(_itemDAO);
                         row_items.add( item_from_row);
                   	    item_from_row.setItemName(getValue(cell));
                   	    item_from_row.verifyItemName(row_items, errors, htmlErrors,j,  resPageMsg);

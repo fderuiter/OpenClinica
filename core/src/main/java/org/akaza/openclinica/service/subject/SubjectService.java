@@ -85,7 +85,7 @@ public class SubjectService implements SubjectServiceInterface {
      */
     public String createSubject(SubjectBean subjectBean, StudyBean studyBean, Date enrollmentDate, String secondaryId) {
         if (this.enrollmentManager == null) {
-            this.enrollmentManager = new EnrollmentManager(dataSource, _studyParameterValueDAO, _studyParameterValueDAO, _studyDAO, _studySubjectDAO, _subjectDAO);
+            this.enrollmentManager = new EnrollmentManager(dataSource, _studyParameterValueDAO, _studyDAO, _studySubjectDAO, _subjectDAO, _cRFDAO, _cRFVersionDAO, _itemDAO);
         }
         return this.enrollmentManager.enrollSubject(subjectBean, studyBean, enrollmentDate, secondaryId);
     }
@@ -116,7 +116,7 @@ public class SubjectService implements SubjectServiceInterface {
 
     public String generateSubjectId(StudyBean studyBean) {
         if (this.enrollmentManager == null) {
-            this.enrollmentManager = new EnrollmentManager(dataSource, _studyParameterValueDAO, _studyParameterValueDAO, _studyDAO, _studySubjectDAO, _subjectDAO);
+            this.enrollmentManager = new EnrollmentManager(dataSource, _studyParameterValueDAO, _studyDAO, _studySubjectDAO, _subjectDAO, _cRFDAO, _cRFVersionDAO, _itemDAO);
         }
         return this.enrollmentManager.generateSubjectId(studyBean);
     }
@@ -170,13 +170,13 @@ public class SubjectService implements SubjectServiceInterface {
 
     private org.akaza.openclinica.repository.UnifiedRepository getUnifiedRepository() {
         if (this.unifiedRepository == null) {
-            this.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(dataSource);
+            this.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(dataSource, _studyDAO, _studySubjectDAO, _subjectDAO, _cRFDAO, _cRFVersionDAO, _itemDAO);
         }
         return this.unifiedRepository;
     }
 
     public SubjectBean updateSubject(SubjectBean subjectBean, UserAccountBean updater, String reasonForChange, org.akaza.openclinica.bean.managestudy.DiscrepancyNoteBean note) {
-        org.akaza.openclinica.dao.submit.SubjectDAO sdao = new org.akaza.openclinica.dao.submit.SubjectDAO(dataSource, _studyDAO, _subjectDAO, _userAccountDAO, _studyDAO, _subjectDAO, _userAccountDAO, _studyDAO, _subjectDAO, _userAccountDAO, _studyDAO, _subjectDAO, _userAccountDAO);
+        org.akaza.openclinica.dao.submit.SubjectDAO sdao = new org.akaza.openclinica.dao.submit.SubjectDAO(dataSource);
         
         SubjectBean oldSubject = (SubjectBean) sdao.findByPK(subjectBean.getId());
         subjectBean.setUpdater(updater);
@@ -187,7 +187,7 @@ public class SubjectService implements SubjectServiceInterface {
             org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(dataSource);
             Integer auditId = jdbcTemplate.queryForObject("SELECT max(audit_id) FROM audit_log_event WHERE audit_table = 'subject' AND entity_id = ?", Integer.class, updatedSubject.getId());
             if (auditId != null) {
-                org.akaza.openclinica.dao.admin.AuditEventDAO auditEventDAO = new org.akaza.openclinica.dao.admin.AuditEventDAO(dataSource);
+                org.akaza.openclinica.dao.admin.AuditEventDAO auditEventDAO = new org.akaza.openclinica.dao.admin.AuditEventDAO(dataSource, _studyDAO, _subjectDAO, _userAccountDAO);
                 auditEventDAO.createAuditEventDiscrepancyNoteLink(auditId, note.getId());
             }
         }
