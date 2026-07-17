@@ -63,7 +63,7 @@ public class StringUtil {
     }
 
     public static boolean isValidDate(String s) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setLenient(false);
         try {
             java.util.Date date = sdf.parse(s);
@@ -212,6 +212,9 @@ public class StringUtil {
         while (s.contains("D")) {
             s = s.replace("D", "d");
         }
+        while (s.contains("m")) {
+            s = s.replace("m", "M");
+        }
         return s;
     }
 
@@ -278,4 +281,60 @@ public class StringUtil {
     // ArrayList a = new ArrayList(Arrays.asList(pieces));
     // return join(" ", a);
     // }
+
+    public static String formatDateForSave(String pDate, String dateFormat, String yearMonthFormat, String yearFormat, String dbDateFormat, String dbYearMonthFormat, Locale locale) {
+        String temp = "";
+        if (pDate != null && pDate.length() > 0) {
+            String parsedDateFormat = parseDateFormat(dateFormat);
+            String parsedYearMonthFormat = parseDateFormat(yearMonthFormat);
+            try {
+                if (isFormatDate(pDate, dateFormat, locale)) {
+                    SimpleDateFormat dbSdf = new SimpleDateFormat(dbDateFormat, locale);
+                    SimpleDateFormat localSdf = new SimpleDateFormat(parsedDateFormat, locale);
+                    dbSdf.setLenient(false);
+                    localSdf.setLenient(false);
+                    temp = dbSdf.format(localSdf.parse(pDate));
+                } else if (isPartialYear(pDate, yearFormat, locale)) {
+                    temp = pDate;
+                } else if (isPartialYearMonth(pDate, yearMonthFormat, locale)) {
+                    SimpleDateFormat dbYmSdf = new SimpleDateFormat(dbYearMonthFormat, locale);
+                    SimpleDateFormat localYmSdf = new SimpleDateFormat(parsedYearMonthFormat, locale);
+                    dbYmSdf.setLenient(false);
+                    localYmSdf.setLenient(false);
+                    temp = dbYmSdf.format(localYmSdf.parse(pDate));
+                }
+            } catch (Exception ex) {
+                return ""; 
+            }
+        }
+        return temp;
+    }
+
+    public static String formatDateForDisplay(String pDate, String dateFormat, String yearMonthFormat, String yearFormat, String dbDateFormat, String dbYearMonthFormat, Locale locale) {
+        String temp = pDate; 
+        if (pDate != null && pDate.length() > 0) {
+            String parsedDateFormat = parseDateFormat(dateFormat);
+            String parsedYearMonthFormat = parseDateFormat(yearMonthFormat);
+            try {
+                if (isFormatDate(pDate, dbDateFormat, locale)) {
+                    SimpleDateFormat dbSdf = new SimpleDateFormat(dbDateFormat, locale);
+                    SimpleDateFormat localSdf = new SimpleDateFormat(parsedDateFormat, locale);
+                    dbSdf.setLenient(false);
+                    localSdf.setLenient(false);
+                    temp = localSdf.format(dbSdf.parse(pDate));
+                } else if (isPartialYear(pDate, yearFormat, locale)) {
+                    temp = pDate;
+                } else if (isPartialYearMonth(pDate, dbYearMonthFormat, locale)) {
+                    SimpleDateFormat dbYmSdf = new SimpleDateFormat(dbYearMonthFormat, locale);
+                    SimpleDateFormat localYmSdf = new SimpleDateFormat(parsedYearMonthFormat, locale);
+                    dbYmSdf.setLenient(false);
+                    localYmSdf.setLenient(false);
+                    temp = localYmSdf.format(dbYmSdf.parse(pDate));
+                }
+            } catch (Exception ex) {
+                return pDate;
+            }
+        }
+        return temp;
+    }
 }
