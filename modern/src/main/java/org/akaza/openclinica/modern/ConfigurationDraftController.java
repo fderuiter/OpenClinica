@@ -1,13 +1,13 @@
 package org.akaza.openclinica.modern;
 
+import org.akaza.openclinica.modern.dto.ConfigurationDraftRequest;
 import org.akaza.openclinica.modern.model.ConfigurationDraft;
 import org.akaza.openclinica.sdk.dto.ApiResponse;
 import org.akaza.openclinica.modern.service.ConfigurationDraftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/config")
@@ -21,9 +21,9 @@ public class ConfigurationDraftController {
     }
 
     @PostMapping("/draft")
-    public ResponseEntity<ApiResponse<ConfigurationDraft>> createDraft(@RequestBody Map<String, String> payload) {
-        String userName = payload.getOrDefault("userName", "system"); // Should come from security context
-        String draftData = payload.getOrDefault("draftData", "{}");
+    public ResponseEntity<ApiResponse<ConfigurationDraft>> createDraft(@Valid @RequestBody ConfigurationDraftRequest payload) {
+        String userName = payload.getUserName() != null ? payload.getUserName() : "system";
+        String draftData = payload.getDraftData() != null ? payload.getDraftData() : "{}";
         ConfigurationDraft draft = draftService.saveDraft(userName, "DATASET", draftData);
         return ResponseEntity.ok(new ApiResponse<>(draft));
     }
@@ -35,8 +35,8 @@ public class ConfigurationDraftController {
     }
 
     @PutMapping("/draft/{id}")
-    public ResponseEntity<Void> updateDraft(@PathVariable String id, @RequestBody Map<String, String> payload) {
-        String draftData = payload.getOrDefault("draftData", "{}");
+    public ResponseEntity<Void> updateDraft(@PathVariable String id, @Valid @RequestBody ConfigurationDraftRequest payload) {
+        String draftData = payload.getDraftData() != null ? payload.getDraftData() : "{}";
         draftService.updateDraft(id, draftData);
         return ResponseEntity.ok().build();
     }
