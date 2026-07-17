@@ -493,47 +493,7 @@ public class StudySubjectDAO<K extends String,V extends ArrayList> extends Audit
     @Override
     @Deprecated
     public EntityBean create(EntityBean eb) {
-        StudySubjectBean sb = (StudySubjectBean) eb;
-        HashMap variables = new HashMap();
-        HashMap nullVars = new HashMap();
-
-        // INSERT INTO study_subject
-        // (LABEL, SUBJECT_ID, STUDY_ID, STATUS_ID,
-        // DATE_CREATED, OWNER_ID, ENROLLMENT_DATE,SECONDARY_LABEL)
-        // VALUES (?,?,?,?,NOW(),?,?,?)
-
-        int ind = 1;
-        variables.put(new Integer(ind), sb.getLabel());
-        ind++;
-        variables.put(new Integer(ind), new Integer(sb.getSubjectId()));
-        ind++;
-        variables.put(new Integer(ind), new Integer(sb.getStudyId()));
-        ind++;
-        variables.put(new Integer(ind), new Integer(sb.getStatus().getId()));
-        ind++;
-        // Date_created is now()
-        variables.put(new Integer(ind), new Integer(sb.getOwnerId()));
-        ind++;
-        // variables.put(new Integer(ind), new Integer(sb.getStudyGroupId()));
-        // ind++;
-        if (sb.getEnrollmentDate() == null) {
-            nullVars.put(new Integer(ind), new Integer(Types.DATE));
-            variables.put(new Integer(ind), null);
-            ind++;
-        } else {
-            variables.put(new Integer(ind), sb.getEnrollmentDate());
-            ind++;
-        }
-        variables.put(new Integer(ind), sb.getSecondaryLabel());
-        ind++;
-
-        this.execute(digester.getQuery("create"), variables, nullVars);
-
-        if (isQuerySuccessful()) {
-            sb.setId(getCurrentPK());
-        }
-
-        return sb;
+        return create((StudySubjectBean) eb, true);
     }
 
     /**
@@ -548,62 +508,43 @@ public class StudySubjectDAO<K extends String,V extends ArrayList> extends Audit
      *         was successful, or 0 otherwise.
      */
     public StudySubjectBean create(StudySubjectBean sb, boolean withGroup) {
-        HashMap variables = new HashMap();
-        HashMap nullVars = new HashMap();
-
-        int ind = 1;
-        variables.put(new Integer(ind), sb.getLabel());
-        ind++;
-        variables.put(new Integer(ind), new Integer(sb.getSubjectId()));
-        ind++;
-        variables.put(new Integer(ind), new Integer(sb.getStudyId()));
-        ind++;
-        variables.put(new Integer(ind), new Integer(sb.getStatus().getId()));
-        ind++;
-        // Date_created is now()
-        variables.put(new Integer(ind), new Integer(sb.getOwner().getId()));
-        ind++;
-
-        // if (withGroup) {
-        // variables.put(new Integer(ind), new Integer(sb.getStudyGroupId()));
-        // ind++;
-        // } else {
-        // nullVars.put(new Integer(ind), new Integer(TypeNames.INT));
-        // variables.put(new Integer(ind), null);
-        // ind++;
-        // }
-
-        Date enrollmentDate = sb.getEnrollmentDate();
-        if (enrollmentDate == null) {
-            nullVars.put(new Integer(ind), new Integer(Types.DATE));
-            variables.put(new Integer(ind), null);
-            ind++;
+        org.akaza.openclinica.dao.hibernate.StudySubjectDao studySubjectDao = (org.akaza.openclinica.dao.hibernate.StudySubjectDao) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("studySubjectDaoDomain");
+        org.akaza.openclinica.dao.hibernate.StudyDao studyDao = (org.akaza.openclinica.dao.hibernate.StudyDao) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("studyDaoDomain");
+        org.akaza.openclinica.dao.hibernate.SubjectDao subjectDao = (org.akaza.openclinica.dao.hibernate.SubjectDao) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("subjectDao");
+        org.akaza.openclinica.dao.hibernate.UserAccountDao userDao = (org.akaza.openclinica.dao.hibernate.UserAccountDao) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("userDaoDomain");
+        
+        org.akaza.openclinica.domain.datamap.StudySubject ss = new org.akaza.openclinica.domain.datamap.StudySubject();
+        ss.setLabel(sb.getLabel());
+        ss.setSecondaryLabel(sb.getSecondaryLabel());
+        ss.setEnrollmentDate(sb.getEnrollmentDate());
+        ss.setDateCreated(sb.getCreatedDate() != null ? sb.getCreatedDate() : new java.util.Date());
+        if (sb.getStatus() != null) {
+            ss.setStatus(org.akaza.openclinica.domain.Status.getByCode(sb.getStatus().getId()));
         } else {
-            variables.put(new Integer(ind), enrollmentDate);
-            ind++;
+            ss.setStatus(org.akaza.openclinica.domain.Status.AVAILABLE);
+        }
+        ss.setStudy(studyDao.findById(sb.getStudyId()));
+        ss.setSubject(subjectDao.findById(sb.getSubjectId()));
+        if (sb.getOwner() != null) {
+            ss.setUserAccount(userDao.findById(sb.getOwner().getId()));
+        }
+        
+        String oid;
+        try {
+            oid = sb.getOid() != null ? sb.getOid() : sb.getOidGenerator().generateOid(sb.getLabel());
+        } catch (Exception e) {
+            throw new RuntimeException("CANNOT GENERATE OID", e);
+        }
+        ss.setOcOid(oid);
+        
+        jakarta.validation.Validator validator = jakarta.validation.Validation.buildDefaultValidatorFactory().getValidator();
+        java.util.Set<jakarta.validation.ConstraintViolation<org.akaza.openclinica.domain.datamap.StudySubject>> violations = validator.validate(ss);
+        if (!violations.isEmpty()) {
+            throw new RuntimeException("Validation failed for study subject: " + violations.iterator().next().getMessage());
         }
 
-        variables.put(new Integer(ind), sb.getSecondaryLabel());
-        ind++;
-
-        variables.put(new Integer(ind), getValidOid(sb));
-        ind++;
-
-        this.executeWithPK(digester.getQuery("create"), variables, nullVars);
-        if (isQuerySuccessful()) {
-            sb.setId(getLatestPK());
-        }
-
-        SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(ds);
-        ArrayList groupMaps = sb.getStudyGroupMaps();
-        for (int i = 0; i < groupMaps.size(); i++) {
-            SubjectGroupMapBean sgmb = (SubjectGroupMapBean) groupMaps.get(i);
-            sgmb = (SubjectGroupMapBean) sgmdao.create(sgmb);
-            if (sgmdao.isQuerySuccessful()) {
-                sgmb.setId(sgmdao.getCurrentPK());
-            }
-        }
-
+        studySubjectDao.saveOrUpdate(ss);
+        sb.setId(ss.getStudySubjectId());
         return sb;
     }
 
@@ -1102,60 +1043,32 @@ public class StudySubjectDAO<K extends String,V extends ArrayList> extends Audit
      */
     @Override
     public EntityBean update(EntityBean eb) {
-   	 Connection con = null;
-   	 return update( eb, con);
-   }
-
-    /* this function allows to run transactional updates for an action*/
-    public EntityBean update(EntityBean eb, Connection con) {
         StudySubjectBean sb = (StudySubjectBean) eb;
-        HashMap variables = new HashMap();
-        HashMap nullVars = new HashMap();
+        org.akaza.openclinica.dao.hibernate.StudySubjectDao studySubjectDao = (org.akaza.openclinica.dao.hibernate.StudySubjectDao) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("studySubjectDaoDomain");
+        
+        org.akaza.openclinica.domain.datamap.StudySubject ss = studySubjectDao.findById(sb.getId());
+        if (ss == null) {
+            throw new RuntimeException("StudySubject not found");
+        }
+        ss.setLabel(sb.getLabel());
+        ss.setSecondaryLabel(sb.getSecondaryLabel());
+        ss.setEnrollmentDate(sb.getEnrollmentDate());
+        ss.setDateUpdated(new java.util.Date());
+        if (sb.getStatus() != null) {
+            ss.setStatus(org.akaza.openclinica.domain.Status.getByCode(sb.getStatus().getId()));
+        }
+        if (sb.getUpdater() != null) {
+            ss.setUpdateId(sb.getUpdater().getId());
+        }
+        
+        jakarta.validation.Validator validator = jakarta.validation.Validation.buildDefaultValidatorFactory().getValidator();
+        java.util.Set<jakarta.validation.ConstraintViolation<org.akaza.openclinica.domain.datamap.StudySubject>> violations = validator.validate(ss);
+        if (!violations.isEmpty()) {
+            throw new RuntimeException("Validation failed for study subject: " + violations.iterator().next().getMessage());
+        }
 
-        // UPDATE study_subject SET LABEL=?, SUBJECT_ID=?, STUDY_ID=?,
-        // STATUS_ID=?, ENROLLMENT_DATE=?, DATE_UPDATED=?,
-        // UPDATE_ID=?, SECONDARY_LABEL=? WHERE STUDY_SUBJECT_ID=?
-        int ind = 1;
-        variables.put(new Integer(ind), sb.getLabel());
-        ind++;
-        variables.put(new Integer(ind), new Integer(sb.getSubjectId()));
-        ind++;
-        variables.put(new Integer(ind), new Integer(sb.getStudyId()));
-        ind++;
-        variables.put(new Integer(ind), new Integer(sb.getStatus().getId()));
-        ind++;
-        Date enrollmentDate = sb.getEnrollmentDate();
-        if (enrollmentDate == null) {
-            nullVars.put(new Integer(ind), new Integer(Types.DATE));
-            variables.put(new Integer(ind), null);
-            ind++;
-        } else {
-            variables.put(new Integer(ind), enrollmentDate);
-            ind++;
-        }
-      // date_updated is set to now()
-      //  variables.put(new Integer(ind), new java.util.Date());
-      //  ind++;
-        variables.put(new Integer(ind), new Integer(sb.getUpdater().getId()));
-        ind++;
-        variables.put(new Integer(ind), sb.getSecondaryLabel());
-        ind++;
-        if (sb.getTime_zone() == null || sb.getTime_zone().equals("")) {
-            nullVars.put(new Integer(ind), new Integer(TypeNames.STRING));
-            variables.put(new Integer(ind), "");
-        } else {
-            variables.put(new Integer(ind), sb.getTime_zone());
-        }
-        ind++;
-        variables.put(new Integer(ind), new Integer(sb.getId()));
-        ind++;
-
-        String sql = digester.getQuery("update");
-        if ( con == null){
-        	this.execute(sql, variables, nullVars);
-        }else{
-        	this.execute(sql, variables, nullVars, con);
-        }
+        studySubjectDao.saveOrUpdate(ss);
+        sb.setUpdatedDate(ss.getDateUpdated());
         return sb;
     }
 
