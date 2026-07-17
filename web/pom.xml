@@ -258,10 +258,6 @@
         
         
         <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -359,6 +355,9 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <webResources>
+                        <resource>
+                            <directory>../core/src/main/webapp</directory>
+                        </resource>
                         <resource>
                             <directory>target/vite-resources</directory>
                         </resource>

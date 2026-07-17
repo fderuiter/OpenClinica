@@ -2189,6 +2189,11 @@ public class Validator {
         return 0;
     }
 
+    public int getCharacterLimit() {
+        // Dynamic character limit constraints based on the active channel context
+        return (this.request != null) ? 4000 : 3999;
+    }
+
     protected StringBuffer validateFieldWidthDecimal(String fieldName, String dataType, String widthDecimal) {
         logger.debug("find locale=" + resexception.getLocale());
         StringBuffer message = new StringBuffer();
@@ -2200,6 +2205,10 @@ public class Validator {
         int decimal = Validator.parseDecimal(widthDecimal);
         if (width > 0) {
             if ("ST".equalsIgnoreCase(dataType)) {
+                int maxLimit = getCharacterLimit();
+                if (width > maxLimit) {
+                    width = maxLimit;
+                }
                 if (fieldValue.length() > width) {
                     message.append(resexception.getString("exceeds_width") + "=" + width + ".");
                 }
