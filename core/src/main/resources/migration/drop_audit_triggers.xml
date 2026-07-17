@@ -10,7 +10,56 @@
             DROP TRIGGER IF EXISTS item_data_trigger ON item_data;
             DROP TRIGGER IF EXISTS study_subject_trigger ON study_subject;
             
+            DROP TRIGGER IF EXISTS event_crf_update ON event_crf;
+            DROP TRIGGER IF EXISTS global_subject_insert_update ON subject;
+            DROP TRIGGER IF EXISTS item_data_update ON item_data;
+            DROP TRIGGER IF EXISTS study_subject_insert_update ON study_subject;
+            DROP TRIGGER IF EXISTS study_event_insert_update ON study_event;
+            DROP TRIGGER IF EXISTS subject_group_map_insert_update ON subject_group_map;
+            DROP TRIGGER IF EXISTS repeating_data_insert ON item_data;
+            DROP TRIGGER IF EXISTS global_user_insert_update ON user_account;
+
+            CREATE OR REPLACE FUNCTION audit_item_data_del() RETURNS TRIGGER AS $$
+            BEGIN
+                INSERT INTO audit_log_event (audit_id, audit_date, audit_table, entity_id, entity_name, reason_for_change, audit_log_event_type_id)
+                VALUES (nextval('audit_log_event_audit_id_seq'), current_timestamp, 'item_data', OLD.item_data_id, 'item_data', 'DELETE', 1);
+                RETURN OLD;
+            END; $$ LANGUAGE plpgsql;
+            CREATE TRIGGER item_data_del_trg AFTER DELETE ON item_data FOR EACH ROW EXECUTE FUNCTION audit_item_data_del();
+
+            CREATE OR REPLACE FUNCTION audit_event_crf_del() RETURNS TRIGGER AS $$
+            BEGIN
+                INSERT INTO audit_log_event (audit_id, audit_date, audit_table, entity_id, entity_name, reason_for_change, audit_log_event_type_id)
+                VALUES (nextval('audit_log_event_audit_id_seq'), current_timestamp, 'event_crf', OLD.event_crf_id, 'event_crf', 'DELETE', 1);
+                RETURN OLD;
+            END; $$ LANGUAGE plpgsql;
+            CREATE TRIGGER event_crf_del_trg AFTER DELETE ON event_crf FOR EACH ROW EXECUTE FUNCTION audit_event_crf_del();
+
+            CREATE OR REPLACE FUNCTION audit_study_subject_del() RETURNS TRIGGER AS $$
+            BEGIN
+                INSERT INTO audit_log_event (audit_id, audit_date, audit_table, entity_id, entity_name, reason_for_change, audit_log_event_type_id)
+                VALUES (nextval('audit_log_event_audit_id_seq'), current_timestamp, 'study_subject', OLD.study_subject_id, 'study_subject', 'DELETE', 1);
+                RETURN OLD;
+            END; $$ LANGUAGE plpgsql;
+            CREATE TRIGGER study_subject_del_trg AFTER DELETE ON study_subject FOR EACH ROW EXECUTE FUNCTION audit_study_subject_del();
+
+            CREATE OR REPLACE FUNCTION audit_subject_del() RETURNS TRIGGER AS $$
+            BEGIN
+                INSERT INTO audit_log_event (audit_id, audit_date, audit_table, entity_id, entity_name, reason_for_change, audit_log_event_type_id)
+                VALUES (nextval('audit_log_event_audit_id_seq'), current_timestamp, 'subject', OLD.subject_id, 'subject', 'DELETE', 1);
+                RETURN OLD;
+            END; $$ LANGUAGE plpgsql;
+            CREATE TRIGGER subject_del_trg AFTER DELETE ON subject FOR EACH ROW EXECUTE FUNCTION audit_subject_del();
+
             ALTER TABLE audit_log_event ADD COLUMN IF NOT EXISTS chain_hash VARCHAR(255);
+
+            INSERT INTO audit_log_event (audit_id, audit_date, audit_table, user_id, entity_id, reason_for_change, audit_log_event_type_id, chain_hash)
+            SELECT nextval('audit_log_event_audit_id_seq'), audit_date, audit_table, user_id, entity_id, reason_for_change, 1, 'LEGACY_UNCHAINED' 
+            FROM audit_event;
+
+            DROP TABLE IF EXISTS audit_event_values CASCADE;
+            DROP TABLE IF EXISTS audit_event_context CASCADE;
+            DROP TABLE IF EXISTS audit_event CASCADE;
         </sql>
         <rollback>-- Automated rollback: Schema changes manually reviewed.</rollback>
     </changeSet>
