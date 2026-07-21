@@ -46,7 +46,13 @@ function copyAndReplace(dir) {
         // Match script tag for prototype.js and replace it with a module script
         const scriptTagRegex = /<script[^>]*src=(['"])([\.\/]*?)includes\/prototype\.js\1[^>]*><\/script>/g;
         if (scriptTagRegex.test(content)) {
-          content = content.replace(scriptTagRegex, `<script type="module" src=$1$2dist/${mainScript}$1></script>`);
+          content = content.replace(scriptTagRegex, `<script>
+          window._calQueue = window._calQueue || [];
+          window.Calendar = { setup: function(c) { window._calQueue.push(c); } };
+          window.Tip = function() {};
+          window.UnTip = function() {};
+          window.TagToTip = function() {};
+          </script>\n<script type="module" src=$1$2dist/${mainScript}$1></script>`);
           changed = true;
         } else {
           // Fallback if it's just the path

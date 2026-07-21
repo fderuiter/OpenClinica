@@ -12,9 +12,8 @@ import { store } from './store.js';
 
 import 'json3';
 import './vendor/jmesa/index.js';
-import './vendor/new_cal/index.js';
-import './vendor/wz_tooltip/wz_tooltip.js';
-import './vendor/calendarpopup/CalendarPopup.js';
+import './adapters/calendar-adapter.js';
+import './adapters/tooltip-adapter.js';
 
 // Initialize modern React UI
 import React from 'react';
