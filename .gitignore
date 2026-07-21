@@ -42,3 +42,4 @@ data/
 dummy_template.xlsx
 *.bak
 *.tmp
+modern/node/

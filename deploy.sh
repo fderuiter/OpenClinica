@@ -35,11 +35,24 @@ for i in $(seq 1 $MAX_RETRIES); do
         break
     fi
 
-    # Check native health using docker inspect
-    WEB_HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' $(docker compose ps -q web) 2>/dev/null || echo "\"unhealthy\"")
-    MODERN_HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' $(docker compose ps -q modern) 2>/dev/null || echo "\"unhealthy\"")
+    WEB_CONTAINERS=$(docker compose ps -q web)
+    MODERN_CONTAINERS=$(docker compose ps -q modern)
+    
+    ALL_HEALTHY=true
+    
+    if [ -z "$WEB_CONTAINERS" ] || [ -z "$MODERN_CONTAINERS" ]; then
+        ALL_HEALTHY=false
+    else
+        for CONTAINER_ID in $WEB_CONTAINERS $MODERN_CONTAINERS; do
+            CONTAINER_HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' "$CONTAINER_ID" 2>/dev/null || echo "\"unhealthy\"")
+            if [ "$CONTAINER_HEALTH" != "\"healthy\"" ]; then
+                ALL_HEALTHY=false
+                break
+            fi
+        done
+    fi
 
-    if [ "$WEB_HEALTH" == "\"healthy\"" ] && [ "$MODERN_HEALTH" == "\"healthy\"" ]; then
+    if [ "$ALL_HEALTHY" = true ]; then
         HEALTH_CHECK_PASSED=true
         break
     fi
@@ -61,9 +74,30 @@ else
     
     echo "Automated Database Recovery scripts executed."
     
-    # Bring the containers back up to their previous stable state (for testing, we just scale back to 1)
-    # docker compose up -d web modern
+    echo "Restarting application containers..."
+    docker compose up -d web modern
     
-    echo "Rollback complete. System restored to previous functional version."
-    exit 1
+    ROLLBACK_HEALTH_PASSED=false
+    for i in $(seq 1 $MAX_RETRIES); do
+        echo "Checking post-rollback health status (Attempt $i/$MAX_RETRIES)..."
+        
+        # Check native health using docker inspect
+        WEB_HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' $(docker compose ps -q web) 2>/dev/null || echo "\"unhealthy\"")
+        MODERN_HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' $(docker compose ps -q modern) 2>/dev/null || echo "\"unhealthy\"")
+
+        if [ "$WEB_HEALTH" == "\"healthy\"" ] && [ "$MODERN_HEALTH" == "\"healthy\"" ]; then
+            ROLLBACK_HEALTH_PASSED=true
+            break
+        fi
+        
+        sleep $SLEEP_SECS
+    done
+    
+    if [ "$ROLLBACK_HEALTH_PASSED" = true ]; then
+        echo "Rollback complete. System restored to previous functional version."
+        exit 0
+    else
+        echo "Rollback health check failed. Manual intervention required."
+        exit 1
+    fi
 fi

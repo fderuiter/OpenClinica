@@ -19,6 +19,33 @@ import javax.sql.DataSource;
 
 public class OpenClinicaJdbcService extends JdbcDaoImpl {
 
+    public OpenClinicaJdbcService() {
+        super();
+    }
+
+    public OpenClinicaJdbcService(DataSource dataSource) {
+        super();
+        setDataSource(dataSource);
+        setUsersByUsernameQuery("SELECT user_name,passwd,enabled,account_non_locked FROM user_account WHERE user_name = ?");
+        try {
+            afterPropertiesSet();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize OpenClinicaJdbcService", e);
+        }
+    }
+
+    public static org.springframework.security.core.Authentication establishAuthenticatedContext(jakarta.servlet.http.HttpServletRequest request, org.akaza.openclinica.bean.login.UserAccountBean userAccount, OpenClinicaJdbcService jdbcService) {
+        UserDetails userDetails = jdbcService.loadUserByUsername(userAccount.getName());
+        org.springframework.security.authentication.UsernamePasswordAuthenticationToken auth = 
+            new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(auth);
+        if (request != null && request.getSession(false) != null) {
+            request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", org.springframework.security.core.context.SecurityContextHolder.getContext());
+            request.getSession().setAttribute("userBean", userAccount);
+        }
+        return auth;
+    }
+
     private MappingSqlQuery ocUsersByUsernameMapping;
 
     /**

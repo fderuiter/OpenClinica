@@ -76,16 +76,8 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
             UserAccountDAO userAccountDAO = this._userAccountDAO;
             UserAccountBean ub = (UserAccountBean) userAccountDAO.findByApiKey(apiKey);
             if (ub != null && ub.getId() != 0) {
-                request.getSession().setAttribute("userBean", ub);
-                
-                java.util.List<org.springframework.security.core.GrantedAuthority> authorities = new java.util.ArrayList<>();
-                authorities.add(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER"));
-                org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(ub.getName(), "", true, true, true, true, authorities);
-                org.springframework.security.authentication.UsernamePasswordAuthenticationToken auth = 
-                    new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(userDetails, "", authorities);
-                org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(auth);
-                request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", org.springframework.security.core.context.SecurityContextHolder.getContext());
-                
+                OpenClinicaJdbcService jdbcService = new OpenClinicaJdbcService(dataSource);
+                OpenClinicaJdbcService.establishAuthenticatedContext(request, ub, jdbcService);
                 auditApiLogin(ub.getName(), ub, true, "Successful API Login");
             } else {
                 auditApiLogin("unknown", null, false, "Bad credentials");
