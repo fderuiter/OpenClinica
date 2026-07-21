@@ -30,6 +30,12 @@ public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigr
             System.out.println("Clinical data seeding skipped: No template path provided.");
             return;
         }
+
+        java.io.File templateFile = new java.io.File(templatePath);
+        if (templateFile.exists() && templateFile.length() == 0) {
+            System.out.println("WARNING: Clinical data seeding was skipped due to an empty template file.");
+            return;
+        }
         
         System.out.println("Starting interactive clinical data seeding from template: " + templatePath);
         

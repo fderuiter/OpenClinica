@@ -101,7 +101,7 @@ check_connection() {
     local port=$2
     local service=$3
     if [ "$SKIP_CONNECTIVITY" = false ]; then
-        if [ "$host" = "db" ] || [ -z "$host" ]; then return 0; fi
+        if [ "$host" = "db" ] || [ "$host" = "localhost" ] || [ "$host" = "127.0.0.1" ] || [ -z "$host" ]; then return 0; fi
         
         echo "Verifying connection to $service at $host:$port..."
         if timeout 5 bash -c "</dev/tcp/$host/$port" 2>/dev/null; then

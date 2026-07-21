@@ -27,7 +27,7 @@ def merge_specs():
             print(f"Warning: {spec_path} not found. Skipping.")
             continue
             
-        with open(spec_path, 'r') as f:
+        with open(spec_path, 'r', encoding='utf-8') as f:
             if spec_path.endswith('.yaml') or spec_path.endswith('.yml'):
                 spec = yaml.safe_load(f)
             else:
@@ -49,7 +49,7 @@ def merge_specs():
                     base_spec['components'][comp_type][comp_key] = comp_val
 
     os.makedirs('docs', exist_ok=True)
-    with open('docs/openapi.json', 'w') as f:
+    with open('docs/openapi.json', 'w', encoding='utf-8') as f:
         json.dump(base_spec, f, indent=2)
 
 if __name__ == "__main__":
