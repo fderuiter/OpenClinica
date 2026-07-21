@@ -13,7 +13,6 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath:org/akaza/openclinica/applicationContext-web-beans.xml
-            classpath:org/akaza/openclinica/application-context-web-beans.xml
             classpath:org/akaza/openclinica/applicationContext-core-timer.xml
             classpath:org/akaza/openclinica/applicationContext-core-spring.xml
             classpath:org/akaza/openclinica/applicationContext-core-security.xml
@@ -1356,16 +1355,6 @@
         <servlet-class>org.akaza.openclinica.control.submit.ParticipantFormServlet</servlet-class>
     </servlet>
 
-
-    <servlet>
-        <servlet-name>OpenRosaFormDownloadServlet</servlet-name>
-        <display-name>OpenRosaFormDownloadServlet</display-name>
-        <servlet-class>org.akaza.openclinica.web.openrosa.OpenRosaFormDownloadServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>OpenRosaFormDownloadServlet</servlet-name>
-        <url-pattern>/openrosa/formXml</url-pattern>
-    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>LockCRFVersionServlet</servlet-name>
