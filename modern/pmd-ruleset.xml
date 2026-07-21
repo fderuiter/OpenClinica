@@ -3,5 +3,28 @@
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
-    <description>Empty ruleset</description>
+    <description>Custom ruleset with AvoidCommentedOutCode</description>
+    <rule name="AvoidCommentedOutCode"
+          language="java"
+          message="Avoid commented-out code blocks."
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>
+            Code that is commented out should be removed or converted to TODOs.
+        </description>
+        <priority>5</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Comment[
+  contains(@Image, 'if (') or
+  contains(@Image, '{') or
+  contains(@Image, '}') or
+  contains(@Image, ';')
+]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
 </ruleset>

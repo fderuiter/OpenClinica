@@ -180,7 +180,7 @@
                                 <configuration>
                                     <executable>bash</executable>
                                     <arguments>
-                                        <argument>${project.parent.basedir}/generate-docs.sh</argument>
+                                        <argument>${project.parent.basedir}/utils/generate-docs.sh</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -394,6 +394,15 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <rulesets>
+                        <ruleset>${project.basedir}/pmd-ruleset.xml</ruleset>
+                    </rulesets>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

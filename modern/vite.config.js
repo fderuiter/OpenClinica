@@ -1,4 +1,3 @@
-/* global __dirname */
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
