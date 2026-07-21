@@ -69,11 +69,10 @@ pg_restore -h <HOST> -p <PORT> -U <USER> -d <DATABASE> -1 path/to/db_backup.dump
 *(Since the backup is scoped to the dedicated schema via `pg_dump -n`, `pg_restore` will naturally populate only that isolated schema).*
 
 ### Safety Mechanisms
-- **Automated Rollback Safeguards:** The deployment script's rollback process will **never** execute `DROP SCHEMA public CASCADE`. It strictly cleans up and re-initializes only the dedicated application schema (`DROP SCHEMA IF EXISTS "<schema_name>" CASCADE`).
+- **Automated Rollback Safeguards:** On health check failure, the deployment script automatically handles container scaling and schema recovery. It initiates a standard container shutdown by scaling application instances to 0 to drop active connections, then performs a schema rollback recovery using the admin restore command. The rollback process will **never** execute `DROP SCHEMA public CASCADE`. It strictly cleans up and re-initializes only the dedicated application schema (`DROP SCHEMA IF EXISTS "<schema_name>" CASCADE`).
 - **Interactive Prompts:** When run in an interactive terminal, rollbacks prompt for explicit user confirmation before executing.
-- **Safety Overrides:** Non-interactive environments will reject automated rollback execution and fail safely unless the mandatory safety override environment variable `FORCE_ROLLBACK=true` is explicitly set.
 - **Backup Verification:** Rollbacks halt immediately if the pre-migration backup file is missing or empty, preventing data loss.
-- **Dry-Run & Simulation Modes:** Administrators can use the `--dry-run` or `--simulate-failure` flags to simulate failures and verify schema cleanup and rollback pathways safely without mutating actual database state.
+- **Simulation Mode:** Administrators can use the `--simulate-failure` flag to simulate failures and verify schema cleanup and rollback pathways safely without mutating actual database state.
 
 ## References
 
