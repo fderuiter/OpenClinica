@@ -173,11 +173,17 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <filter>
-        <filter-name>logFilter</filter-name>
-        <filter-class>org.akaza.openclinica.control.core.OCServletFilter</filter-class>
+    </filter-mapping>
+    <filter>
+        <filter-name>apiSecurityFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <init-param>
+            <param-name>targetBeanName</param-name>
+            <param-value>apiSecurityFilter</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
-        <filter-name>logFilter</filter-name>
+        <filter-name>apiSecurityFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
@@ -200,18 +206,6 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 -->
-    <filter>
-        <filter-name>apiSecurityFilter</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-        <init-param>
-            <param-name>targetBeanName</param-name>
-            <param-value>apiSecurityFilter</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>apiSecurityFilter</filter-name>
-        <url-pattern>/pages/auth/api/*</url-pattern>
-    </filter-mapping>
 
 
     <servlet>
