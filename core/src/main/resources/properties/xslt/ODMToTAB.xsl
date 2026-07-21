@@ -230,10 +230,12 @@
 		</xsl:for-each>
 		</xsl:variable>
 		<xsl:variable name="crfStatusExist" select="odm:FormData/@OpenClinica:Status" />
+		<xsl:variable name="crfSignedExist" select="odm:FormData/@OpenClinica:Signed" />
 		<xsl:variable name="eventLocationExist" select="@OpenClinica:StudyEventLocation" />
 		<xsl:variable name="eventStartDateExist" select="@OpenClinica:StartDate" />
 
 		<xsl:variable name="eventStatusExist" select="@OpenClinica:Status" />
+		<xsl:variable name="eventSignedExist" select="@OpenClinica:Signed" />
 		<xsl:variable name="ageExist" select="@OpenClinica:SubjectAgeAtEvent" />
 		<xsl:variable name="eventEndDateExist" select="@OpenClinica:EndDate" />
 				<xsl:if test="$eventLocationExist">
@@ -280,6 +282,14 @@
 											<xsl:text>_</xsl:text>
 											<xsl:value-of select="@StudyEventRepeatKey" />
 										</xsl:if>
+<xsl:if test="$eventSignedExist">
+									<xsl:text>Event Signature_</xsl:text>
+									<xsl:value-of select="$E" />
+									<xsl:value-of select="$eventPosition" />
+									<xsl:if test="@StudyEventRepeatKey">
+											<xsl:text>_</xsl:text>
+											<xsl:value-of select="@StudyEventRepeatKey" />
+										</xsl:if>
 										<xsl:text>_</xsl:text>
 									<xsl:value-of select="$delimiter" />
 								</xsl:if>
@@ -310,6 +320,7 @@
 		<xsl:variable name="eventStartDateExist" select="@OpenClinica:StartDate" />
 
 		<xsl:variable name="eventStatusExist" select="@OpenClinica:Status" />
+		<xsl:variable name="eventSignedExist" select="@OpenClinica:Signed" />
 		<xsl:variable name="ageExist" select="@OpenClinica:SubjectAgeAtEvent" />
 		<xsl:variable name="eventEndDateExist" select="@OpenClinica:EndDate" />
 		<xsl:variable name="studyEventRepeatKey" select="@StudyEventRepeatKey"/>
@@ -551,6 +562,7 @@
 		<xsl:variable name="eventStartDateExist" select="@OpenClinica:StartDate" />
 
 		<xsl:variable name="eventStatusExist" select="@OpenClinica:Status" />
+		<xsl:variable name="eventSignedExist" select="@OpenClinica:Signed" />
 		<xsl:variable name="ageExist" select="@OpenClinica:SubjectAgeAtEvent" />
 		<xsl:variable name="eventEndDateExist" select="@OpenClinica:EndDate" />
 	
@@ -571,6 +583,10 @@
 										</xsl:if>
 										<xsl:if test="$eventStatusExist">
 											<xsl:value-of select="@OpenClinica:Status"></xsl:value-of>
+											<xsl:value-of select="$delimiter" />
+										</xsl:if>
+<xsl:if test="$eventSignedExist">
+											<xsl:value-of select="@OpenClinica:Signed"></xsl:value-of>
 											<xsl:value-of select="$delimiter" />
 										</xsl:if>
 										<xsl:if test="$ageExist">
@@ -724,10 +740,12 @@
 		<xsl:variable name="interviewDateExist"
 			select="odm:FormData/@OpenClinica:InterviewDate" />
 		<xsl:variable name="crfStatusExist" select="odm:FormData/@OpenClinica:Status" />
+		<xsl:variable name="crfSignedExist" select="odm:FormData/@OpenClinica:Signed" />
 		<xsl:variable name="eventLocationExist" select="@OpenClinica:StudyEventLocation" />
 		<xsl:variable name="eventStartDateExist" select="@OpenClinica:StartDate" />
 
 		<xsl:variable name="eventStatusExist" select="@OpenClinica:Status" />
+		<xsl:variable name="eventSignedExist" select="@OpenClinica:Signed" />
 		<xsl:variable name="ageExist" select="@OpenClinica:SubjectAgeAtEvent" />
 		<xsl:variable name="eventEndDateExist" select="@OpenClinica:EndDate" />
 
@@ -784,6 +802,17 @@
 									<xsl:value-of select="$crfPosition" />
 									<xsl:value-of select="$delimiter" />
 								</xsl:if>
+<xsl:if test="$crfSignedExist">
+									<xsl:text>CRF Signature_</xsl:text>
+									<xsl:value-of select="$E" />
+									<xsl:value-of select="$eventPosition" />
+									<xsl:text>_</xsl:text>
+									<xsl:value-of select="@StudyEventRepeatKey" />
+									<xsl:text>_</xsl:text>
+									<xsl:value-of select="$C" />
+									<xsl:value-of select="$crfPosition" />
+									<xsl:value-of select="$delimiter" />
+								</xsl:if>
 
 								<xsl:if test="$crfVersionExist">
 									<xsl:text>Version Name_</xsl:text>
@@ -829,6 +858,17 @@
 
 									<xsl:if test="$crfStatusExist">
 										<xsl:text>CRF Version Status_</xsl:text>
+										<xsl:value-of select="$E" />
+										<xsl:value-of select="$eventPosition" />
+										<xsl:text>_</xsl:text>
+										<xsl:value-of select="@StudyEventRepeatKey" />
+										<xsl:text>_</xsl:text>
+										<xsl:value-of select="$C" />
+										<xsl:value-of select="$crfPosition" />
+										<xsl:value-of select="$delimiter" />
+									</xsl:if>
+<xsl:if test="$crfSignedExist">
+										<xsl:text>CRF Signature_</xsl:text>
 										<xsl:value-of select="$E" />
 										<xsl:value-of select="$eventPosition" />
 										<xsl:text>_</xsl:text>
@@ -895,6 +935,15 @@
 										<xsl:value-of select="$crfPosition" />
 										<xsl:value-of select="$delimiter" />
 					</xsl:if>
+<xsl:if test="$eventSignedExist">
+						<xsl:text>Event Signature_</xsl:text>
+						<xsl:value-of select="$E" />
+						<xsl:value-of select="$eventPosition" />
+						<xsl:text>_</xsl:text>
+						<xsl:value-of select="$C" />
+										<xsl:value-of select="$crfPosition" />
+										<xsl:value-of select="$delimiter" />
+					</xsl:if>
 
 					<xsl:if test="$ageExist">
 						<xsl:text>Age_</xsl:text>
@@ -927,6 +976,15 @@
 
 					<xsl:if test="$crfStatusExist">
 						<xsl:text>CRF Version Status_</xsl:text>
+						<xsl:value-of select="$E" />
+						<xsl:value-of select="$eventPosition" />
+						<xsl:text>_</xsl:text>
+						<xsl:value-of select="$C" />
+						<xsl:value-of select="$crfPosition" />
+						<xsl:value-of select="$delimiter" />
+					</xsl:if>
+<xsl:if test="$crfSignedExist">
+						<xsl:text>CRF Signature_</xsl:text>
 						<xsl:value-of select="$E" />
 						<xsl:value-of select="$eventPosition" />
 						<xsl:text>_</xsl:text>
@@ -996,6 +1054,7 @@
 		<xsl:variable name="eventStartDateExist" select="@OpenClinica:StartDate" />
 
 		<xsl:variable name="eventStatusExist" select="@OpenClinica:Status" />
+		<xsl:variable name="eventSignedExist" select="@OpenClinica:Signed" />
 		<xsl:variable name="ageExist" select="@OpenClinica:SubjectAgeAtEvent" />
 		<xsl:variable name="eventEndDateExist" select="@OpenClinica:EndDate" />
 		<xsl:variable name="crfVersionExist" select="odm:FormData/@OpenClinica:Version" />
@@ -1004,6 +1063,7 @@
 		<xsl:variable name="interviewDateExist"
 			select="odm:FormData/@OpenClinica:InterviewDate" />
 		<xsl:variable name="crfStatusExist" select="odm:FormData/@OpenClinica:Status" />
+		<xsl:variable name="crfSignedExist" select="odm:FormData/@OpenClinica:Signed" />
 	
 		<xsl:if test="@StudyEventOID = $parentEvent/@StudyEventOID">
 
@@ -1038,6 +1098,10 @@
 											<xsl:value-of select="$currentForm/@OpenClinica:Status"/>
 											<xsl:value-of select="$delimiter" />
 										</xsl:if>
+<xsl:if test="$crfSignedExist">
+											<xsl:value-of select="$currentForm/@OpenClinica:Signed"/>
+											<xsl:value-of select="$delimiter" />
+										</xsl:if>
 										<xsl:if test="$crfVersionExist">
 											<xsl:value-of select="$currentForm/@OpenClinica:Version"/>
 											<xsl:value-of select="$delimiter" />
@@ -1055,6 +1119,9 @@
 											<xsl:value-of select="$delimiter" />
 										</xsl:if>
 										<xsl:if test="$crfStatusExist">
+											<xsl:value-of select="$delimiter" />
+										</xsl:if>
+<xsl:if test="$crfSignedExist">
 											<xsl:value-of select="$delimiter" />
 										</xsl:if>
 
@@ -1081,6 +1148,10 @@
 												<xsl:value-of select="$currentForm/@OpenClinica:Status"/>
 												<xsl:value-of select="$delimiter" />
 											</xsl:if>
+<xsl:if test="$crfSignedExist">
+												<xsl:value-of select="$currentForm/@OpenClinica:Signed"/>
+												<xsl:value-of select="$delimiter" />
+											</xsl:if>
 											<xsl:if test="$crfVersionExist">
 												<xsl:value-of select="$currentForm/@OpenClinica:Version"/>
 												<xsl:value-of select="$delimiter" />
@@ -1097,6 +1168,9 @@
 												<xsl:value-of select="$delimiter" />
 											</xsl:if>
 											<xsl:if test="$crfStatusExist">
+												<xsl:value-of select="$delimiter" />
+											</xsl:if>
+<xsl:if test="$crfSignedExist">
 												<xsl:value-of select="$delimiter" />
 											</xsl:if>
 										</xsl:otherwise>
@@ -1129,6 +1203,10 @@
 								<xsl:value-of select="@OpenClinica:Status"></xsl:value-of>
 								<xsl:value-of select="$delimiter" />
 							</xsl:if>
+<xsl:if test="$eventSignedExist">
+								<xsl:value-of select="@OpenClinica:Signed"></xsl:value-of>
+								<xsl:value-of select="$delimiter" />
+							</xsl:if>
 							<xsl:if test="$ageExist">
 								<xsl:value-of select="@OpenClinica:SubjectAgeAtEvent"></xsl:value-of>
 								<xsl:value-of select="$delimiter" />
@@ -1143,6 +1221,10 @@
 							</xsl:if>
 							<xsl:if test="$crfStatusExist">
 								<xsl:value-of select="$currentForm/@OpenClinica:Status"/>
+								<xsl:value-of select="$delimiter" />
+							</xsl:if>
+<xsl:if test="$crfSignedExist">
+								<xsl:value-of select="$currentForm/@OpenClinica:Signed"/>
 								<xsl:value-of select="$delimiter" />
 							</xsl:if>
 							<xsl:if test="$crfVersionExist">
@@ -1163,6 +1245,9 @@
 							<xsl:if test="$eventStatusExist">
 								<xsl:value-of select="$delimiter" />
 							</xsl:if>
+<xsl:if test="$eventSignedExist">
+								<xsl:value-of select="$delimiter" />
+							</xsl:if>
 							<xsl:if test="$ageExist">
 								<xsl:value-of select="$delimiter" />
 							</xsl:if>
@@ -1176,6 +1261,9 @@
 								<xsl:value-of select="$delimiter" />
 							</xsl:if>
 							<xsl:if test="$crfStatusExist">
+								<xsl:value-of select="$delimiter" />
+							</xsl:if>
+<xsl:if test="$crfSignedExist">
 								<xsl:value-of select="$delimiter" />
 							</xsl:if>
 						</xsl:otherwise>
@@ -1351,6 +1439,7 @@
 	<!--<xsl:variable name="eventLocationExist" select="count($allStudyEventDataElements[@OpenClinica:StudyEventLocation]) &gt; 0"/>
 	<xsl:variable name="eventStartDateExist" select="count($allStudyEventDataElements[@OpenClinica:StartDate]) &gt; 0"/>
 	<xsl:variable name="eventStatusExist" select="count($allStudyEventDataElements[@OpenClinica:Status]) &gt; 0"/>
+	<xsl:variable name="eventSignedExist" select="count($allStudyEventDataElements[@OpenClinica:Signed]) &gt; 0"/>
 	<xsl:variable name="eventEndDateExist" select="count($allStudyEventDataElements[@OpenClinica:EndDate]) &gt; 0"/>
 	<xsl:variable name="ageExist" select="count($allStudyEventDataElements[@OpenClinica:SubjectAgeAtEvent]) &gt; 0"/>	-->
 		
@@ -1449,6 +1538,23 @@
 				<xsl:value-of select="$eventRepeatCnt" />
 				<xsl:value-of select="$delimiter" />
 			</xsl:if>
+<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:Signed]) &gt; 0">
+				<xsl:text>Event Signature_</xsl:text>
+				<xsl:value-of select="$E" />
+				<xsl:value-of select="$eventPosition" />							
+				<xsl:text>_</xsl:text>
+				<xsl:value-of select="$eventRepeatCnt" />
+				<xsl:value-of select="$delimiter" />
+			</xsl:if>
+<xsl:if test="$eventSignedExist">					-->
+			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:Signed]) &gt; 0">
+				<xsl:text>Event Signature_</xsl:text>
+				<xsl:value-of select="$E" />
+				<xsl:value-of select="$eventPosition" />							
+				<xsl:text>_</xsl:text>
+				<xsl:value-of select="$eventRepeatCnt" />
+				<xsl:value-of select="$delimiter" />
+			</xsl:if>
 			<!--<xsl:if test="$ageExist">-->
 			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:SubjectAgeAtEvent]) &gt; 0">
 				<xsl:text>Age_</xsl:text>
@@ -1509,6 +1615,19 @@
 		<!--<xsl:if test="$eventStatusExist">			-->
 		<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Status]) &gt; 0">
 			<xsl:text>Event Status_</xsl:text>
+			<xsl:value-of select="$E" />
+			<xsl:value-of select="$eventPosition" />
+			<xsl:value-of select="$delimiter" />
+		</xsl:if>
+<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Signed]) &gt; 0">
+			<xsl:text>Event Signature_</xsl:text>
+			<xsl:value-of select="$E" />
+			<xsl:value-of select="$eventPosition" />
+			<xsl:value-of select="$delimiter" />
+		</xsl:if>
+<xsl:if test="$eventSignedExist">			-->
+		<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Signed]) &gt; 0">
+			<xsl:text>Event Signature_</xsl:text>
 			<xsl:value-of select="$E" />
 			<xsl:value-of select="$eventPosition" />
 			<xsl:value-of select="$delimiter" />
@@ -1594,6 +1713,7 @@
 		<xsl:variable name="interviewerNameExist" select="count(//odm:FormData[@FormOID = $formRefOID and @OpenClinica:InterviewerName]) &gt; 0"/>
 		<xsl:variable name="interviewDateExist" select="count(//odm:FormData[@FormOID = $formRefOID and @OpenClinica:InterviewDate]) &gt; 0"/>
 		<xsl:variable name="crfStatusExist" select="count(//odm:FormData[@FormOID = $formRefOID and @OpenClinica:Status]) &gt; 0"/>
+					<xsl:variable name="crfSignedExist" select="count(//odm:FormData[@FormOID = $formRefOID and @OpenClinica:Signed]) &gt; 0"/>
 		
 		-->
 		<xsl:choose>
@@ -1680,6 +1800,25 @@
 							
 							<xsl:value-of select="' '"	/>
 							<xsl:text>CRF Version Status</xsl:text>
+								<xsl:choose>
+									<xsl:when test="$generateIntHeadersList = 'Yes'"><!-- Use special constants here than '_E' for internal processing -->
+										<xsl:value-of select="$itemNameAndEventSep"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:text>_</xsl:text>				
+										<xsl:value-of select="$E"/>
+									</xsl:otherwise>
+								</xsl:choose>
+							<xsl:value-of select="$eventPosition" />
+							<xsl:text>_</xsl:text>
+							<xsl:value-of select="$C" />
+							<xsl:value-of select="$crfPosition" />
+							<xsl:value-of select="$delimiter" />
+						</xsl:if>
+<xsl:if test="$crfSignedExist">
+							
+							<xsl:value-of select="' '"	/>
+							<xsl:text>CRF Signature</xsl:text>
 								<xsl:choose>
 									<xsl:when test="$generateIntHeadersList = 'Yes'"><!-- Use special constants here than '_E' for internal processing -->
 										<xsl:value-of select="$itemNameAndEventSep"/>
@@ -1817,6 +1956,27 @@
 						
 							<xsl:value-of select="' '"	/>
 							<xsl:text>CRF Version Status</xsl:text>
+								<xsl:choose>
+									<xsl:when test="$generateIntHeadersList = 'Yes'"><!-- Use special constants here than '_E' for internal processing -->
+										<xsl:value-of select="$itemNameAndEventSep"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:text>_</xsl:text>				
+										<xsl:value-of select="$E"/>
+									</xsl:otherwise>
+								</xsl:choose>
+							<xsl:value-of select="$eventPosition" />
+							<xsl:text>_</xsl:text>
+							<xsl:value-of select="$eventRepeatCnt" />
+							<xsl:text>_</xsl:text>
+							<xsl:value-of select="$C" />
+							<xsl:value-of select="$crfPosition" />
+							<xsl:value-of select="$delimiter" />									
+					</xsl:if>
+<xsl:if test="$crfSignedExist">
+						
+							<xsl:value-of select="' '"	/>
+							<xsl:text>CRF Signature</xsl:text>
 								<xsl:choose>
 									<xsl:when test="$generateIntHeadersList = 'Yes'"><!-- Use special constants here than '_E' for internal processing -->
 										<xsl:value-of select="$itemNameAndEventSep"/>
@@ -2576,6 +2736,10 @@
 										<xsl:value-of select="$event/@OpenClinica:Status"></xsl:value-of>
 										<xsl:value-of select="$delimiter" />
 									</xsl:when>
+<xsl:when test="$event/@OpenClinica:Signed">
+										<xsl:value-of select="$event/@OpenClinica:Signed"></xsl:value-of>
+										<xsl:value-of select="$delimiter" />
+									</xsl:when>
 									<xsl:otherwise>
 										<xsl:value-of select="$delimiter" />
 									</xsl:otherwise>
@@ -2668,6 +2832,11 @@
 													<xsl:when test="@OpenClinica:Status">
 														<td class="table_cell">
 															<xsl:value-of select="@OpenClinica:Status"></xsl:value-of>
+														</td>
+													</xsl:when>
+<xsl:when test="@OpenClinica:Signed">
+														<td class="table_cell">
+															<xsl:value-of select="@OpenClinica:Signed"></xsl:value-of>
 														</td>
 													</xsl:when>
 													<xsl:otherwise>
@@ -2769,6 +2938,11 @@
 											<xsl:when test="@OpenClinica:Status">
 												<td class="table_cell">
 													<xsl:value-of select="@OpenClinica:Status"></xsl:value-of>
+												</td>
+											</xsl:when>
+<xsl:when test="@OpenClinica:Signed">
+												<td class="table_cell">
+													<xsl:value-of select="@OpenClinica:Signed"></xsl:value-of>
 												</td>
 											</xsl:when>
 											<xsl:otherwise>
@@ -2888,6 +3062,9 @@
 					<xsl:when test="ends-with($nextToken,'CRF Version Status')">
 						<xsl:value-of select="substring-before($nextToken,concat(concat($delimiter, ' '), 'CRF Version Status'))"/>
 					</xsl:when>
+<xsl:when test="ends-with($nextToken,'CRF Signature')">
+						<xsl:value-of select="substring-before($nextToken,concat(concat($delimiter, ' '), 'CRF Signature'))"/>
+					</xsl:when>
 					<xsl:when test="ends-with($nextToken,'Version Name')">
 						<xsl:value-of select="substring-before($nextToken,concat(concat($delimiter, ' '), 'Version Name'))"/>
 					</xsl:when>
@@ -2939,6 +3116,9 @@
 					</xsl:when>
 					<xsl:when test="ends-with($currentToken,'CRF Version Status')">
 						<xsl:text>CRF Version Status</xsl:text>
+					</xsl:when>
+<xsl:when test="ends-with($currentToken,'CRF Signature')">
+						<xsl:text>CRF Signature</xsl:text>
 					</xsl:when>
 					<xsl:when test="ends-with($currentToken,'Version Name')">
 						<xsl:text>Version Name</xsl:text>
@@ -3478,6 +3658,21 @@
 											<xsl:value-of select="$formData/@OpenClinica:Status"></xsl:value-of>
 											<xsl:value-of select="$delimiter" />
 										</xsl:when>
+<xsl:when test="$formData/@OpenClinica:Signed">	
+											<xsl:value-of select="$formData/@OpenClinica:Signed"></xsl:value-of>
+											<xsl:value-of select="$delimiter" />
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="$delimiter" />
+										</xsl:otherwise>
+									</xsl:choose>						
+								</xsl:if>
+<xsl:if test="$colType = 'CRF Signature'">	
+									<xsl:choose> 
+										<xsl:when test="$formData/@OpenClinica:Signed">	
+											<xsl:value-of select="$formData/@OpenClinica:Signed"></xsl:value-of>
+											<xsl:value-of select="$delimiter" />
+										</xsl:when>
 										<xsl:otherwise>
 											<xsl:value-of select="$delimiter" />
 										</xsl:otherwise>
@@ -3527,6 +3722,21 @@
 											<xsl:value-of select="$formData/@OpenClinica:Status"></xsl:value-of>
 											<xsl:value-of select="$delimiter" />
 										</xsl:when>
+<xsl:when test="$formData/@OpenClinica:Signed">	
+											<xsl:value-of select="$formData/@OpenClinica:Signed"></xsl:value-of>
+											<xsl:value-of select="$delimiter" />
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="$delimiter" />
+										</xsl:otherwise>
+									</xsl:choose>						
+								</xsl:if>
+<xsl:if test="$colType = 'CRF Signature'">	
+									<xsl:choose> 
+										<xsl:when test="$formData/@OpenClinica:Signed">	
+											<xsl:value-of select="$formData/@OpenClinica:Signed"></xsl:value-of>
+											<xsl:value-of select="$delimiter" />
+										</xsl:when>
 										<xsl:otherwise>
 											<xsl:value-of select="$delimiter" />
 										</xsl:otherwise>
@@ -3557,6 +3767,9 @@
 							<xsl:value-of select="$delimiter" />																	
 						</xsl:if>
 						<xsl:if test="$colType = 'CRF Version Status'">
+							<xsl:value-of select="$delimiter" />														
+						</xsl:if>
+<xsl:if test="$colType = 'CRF Signature'">
 							<xsl:value-of select="$delimiter" />														
 						</xsl:if>
 						<xsl:if test="$colType = 'Version Name'">							

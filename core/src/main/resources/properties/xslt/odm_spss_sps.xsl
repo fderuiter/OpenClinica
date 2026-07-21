@@ -26,6 +26,7 @@
 	<xsl:variable name="interviewDateExist"
 		select="//odm:FormData/@OpenClinica:InterviewDate" />
 	<xsl:variable name="crfStatusExist" select="//odm:FormData/@OpenClinica:Status" />
+	<xsl:variable name="crfSignedExist" select="//odm:FormData/@OpenClinica:Signed" />
 	
 	<xsl:variable name="sexExist" select="//odm:SubjectData/@OpenClinica:Sex" />
 	<xsl:variable name="uniqueIdExist"
@@ -123,6 +124,7 @@
 	<!--<xsl:variable name="eventLocationExist" select="count($allStudyEventDataElements[@OpenClinica:StudyEventLocation]) &gt; 0"/>
 	<xsl:variable name="eventStartDateExist" select="count($allStudyEventDataElements[@OpenClinica:StartDate]) &gt; 0"/>
 	<xsl:variable name="eventStatusExist" select="count($allStudyEventDataElements[@OpenClinica:Status]) &gt; 0"/>
+	<xsl:variable name="eventSignedExist" select="count($allStudyEventDataElements[@OpenClinica:Signed]) &gt; 0"/>
 	<xsl:variable name="eventEndDateExist" select="count($allStudyEventDataElements[@OpenClinica:EndDate]) &gt; 0"/>
 	<xsl:variable name="ageExist" select="count($allStudyEventDataElements[@OpenClinica:SubjectAgeAtEvent]) &gt; 0"/>-->
 		
@@ -141,6 +143,14 @@
 	<!--	<xsl:variable name="eventStatusLen" select="string-length($studyEventData/@OpenClinica:Status)" />-->
 	<xsl:variable name="eventStatusLen">
 		<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/string-length(@OpenClinica:Status)">
+			<xsl:sort data-type="number"/>
+		   <xsl:if test="position() = last()">
+			 <xsl:value-of select="."/>
+		   </xsl:if>
+		 </xsl:for-each>
+    </xsl:variable>
+<xsl:variable name="eventSignedLen">
+		<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/string-length(@OpenClinica:Signed)">
 			<xsl:sort data-type="number"/>
 		   <xsl:if test="position() = last()">
 			 <xsl:value-of select="."/>
@@ -288,6 +298,41 @@
 				</xsl:choose>-->
 				<xsl:text>&#xa;</xsl:text>
 			</xsl:if>
+<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:Signed]) &gt; 0">
+				<xsl:text>EventSignature_</xsl:text>
+				<xsl:value-of select="$E" />
+				<xsl:value-of select="$eventPosition" />
+				<xsl:text>_</xsl:text>
+				<xsl:value-of select="$eventRepeatCnt" />
+				<xsl:text> A</xsl:text>
+				<!--<xsl:choose>
+					<xsl:when test="number($eventSignedLen) &gt; 8">
+						<xsl:text>8</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>-->
+						<xsl:value-of select="$eventSignedLen" />
+					<!--sl:otherwise>
+				</xsl:choose>-->
+				<xsl:text>&#xa;</xsl:text>
+			</xsl:if>
+<xsl:if test="$eventSignedExist">-->
+			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:Signed]) &gt; 0">
+				<xsl:text>EventSignature_</xsl:text>
+				<xsl:value-of select="$E" />
+				<xsl:value-of select="$eventPosition" />
+				<xsl:text>_</xsl:text>
+				<xsl:value-of select="$eventRepeatCnt" />
+				<xsl:text> A</xsl:text>
+				<!--<xsl:choose>
+					<xsl:when test="number($eventSignedLen) &gt; 8">
+						<xsl:text>8</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>-->
+						<xsl:value-of select="$eventSignedLen" />
+					<!--sl:otherwise>
+				</xsl:choose>-->
+				<xsl:text>&#xa;</xsl:text>
+			</xsl:if>
 
 			<!--<xsl:if test="$ageExist">-->
 			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:SubjectAgeAtEvent]) &gt; 0">
@@ -400,6 +445,37 @@
 					</xsl:choose>-->
 					<xsl:text>&#xa;</xsl:text>
 				</xsl:if>
+<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Signed]) &gt; 0">
+					<xsl:text>EventSignature_</xsl:text>
+					<xsl:value-of select="$E" />
+					<xsl:value-of select="$eventPosition" />
+					<xsl:text> A</xsl:text>
+					<!--<xsl:choose>
+						<xsl:when test="number($eventSignedLen) &gt; 8">
+							<xsl:text>8</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>-->
+							<xsl:value-of select="$eventSignedLen" />
+						<!--</xsl:otherwise>
+					</xsl:choose>-->
+					<xsl:text>&#xa;</xsl:text>
+				</xsl:if>
+<xsl:if test="$eventSignedExist">-->
+				<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Signed]) &gt; 0">
+					<xsl:text>EventSignature_</xsl:text>
+					<xsl:value-of select="$E" />
+					<xsl:value-of select="$eventPosition" />
+					<xsl:text> A</xsl:text>
+					<!--<xsl:choose>
+						<xsl:when test="number($eventSignedLen) &gt; 8">
+							<xsl:text>8</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>-->
+							<xsl:value-of select="$eventSignedLen" />
+						<!--</xsl:otherwise>
+					</xsl:choose>-->
+					<xsl:text>&#xa;</xsl:text>
+				</xsl:if>
 				
 				<!-- @pgawade 15-May-2012 fix for issue 14279 consider the presense of event attribute specific to ordinal -->
 				<!--<xsl:if test="$ageExist">-->
@@ -428,6 +504,7 @@
 	<!--<xsl:variable name="eventLocationExist" select="count($allStudyEventDataElements[@OpenClinica:StudyEventLocation]) &gt; 0"/>
 	<xsl:variable name="eventStartDateExist" select="count($allStudyEventDataElements[@OpenClinica:StartDate]) &gt; 0"/>
 	<xsl:variable name="eventStatusExist" select="count($allStudyEventDataElements[@OpenClinica:Status]) &gt; 0"/>
+	<xsl:variable name="eventSignedExist" select="count($allStudyEventDataElements[@OpenClinica:Signed]) &gt; 0"/>
 	<xsl:variable name="eventEndDateExist" select="count($allStudyEventDataElements[@OpenClinica:EndDate]) &gt; 0"/>
 	<xsl:variable name="ageExist" select="count($allStudyEventDataElements[@OpenClinica:SubjectAgeAtEvent]) &gt; 0"/>	-->
 	<xsl:variable name="studyEventData" select="/odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData[@StudyEventOID = $eventDefOID]"/>
@@ -568,6 +645,43 @@
 				<xsl:text> /</xsl:text>
 				<xsl:text>&#xa;</xsl:text>
 			</xsl:if>
+<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:Signed]) &gt; 0">
+			<!-- @pgawade 14-Mar-2012 #13052 Removed the unwanted space within value label for event signed -->
+				<xsl:text>EventSignature_</xsl:text>
+				<xsl:value-of select="$E" />
+				<xsl:value-of select="$eventPosition" />
+				<xsl:text>_</xsl:text>
+				<xsl:value-of select="$eventRepeatCnt" />
+				<xsl:text> "Event Signature For </xsl:text>
+				<xsl:value-of select="$eventName" />
+				<xsl:text>(</xsl:text>
+				<xsl:value-of select="$E" />
+				<xsl:value-of select="$eventPosition" />
+				<xsl:text>_</xsl:text>
+				<xsl:value-of select="$eventRepeatCnt" />
+				<xsl:text>)"</xsl:text>
+				<xsl:text> /</xsl:text>
+				<xsl:text>&#xa;</xsl:text>
+			</xsl:if>
+<xsl:if test="$eventSignedExist">-->
+			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:Signed]) &gt; 0">
+			<!-- @pgawade 14-Mar-2012 #13052 Removed the unwanted space within value label for event signed -->
+				<xsl:text>EventSignature_</xsl:text>
+				<xsl:value-of select="$E" />
+				<xsl:value-of select="$eventPosition" />
+				<xsl:text>_</xsl:text>
+				<xsl:value-of select="$eventRepeatCnt" />
+				<xsl:text> "Event Signature For </xsl:text>
+				<xsl:value-of select="$eventName" />
+				<xsl:text>(</xsl:text>
+				<xsl:value-of select="$E" />
+				<xsl:value-of select="$eventPosition" />
+				<xsl:text>_</xsl:text>
+				<xsl:value-of select="$eventRepeatCnt" />
+				<xsl:text>)"</xsl:text>
+				<xsl:text> /</xsl:text>
+				<xsl:text>&#xa;</xsl:text>
+			</xsl:if>
 
 			<!-- @pgawade 15-May-2012 fix for issue 14279 consider the presense of event attribute specific to ordinal -->
 			<!--<xsl:if test="$ageExist">-->
@@ -662,6 +776,35 @@
 					<xsl:value-of select="$E" />
 					<xsl:value-of select="$eventPosition" />
 					<xsl:text> "Event Status For </xsl:text>
+					<xsl:value-of select="$eventName" />
+					<xsl:text>(</xsl:text>
+					<xsl:value-of select="$E" />
+					<xsl:value-of select="$eventPosition" />
+					<xsl:text>)"</xsl:text>
+					<xsl:text> /</xsl:text>
+					<xsl:text>&#xa;</xsl:text>
+				</xsl:if>
+<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Signed]) &gt; 0">
+					<!-- @pgawade 14-Mar-2012 #13052 Removed the unwanted space within value label for event signed -->
+				<xsl:text>EventSignature_</xsl:text>
+					<xsl:value-of select="$E" />
+					<xsl:value-of select="$eventPosition" />
+					<xsl:text> "Event Signature For </xsl:text>
+					<xsl:value-of select="$eventName" />
+					<xsl:text>(</xsl:text>
+					<xsl:value-of select="$E" />
+					<xsl:value-of select="$eventPosition" />
+					<xsl:text>)"</xsl:text>
+					<xsl:text> /</xsl:text>
+					<xsl:text>&#xa;</xsl:text>
+				</xsl:if>
+<xsl:if test="$eventSignedExist">-->
+			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Signed]) &gt; 0">
+					<!-- @pgawade 14-Mar-2012 #13052 Removed the unwanted space within value label for event signed -->
+				<xsl:text>EventSignature_</xsl:text>
+					<xsl:value-of select="$E" />
+					<xsl:value-of select="$eventPosition" />
+					<xsl:text> "Event Signature For </xsl:text>
 					<xsl:value-of select="$eventName" />
 					<xsl:text>(</xsl:text>
 					<xsl:value-of select="$E" />
@@ -784,6 +927,10 @@
 					<xsl:variable name="crfStatusExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and 
 					@OpenClinica:Status]) &gt; 
 						0"/>
+		<xsl:variable name="crfSignedExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and 
+					@OpenClinica:Signed]) &gt; 
+						0"/>
+					<xsl:variable name="crfSignedExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and @OpenClinica:Signed]) &gt; 0"/>
 					<!--	
 					<xsl:variable name="interLen">
 						<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/odm:FormData/@OpenClinica:InterviewerName">
@@ -796,6 +943,14 @@
 							
 					<xsl:variable name="interStatusLen">
 						<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/odm:FormData/@OpenClinica:Status">
+							<xsl:sort data-type="number"/>
+						    <xsl:if test="position() = last()">
+								<xsl:value-of select="."/>
+							</xsl:if>
+						</xsl:for-each>
+					</xsl:variable>
+<xsl:variable name="interSignedLen">
+						<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/odm:FormData/@OpenClinica:Signed">
 							<xsl:sort data-type="number"/>
 						    <xsl:if test="position() = last()">
 								<xsl:value-of select="."/>
@@ -852,6 +1007,18 @@
 						<xsl:text> /</xsl:text>
 						<xsl:text>&#xa;</xsl:text>
 					</xsl:if>
+<xsl:if test="$crfSignedExist">
+						<xsl:text>CRFSignature_</xsl:text>
+						<xsl:value-of select="$E" />
+						<xsl:value-of select="$eventPosition" />
+						<xsl:text>_</xsl:text>
+						<xsl:value-of select="$C" />
+						<xsl:value-of select="$crfPosition" />
+						<xsl:text> "CRF Signature For </xsl:text>
+						<xsl:value-of select="$eventName" /><xsl:text>"</xsl:text>
+						<xsl:text> /</xsl:text>
+						<xsl:text>&#xa;</xsl:text>
+					</xsl:if>
 
 					<xsl:if test="$crfVersionExist">
 						<xsl:text>VersionName_</xsl:text>
@@ -893,6 +1060,10 @@
 					<xsl:variable name="crfStatusExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and 
 					@OpenClinica:Status]) &gt; 
 						0"/>
+		<xsl:variable name="crfSignedExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and 
+					@OpenClinica:Signed]) &gt; 
+						0"/>
+					<xsl:variable name="crfSignedExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and @OpenClinica:Signed]) &gt; 0"/>
 					<!-- maximum length of InterviewerName for CRF -->					
 					<xsl:variable name="interLen">
 						<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/odm:FormData/string-length(@OpenClinica:InterviewerName)">
@@ -905,6 +1076,14 @@
 					<!-- maximum length of Status for CRF -->				
 					<xsl:variable name="interStatusLen">
 						<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/odm:FormData/string-length(@OpenClinica:Status)">
+							<xsl:sort data-type="number"/>
+						    <xsl:if test="position() = last()">
+								<xsl:value-of select="."/>
+							</xsl:if>
+						</xsl:for-each>
+					</xsl:variable>
+<xsl:variable name="interSignedLen">
+						<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/odm:FormData/string-length(@OpenClinica:Signed)">
 							<xsl:sort data-type="number"/>
 						    <xsl:if test="position() = last()">
 								<xsl:value-of select="."/>
@@ -965,6 +1144,24 @@
 							</xsl:when>
 							<xsl:otherwise>-->
 								<xsl:value-of select="$interStatusLen" />
+							<!--</xsl:otherwise>
+						</xsl:choose>-->
+						<xsl:text>&#xa;</xsl:text>
+					</xsl:if>
+<xsl:if test="$crfSignedExist">
+						<xsl:text>CRFSignature_</xsl:text>
+						<xsl:value-of select="$E" />
+						<xsl:value-of select="$eventPosition" />
+						<xsl:text>_</xsl:text>
+						<xsl:value-of select="$C" />
+						<xsl:value-of select="$crfPosition" />
+						<xsl:text> A</xsl:text>
+						<!--<xsl:choose>
+							<xsl:when test="$interSignedLen &gt; 8">
+								<xsl:text>8</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>-->
+								<xsl:value-of select="$interSignedLen" />
 							<!--</xsl:otherwise>
 						</xsl:choose>-->
 						<xsl:text>&#xa;</xsl:text>
@@ -1040,6 +1237,9 @@
 						
 					<xsl:variable name="crfStatusExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and @OpenClinica:Status  and 
 					../@StudyEventRepeatKey = $eventRepeatCnt]) &gt; 0"/>
+		<xsl:variable name="crfSignedExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and @OpenClinica:Signed  and 
+					../@StudyEventRepeatKey = $eventRepeatCnt]) &gt; 0"/>
+					<xsl:variable name="crfSignedExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and @OpenClinica:Signed  and ../@StudyEventRepeatKey = $eventRepeatCnt]) &gt; 0"/>
 					<!--				
 					<xsl:variable name="interLen">
 						<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/odm:FormData/@OpenClinica:InterviewerName">
@@ -1052,6 +1252,14 @@
 									
 					<xsl:variable name="interStatusLen">
 						<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/odm:FormData/@OpenClinica:Status">
+							<xsl:sort data-type="number"/>
+							<xsl:if test="position() = last()">
+								<xsl:value-of select="."/>
+							</xsl:if>
+						</xsl:for-each>
+					</xsl:variable>
+<xsl:variable name="interSignedLen">
+						<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/odm:FormData/@OpenClinica:Signed">
 							<xsl:sort data-type="number"/>
 							<xsl:if test="position() = last()">
 								<xsl:value-of select="."/>
@@ -1131,6 +1339,26 @@
 									<xsl:text> /</xsl:text>
 									<xsl:text>&#xa;</xsl:text>
 								</xsl:if>
+<xsl:if test="$crfSignedExist">
+									<xsl:text>CRFSignature_</xsl:text>
+									<xsl:value-of select="$E" />
+									<xsl:value-of select="$eventPosition" />
+									<xsl:text>_</xsl:text>
+										<xsl:value-of select="$eventRepeatCnt" />
+									<xsl:text>_</xsl:text>
+									<xsl:value-of select="$C" />
+									<xsl:value-of select="$crfPosition" />
+									<xsl:text> "CRF Signature For </xsl:text>
+									<xsl:value-of select="$eventName" />
+									<xsl:text>(</xsl:text>
+									<xsl:value-of select="$E" />
+									<xsl:value-of select="$eventPosition" />
+									<xsl:text>_</xsl:text>
+									<xsl:value-of select="$eventRepeatCnt" />
+									<xsl:text>)"</xsl:text>
+									<xsl:text> /</xsl:text>
+									<xsl:text>&#xa;</xsl:text>
+								</xsl:if>
 
 								<xsl:if test="$crfVersionExist">
 									<xsl:text>VersionName_</xsl:text>
@@ -1197,6 +1425,9 @@
 						
 					<xsl:variable name="crfStatusExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and @OpenClinica:Status  and 
 					../@StudyEventRepeatKey = $eventRepeatCnt]) &gt; 0"/>
+		<xsl:variable name="crfSignedExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and @OpenClinica:Signed  and 
+					../@StudyEventRepeatKey = $eventRepeatCnt]) &gt; 0"/>
+					<xsl:variable name="crfSignedExist" select="count(//odm:FormData[../@StudyEventOID = $eventOID and @FormOID = $formRefOID and @OpenClinica:Signed  and ../@StudyEventRepeatKey = $eventRepeatCnt]) &gt; 0"/>
 					
 					<!-- maximum length of InterviewerName for CRF -->					
 					<xsl:variable name="interLen">
@@ -1210,6 +1441,14 @@
 					<!-- maximum length of Status for CRF -->				
 					<xsl:variable name="interStatusLen">
 						<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/odm:FormData/string-length(@OpenClinica:Status)">
+							<xsl:sort data-type="number"/>
+							<xsl:if test="position() = last()">
+								<xsl:value-of select="."/>
+							</xsl:if>
+						</xsl:for-each>
+					</xsl:variable>
+<xsl:variable name="interSignedLen">
+						<xsl:for-each select="//odm:ODM/odm:ClinicalData/odm:SubjectData/odm:StudyEventData/odm:FormData/string-length(@OpenClinica:Signed)">
 							<xsl:sort data-type="number"/>
 							<xsl:if test="position() = last()">
 								<xsl:value-of select="."/>
@@ -1275,6 +1514,26 @@
 									</xsl:when>
 									<xsl:otherwise>-->
 										<xsl:value-of select="$interStatusLen" />
+									<!--</xsl:otherwise>
+								</xsl:choose>-->
+								<xsl:text>&#xa;</xsl:text>
+							</xsl:if>
+<xsl:if test="$crfSignedExist">
+								<xsl:text>CRFSignature_</xsl:text>
+								<xsl:value-of select="$E" />
+								<xsl:value-of select="$eventPosition" />
+								<xsl:text>_</xsl:text>
+								<xsl:value-of select="$eventRepeatCnt" />
+								<xsl:text>_</xsl:text>
+								<xsl:value-of select="$C" />
+								<xsl:value-of select="$crfPosition" />
+								<xsl:text> A</xsl:text>
+								<!--<xsl:choose>
+									<xsl:when test="$interSignedLen &gt; 8">
+										<xsl:text>8</xsl:text>
+									</xsl:when>
+									<xsl:otherwise>-->
+										<xsl:value-of select="$interSignedLen" />
 									<!--</xsl:otherwise>
 								</xsl:choose>-->
 								<xsl:text>&#xa;</xsl:text>

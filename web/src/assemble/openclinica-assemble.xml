@@ -5,18 +5,6 @@
     <format>zip</format>
   </formats>
   <fileSets>
-  	<fileSet>
-      <directory>src/main/config/install-docs</directory>
-      <outputDirectory>install-docs</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>src/main/config</directory>
-      <outputDirectory>config</outputDirectory>
-      <includes>
-        <include>database/PostgreSQL/*/*</include>
-        <include>database/Oracle/*/*</include>
-      </includes>
-    </fileSet>
   </fileSets>
   <files>
     <file>
