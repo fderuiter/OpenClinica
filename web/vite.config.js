@@ -46,7 +46,11 @@ window.Enumerable = Enumerable;`;
         assetFileNames: 'assets/[name]-[hash].[ext]',
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('prototype-js-core') || id.includes('scriptaculous-js') || id.includes('jquery')) {
+            if (
+              id.includes('prototype-js-core') ||
+              id.includes('scriptaculous-js') ||
+              id.includes('jquery')
+            ) {
               return 'legacy-vendor';
             }
             if (id.includes('react') || id.includes('react-dom')) {
@@ -54,7 +58,7 @@ window.Enumerable = Enumerable;`;
             }
             return 'vendor';
           }
-        }
+        },
       },
     },
   },
