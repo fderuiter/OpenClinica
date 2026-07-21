@@ -1,0 +1,77 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Web Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/app-web:latest
+            ghcr.io/${{ github.repository_owner }}/app-web:${{ github.sha }}
+
+      - name: Build and Push Modern Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.modern
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/app-modern:latest
+            ghcr.io/${{ github.repository_owner }}/app-modern:${{ github.sha }}
+
+  deploy:
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute deployment over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: GH_TOKEN
+          script: |
+            cd /app
+            
+            # Log in to GHCR securely
+            echo "$GH_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            
+            # Pull published images
+            docker pull ghcr.io/${{ github.repository_owner }}/app-web:${{ github.sha }}
+            docker pull ghcr.io/${{ github.repository_owner }}/app-modern:${{ github.sha }}
+            
+            # Tag locally for docker-compose
+            docker tag ghcr.io/${{ github.repository_owner }}/app-web:${{ github.sha }} app-web:latest
+            docker tag ghcr.io/${{ github.repository_owner }}/app-modern:${{ github.sha }} app-modern:latest
+            
+            # Execute zero-downtime deployment script
+            bash ./deploy.sh

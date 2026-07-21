@@ -4001,6 +4001,16 @@ public abstract class DataEntryServlet extends CoreSecureController {
          * Marking the data entry as signed if the corresponding EventDefinitionCRF is being enabled for electronic signature.
          */
         if (edcb.isElectronicSignature()) {
+            String expectedToken = (String) session.getAttribute("signatureToken");
+            String submittedToken = request.getParameter("signatureToken");
+            
+            if (expectedToken == null || expectedToken.trim().isEmpty() || !expectedToken.equals(submittedToken)) {
+                LOGGER.warn("Failed signature handshake: Invalid, missing, or expired token for user " + ub.getName() + " at " + new Date());
+                addPageMessage("Invalid or missing electronic signature token. Please try again.", request);
+                session.removeAttribute("signatureToken");
+                return false;
+            }
+            session.removeAttribute("signatureToken");
             ecb.setElectronicSignatureStatus(true);
         }
         ecb = (EventCRFBean) ecdao.update(ecb);
