@@ -19,7 +19,8 @@
   font-weight: bold;
 }
 
-.link:hover, .link:focus {
+.link:hover,
+.link:focus {
   text-decoration: underline;
   outline: 2px solid var(--focus-color);
   outline-offset: 2px;
