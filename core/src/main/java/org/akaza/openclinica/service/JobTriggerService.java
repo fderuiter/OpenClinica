@@ -36,14 +36,14 @@ public class JobTriggerService {
     RuleSetService ruleSetService;
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
-    private static final SimpleDateFormat currentDateFormat = new SimpleDateFormat("HH:mm:ss");
+    private static final ThreadLocal<SimpleDateFormat> currentDateFormat = ThreadLocal.withInitial(() -> new SimpleDateFormat("HH:mm:ss"));
 
     // @Scheduled(cron = "0 0/2 * * * ?") // trigger every 2 minutes
     // @Scheduled(cron = "0 0/1 * * * ?") // trigger every minute
     @Scheduled(cron = "0 0 0/1 * * ?") // trigger every hour
     public void hourlyJobTrigger() throws NumberFormatException, ParseException {
         try {
-            logger.info("Beginning scheduled rule run.  The time is now " + currentDateFormat.format(new Date()));
+            logger.info("Beginning scheduled rule run.  The time is now " + currentDateFormat.get().format(new Date()));
             triggerJob();
             logger.info("Completed scheduled rule run.");
         } catch (Exception e) {
