@@ -1744,7 +1744,24 @@ function sendPostRequest(method, url, params) {
 function handleResponse() {
   if (http.readyState == 4 && http.status == 200) {
     var response = http.responseText;
-    if (response == null || response != 'true') {
+    if (response != null && response.indexOf('true|') == 0) {
+      var token = response.substring(5);
+      var tokenInput = document.getElementById('signatureToken');
+      if (!tokenInput) {
+        tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.id = 'signatureToken';
+        tokenInput.name = 'signatureToken';
+        if (checkboxObject && checkboxObject.form) {
+          checkboxObject.form.appendChild(tokenInput);
+        } else if (document.forms.length > 0) {
+          document.forms[0].appendChild(tokenInput);
+        } else {
+          document.body.appendChild(tokenInput);
+        }
+      }
+      tokenInput.value = token;
+    } else if (response == null || response != 'true') {
       checkboxObject.checked = false;
       alert('Your password did not match. Please try again.');
     }

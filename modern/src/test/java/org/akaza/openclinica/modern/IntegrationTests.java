@@ -33,7 +33,7 @@ public class IntegrationTests extends AbstractIntegrationTest {
 
     @Test
     public void testOdmImportWritesToDatabase() throws Exception {
-        String xmlPayload = "<?xml version=\"1.0\"?><ODM><ClinicalData><SubjectData/></ClinicalData></ODM>";
+        String xmlPayload = "<?xml version=\"1.0\"?><ODM xmlns=\"http://www.cdisc.org/ns/odm/v1.3\" FileType=\"Snapshot\" FileOID=\"1\" CreationDateTime=\"2023-01-01T00:00:00\"><ClinicalData StudyOID=\"S1\" MetaDataVersionOID=\"v1\"><SubjectData SubjectKey=\"SS1\"/></ClinicalData></ODM>";
         
         long countBefore = getCount("clinical_records");
         
