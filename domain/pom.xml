@@ -11,6 +11,10 @@
     <packaging>jar</packaging>
     <name>OpenClinica Domain Kernel</name>
 
+    <properties>
+        <jacoco.skip>true</jacoco.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>

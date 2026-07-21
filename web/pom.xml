@@ -387,6 +387,7 @@
 
     <properties>
     	<assembly.name>OpenClinica</assembly.name>
+        <jacoco.skip>true</jacoco.skip>
     </properties>
 
 </project>

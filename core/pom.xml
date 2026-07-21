@@ -9,6 +9,9 @@
         <artifactId>OpenClinica</artifactId>
         <version>3.18-SNAPSHOT</version>
     </parent>
+    <properties>
+        <jacoco.skip>true</jacoco.skip>
+    </properties>
     <dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
