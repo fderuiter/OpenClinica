@@ -65,7 +65,7 @@ public class TableTag extends SimpleTagSupport {
         }
 
         /*
-         * FormBuilderTest builder = new FormBuilderTest();
+
          * tagWriter.println(builder.createTable());
          */
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 cd "$DIR"
 
 # Check for Python and pip presence early on
@@ -137,12 +137,12 @@ if [ ! -z "$MALFORMED_CITATIONS" ]; then
 fi
 
 # Validate Diátaxis structural definition for tutorials
-if ! python3 validate_prose.py docs/tutorials/*.md; then
+if ! python3 utils/validate_prose.py docs/tutorials/*.md; then
     exit 1
 fi
 
 # Validate navigation config for orphaned files
-if ! python3 validate_nav.py; then
+if ! python3 utils/validate_nav.py; then
     if [ "$STRICT_MODE" = "true" ]; then
         exit 1
     else
@@ -161,7 +161,7 @@ if [ -d "web" ] && [ -f "web/package.json" ]; then
 fi
 
 # Generate REST API docs (Unified OpenAPI)
-if ! python3 merge_openapi.py; then
+if ! python3 utils/merge_openapi.py; then
     if [ "$STRICT_MODE" = "true" ]; then
         echo "Error: Python tools failed (merge_openapi.py)."
         exit 1
@@ -172,7 +172,7 @@ if ! python3 merge_openapi.py; then
 fi
 
 # Extract static SOAP definitions
-if ! python3 extract_soap.py; then
+if ! python3 utils/extract_soap.py; then
     if [ "$STRICT_MODE" = "true" ]; then
         echo "Error: Python tools failed (extract_soap.py)."
         exit 1

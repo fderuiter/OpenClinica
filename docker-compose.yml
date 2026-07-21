@@ -13,7 +13,7 @@ services:
     - db-data:/var/lib/postgresql/data
   admin:
     image: postgres:15-alpine
-    entrypoint: ["/admin.sh"]
+    entrypoint: ["/utils/admin.sh"]
     depends_on:
     - db
     environment:
@@ -26,7 +26,7 @@ services:
     - BACKUP_FILE=/tmp/backup/db_backup.dump
     volumes:
     - backup-data:/tmp/backup
-    - ./admin.sh:/admin.sh:ro
+    - ./utils/admin.sh:/utils/admin.sh:ro
   web:
     build: .
     ports:

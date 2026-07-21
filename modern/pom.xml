@@ -180,7 +180,7 @@
                                 <configuration>
                                     <executable>bash</executable>
                                     <arguments>
-                                        <argument>${project.parent.basedir}/generate-docs.sh</argument>
+                                        <argument>${project.parent.basedir}/utils/generate-docs.sh</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
