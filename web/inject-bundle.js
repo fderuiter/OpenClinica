@@ -44,15 +44,19 @@ function copyAndReplace(dir) {
         changed = true;
       } else {
         // Match script tag for prototype.js and replace it with a module script
-        const scriptTagRegex = /<script[^>]*src=(['"])([\.\/]*?)includes\/prototype\.js\1[^>]*><\/script>/g;
+        const scriptTagRegex =
+          /<script[^>]*src=(['"])([\.\/]*?)includes\/prototype\.js\1[^>]*><\/script>/g;
         if (scriptTagRegex.test(content)) {
-          content = content.replace(scriptTagRegex, `<script>
+          content = content.replace(
+            scriptTagRegex,
+            `<script>
           window._calQueue = window._calQueue || [];
           window.Calendar = { setup: function(c) { window._calQueue.push(c); } };
           window.Tip = function() {};
           window.UnTip = function() {};
           window.TagToTip = function() {};
-          </script>\n<script type="module" src=$1$2dist/${mainScript}$1></script>`);
+          </script>\n<script type="module" src=$1$2dist/${mainScript}$1></script>`
+          );
           changed = true;
         } else {
           // Fallback if it's just the path
@@ -65,11 +69,11 @@ function copyAndReplace(dir) {
           }
         }
 
-        // Remove scriptaculous and effects
-        const scriptRegex =
-          /<script[^>]*src="[^"]*includes\/(scriptaculous|effects|ua-parser\.min)\.js(\?load=effects)?"[^>]*><\/script>\s*/g;
-        if (scriptRegex.test(content)) {
-          content = content.replace(scriptRegex, '');
+        // Remove legacy scripts and links that were replaced by the bundle
+        const legacyRegex =
+          /<script[\s\S]*?includes\/(?:scriptaculous|effects|ua-parser\.min|CalendarPopup|new_cal|wz_tooltip)[\s\S]*?<\/script>\s*|<link[\s\S]*?includes\/(?:new_cal|wz_tooltip)[\s\S]*?>\s*/g;
+        if (legacyRegex.test(content)) {
+          content = content.replace(legacyRegex, '');
           changed = true;
         }
 
