@@ -6,6 +6,7 @@ import 'headjs/dist/1.0.0/head.min.js';
 import '@phagento/jquery-tmpl';
 import 'jquery-migrate';
 import 'jquery-blockui';
+import './blockui-a11y.js';
 
 // Initialize the reactive store
 import { store } from './store.js';
