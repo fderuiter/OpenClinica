@@ -31,11 +31,23 @@ function copyAndReplace(dir) {
       let changed = false;
 
       if (fullPath.endsWith('load_scripts.js')) {
+        const cssFiles = manifest['src/main/webapp/js/main.js'].css || [];
+        let cssTags = '';
+        cssFiles.forEach(css => {
+          cssTags += `
+          var bundleCss = document.createElement('link');
+          bundleCss.rel = 'stylesheet';
+          bundleCss.href = app_contextPath + "/dist/${css}";
+          document.head.appendChild(bundleCss);
+          `;
+        });
+
         content = `
           var bundleScript = document.createElement('script');
           bundleScript.type = 'module';
           bundleScript.src = app_contextPath + "/dist/${mainScript}";
           document.head.appendChild(bundleScript);
+          ${cssTags}
 
           var utilScript = document.createElement('script');
           utilScript.src = app_contextPath + "/js/util.js";

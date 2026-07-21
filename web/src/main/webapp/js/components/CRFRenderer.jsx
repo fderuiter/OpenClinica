@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { store } from '../store';
-import { THEME } from '../theme';
 import { useAccessibility } from './AccessibilityProvider.jsx';
+import styles from './CRFRenderer.module.css';
 
 const schema = {
   formOID: 'F_TEST_1',
@@ -97,10 +97,7 @@ export default function CRFRenderer() {
   }
 
   return (
-    <div
-      className="crf-renderer"
-      style={{ padding: '20px', fontFamily: 'sans-serif' }}
-    >
+    <div className={`crf-renderer ${styles.container}`}>
       <h1>Printable CRF View</h1>
       <div className="crf-details">
         <h2>Study Details</h2>
@@ -116,24 +113,10 @@ export default function CRFRenderer() {
         {schema.groups.map((group) => {
           const rows = formData[group.groupOID] || [];
           return (
-            <div
-              key={group.groupOID}
-              style={{
-                marginTop: '20px',
-                border: `1px solid ${THEME.colors.border}`,
-                padding: '10px',
-              }}
-            >
+            <div key={group.groupOID} className={styles.group}>
               <h3>{group.title}</h3>
               {rows.map((row, index) => (
-                <div
-                  key={index}
-                  style={{
-                    marginBottom: '15px',
-                    padding: '10px',
-                    backgroundColor: '#f9f9f9',
-                  }}
-                >
+                <div key={index} className={styles.row}>
                   {group.repeating && <h4>Row {index + 1}</h4>}
                   {group.fields.map((field) => {
                     const fieldId = `${group.groupOID}[${index}].${field.fieldOID}`;
@@ -141,21 +124,14 @@ export default function CRFRenderer() {
                     const discrepancyId = discrepancy ? `${fieldId}-discrepancy` : undefined;
 
                     return (
-                      <div
-                        key={field.fieldOID}
-                        style={{ marginBottom: '10px' }}
-                      >
-                        <label
-                          htmlFor={fieldId}
-                          style={{ display: 'inline-block', width: '150px' }}
-                        >
+                      <div key={field.fieldOID} className={styles.field}>
+                        <label htmlFor={fieldId} className={styles.label}>
                           {field.label}:
                         </label>
                         
                         {discrepancy && (
                           <span 
-                            className={`discrepancy-badge ${discrepancy.badgeClass}`} 
-                            style={{ marginLeft: '5px', marginRight: '5px', fontWeight: 'bold', color: 'red' }}
+                            className={`discrepancy-badge ${discrepancy.badgeClass} ${styles.discrepancyBadge}`}
                             title={`Severity: ${discrepancy.severityCode}`}
                           >
                             [{discrepancy.severityCode}]
@@ -165,6 +141,7 @@ export default function CRFRenderer() {
                           <select
                             id={fieldId}
                             name={fieldId}
+                            className={styles.input}
                             value={row[field.fieldOID] || ''}
                             onChange={(e) =>
                               store.setFormData(
@@ -188,6 +165,7 @@ export default function CRFRenderer() {
                             id={fieldId}
                             name={fieldId}
                             type={field.type}
+                            className={styles.input}
                             value={row[field.fieldOID] || ''}
                             onChange={(e) =>
                               store.setFormData(
@@ -202,10 +180,7 @@ export default function CRFRenderer() {
                         )}
 
                         {discrepancy && (
-                          <div 
-                            id={discrepancyId} 
-                            style={{ display: 'block', fontSize: '12px', color: 'red', marginLeft: '150px', marginTop: '5px' }}
-                          >
+                          <div id={discrepancyId} className={styles.discrepancyText}>
                             {discrepancy.text}
                           </div>
                         )}
@@ -215,6 +190,7 @@ export default function CRFRenderer() {
                   {group.repeating && (
                     <button
                       type="button"
+                      className={styles.button}
                       onClick={() => {
                         store.removeRow(group.groupOID, index);
                         announce(
@@ -230,6 +206,7 @@ export default function CRFRenderer() {
               {group.repeating && (
                 <button
                   type="button"
+                  className={styles.button}
                   onClick={() => {
                     store.addRow(group.groupOID, schema);
                     announce(`New row added to ${group.title}`);
@@ -244,14 +221,7 @@ export default function CRFRenderer() {
       </form>
 
       {/* Investigator Signature Block */}
-      <div
-        className="investigator-signature"
-        style={{
-          marginTop: '40px',
-          borderTop: '1px solid #000',
-          paddingTop: '10px',
-        }}
-      >
+      <div className={`investigator-signature ${styles.signatureBlock}`}>
         <p>
           <strong>{window.app_investigatorLabel || 'Investigator'}:</strong>{' '}
           _________________________
