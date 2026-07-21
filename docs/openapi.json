@@ -398,7 +398,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseConfigurationDraft"
+                  "$ref": "#/components/schemas/ConfigurationDraft"
                 }
               }
             }
@@ -690,7 +690,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseConfigurationDraft"
+                  "$ref": "#/components/schemas/ConfigurationDraft"
                 }
               }
             }
@@ -720,7 +720,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseString"
+                  "type": "string"
                 }
               }
             }
@@ -1128,26 +1128,6 @@
           },
           "override": {
             "type": "string"
-          }
-        }
-      },
-      "ApiResponseConfigurationDraft": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "$ref": "#/components/schemas/ConfigurationDraft"
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ApiError"
-            }
-          },
-          "meta": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object"
-            }
           }
         }
       },
