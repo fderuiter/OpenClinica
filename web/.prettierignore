@@ -1,1 +1,6 @@
-node_modules/\ntarget/\nsrc/main/webapp/dist/\npackage-lock.json\nsrc/main/webapp/js/vendor/\nsrc/main/webapp/includes/
+node_modules/
+target/
+src/main/webapp/dist/
+package-lock.json
+src/main/webapp/js/vendor/
+src/main/webapp/includes/

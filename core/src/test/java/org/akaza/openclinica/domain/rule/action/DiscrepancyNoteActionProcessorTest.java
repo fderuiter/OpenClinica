@@ -45,11 +45,6 @@ public class DiscrepancyNoteActionProcessorTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        ApplicationContextProvider provider = new ApplicationContextProvider();
-        provider.setApplicationContext(mockApplicationContext);
-
-        when(mockApplicationContext.getBean("transactionManager")).thenReturn(mockTransactionManager);
-        when(mockTransactionManager.getTransaction(any())).thenReturn(mockTransactionStatus);
     }
 
     @Test

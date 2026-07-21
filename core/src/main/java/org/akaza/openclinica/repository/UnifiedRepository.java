@@ -58,6 +58,8 @@ public class UnifiedRepository {
     private org.akaza.openclinica.dao.submit.ItemFormMetadataDAO itemFormMetadataDaoJdbc; 
 
 
+    private org.akaza.openclinica.dao.login.UserAccountDAO userAccountDaoJdbc;
+
     @Autowired
     public UnifiedRepository(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -71,8 +73,13 @@ public class UnifiedRepository {
         this.itemDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDAO(dataSource);
         this.itemDataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDataDAO(dataSource);
         this.itemFormMetadataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemFormMetadataDAO(dataSource);
+        this.userAccountDaoJdbc = new org.akaza.openclinica.dao.login.UserAccountDAO(dataSource);
     }
     
+    public org.akaza.openclinica.bean.login.UserAccountBean getUserAccountBeanByUserName(String userName) {
+        return (org.akaza.openclinica.bean.login.UserAccountBean) userAccountDaoJdbc.findByUserName(userName);
+    }
+
     public void setStudyDaoHibernate(StudyDao studyDaoHibernate) {
         this.studyDaoHibernate = studyDaoHibernate;
     }

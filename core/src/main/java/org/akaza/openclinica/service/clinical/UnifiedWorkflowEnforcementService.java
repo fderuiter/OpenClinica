@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,6 +91,10 @@ public class UnifiedWorkflowEnforcementService {
             this.dataSource = new org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy(dataSource);
         }
     }
+    @Autowired
+    @Lazy
+    private org.akaza.openclinica.service.streamer.AIEventStreamerService aiEventStreamerService;
+
     @Autowired
     private EventCrfDao eventCrfDao;
 
@@ -317,13 +322,8 @@ public class UnifiedWorkflowEnforcementService {
         validateLock(eventCrf);
         EventCrf saved = eventCrfDao.saveOrUpdate(eventCrf);
         try {
-            if (org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext() != null) {
-                org.akaza.openclinica.service.streamer.AIEventStreamerService streamer = 
-                    (org.akaza.openclinica.service.streamer.AIEventStreamerService) 
-                    org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("aiEventStreamerService");
-                if (streamer != null && saved.getEventCrfId() > 0) {
-                    streamer.streamEventCrfAsync(saved.getEventCrfId());
-                }
+            if (aiEventStreamerService != null && saved.getEventCrfId() > 0) {
+                aiEventStreamerService.streamEventCrfAsync(saved.getEventCrfId());
             }
         } catch (Exception e) {
             logger.warn("Could not trigger AIEventStreamerService", e);
