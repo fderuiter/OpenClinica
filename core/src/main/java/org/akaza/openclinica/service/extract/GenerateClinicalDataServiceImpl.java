@@ -245,7 +245,7 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 			
 			if(studyEvents!=null)
 			{
-			expSubjectBean = setExportSubjectDataBean(studySubj, study,studyEvents,formVersionOID);
+			expSubjectBean = setExportSubjectDataBean(true, studySubj, study,studyEvents,formVersionOID);
 			exportSubjDataBeanList.add(expSubjectBean);
 			
 			odmClinicalDataBean.setExportSubjectData(exportSubjDataBeanList);
@@ -260,7 +260,7 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 
 
 	@SuppressWarnings("unchecked")
-	private ExportSubjectDataBean setExportSubjectDataBean(
+	private ExportSubjectDataBean setExportSubjectDataBean(boolean includeSignatures, 
 			StudySubject studySubj, Study study,List<StudyEvent> studyEvents,String formVersionOID) {
 
 		ExportSubjectDataBean exportSubjectDataBean = new ExportSubjectDataBean();
@@ -298,7 +298,7 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 			exportSubjectDataBean.setDiscrepancyNotes(fetchDiscrepancyNotes(studySubj));
 		
 		exportSubjectDataBean
-				.setExportStudyEventData(setExportStudyEventDataBean(studySubj,studyEvents,formVersionOID));
+				.setExportStudyEventData(setExportStudyEventDataBean(includeSignatures, studySubj,studyEvents,formVersionOID));
 
 		exportSubjectDataBean.setSubjectOID(studySubj.getOcOid());
 		
@@ -325,7 +325,7 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 		return subjectBelongs;
 	}
 
-	private ArrayList<ExportStudyEventDataBean> setExportStudyEventDataBean(
+	private ArrayList<ExportStudyEventDataBean> setExportStudyEventDataBean(boolean includeSignatures, 
 			StudySubject ss,List<StudyEvent>sEvents,String formVersionOID) {
 		ArrayList<ExportStudyEventDataBean> al = new ArrayList<ExportStudyEventDataBean>();
            
@@ -368,6 +368,7 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 			    expSEBean.setLocked("Yes");
 			} else if (ses == org.akaza.openclinica.domain.datamap.SubjectEventStatus.SIGNED) {
 			    expSEBean.setSigned("Yes");
+				if (includeSignatures) { addSignatureMetadata(expSEBean, se.getStudyEventId()); }
 			} else if (ses == org.akaza.openclinica.domain.datamap.SubjectEventStatus.STOPPED) {
 			    expSEBean.setStopped("Yes");
 			}
@@ -377,7 +378,7 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 			if(collectDns)
 				expSEBean.setDiscrepancyNotes(fetchDiscrepancyNotes(se));
 			
-			expSEBean.setExportFormData(getFormDataForClinicalStudy(ss,se,formVersionOID));
+			expSEBean.setExportFormData(getFormDataForClinicalStudy(includeSignatures, ss,se,formVersionOID));
 			expSEBean.setStudyEventDefinition(se.getStudyEventDefinition());
 						al.add(expSEBean);
 		}
@@ -394,7 +395,61 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 	
 	
 	
-	private ArrayList<ExportFormDataBean> getFormDataForClinicalStudy(
+	private void addSignatureMetadata(org.akaza.openclinica.bean.submit.crfdata.ExportStudyEventDataBean expSEBean, int studyEventId) {
+		org.akaza.openclinica.domain.datamap.AuditLogEvent searchParams = new org.akaza.openclinica.domain.datamap.AuditLogEvent();
+		searchParams.setEntityId(studyEventId);
+		searchParams.setAuditTable("study_event");
+		java.util.ArrayList<org.akaza.openclinica.domain.datamap.AuditLogEvent> events = getAuditEventDAO().findByParam(searchParams, null);
+		org.akaza.openclinica.domain.datamap.AuditLogEvent latestSignature = null;
+		for (org.akaza.openclinica.domain.datamap.AuditLogEvent e : events) {
+			if ("8".equals(e.getNewValue()) || "signed".equalsIgnoreCase(e.getNewValue())) {
+				if (latestSignature == null || e.getAuditDate().after(latestSignature.getAuditDate())) {
+					latestSignature = e;
+				}
+			}
+		}
+		if (latestSignature != null) {
+			if (latestSignature.getUserAccount() != null) {
+				expSEBean.setSignerName(latestSignature.getUserAccount().getFirstName() + " " + latestSignature.getUserAccount().getLastName());
+			} else {
+				expSEBean.setSignerName("Unknown User");
+			}
+			expSEBean.setSignatureDate(latestSignature.getAuditDate().toString());
+			String reason = org.akaza.openclinica.i18n.util.ResourceBundleProvider.getWordsBundle(getLocale()).getString("sure_to_sign_subject1");
+			expSEBean.setSignatureReason(reason);
+		}
+	}
+
+	private void addSignatureMetadata(org.akaza.openclinica.bean.submit.crfdata.ExportFormDataBean dataBean, int eventCrfId) {
+		org.akaza.openclinica.domain.datamap.AuditLogEvent searchParams = new org.akaza.openclinica.domain.datamap.AuditLogEvent();
+		searchParams.setEntityId(eventCrfId);
+		searchParams.setAuditTable("event_crf");
+		java.util.ArrayList<org.akaza.openclinica.domain.datamap.AuditLogEvent> events = getAuditEventDAO().findByParam(searchParams, null);
+		org.akaza.openclinica.domain.datamap.AuditLogEvent latestSignature = null;
+		for (org.akaza.openclinica.domain.datamap.AuditLogEvent e : events) {
+			int typeId = 0;
+			if (e.getAuditLogEventType() != null) {
+				typeId = e.getAuditLogEventType().getAuditLogEventTypeId();
+			}
+			if (typeId == 14 || typeId == 15 || typeId == 16 || "8".equals(e.getNewValue()) || "signed".equalsIgnoreCase(e.getNewValue())) {
+				if (latestSignature == null || e.getAuditDate().after(latestSignature.getAuditDate())) {
+					latestSignature = e;
+				}
+			}
+		}
+		if (latestSignature != null) {
+			if (latestSignature.getUserAccount() != null) {
+				dataBean.setSignerName(latestSignature.getUserAccount().getFirstName() + " " + latestSignature.getUserAccount().getLastName());
+			} else {
+				dataBean.setSignerName("Unknown User");
+			}
+			dataBean.setSignatureDate(latestSignature.getAuditDate().toString());
+			String reason = org.akaza.openclinica.i18n.util.ResourceBundleProvider.getWordsBundle(getLocale()).getString("sure_to_sign_subject1");
+			dataBean.setSignatureReason(reason);
+		}
+	}
+
+	private ArrayList<ExportFormDataBean> getFormDataForClinicalStudy(boolean includeSignatures, 
 		StudySubject ss,	StudyEvent se,String formVersionOID) {
 		List<ExportFormDataBean> formDataBean = new ArrayList<ExportFormDataBean>();
 		boolean formCheck = true;
@@ -452,6 +507,7 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
 				    dataBean.setLocked("Yes");
 				} else if (ecses == org.akaza.openclinica.domain.datamap.SubjectEventStatus.SIGNED) {
 				    dataBean.setSigned("Yes");
+				    if (includeSignatures) { addSignatureMetadata(dataBean, ecrf.getEventCrfId()); }
 				} else if (ecses == org.akaza.openclinica.domain.datamap.SubjectEventStatus.STOPPED) {
 				    dataBean.setStopped("Yes");
 				}
@@ -1163,7 +1219,7 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
             }
             
             if(studyEvents != null) {
-                ExportSubjectDataBean expSubjectBean = setExportSubjectDataBean(studySubj, study, studyEvents, formVersionOID);
+                ExportSubjectDataBean expSubjectBean = setExportSubjectDataBean(false, studySubj, study, studyEvents, formVersionOID);
                 writer.writeSubjectData(expSubjectBean);
                 
                 // Clear hibernate session to avoid memory leak

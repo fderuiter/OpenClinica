@@ -146,6 +146,9 @@ public class AsyncImportTask implements Runnable {
                             @Override
                             protected void doInTransactionWithoutResult(TransactionStatus status) {
                                 try {
+                                    org.akaza.openclinica.logic.importdata.StreamingSubjectDataList streamingList = (org.akaza.openclinica.logic.importdata.StreamingSubjectDataList) odmContainer.getCrfDataPostImportContainer().getSubjectData();
+                                    service.updateElectronicSignatures(streamingList.getEventSignatureMap(), streamingList.getFormSignatureMap(), ub);
+
                                     RuleSetServiceInterface ruleSetService = (RuleSetServiceInterface) context.getBean("ruleSetService");
                                     List<ImportDataRuleRunnerContainer> containers = ruleRunSetup(dataSource, currentStudy, ruleSetService, odmContainer);
                                     
