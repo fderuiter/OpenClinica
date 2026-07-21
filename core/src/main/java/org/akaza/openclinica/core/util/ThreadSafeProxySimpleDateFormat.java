@@ -150,9 +150,4 @@ public class ThreadSafeProxySimpleDateFormat extends SimpleDateFormat {
     public AttributedCharacterIterator formatToCharacterIterator(Object obj) {
         return threadLocalFormat.get().formatToCharacterIterator(obj);
     }
-
-    @Override
-    public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-        return threadLocalFormat.get().format(obj, toAppendTo, pos);
-    }
 }

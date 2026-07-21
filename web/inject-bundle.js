@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { JSDOM } = require('jsdom');
 
 const manifestPath = path.join(
   __dirname,
@@ -10,6 +11,128 @@ const mainScript = manifest['src/main/webapp/js/main.js'].file;
 
 const srcDir = path.join(__dirname, 'src/main/webapp');
 const outDir = path.join(__dirname, 'target/vite-resources');
+
+function modifyScripts(rootNode, mainScript) {
+  let changed = false;
+  const scripts = Array.from(rootNode.querySelectorAll('script'));
+  for (const script of scripts) {
+    const src = script.getAttribute('src');
+    if (src && src.includes('includes/prototype.js')) {
+      script.setAttribute('type', 'module');
+      script.setAttribute('src', src.replace(/includes\/prototype\.js/, `dist/${mainScript}`));
+      
+      const shim = script.ownerDocument.createElement('script');
+      shim.textContent = `
+          window._calQueue = window._calQueue || [];
+          window.Calendar = { setup: function(c) { window._calQueue.push(c); } };
+          window.Tip = function() {};
+          window.UnTip = function() {};
+          window.TagToTip = function() {};
+      `;
+      script.parentNode.insertBefore(shim, script);
+      
+      changed = true;
+    } else if (src && (
+      src.includes('includes/scriptaculous.js') ||
+      src.includes('includes/effects.js') ||
+      src.includes('includes/ua-parser.min.js') ||
+      src.includes('includes/CalendarPopup.js') ||
+      src.includes('includes/new_cal.js') ||
+      src.includes('includes/wz_tooltip.js') ||
+      src.includes('/js/lib/head.min.js') ||
+      src.includes('includes/head.min.js')
+    )) {
+      script.remove();
+      changed = true;
+    }
+  }
+
+  const links = Array.from(rootNode.querySelectorAll('link'));
+  for (const link of links) {
+    const href = link.getAttribute('href');
+    if (href && (href.includes('includes/new_cal') || href.includes('includes/wz_tooltip'))) {
+      link.remove();
+      changed = true;
+    }
+  }
+  return changed;
+}
+
+function processTemplate(content, mainScript) {
+  // 1. Extract leading directives
+  const directiveRegex = /^\s*<%@\s[^%]*%>/;
+  let directives = '';
+  let remaining = content;
+  while (true) {
+    const match = remaining.match(directiveRegex);
+    if (match) {
+      directives += match[0];
+      remaining = remaining.substring(match[0].length);
+    } else {
+      break;
+    }
+  }
+
+  // 2. Shield remaining JSP custom tags and scriptlets
+  const placeholders = [];
+  let placeholderCounter = 0;
+  
+  // Matches <%...%> scriptlets and <prefix:name ...> or </prefix:name> tags
+  const jspRegex = /(<%[\s\S]*?%>|<\/?[a-zA-Z0-9_-]+:[a-zA-Z0-9_-]+(?:\s+(?:[^"'>]|"[^"]*"|'[^']*')*)*\s*\/?>)/gi;
+
+  const shielded = remaining.replace(jspRegex, (match) => {
+    const id = placeholderCounter++;
+    placeholders.push({ id, original: match });
+    return `<!-- JSP_PLACEHOLDER_${id} -->`;
+  });
+
+  // 3. Determine parsing strategy
+  const hasHtmlTag = /<html/i.test(shielded);
+  let serialized = '';
+  let changed = false;
+
+  if (hasHtmlTag) {
+    const dom = new JSDOM(shielded);
+    const document = dom.window.document;
+    
+    changed = modifyScripts(document, mainScript);
+    
+    serialized = dom.serialize();
+  } else {
+    const dom = new JSDOM();
+    const fragment = JSDOM.fragment(shielded);
+    
+    changed = modifyScripts(fragment, mainScript);
+    
+    const tempContainer = dom.window.document.createElement('div');
+    tempContainer.appendChild(fragment);
+    serialized = tempContainer.innerHTML;
+  }
+
+  // 4. Restore placeholders
+  let restored = serialized;
+  for (const ph of placeholders) {
+    const unescaped = `<!-- JSP_PLACEHOLDER_${ph.id} -->`;
+    const escaped = `&lt;!-- JSP_PLACEHOLDER_${ph.id} --&gt;`;
+    
+    restored = restored.split(unescaped).join(ph.original);
+    restored = restored.split(escaped).join(ph.original);
+  }
+
+  // 5. Prepend top-level directives back
+  let finalContent = directives + restored;
+
+  // 6. Run fallback string replacement on final output (to catch raw javascript/inline occurrences)
+  const fallbackRegex = /(['"])([\.\/]*?)includes\/prototype\.js\1/g;
+  if (fallbackRegex.test(finalContent)) {
+    finalContent = finalContent.replace(fallbackRegex, (match, quote, prefix) => {
+      return `${quote}${prefix}dist/${mainScript}${quote}`;
+    });
+    changed = true;
+  }
+
+  return { finalContent, changed };
+}
 
 function copyAndReplace(dir) {
   if (!fs.existsSync(dir)) return;
@@ -31,11 +154,23 @@ function copyAndReplace(dir) {
       let changed = false;
 
       if (fullPath.endsWith('load_scripts.js')) {
+        const cssFiles = manifest['src/main/webapp/js/main.js'].css || [];
+        let cssTags = '';
+        cssFiles.forEach(css => {
+          cssTags += `
+          var bundleCss = document.createElement('link');
+          bundleCss.rel = 'stylesheet';
+          bundleCss.href = app_contextPath + "/dist/${css}";
+          document.head.appendChild(bundleCss);
+          `;
+        });
+
         content = `
           var bundleScript = document.createElement('script');
           bundleScript.type = 'module';
           bundleScript.src = app_contextPath + "/dist/${mainScript}";
           document.head.appendChild(bundleScript);
+          ${cssTags}
 
           var utilScript = document.createElement('script');
           utilScript.src = app_contextPath + "/js/util.js";
@@ -43,46 +178,9 @@ function copyAndReplace(dir) {
         `;
         changed = true;
       } else {
-        // Match script tag for prototype.js and replace it with a module script
-        const scriptTagRegex =
-          /<script[^>]*src=(['"])([\.\/]*?)includes\/prototype\.js\1[^>]*><\/script>/g;
-        if (scriptTagRegex.test(content)) {
-          content = content.replace(
-            scriptTagRegex,
-            `<script>
-          window._calQueue = window._calQueue || [];
-          window.Calendar = { setup: function(c) { window._calQueue.push(c); } };
-          window.Tip = function() {};
-          window.UnTip = function() {};
-          window.TagToTip = function() {};
-          </script>\n<script type="module" src=$1$2dist/${mainScript}$1></script>`
-          );
-          changed = true;
-        } else {
-          // Fallback if it's just the path
-          const regex = /(['"])([\.\/]*?)includes\/prototype\.js\1/g;
-          if (regex.test(content)) {
-            content = content.replace(regex, (match, quote, prefix) => {
-              return `${quote}${prefix}dist/${mainScript}${quote}`;
-            });
-            changed = true;
-          }
-        }
-
-        // Remove legacy scripts and links that were replaced by the bundle
-        const legacyRegex =
-          /<script[\s\S]*?includes\/(?:scriptaculous|effects|ua-parser\.min|CalendarPopup|new_cal|wz_tooltip)[\s\S]*?<\/script>\s*|<link[\s\S]*?includes\/(?:new_cal|wz_tooltip)[\s\S]*?>\s*/g;
-        if (legacyRegex.test(content)) {
-          content = content.replace(legacyRegex, '');
-          changed = true;
-        }
-
-        const headRegex =
-          /<script[^>]*src="[^"]*\/js\/lib\/head\.min\.js"[^>]*><\/script>\s*/g;
-        if (headRegex.test(content)) {
-          content = content.replace(headRegex, '');
-          changed = true;
-        }
+        const result = processTemplate(content, mainScript);
+        content = result.finalContent;
+        changed = result.changed;
       }
 
       if (changed) {

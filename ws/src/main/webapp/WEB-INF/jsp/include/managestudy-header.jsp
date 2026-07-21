@@ -40,10 +40,10 @@
     <script type="text/javascript" src="includes/new_cal/calendar-setup.js"></script>
 <!-- End -->
     
-<%--<script type="text/javascript"  language="JavaScript" src=
+
 <script type="text/JavaScript" language="JavaScript" src="includes/prototype.js"></script>
-<%--<script type="text/JavaScript" language="JavaScript" src="includes/scriptaculous.js"></script>
-<script type="text/JavaScript" language="JavaScript" src="includes/effects.js"></script>--%></head>
+<script type="text/JavaScript" language="JavaScript" src="includes/scriptaculous.js"></script>
+<script type="text/JavaScript" language="JavaScript" src="includes/effects.js"></script></head>
 
 
 <body style="width:1024px;" class="main_BG"

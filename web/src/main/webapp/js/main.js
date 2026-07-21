@@ -22,6 +22,7 @@ import { createRoot } from 'react-dom/client';
 import Navigation from './components/Navigation.jsx';
 import CRFRenderer from './components/CRFRenderer.jsx';
 import { AccessibilityProvider } from './components/AccessibilityProvider.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 
 function mountReactApp() {
   const isPrintableMode =
@@ -36,9 +37,13 @@ function mountReactApp() {
       const crfRoot = createRoot(crfContainer);
       crfRoot.render(
         React.createElement(
-          AccessibilityProvider,
+          ErrorBoundary,
           null,
-          React.createElement(CRFRenderer, null)
+          React.createElement(
+            AccessibilityProvider,
+            null,
+            React.createElement(CRFRenderer, null)
+          )
         )
       );
     }
@@ -49,9 +54,13 @@ function mountReactApp() {
       const navRoot = createRoot(menuContainer);
       navRoot.render(
         React.createElement(
-          AccessibilityProvider,
+          ErrorBoundary,
           null,
-          React.createElement(Navigation, null)
+          React.createElement(
+            AccessibilityProvider,
+            null,
+            React.createElement(Navigation, null)
+          )
         )
       );
     }
