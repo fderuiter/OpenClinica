@@ -187,64 +187,148 @@ public class RuleRunner {
     }
 
     ExpressionService getExpressionService() {
-        expressionService = this.expressionService != null ? expressionService : new ExpressionService(ds);
+        if (expressionService == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    expressionService = (ExpressionService) context.getBean("expressionService");
+                }
+            } catch (Exception e) {}
+        }
         return expressionService;
     }
 
     RuleSetDAO getRuleSetDao() {
-        ruleSetDao = this.ruleSetDao != null ? ruleSetDao : new RuleSetDAO(ds);
+        if (ruleSetDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    ruleSetDao = (RuleSetDAO) context.getBean("ruleSetDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
         return ruleSetDao;
     }
 
     CRFDAO getCrfDao() {
-        crfDao = this.crfDao != null ? crfDao : new CRFDAO(ds);
+        if (crfDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    crfDao = (CRFDAO) context.getBean("crfDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
         return crfDao;
     }
 
     RuleSetRuleDAO getRuleSetRuleDao() {
-        ruleSetRuleDao = this.ruleSetRuleDao != null ? ruleSetRuleDao : new RuleSetRuleDAO(ds);
+        if (ruleSetRuleDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    ruleSetRuleDao = (RuleSetRuleDAO) context.getBean("ruleSetRuleDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
         return ruleSetRuleDao;
     }
 
 
 
     StudyEventDAO getStudyEventDao() {
-        studyEventDao = this.studyEventDao != null ? studyEventDao : new StudyEventDAO(ds);
+        if (studyEventDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    studyEventDao = (StudyEventDAO) context.getBean("studyeventdaojdbc");
+                }
+            } catch (Exception e) {}
+        }
         return studyEventDao;
     }
 
     ItemDataDAO getItemDataDao() {
-        itemDataDao = this.itemDataDao != null ? itemDataDao : new ItemDataDAO(ds);
+        if (itemDataDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    itemDataDao = (ItemDataDAO) context.getBean("itemDataDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
         return itemDataDao;
     }
 
     EventCRFDAO getEventCrfDao() {
-        eventCrfDao = this.eventCrfDao != null ? eventCrfDao : new EventCRFDAO(ds);
+        if (eventCrfDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    eventCrfDao = (EventCRFDAO) context.getBean("eventCrfDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
         return eventCrfDao;
     }
 
     CRFVersionDAO getCrfVersionDao() {
-        crfVersionDao = this.crfVersionDao != null ? crfVersionDao : new CRFVersionDAO(ds);
+        if (crfVersionDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    crfVersionDao = (CRFVersionDAO) context.getBean("crfVersionDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
         return crfVersionDao;
     }
 
     StudySubjectDAO getStudySubjectDao() {
-        studySubjectDao = this.studySubjectDao != null ? studySubjectDao : new StudySubjectDAO(ds);
+        if (studySubjectDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    studySubjectDao = (StudySubjectDAO) context.getBean("studySubjectDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
         return studySubjectDao;
     }
 
     ItemFormMetadataDAO getItemFormMetadataDAO() {
-        itemFormMetadataDao = this.itemFormMetadataDao != null ? itemFormMetadataDao : new ItemFormMetadataDAO(ds);
+        if (itemFormMetadataDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    itemFormMetadataDao = (ItemFormMetadataDAO) context.getBean("itemFormMetadataDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
         return itemFormMetadataDao;
     }
 
     SectionDAO getSectionDAO() {
-        sectionDao = this.sectionDao != null ? sectionDao : new SectionDAO(ds);
+        if (sectionDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    sectionDao = (SectionDAO) context.getBean("sectionDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
         return sectionDao;
     }
 
     StudyDAO getStudyDao() {
-        studyDao = this.studyDao != null ? studyDao : new StudyDAO(ds);
+        if (studyDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    studyDao = (StudyDAO) context.getBean("studyDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
         return studyDao;
     }
 

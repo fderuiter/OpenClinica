@@ -49,7 +49,7 @@
         <constructor-arg ref="dataSource"/>
     </bean>
 
-    <bean id="randomizeService" class="org.akaza.openclinica.service.RandomizeService">
+    <bean id="randomizeService" class="org.akaza.openclinica.service.RandomizeService" autowire="byName">
         <constructor-arg ref="dataSource"/>
     </bean>
 
@@ -81,9 +81,73 @@
         <constructor-arg ref="dataSource"/>
     </bean>
    
-    <bean id="studyeventdaojdbc" class="org.akaza.openclinica.dao.managestudy.StudyEventDAO">
+    <bean id="studyeventdaojdbc" lazy-init="true" class="org.akaza.openclinica.dao.managestudy.StudyEventDAO">
        <constructor-arg ref="dataSource"/>
     </bean>
+
+    <bean id="ruleSetDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.rule.RuleSetDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="crfDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.admin.CRFDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="ruleSetRuleDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.rule.RuleSetRuleDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="ruleActionDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.rule.action.RuleActionDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="itemDataDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.submit.ItemDataDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="eventCrfDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.submit.EventCRFDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="crfVersionDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.submit.CRFVersionDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="studySubjectDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.managestudy.StudySubjectDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="itemFormMetadataDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.submit.ItemFormMetadataDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="sectionDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.submit.SectionDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="studyDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.managestudy.StudyDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    
+    <!-- Added new DAOs -->
+    <bean id="studyEventDefinitionDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="ruleDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.rule.RuleDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="ruleSetAuditDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.rule.RuleSetAuditDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="expressionDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.rule.ExpressionDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="ruleSetRuleAuditDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.rule.RuleSetRuleAuditDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="eventDefinitionCrfDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.managestudy.EventDefinitionCRFDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="itemGroupDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.submit.ItemGroupDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="itemGroupMetadataDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.submit.ItemGroupMetadataDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="itemDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.submit.ItemDAO">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
 
     <bean id="studyEventBeanListener" class="org.akaza.openclinica.service.rule.StudyEventBeanListener">
         <constructor-arg ref="studyeventdaojdbc"></constructor-arg>
@@ -97,6 +161,8 @@
     <bean id="archivedDatasetFileDao" class="org.akaza.openclinica.dao.extract.ArchivedDatasetFileDAO">
         <constructor-arg ref="dataSource"/>
     </bean>
+
+
 
     <bean id="ruleSetListenerService" class="org.akaza.openclinica.service.rule.RuleSetListenerService">
         <property name="ruleSetService" ref="ruleSetService"/>
@@ -149,7 +215,7 @@
         <property name="userAccountDao" ref="userDaoDomain"/>
     </bean>
 
-    <bean id="ExpressionService" class="org.akaza.openclinica.service.rule.expression.ExpressionService">
+    <bean id="expressionService" class="org.akaza.openclinica.service.rule.expression.ExpressionService">
        <constructor-arg ref="dataSource"/>
     </bean>
 

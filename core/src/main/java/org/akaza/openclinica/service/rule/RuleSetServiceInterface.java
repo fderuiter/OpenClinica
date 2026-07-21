@@ -46,7 +46,7 @@ public interface RuleSetServiceInterface {
      *         public RuleSetBean saveRuleSet(RuleSetBean ruleSetBean) { RuleSetBean persistentRuleSetBean = (RuleSetBean)
      *         getRuleSetDao().saveOrUpdate(ruleSetBean); // Save RuleSetRules for (RuleSetRuleBean ruleSetRule : persistentRuleSetBean.getRuleSetRules()) {
      *         ruleSetRule.setRuleSetBean(persistentRuleSetBean); getRuleSetRuleDao().saveOrUpdate(ruleSetRule); // Save Actions for (RuleActionBean action :
-     *         ruleSetRule.getActions()) { action.setRuleSetRule(ruleSetRule); getRuleActionDao().saveOrUpdate(action); } } return persistentRuleSetBean; }
+     *         ruleSetRule.getActions()) { action.setRuleSetRule(ruleSetRule); getRuleActionDao().saveOrUpdate(action); } } return persistentRuleSetBean; 
      */
 
     public abstract RuleSetBean saveRuleSet(RuleSetBean ruleSetBean);
@@ -224,4 +224,8 @@ public interface RuleSetServiceInterface {
      */
     public boolean shouldRunRulesForRuleSets(List<RuleSetBean> ruleSets, Phase phase);
 
+
+    public org.akaza.openclinica.domain.rule.expression.ExpressionBean replaceSEDOrdinal(org.akaza.openclinica.domain.rule.expression.ExpressionBean targetExpression, org.akaza.openclinica.bean.managestudy.StudyEventBean studyEvent);
+
+    public void runIndividualRulesInBeanProperty(java.util.List<org.akaza.openclinica.domain.rule.RuleSetBean> ruleSets, Integer userId, org.akaza.openclinica.patterns.ocobserver.StudyEventChangeDetails changeDetails, Integer studyEventOrdinal);
 }

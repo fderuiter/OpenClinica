@@ -77,7 +77,6 @@ public class RandomizeService extends RandomizationRegistrar {
 
     public RandomizeService(DataSource ds) {
         this.ds = ds;
-        this.expressionService = new ExpressionService(ds);
     }
 
     // Rest Call to OCUI to get Randomization

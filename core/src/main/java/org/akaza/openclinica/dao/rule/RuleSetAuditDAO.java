@@ -60,11 +60,27 @@ public class RuleSetAuditDAO extends EntityDAO {
     }
 
     private RuleSetDAO getRuleSetDao() {
-        return this.ruleSetDao != null ? this.ruleSetDao : new RuleSetDAO(ds);
+        if (ruleSetDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    ruleSetDao = (RuleSetDAO) context.getBean("ruleSetDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return ruleSetDao;
     }
 
     private UserAccountDAO getUserAccountDao() {
-        return this.userAccountDao != null ? this.userAccountDao : new UserAccountDAO(ds);
+        if (userAccountDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    userAccountDao = (UserAccountDAO) context.getBean("userAccountDao");
+                }
+            } catch (Exception e) {}
+        }
+        return userAccountDao;
     }
 
     @Override

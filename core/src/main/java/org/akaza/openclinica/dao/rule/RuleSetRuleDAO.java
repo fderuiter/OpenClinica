@@ -53,11 +53,27 @@ public class RuleSetRuleDAO extends AuditableEntityDAO {
     }
 
     private RuleDAO getRuleDao() {
-        return this.ruleDao != null ? this.ruleDao : new RuleDAO(ds);
+        if (ruleDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    ruleDao = (RuleDAO) context.getBean("ruleDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return ruleDao;
     }
 
     private RuleSetDAO getRuleSetDao() {
-        return this.ruleSetDao != null ? this.ruleSetDao : new RuleSetDAO(ds);
+        if (ruleSetDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    ruleSetDao = (RuleSetDAO) context.getBean("ruleSetDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return ruleSetDao;
     }
 
     public RuleSetRuleDAO(DataSource ds, DAODigester digester) {
@@ -67,7 +83,15 @@ public class RuleSetRuleDAO extends AuditableEntityDAO {
     }
 
     private RuleSetRuleAuditDAO getRuleSetRuleAuditDao() {
-        return this.ruleSetRuleAuditDao != null ? this.ruleSetRuleAuditDao : new RuleSetRuleAuditDAO(ds);
+        if (ruleSetRuleAuditDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    ruleSetRuleAuditDao = (RuleSetRuleAuditDAO) context.getBean("ruleSetRuleAuditDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return ruleSetRuleAuditDao;
     }
 
     @Override
