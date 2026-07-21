@@ -111,7 +111,7 @@ public class SubjectService implements SubjectServiceInterface {
         SubjectBean oldSubject = (SubjectBean) sdao.findByPK(subjectBean.getId());
         subjectBean.setUpdater(updater);
         subjectBean.setUpdatedDate(new Date());
-        SubjectBean updatedSubject = (SubjectBean) sdao.update(subjectBean);
+        SubjectBean updatedSubject = getUnifiedRepository().save(subjectBean);
         
         if (note != null && note.getId() > 0) {
             org.springframework.jdbc.core.JdbcTemplate jdbcTemplate = new org.springframework.jdbc.core.JdbcTemplate(dataSource);
