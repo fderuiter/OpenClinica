@@ -407,6 +407,14 @@ public class DefineStudyEventServlet extends SecureController {
         validateSubmissionUrl(edcsInSession,eventDefCrfList,v);
         errors = v.validate();
 
+        for (int i = 0; i < eventDefinitionCRFs.size(); i++) {
+            EventDefinitionCRFBean edcBean = (EventDefinitionCRFBean) eventDefinitionCRFs.get(i);
+            if (edcBean.isOffline() && edcBean.isElectronicSignature()) {
+                Validator.addError(errors, "offline" + i, respage.getString("offline_and_electronic_signature_mutually_exclusive"));
+                Validator.addError(errors, "electronicSignature" + i, respage.getString("offline_and_electronic_signature_mutually_exclusive"));
+            }
+        }
+
         if (!errors.isEmpty()) {
             ArrayList<String> sdvOptions = new ArrayList<String>();
             sdvOptions.add(SourceDataVerification.AllREQUIRED.toString());
