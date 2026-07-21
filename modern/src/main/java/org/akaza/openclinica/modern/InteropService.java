@@ -1,4 +1,6 @@
 package org.akaza.openclinica.modern;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionSynchronization;
 
 import org.akaza.openclinica.modern.model.ConfigurationDraft;
 import org.akaza.openclinica.modern.service.ConfigurationDraftService;
@@ -173,6 +175,7 @@ public class InteropService {
 
             org.akaza.openclinica.model.ClinicalPayload payloadObj = new org.akaza.openclinica.model.ClinicalPayload(subjectId, eventId, value);
             final String fSubjectId = subjectId;
+            final String fEventId = eventId;
             final String fValue = value;
 
             org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService workflowService = new org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService();
@@ -190,7 +193,17 @@ public class InteropService {
                     }
 
                     Long eIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_event_study_event_id_seq')", Long.class);
-                    jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, 1, ?, 1, 1, NOW())", eIdPk, sIdPk);
+                    
+                    Long actualEventDefId = 1L;
+                    try {
+                        actualEventDefId = Long.parseLong(fEventId);
+                    } catch (Exception e) {
+                        try {
+                            actualEventDefId = jdbcTemplate.queryForObject("SELECT study_event_definition_id FROM study_event_definition WHERE oc_oid = ? LIMIT 1", Long.class, fEventId);
+                        } catch(Exception ex) {}
+                    }
+
+                    jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, ?, ?, 1, 1, NOW())", eIdPk, actualEventDefId, sIdPk);
 
                     Long ecIdPk = jdbcTemplate.queryForObject("SELECT nextval('event_crf_event_crf_id_seq')", Long.class);
                     jdbcTemplate.update("INSERT INTO event_crf (event_crf_id, study_event_id, study_subject_id, crf_version_id, completion_status_id, status_id, owner_id, date_created, sdv_status) VALUES (?, ?, ?, 1, 1, 1, 1, NOW(), false)", ecIdPk, eIdPk, sIdPk);
@@ -201,6 +214,7 @@ public class InteropService {
                 }
             });
             
+
             draftService.deleteDraft(recordId);
             org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
                 @Override
@@ -297,7 +311,17 @@ public class InteropService {
                             }
 
                             Long eIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_event_study_event_id_seq')", Long.class);
-                            jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, 1, ?, 1, 1, NOW())", eIdPk, sIdPk);
+                            
+                            Long actualEventDefId = 1L;
+                            try {
+                                actualEventDefId = Long.parseLong(br.eventId);
+                            } catch (Exception e) {
+                                try {
+                                    actualEventDefId = jdbcTemplate.queryForObject("SELECT study_event_definition_id FROM study_event_definition WHERE oc_oid = ? LIMIT 1", Long.class, br.eventId);
+                                } catch(Exception ex) {}
+                            }
+
+                            jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, ?, ?, 1, 1, NOW())", eIdPk, actualEventDefId, sIdPk);
 
                             Long ecIdPk = jdbcTemplate.queryForObject("SELECT nextval('event_crf_event_crf_id_seq')", Long.class);
                             jdbcTemplate.update("INSERT INTO event_crf (event_crf_id, study_event_id, study_subject_id, crf_version_id, completion_status_id, status_id, owner_id, date_created, sdv_status) VALUES (?, ?, ?, 1, 1, 1, 1, NOW(), false)", ecIdPk, eIdPk, sIdPk);
@@ -307,6 +331,7 @@ public class InteropService {
                             return null;
                         }
                     });
+
 
                     draftService.deleteDraft(br.recordId);
                     org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
