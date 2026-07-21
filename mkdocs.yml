@@ -29,7 +29,6 @@ nav:
   - Explanation:
     - Project Information: explanation/project-info.md
     - Lifecycle Management: explanation/lifecycle_management.md
-    - Safeguards and Rollbacks: explanation/configuration_safeguards_and_rollbacks.md
     - Staged Batch Persistence: explanation/staged_batch_persistence.md
     - Architecture Guide: explanation/architecture.md
 hooks:
@@ -62,7 +61,8 @@ plugins:
         'diataxis/how-to/cookbook_scheduling.md': 'how-to/cookbook_scheduling.md'
         'diataxis/how-to/cookbook_ingestion.md': 'how-to/cookbook_ingestion.md'
         'diataxis/explanation/lifecycle_management.md': 'explanation/lifecycle_management.md'
-        'diataxis/explanation/configuration_safeguards_and_rollbacks.md': 'explanation/configuration_safeguards_and_rollbacks.md'
+        'explanation/configuration_safeguards_and_rollbacks.md': 'explanation/lifecycle_management.md'
+        'diataxis/explanation/configuration_safeguards_and_rollbacks.md': 'explanation/lifecycle_management.md'
         'diataxis/explanation/staged_batch_persistence.md': 'explanation/staged_batch_persistence.md'
         'diataxis/explanation/architecture.md': 'explanation/architecture.md'
         'installation/windows-install.md': 'reference/installation-upgrade.md'
