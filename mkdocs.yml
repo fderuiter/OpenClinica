@@ -35,6 +35,7 @@ nav:
 hooks:
   - hooks/assign_categories.py
   - hooks/filter_restricted.py
+  - hooks/absolute_redirects.py
 plugins:
   - search
   - tags

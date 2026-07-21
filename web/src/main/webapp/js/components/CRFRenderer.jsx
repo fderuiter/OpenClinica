@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef, useCallback } from 'react';
 import { store, useStore } from '../store';
 import { THEME } from '../theme';
 import { useAccessibility } from './AccessibilityProvider.jsx';
+import styles from './CRFRenderer.module.css';
 
 const schema = {
   formOID: 'F_TEST_1',
@@ -103,18 +104,17 @@ const FormField = React.memo(function FormField({ field, fieldId, value, groupOI
   }, [discrepancy, announce, field.label]);
 
   return (
-    <div style={{ marginBottom: '10px' }}>
+    <div className={styles.field}>
       <label
         htmlFor={fieldId}
-        style={{ display: 'inline-block', width: '150px' }}
+        className={styles.label}
       >
         {field.label}:
       </label>
       
       {discrepancy && (
         <span 
-          className={`discrepancy-badge ${discrepancy.badgeClass}`} 
-          style={{ marginLeft: '5px', marginRight: '5px', fontWeight: 'bold', color: 'red' }}
+          className={`discrepancy-badge ${discrepancy.badgeClass} ${styles.discrepancyBadge}`} 
           title={`Severity: ${discrepancy.severityCode}`}
         >
           [{discrepancy.severityCode}]
@@ -125,6 +125,7 @@ const FormField = React.memo(function FormField({ field, fieldId, value, groupOI
           id={fieldId}
           name={fieldId}
           value={localValue}
+          className={styles.input}
           onChange={handleChange}
           onBlur={handleBlur}
           aria-describedby={discrepancyId}
@@ -142,6 +143,7 @@ const FormField = React.memo(function FormField({ field, fieldId, value, groupOI
           name={fieldId}
           type={field.type}
           value={localValue}
+          className={styles.input}
           onChange={handleChange}
           onBlur={handleBlur}
           aria-describedby={discrepancyId}
@@ -151,7 +153,7 @@ const FormField = React.memo(function FormField({ field, fieldId, value, groupOI
       {discrepancy && (
         <div 
           id={discrepancyId} 
-          style={{ display: 'block', fontSize: '12px', color: 'red', marginLeft: '150px', marginTop: '5px' }}
+          className={styles.discrepancyText}
         >
           {discrepancy.text}
         </div>
@@ -160,16 +162,13 @@ const FormField = React.memo(function FormField({ field, fieldId, value, groupOI
   );
 });
 
-const FormRow = React.memo(function FormRow({ group, row, index }) {
+const FormRow = React.memo(function FormRow({ group, row, index, totalRemaining, setRowRef, setFocusAction }) {
   const { announce } = useAccessibility();
 
   return (
     <div
-      style={{
-        marginBottom: '15px',
-        padding: '10px',
-        backgroundColor: '#f9f9f9',
-      }}
+      ref={setRowRef(group.groupOID, index)}
+      className={styles.row}
     >
       {group.repeating && <h4>Row {index + 1}</h4>}
       {group.fields.map((field) => {
@@ -190,9 +189,16 @@ const FormRow = React.memo(function FormRow({ group, row, index }) {
       {group.repeating && (
         <button
           type="button"
+          className={`remove-btn ${styles.button}`}
           onClick={() => {
             store.removeRow(group.groupOID, index);
             announce(`Row ${index + 1} removed from ${group.title}`);
+            setFocusAction({ 
+              type: 'REMOVE', 
+              groupId: group.groupOID, 
+              index: index,
+              totalRemaining
+            });
           }}
         >
           Remove Row
@@ -202,17 +208,11 @@ const FormRow = React.memo(function FormRow({ group, row, index }) {
   );
 });
 
-const FormGroup = React.memo(function FormGroup({ group, rows }) {
+const FormGroup = React.memo(function FormGroup({ group, rows, setRowRef, setAddBtnRef, setFocusAction }) {
   const { announce } = useAccessibility();
 
   return (
-    <div
-      style={{
-        marginTop: '20px',
-        border: `1px solid ${THEME.colors.border}`,
-        padding: '10px',
-      }}
-    >
+    <div className={styles.group}>
       <h3>{group.title}</h3>
       {rows.map((row, index) => (
         <FormRow
@@ -220,14 +220,21 @@ const FormGroup = React.memo(function FormGroup({ group, rows }) {
           group={group}
           row={row}
           index={index}
+          totalRemaining={rows.length - 1}
+          setRowRef={setRowRef}
+          setFocusAction={setFocusAction}
         />
       ))}
       {group.repeating && (
         <button
           type="button"
+          className={styles.button}
+          ref={setAddBtnRef(group.groupOID)}
           onClick={() => {
+            const newIndex = rows.length;
             store.addRow(group.groupOID, schema);
             announce(`New row added to ${group.title}`);
+            setFocusAction({ type: 'ADD', groupId: group.groupOID, index: newIndex });
           }}
         >
           Add {group.title} Entry
@@ -242,6 +249,56 @@ export default function CRFRenderer() {
   const formData = useStore(state => state.formData);
   const [loading, setLoading] = useState(true);
   const { announce } = useAccessibility();
+  const rowRefs = useRef(new Map());
+  const addBtnRefs = useRef(new Map());
+  const [focusAction, setFocusAction] = useState(null);
+
+  const setRowRef = (groupId, index) => (element) => {
+    const key = `${groupId}-${index}`;
+    if (element) {
+      rowRefs.current.set(key, element);
+    } else {
+      rowRefs.current.delete(key);
+    }
+  };
+
+  const setAddBtnRef = (groupId) => (element) => {
+    if (element) {
+      addBtnRefs.current.set(groupId, element);
+    } else {
+      addBtnRefs.current.delete(groupId);
+    }
+  };
+
+  useLayoutEffect(() => {
+    if (focusAction) {
+      if (focusAction.type === 'ADD') {
+        const rowKey = `${focusAction.groupId}-${focusAction.index}`;
+        const rowElement = rowRefs.current.get(rowKey);
+        if (rowElement) {
+          const firstInput = rowElement.querySelector('input, select, textarea');
+          if (firstInput) {
+            firstInput.focus();
+          }
+        }
+      } else if (focusAction.type === 'REMOVE') {
+        if (focusAction.index < focusAction.totalRemaining) {
+          const rowKey = `${focusAction.groupId}-${focusAction.index}`;
+          const rowElement = rowRefs.current.get(rowKey);
+          if (rowElement) {
+            const deleteBtn = rowElement.querySelector('button.remove-btn');
+            if (deleteBtn) deleteBtn.focus();
+          }
+        } else {
+          const addBtnElement = addBtnRefs.current.get(focusAction.groupId);
+          if (addBtnElement) {
+            addBtnElement.focus();
+          }
+        }
+      }
+      setFocusAction(null);
+    }
+  }, [formData, focusAction]);
 
   useEffect(() => {
     announce('Form loading started');
@@ -270,10 +327,7 @@ export default function CRFRenderer() {
   }
 
   return (
-    <div
-      className="crf-renderer"
-      style={{ padding: '20px', fontFamily: 'sans-serif' }}
-    >
+    <div className={`crf-renderer ${styles.container}`}>
       <h1>Printable CRF View</h1>
       <div className="crf-details">
         <h2>Study Details</h2>
@@ -288,19 +342,19 @@ export default function CRFRenderer() {
       <form onSubmit={(e) => e.preventDefault()}>
         {schema.groups.map((group) => {
           const rows = formData[group.groupOID] || [];
-          return <FormGroup key={group.groupOID} group={group} rows={rows} />;
+          return <FormGroup 
+            key={group.groupOID} 
+            group={group} 
+            rows={rows} 
+            setRowRef={setRowRef} 
+            setAddBtnRef={setAddBtnRef} 
+            setFocusAction={setFocusAction} 
+          />;
         })}
       </form>
 
       {/* Investigator Signature Block */}
-      <div
-        className="investigator-signature"
-        style={{
-          marginTop: '40px',
-          borderTop: '1px solid #000',
-          paddingTop: '10px',
-        }}
-      >
+      <div className={`investigator-signature ${styles.signatureBlock}`}>
         <p>
           <strong>{window.app_investigatorLabel || 'Investigator'}:</strong>{' '}
           _________________________
