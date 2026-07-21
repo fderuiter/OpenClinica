@@ -33,6 +33,7 @@ nav:
     - Staged Batch Persistence: explanation/staged_batch_persistence.md
     - Architecture Guide: explanation/architecture.md
 hooks:
+  - hooks/copy_external_specs.py
   - hooks/assign_categories.py
   - hooks/filter_restricted.py
   - hooks/absolute_redirects.py

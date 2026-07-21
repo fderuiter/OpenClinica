@@ -32,12 +32,21 @@ def merge_specs():
                 spec = yaml.safe_load(f)
             else:
                 spec = json.load(f)
-                
+            
+            is_external = spec_path in ['core/external-api.json', 'core/src/main/resources/randomize-api.yaml']
+
             for path_key, path_val in spec.get('paths', {}).items():
                 if path_key in base_spec['paths']:
                     print(f"Error: Duplicate path '{path_key}' found in '{spec_path}'.")
                     sys.exit(1)
-                base_spec['paths'][path_key] = path_val
+                
+                if is_external:
+                    encoded_path_key = path_key.replace('~', '~0').replace('/', '~1')
+                    base_spec['paths'][path_key] = {
+                        "$ref": f"../{spec_path}#/paths/{encoded_path_key}"
+                    }
+                else:
+                    base_spec['paths'][path_key] = path_val
                 
             for comp_type, comp_dict in spec.get('components', {}).items():
                 if comp_type not in base_spec['components']:
@@ -46,7 +55,14 @@ def merge_specs():
                     if comp_key in base_spec['components'][comp_type]:
                         print(f"Error: Duplicate component '{comp_key}' found in components/{comp_type} in '{spec_path}'.")
                         sys.exit(1)
-                    base_spec['components'][comp_type][comp_key] = comp_val
+                    
+                    if is_external:
+                        encoded_comp_key = comp_key.replace('~', '~0').replace('/', '~1')
+                        base_spec['components'][comp_type][comp_key] = {
+                            "$ref": f"../{spec_path}#/components/{comp_type}/{encoded_comp_key}"
+                        }
+                    else:
+                        base_spec['components'][comp_type][comp_key] = comp_val
 
     os.makedirs('docs', exist_ok=True)
     with open('docs/openapi.json', 'w', encoding='utf-8') as f:
