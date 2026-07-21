@@ -1,0 +1,31 @@
+.nav {
+  padding: var(--spacing-md);
+  background: var(--highlight-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: var(--spacing-xl);
+  align-items: center;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.link:hover, .link:focus {
+  text-decoration: underline;
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+}
+
+.currentStudy {
+  margin-left: auto;
+  color: var(--text-color);
+}
