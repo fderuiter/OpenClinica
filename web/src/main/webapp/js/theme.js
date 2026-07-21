@@ -1,5 +1,5 @@
 export const THEME = {
   colors: {
-    border: '#767676'
-  }
+    border: '#767676',
+  },
 };

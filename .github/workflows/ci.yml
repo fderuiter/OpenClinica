@@ -85,6 +85,15 @@ jobs:
 
     - name: Build with Maven
       run: mvn -B clean install -DskipTests
+    - name: Frontend Quality Gates
+      run: |
+        npm install
+        npm --prefix web run lint
+        npm --prefix web run format:check
+        npm --prefix modern run lint
+        npm --prefix modern run format:check
+        npm --prefix visual-tests run lint
+        npm --prefix visual-tests run format:check
     - name: Run tests (core, web, modern)
       run: mvn -B test -pl core,web,modern -Ddb.test=localhost
     - name: Start Application Server
