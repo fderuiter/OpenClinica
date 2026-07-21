@@ -20,6 +20,8 @@ http://www.springframework.org/schema/task/spring-task-3.2.xsd"
 				<prop key="org.quartz.jobStore.driverDelegateClass">s[org.quartz.jobStore.driverDelegateClass]</prop>
 				<prop key="org.quartz.jobStore.useProperties">s[org.quartz.jobStore.useProperties]</prop>
         		<prop key="org.quartz.jobStore.tablePrefix">s[org.quartz.jobStore.tablePrefix]</prop>
+        		<prop key="org.quartz.jobStore.isClustered">true</prop>
+        		<prop key="org.quartz.jobStore.clusterCheckinInterval">20000</prop>
         		<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
 				<prop key="org.quartz.threadPool.threadCount">s[org.quartz.threadPool.threadCount]</prop>
 				<prop key="org.quartz.threadPool.threadPriority">s[org.quartz.threadPool.threadPriority]</prop>
