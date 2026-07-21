@@ -22,6 +22,14 @@ public class OdmAdminDataBean extends ElementOIDBean {
     private String metaDataVersionOID;
     private List<UserBean> users = new ArrayList<UserBean>();
     private List<LocationBean> locations = new ArrayList<LocationBean>();
+    private List<SignatureDefBean> signatureDefs = new ArrayList<SignatureDefBean>();
+    
+    public List<SignatureDefBean> getSignatureDefs() {
+        return signatureDefs;
+    }
+    public void setSignatureDefs(List<SignatureDefBean> signatureDefs) {
+        this.signatureDefs = signatureDefs;
+    }
     
     public List<UserBean> getUsers() {
         return users;
