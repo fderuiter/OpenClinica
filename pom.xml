@@ -732,6 +732,19 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>validate-snippets</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>python3</executable>
+                            <arguments>
+                                <argument>${project.basedir}/utils/validate_snippets.py</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 

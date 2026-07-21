@@ -206,13 +206,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webResources>
-                        <resource>
-                            <directory>../core/src/main/webapp</directory>
-                        </resource>
-                    </webResources>
-                </configuration>
             </plugin>
             
             
