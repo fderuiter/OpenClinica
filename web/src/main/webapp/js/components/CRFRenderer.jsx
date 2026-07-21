@@ -160,6 +160,7 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
     </div>
   );
 });
+FormField.displayName = 'FormField';
 
 const FormRow = React.memo(({ group, row, index, totalRemaining, setRowRef, setFocusAction }) => {
   const { announce } = useAccessibility();
@@ -206,6 +207,7 @@ const FormRow = React.memo(({ group, row, index, totalRemaining, setRowRef, setF
     </div>
   );
 });
+FormRow.displayName = 'FormRow';
 
 const FormGroup = React.memo(({ group, rows, setRowRef, setAddBtnRef, setFocusAction }) => {
   const { announce } = useAccessibility();
@@ -242,6 +244,7 @@ const FormGroup = React.memo(({ group, rows, setRowRef, setAddBtnRef, setFocusAc
     </div>
   );
 });
+FormGroup.displayName = 'FormGroup';
 
 export default function CRFRenderer() {
   const [studyOID, setStudyOID] = useState(store.getState().studyOID);
@@ -325,7 +328,7 @@ export default function CRFRenderer() {
       clearTimeout(timer);
       unsubscribe();
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return <div className="spinner">Loading CRF Data...</div>;
