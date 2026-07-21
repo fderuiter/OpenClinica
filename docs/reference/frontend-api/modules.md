@@ -1,4 +1,4 @@
-[**web**](README.md)
+**web**
 
 ***
 
@@ -6,6 +6,6 @@
 
 ## Modules
 
-- [AccessibilityProvider](AccessibilityProvider/README.md)
-- [CRFRenderer](CRFRenderer/README.md)
-- [Navigation](Navigation/README.md)
+- [AccessibilityProvider](AccessibilityProvider/modules.md)
+- [CRFRenderer](CRFRenderer/modules.md)
+- [Navigation](Navigation/modules.md)

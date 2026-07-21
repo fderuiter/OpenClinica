@@ -18,7 +18,7 @@ OpenClinica is an open source software for Electronic Data Capture (EDC) and Cli
 
 To get started quickly with a local development environment, run the setup tool:
 ```bash
-python3 setup.py
+python3 utils/setup.py
 ```
 This interactive wizard will verify system prerequisites (Java, Maven, Docker), prompt for necessary configuration values, automatically configure directory structures, and generate a `.env` file for runtime overrides. Alternatively, you can copy the provided `.env.example` file to `.env` and configure the properties manually.
 
@@ -74,4 +74,4 @@ To request a feature please submit a ticket on [Jira](https://jira.openclinica.c
 
 [GNU LGPL license](https://www.openclinica.com/gnu-lgpl-open-source-license)
 
-<!-- CHECKSUM: a6959ba6b1a6af055c57cc15c2f5b94a -->
+<!-- CHECKSUM: 120d6b162355f009b780f857f52a6c1a -->
