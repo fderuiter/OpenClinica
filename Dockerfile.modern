@@ -10,7 +10,9 @@ RUN mvn clean package -DskipTests
 FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y openjdk-17-jre curl
+RUN groupadd -r modern && useradd -r -g modern -m -d /app modern && chown -R modern:modern /app
 WORKDIR /app
-COPY --from=build /app/modern/target/OpenClinica-modern-*.jar /app/modern.jar
+COPY --from=build --chown=modern:modern /app/modern/target/OpenClinica-modern-*.jar /app/modern.jar
+USER modern
 EXPOSE 8081
 CMD ["java", "-jar", "modern.jar"]
