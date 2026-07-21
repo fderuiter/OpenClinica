@@ -263,7 +263,7 @@ public class ItemProcessor implements Processor, Ordered {
     }
 
     private Item lookupItem(String itemName, CrfVersion crfVersion, List<Item> itemList) {
-        if (crfVersion.getXform() == null || crfVersion.getXform().equals("")) { 
+        if (crfVersion.getXformName() == null || crfVersion.getXformName().equals("")) { 
             return lookupItemByOid(itemName,itemList);
         } else { 
             return lookupItemByName(itemName, itemList);
@@ -285,7 +285,7 @@ public class ItemProcessor implements Processor, Ordered {
     }
 
     private ItemGroup lookupItemGroup(String groupNodeName, CrfVersion crfVersion, List<ItemGroup> itemGroupList) {
-        if (crfVersion.getXform() == null || crfVersion.getXform().equals("")) {
+        if (crfVersion.getXformName() == null || crfVersion.getXformName().equals("")) {
             return lookupItemGroupByOId(groupNodeName, itemGroupList);
         } else {
             return lookupItemGroupByName(groupNodeName, itemGroupList);

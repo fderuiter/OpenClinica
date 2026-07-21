@@ -185,13 +185,9 @@ public class OpenRosaServices {
                         // TODO: For now all XForms get a date based hash to
                         // trick Enketo into always downloading
                         // TODO: them.
-                        if (version.getXformName() != null){
-                            form.setHash(DigestUtils.md5Hex(version.getXform()));
-                        }else {
-                            Calendar cal = Calendar.getInstance();
-                            cal.setTime(new Date());
-                            form.setHash(DigestUtils.md5Hex(String.valueOf(cal.getTimeInMillis())));
-                        }
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(new Date());
+                        form.setHash(DigestUtils.md5Hex(String.valueOf(cal.getTimeInMillis())));
 
 
                         String urlBase = getCoreResources().getDataInfo().getProperty("sysURL").split("/MainMenu")[0];
