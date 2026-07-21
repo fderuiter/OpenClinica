@@ -8,7 +8,7 @@
 package org.akaza.openclinica.bean.rule;
 
 import org.akaza.openclinica.bean.core.AuditableEntityBean;
-import org.akaza.openclinica.bean.rule.action.RuleActionBean;
+import org.akaza.openclinica.domain.rule.action.RuleActionBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

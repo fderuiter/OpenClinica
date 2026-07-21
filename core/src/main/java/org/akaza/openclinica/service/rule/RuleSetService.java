@@ -46,7 +46,7 @@ import org.akaza.openclinica.dao.managestudy.StudyDAO;
 import org.akaza.openclinica.dao.managestudy.StudyEventDAO;
 import org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO;
 import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
-import org.akaza.openclinica.dao.rule.action.RuleActionDAO;
+
 import org.akaza.openclinica.dao.submit.CRFVersionDAO;
 import org.akaza.openclinica.dao.submit.ItemDAO;
 import org.akaza.openclinica.dao.submit.ItemDataDAO;
@@ -111,7 +111,7 @@ public class RuleSetService implements RuleSetServiceInterface {
     private CRFDAO crfDao;
     private CRFVersionDAO crfVersionDao;
 
-    private RuleActionDAO ruleActionDao;
+
     private StudyEventDAO studyEventDao;
     private ItemDAO itemDao;
     private ItemDataDAO itemDataDao;

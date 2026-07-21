@@ -16,7 +16,7 @@ import org.akaza.openclinica.bean.managestudy.StudyGroupBean;
 import org.akaza.openclinica.bean.managestudy.StudyGroupClassBean;
 import org.akaza.openclinica.bean.oid.GenericOidGenerator;
 import org.akaza.openclinica.bean.oid.OidGenerator;
-import org.akaza.openclinica.bean.rule.action.EmailActionBean;
+import org.akaza.openclinica.domain.rule.action.EmailActionBean;
 import org.akaza.openclinica.dao.hibernate.RuleDao;
 import org.akaza.openclinica.dao.hibernate.RuleSetDao;
 import org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO;
@@ -376,7 +376,7 @@ public class RulesPostImportContainerService {
 			ruleSetBeanWrapper.error(createError("OCRERR_0049"));
 		}
 
-		if (ruleActionBean instanceof org.akaza.openclinica.domain.rule.action.EmailActionBean)
+		if (ruleActionBean instanceof EmailActionBean)
 			isUploadedRuleSupportedForEventAction(ruleSetBeanWrapper);
 
 		if (ruleActionBean instanceof DiscrepancyNoteActionBean)
