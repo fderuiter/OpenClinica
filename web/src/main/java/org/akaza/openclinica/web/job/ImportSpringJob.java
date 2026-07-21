@@ -651,6 +651,11 @@ public class ImportSpringJob extends QuartzJobBean {
 
                 msg.append(triggerService.generateSkippedCRFMessage(importCrfInfo, resword) + "<br/>");
 
+                if (odmContainer.getCrfDataPostImportContainer().getSubjectData() instanceof org.akaza.openclinica.logic.importdata.StreamingSubjectDataList) {
+                    org.akaza.openclinica.logic.importdata.StreamingSubjectDataList streamingList = (org.akaza.openclinica.logic.importdata.StreamingSubjectDataList) odmContainer.getCrfDataPostImportContainer().getSubjectData();
+                    getImportCRFDataService(dataSource).updateElectronicSignatures(streamingList.getEventSignatureMap(), streamingList.getFormSignatureMap(), ub);
+                }
+
                 // setup ruleSets to run if applicable
                 List<ImportDataRuleRunnerContainer> containers = this.ruleRunSetup(dataSource, studyBean, ub, ruleSetService, odmContainer);
 

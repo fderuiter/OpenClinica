@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import org.apache.commons.lang3.time.FastDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
@@ -27,11 +27,11 @@ public class JSONClinicalDataPostProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(JSONClinicalDataPostProcessor.class);
 
-    private static final ThreadLocal<DateFormat> DATE_INTERNAL_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd"));
+    private static final FastDateFormat DATE_INTERNAL_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd");
 
-    private static final ThreadLocal<DateFormat> DATE_TIME_INTERNAL_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
+    private static final FastDateFormat DATE_TIME_INTERNAL_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
 
-    private static final ThreadLocal<DateFormat> DATE_TIME_AUDIT_LOG_INTERNAL_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+    private static final FastDateFormat DATE_TIME_AUDIT_LOG_INTERNAL_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss");
 
     private static final String DATE_FORMAT_KEY = "date_format_string";
 
@@ -119,17 +119,17 @@ public class JSONClinicalDataPostProcessor {
         if (isShort || isLong || isAudit) {
             try {
                 Date date;
-                DateFormat formatter;
+                org.apache.commons.lang3.time.FastDateFormat formatter;
 
                 if (isShort) {
-                    date = DATE_INTERNAL_FORMAT.get().parse(elem);
-                    formatter = new SimpleDateFormat(formatResourceBundle.getString(DATE_FORMAT_KEY), locale);
+                    date = DATE_INTERNAL_FORMAT.parse(elem);
+                    formatter = org.apache.commons.lang3.time.FastDateFormat.getInstance(formatResourceBundle.getString(DATE_FORMAT_KEY), locale);
                 } else if (isLong) {
-                    date = DATE_TIME_INTERNAL_FORMAT.get().parse(elem);
-                    formatter = new SimpleDateFormat(formatResourceBundle.getString(DATE_TIME_FORMAT_KEY), locale);
+                    date = DATE_TIME_INTERNAL_FORMAT.parse(elem);
+                    formatter = org.apache.commons.lang3.time.FastDateFormat.getInstance(formatResourceBundle.getString(DATE_TIME_FORMAT_KEY), locale);
                 } else {
-                    date = DATE_TIME_AUDIT_LOG_INTERNAL_FORMAT.get().parse(elem);
-                    formatter = new SimpleDateFormat(formatResourceBundle.getString(DATE_TIME_FORMAT_KEY), locale);
+                    date = DATE_TIME_AUDIT_LOG_INTERNAL_FORMAT.parse(elem);
+                    formatter = org.apache.commons.lang3.time.FastDateFormat.getInstance(formatResourceBundle.getString(DATE_TIME_FORMAT_KEY), locale);
                 }
 
                 return formatter.format(date);
