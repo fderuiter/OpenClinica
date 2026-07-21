@@ -75,8 +75,8 @@ public class AsyncImportTask implements Runnable {
         try {
             logger.info("Starting background import for file: " + f.getName());
             XmlSchemaValidationHelper schemaValidator = new XmlSchemaValidationHelper();
-            File xsdFile = new File(CoreResources.PROPERTIES_DIR + File.separator + "ODM1-3-0.xsd");
-            File xsdFile2 = new File(CoreResources.PROPERTIES_DIR + File.separator + "ODM1-2-1.xsd");
+            java.io.InputStream xsdFile = getClass().getClassLoader().getResourceAsStream("properties/ODM1-3-0.xsd");
+            java.io.InputStream xsdFile2 = getClass().getClassLoader().getResourceAsStream("properties/ODM1-2-1.xsd");
 
             ODMContainer odmContainer = new ODMContainer();
             boolean fail = false;
