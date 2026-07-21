@@ -313,11 +313,7 @@
 				<artifactId>swagger-annotations</artifactId>
 				<version>1.5.20</version>
 			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>OpenClinica-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+
 			<dependency>
 				<groupId>net.sf.saxon</groupId>
 				<artifactId>saxon</artifactId>
@@ -386,7 +382,7 @@
 			<dependency>
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
-				<version>1.11.0</version>
+				<version>1.9.4</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-collections</groupId>
@@ -465,9 +461,9 @@
 				<version>6.0.13</version>
 			</dependency>
 			<dependency>
-				<groupId>com.sun.xml.bind</groupId>
-				<artifactId>jaxb-impl</artifactId>
-				<version>2.1.5</version>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>jaxb-runtime</artifactId>
+				<version>4.0.3</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.xml.messaging.saaj</groupId>
@@ -566,14 +562,7 @@
 				<version>3.8.0.GA</version>
 			</dependency>
 
-		</dependencies>
-	</dependencyManagement>
-
-
-
-	
-	<dependencies>
-		
+				
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -648,29 +637,7 @@
 			<groupId>org.codehaus.janino</groupId>
 			<artifactId>janino</artifactId>
 			<version>3.1.10</version>
-		</dependency>
-
-		
-		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-plugin</artifactId>
-			<version>1.9.5.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.maven</groupId>
-					<artifactId>maven-plugin-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.maven</groupId>
-					<artifactId>maven-project</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.maven</groupId>
-					<artifactId>maven-project</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
+		</dependency>		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
 			<version>4.8.0</version>
@@ -709,8 +676,18 @@
 	<version>3.1.2</version>
 </dependency>
 
-	</dependencies>
-	<build>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>1.7.32</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+
+
+		<build>
 		<plugins>
 
             <plugin>
@@ -873,14 +850,7 @@
 						<finalName>${assembly.name}-${project.version}</finalName>
 					</configuration>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-eclipse-plugin</artifactId>
-					<version>2.8</version>
-					<configuration>
-						<addVersionToProjectName>true</addVersionToProjectName>
-					</configuration>
-				</plugin>
+
 				<plugin>
 					<groupId>org.codehaus.cargo</groupId>
 					<artifactId>cargo-maven2-plugin</artifactId>
@@ -952,9 +922,9 @@
 					</executions>
 				</plugin>
 				<plugin>
-					<groupId>org.jvnet.jaxb2.maven2</groupId>
-					<artifactId>maven-jaxb2-plugin</artifactId>
-					<version>0.7.5</version>
+					<groupId>org.jvnet.jaxb</groupId>
+					<artifactId>jaxb-maven-plugin</artifactId>
+					<version>4.0.8</version>
 					<executions>
 						<execution>
 							<phase>generate-sources</phase>
