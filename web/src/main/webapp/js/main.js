@@ -38,11 +38,13 @@ async function mountReactApp() {
   const [
     { default: React },
     { createRoot },
-    { AccessibilityProvider }
+    { AccessibilityProvider },
+    { default: ErrorBoundary }
   ] = await Promise.all([
     import('react'),
     import('react-dom/client'),
-    import('./components/AccessibilityProvider.jsx')
+    import('./components/AccessibilityProvider.jsx'),
+    import('./components/ErrorBoundary.jsx')
   ]);
 
   if (needsCRF) {
@@ -51,12 +53,16 @@ async function mountReactApp() {
     const crfRoot = createRoot(crfContainer);
     crfRoot.render(
       React.createElement(
-        AccessibilityProvider,
+        ErrorBoundary,
         null,
         React.createElement(
-          React.Suspense,
-          { fallback: React.createElement('div', null, 'Loading CRF...') },
-          React.createElement(CRFRenderer, null)
+          AccessibilityProvider,
+          null,
+          React.createElement(
+            React.Suspense,
+            { fallback: React.createElement('div', null, 'Loading CRF...') },
+            React.createElement(CRFRenderer, null)
+          )
         )
       )
     );
@@ -66,12 +72,16 @@ async function mountReactApp() {
     const navRoot = createRoot(menuContainer);
     navRoot.render(
       React.createElement(
-        AccessibilityProvider,
+        ErrorBoundary,
         null,
         React.createElement(
-          React.Suspense,
-          { fallback: React.createElement('div', null, 'Loading Navigation...') },
-          React.createElement(Navigation, null)
+          AccessibilityProvider,
+          null,
+          React.createElement(
+            React.Suspense,
+            { fallback: React.createElement('div', null, 'Loading Navigation...') },
+            React.createElement(Navigation, null)
+          )
         )
       )
     );

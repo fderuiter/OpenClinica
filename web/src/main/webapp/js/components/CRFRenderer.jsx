@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef, useCallback } from 'react';
 import { store } from '../store';
 import { THEME } from '../theme';
 import { useAccessibility } from './AccessibilityProvider.jsx';
@@ -159,12 +159,14 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
     </div>
   );
 });
+FormField.displayName = 'FormField';
 
-const FormRow = React.memo(({ group, row, index }) => {
+const FormRow = React.memo(({ group, row, index, totalRemaining, setRowRef, setFocusAction }) => {
   const { announce } = useAccessibility();
 
   return (
     <div
+      ref={setRowRef(group.groupOID, index)}
       style={{
         marginBottom: '15px',
         padding: '10px',
@@ -190,9 +192,16 @@ const FormRow = React.memo(({ group, row, index }) => {
       {group.repeating && (
         <button
           type="button"
+          className="remove-btn"
           onClick={() => {
             store.removeRow(group.groupOID, index);
             announce(`Row ${index + 1} removed from ${group.title}`);
+            setFocusAction({ 
+              type: 'REMOVE', 
+              groupId: group.groupOID, 
+              index: index,
+              totalRemaining
+            });
           }}
         >
           Remove Row
@@ -201,8 +210,9 @@ const FormRow = React.memo(({ group, row, index }) => {
     </div>
   );
 });
+FormRow.displayName = 'FormRow';
 
-const FormGroup = React.memo(({ group, rows }) => {
+const FormGroup = React.memo(({ group, rows, setRowRef, setAddBtnRef, setFocusAction }) => {
   const { announce } = useAccessibility();
 
   return (
@@ -220,14 +230,20 @@ const FormGroup = React.memo(({ group, rows }) => {
           group={group}
           row={row}
           index={index}
+          totalRemaining={rows.length - 1}
+          setRowRef={setRowRef}
+          setFocusAction={setFocusAction}
         />
       ))}
       {group.repeating && (
         <button
           type="button"
+          ref={setAddBtnRef(group.groupOID)}
           onClick={() => {
+            const newIndex = rows.length;
             store.addRow(group.groupOID, schema);
             announce(`New row added to ${group.title}`);
+            setFocusAction({ type: 'ADD', groupId: group.groupOID, index: newIndex });
           }}
         >
           Add {group.title} Entry
@@ -236,12 +252,63 @@ const FormGroup = React.memo(({ group, rows }) => {
     </div>
   );
 });
+FormGroup.displayName = 'FormGroup';
 
 export default function CRFRenderer() {
   const [studyOID, setStudyOID] = useState(store.getState().studyOID);
   const [formData, setFormData] = useState(store.getState().formData);
   const [loading, setLoading] = useState(true);
   const { announce } = useAccessibility();
+  const rowRefs = useRef(new Map());
+  const addBtnRefs = useRef(new Map());
+  const [focusAction, setFocusAction] = useState(null);
+
+  const setRowRef = (groupId, index) => (element) => {
+    const key = `${groupId}-${index}`;
+    if (element) {
+      rowRefs.current.set(key, element);
+    } else {
+      rowRefs.current.delete(key);
+    }
+  };
+
+  const setAddBtnRef = (groupId) => (element) => {
+    if (element) {
+      addBtnRefs.current.set(groupId, element);
+    } else {
+      addBtnRefs.current.delete(groupId);
+    }
+  };
+
+  useLayoutEffect(() => {
+    if (focusAction) {
+      if (focusAction.type === 'ADD') {
+        const rowKey = `${focusAction.groupId}-${focusAction.index}`;
+        const rowElement = rowRefs.current.get(rowKey);
+        if (rowElement) {
+          const firstInput = rowElement.querySelector('input, select, textarea');
+          if (firstInput) {
+            firstInput.focus();
+          }
+        }
+      } else if (focusAction.type === 'REMOVE') {
+        if (focusAction.index < focusAction.totalRemaining) {
+          const rowKey = `${focusAction.groupId}-${focusAction.index}`;
+          const rowElement = rowRefs.current.get(rowKey);
+          if (rowElement) {
+            const deleteBtn = rowElement.querySelector('button.remove-btn');
+            if (deleteBtn) deleteBtn.focus();
+          }
+        } else {
+          const addBtnElement = addBtnRefs.current.get(focusAction.groupId);
+          if (addBtnElement) {
+            addBtnElement.focus();
+          }
+        }
+      }
+      setFocusAction(null);
+    }
+  }, [formData, focusAction]);
 
   useEffect(() => {
     announce('Form loading started');
@@ -269,7 +336,7 @@ export default function CRFRenderer() {
       clearTimeout(timer);
       unsubscribe();
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return <div className="spinner">Loading CRF Data...</div>;
@@ -294,7 +361,14 @@ export default function CRFRenderer() {
       <form onSubmit={(e) => e.preventDefault()}>
         {schema.groups.map((group) => {
           const rows = formData[group.groupOID] || [];
-          return <FormGroup key={group.groupOID} group={group} rows={rows} />;
+          return <FormGroup 
+            key={group.groupOID} 
+            group={group} 
+            rows={rows} 
+            setRowRef={setRowRef} 
+            setAddBtnRef={setAddBtnRef} 
+            setFocusAction={setFocusAction} 
+          />;
         })}
       </form>
 

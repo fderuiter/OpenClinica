@@ -249,6 +249,16 @@ public class UpdateEventDefinitionServlet extends SecureController {
             validateSubmissionUrl(edcsInSession,eventDefCrfList,v);
             errors = v.validate();
 
+            for (int i = 0; i < edcs.size(); i++) {
+                EventDefinitionCRFBean edcBean = (EventDefinitionCRFBean) edcs.get(i);
+                if (!edcBean.getStatus().equals(Status.DELETED) && !edcBean.getStatus().equals(Status.AUTO_DELETED)) {
+                    if (edcBean.isOffline() && edcBean.isElectronicSignature()) {
+                        Validator.addError(errors, "offline" + i, respage.getString("offline_and_electronic_signature_mutually_exclusive"));
+                        Validator.addError(errors, "electronicSignature" + i, respage.getString("offline_and_electronic_signature_mutually_exclusive"));
+                    }
+                }
+            }
+
             if (!errors.isEmpty()) {
                 logger.info("has errors");
                 request.setAttribute("eventDefinitionCRFs", edcs);

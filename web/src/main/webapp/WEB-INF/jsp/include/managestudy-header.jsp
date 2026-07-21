@@ -43,9 +43,9 @@
 <script type="text/javascript" src="includes/new_cal/calendar-setup.js"></script>
 <!-- End -->
 
-<%--<script type="text/javascript"  language="JavaScript" src=
+
 <script type="text/JavaScript" language="JavaScript" src="dist/assets/main-vAm2N4M6.js"></script>
-<%----%></head>
+</head>
 
 
 <body style="width:1024px;" class="main_BG"
