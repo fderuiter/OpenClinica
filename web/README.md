@@ -1,4 +1,5 @@
 # OpenClinica Release Notes
+
 **OpenClinica Version:** 3.18-SNAPSHOT
 
 **Updated:** 2026-07-21
@@ -22,21 +23,22 @@ IV. GNU LGPL License
 ## I. Overall Product Features
 
 The main functionality includes:
-* **Submit Data:** Allows subject enrollment, data submission and validation for use by clinicians and research associates as well as Query Management and Bulk Data Import.
-* **Monitor and Manage Data:** Enables ongoing data management and monitoring.
-* **Extract Data:** Enables data extraction and filtering of datasets for use by investigators and principal investigators.
-* **Study Build:** Facilitates creation and management of studies (protocols), sites, CRFs, users and study event definitions by principal investigators and coordinators.
-* **Administration:** Allows overall system oversight, auditing, configuration, and reporting by administrators.
+
+- **Submit Data:** Allows subject enrollment, data submission and validation for use by clinicians and research associates as well as Query Management and Bulk Data Import.
+- **Monitor and Manage Data:** Enables ongoing data management and monitoring.
+- **Extract Data:** Enables data extraction and filtering of datasets for use by investigators and principal investigators.
+- **Study Build:** Facilitates creation and management of studies (protocols), sites, CRFs, users and study event definitions by principal investigators and coordinators.
+- **Administration:** Allows overall system oversight, auditing, configuration, and reporting by administrators.
 
 Some key features of OpenClinica include:
 
-* Organization of clinical research by study protocol and site, each with its own set of authorized users, subjects, study event definitions, and CRFs. Support for sharing resources across studies in a secure and transparent manner.
-* Dynamic generation of web-based CRFs for electronic data capture via user-defined clinical parameters and validation logic specified in portable Excel templates.
-* Management of longitudinal data for complex and recurring patient visits.
-* Data import/export tools for migration of clinical datasets in excel spreadsheets, local databases and legacy data formats.
-* Extensive interfaces for data query and retrieval, across subjects, time, and clinical parameters, with dataset export in common statistical analysis formats.
-* Compliance with 21 CFR Part 11 and HIPAA privacy and security guidelines including use of study-specific user roles and privileges, SSL encryption, and auditing to monitor access and changes by users.
-* A robust and scalable technology infrastructure developed using the Java J2EE framework interoperable with relational databases including PostgreSQL (open source) and modern Oracle, to support the needs of the clinical research enterprise.
+- Organization of clinical research by study protocol and site, each with its own set of authorized users, subjects, study event definitions, and CRFs. Support for sharing resources across studies in a secure and transparent manner.
+- Dynamic generation of web-based CRFs for electronic data capture via user-defined clinical parameters and validation logic specified in portable Excel templates.
+- Management of longitudinal data for complex and recurring patient visits.
+- Data import/export tools for migration of clinical datasets in excel spreadsheets, local databases and legacy data formats.
+- Extensive interfaces for data query and retrieval, across subjects, time, and clinical parameters, with dataset export in common statistical analysis formats.
+- Compliance with 21 CFR Part 11 and HIPAA privacy and security guidelines including use of study-specific user roles and privileges, SSL encryption, and auditing to monitor access and changes by users.
+- A robust and scalable technology infrastructure developed using the Java J2EE framework interoperable with relational databases including PostgreSQL (open source) and modern Oracle, to support the needs of the clinical research enterprise.
 
 ## II. Software Dependencies and System Requirements
 
@@ -47,7 +49,7 @@ The source code has been removed from the distribution package to make it easier
 ## III. About OpenClinica
 
 **OpenClinica: Open Source Software Platform for Clinical Trials Electronic Data Capture**
-*Professional Open Source Solutions for the Clinical Research Enterprise*
+_Professional Open Source Solutions for the Clinical Research Enterprise_
 
 OpenClinica is a free, open source clinical trial software platform for Electronic Data Capture (EDC) clinical data management in clinical research. The software is web-based and designed to support all types of clinical studies in diverse research settings. From the ground up, OpenClinica is built on leading independent standards to achieve high levels of interoperability. Its modular architecture and transparent, collaborative development model offer outstanding flexibility while supporting a robust, enterprise-quality solution.
 
@@ -88,9 +90,9 @@ You may exercise the freedoms specified here provided that you comply with the e
 
 The principal conditions are:
 
-* You must conspicuously and appropriately publish on each copy distributed an appropriate copyright notice and disclaimer of warranty and keep intact all the notices that refer to this License and to the absence of any warranty; and give any other recipients of the Program a copy of the GNU Lesser General Public License along with the Program. Any translation of the GNU Lesser General Public License must be accompanied by the GNU Lesser General Public License.
-* If you modify your copy or copies of the library or any portion of it, you may distribute the resulting library provided you do so under the GNU Lesser General Public License. However, programs that link to the library may be licensed under terms of your choice, so long as the library itself can be changed. Any translation of the GNU Lesser General Public License must be accompanied by the GNU Lesser General Public License.
-* If you copy or distribute the library, you must accompany it with the complete corresponding machine-readable source code or with a written offer, valid for at least three years, to furnish the complete corresponding machine-readable source code. You need not provide source code to programs which link to the library.
+- You must conspicuously and appropriately publish on each copy distributed an appropriate copyright notice and disclaimer of warranty and keep intact all the notices that refer to this License and to the absence of any warranty; and give any other recipients of the Program a copy of the GNU Lesser General Public License along with the Program. Any translation of the GNU Lesser General Public License must be accompanied by the GNU Lesser General Public License.
+- If you modify your copy or copies of the library or any portion of it, you may distribute the resulting library provided you do so under the GNU Lesser General Public License. However, programs that link to the library may be licensed under terms of your choice, so long as the library itself can be changed. Any translation of the GNU Lesser General Public License must be accompanied by the GNU Lesser General Public License.
+- If you copy or distribute the library, you must accompany it with the complete corresponding machine-readable source code or with a written offer, valid for at least three years, to furnish the complete corresponding machine-readable source code. You need not provide source code to programs which link to the library.
 
 Any of these conditions can be waived if you get permission from the copyright holder.
 Your fair use and other rights are in no way affected by the above.

@@ -1,4 +1,10 @@
-import React, { useEffect, useLayoutEffect, useState, useRef, useCallback } from 'react';
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
 import { store } from '../store';
 import { useAccessibility } from './AccessibilityProvider.jsx';
 import styles from './CRFRenderer.module.css';
@@ -45,23 +51,23 @@ const schema = {
 };
 
 const getFieldDiscrepancy = (fieldId, value) => {
-  if (fieldId === "IG_NON_REP[0].I_GEN_NOTES") {
+  if (fieldId === 'IG_NON_REP[0].I_GEN_NOTES') {
     if (!value || value.trim() === '') {
       return {
-        severityCode: "ERR_01",
-        badgeClass: "alert",
-        text: "Note cannot be empty."
+        severityCode: 'ERR_01',
+        badgeClass: 'alert',
+        text: 'Note cannot be empty.',
       };
     }
   }
-  if (fieldId === "IG_AE_1[0].I_AE_ONSET") {
+  if (fieldId === 'IG_AE_1[0].I_AE_ONSET') {
     if (value) {
       const date = new Date(value);
       if (date > new Date()) {
         return {
-          severityCode: "WARN_01",
-          badgeClass: "alertbox_center",
-          text: "Date is in the future. Please verify."
+          severityCode: 'WARN_01',
+          badgeClass: 'alertbox_center',
+          text: 'Date is in the future. Please verify.',
         };
       }
     }
@@ -69,7 +75,13 @@ const getFieldDiscrepancy = (fieldId, value) => {
   return null;
 };
 
-const FormField = React.memo(function FormField({ field, fieldId, value, groupOID, index }) {
+const FormField = React.memo(function FormField({
+  field,
+  fieldId,
+  value,
+  groupOID,
+  index,
+}) {
   const [localValue, setLocalValue] = useState(value || '');
   const { announce } = useAccessibility();
 
@@ -104,16 +116,13 @@ const FormField = React.memo(function FormField({ field, fieldId, value, groupOI
 
   return (
     <div className={styles.field}>
-      <label
-        htmlFor={fieldId}
-        className={styles.label}
-      >
+      <label htmlFor={fieldId} className={styles.label}>
         {field.label}:
       </label>
-      
+
       {discrepancy && (
-        <span 
-          className={`discrepancy-badge ${discrepancy.badgeClass} ${styles.discrepancyBadge}`} 
+        <span
+          className={`discrepancy-badge ${discrepancy.badgeClass} ${styles.discrepancyBadge}`}
           title={`Severity: ${discrepancy.severityCode}`}
         >
           [{discrepancy.severityCode}]
@@ -152,10 +161,7 @@ const FormField = React.memo(function FormField({ field, fieldId, value, groupOI
       )}
 
       {discrepancy && (
-        <div 
-          id={discrepancyId} 
-          className={`sr-only ${styles.discrepancyText}`}
-        >
+        <div id={discrepancyId} className={`sr-only ${styles.discrepancyText}`}>
           {discrepancy.text}
         </div>
       )}
@@ -164,14 +170,18 @@ const FormField = React.memo(function FormField({ field, fieldId, value, groupOI
 });
 FormField.displayName = 'FormField';
 
-const FormRow = React.memo(function FormRow({ group, row, index, totalRemaining, setRowRef, setFocusAction }) {
+const FormRow = React.memo(function FormRow({
+  group,
+  row,
+  index,
+  totalRemaining,
+  setRowRef,
+  setFocusAction,
+}) {
   const { announce } = useAccessibility();
 
   return (
-    <div
-      ref={setRowRef(group.groupOID, index)}
-      className={styles.row}
-    >
+    <div ref={setRowRef(group.groupOID, index)} className={styles.row}>
       {group.repeating && <h4>Row {index + 1}</h4>}
       {group.fields.map((field) => {
         const fieldId = `${group.groupOID}[${index}].${field.fieldOID}`;
@@ -195,11 +205,11 @@ const FormRow = React.memo(function FormRow({ group, row, index, totalRemaining,
           onClick={() => {
             store.removeRow(group.groupOID, index);
             announce(`Row ${index + 1} removed from ${group.title}`);
-            setFocusAction({ 
-              type: 'REMOVE', 
-              groupId: group.groupOID, 
+            setFocusAction({
+              type: 'REMOVE',
+              groupId: group.groupOID,
               index: index,
-              totalRemaining
+              totalRemaining,
             });
           }}
         >
@@ -211,7 +221,13 @@ const FormRow = React.memo(function FormRow({ group, row, index, totalRemaining,
 });
 FormRow.displayName = 'FormRow';
 
-const FormGroup = React.memo(function FormGroup({ group, rows, setRowRef, setAddBtnRef, setFocusAction }) {
+const FormGroup = React.memo(function FormGroup({
+  group,
+  rows,
+  setRowRef,
+  setAddBtnRef,
+  setFocusAction,
+}) {
   const { announce } = useAccessibility();
 
   return (
@@ -237,7 +253,11 @@ const FormGroup = React.memo(function FormGroup({ group, rows, setRowRef, setAdd
             const newIndex = rows.length;
             store.addRow(group.groupOID, schema);
             announce(`New row added to ${group.title}`);
-            setFocusAction({ type: 'ADD', groupId: group.groupOID, index: newIndex });
+            setFocusAction({
+              type: 'ADD',
+              groupId: group.groupOID,
+              index: newIndex,
+            });
           }}
         >
           Add {group.title} Entry
@@ -280,7 +300,9 @@ export default function CRFRenderer() {
         const rowKey = `${focusAction.groupId}-${focusAction.index}`;
         const rowElement = rowRefs.current.get(rowKey);
         if (rowElement) {
-          const firstInput = rowElement.querySelector('input, select, textarea');
+          const firstInput = rowElement.querySelector(
+            'input, select, textarea'
+          );
           if (firstInput) {
             firstInput.focus();
           }
@@ -352,14 +374,16 @@ export default function CRFRenderer() {
       <form onSubmit={(e) => e.preventDefault()}>
         {schema.groups.map((group) => {
           const rows = formData[group.groupOID] || [];
-          return <FormGroup 
-            key={group.groupOID} 
-            group={group} 
-            rows={rows} 
-            setRowRef={setRowRef} 
-            setAddBtnRef={setAddBtnRef} 
-            setFocusAction={setFocusAction} 
-          />;
+          return (
+            <FormGroup
+              key={group.groupOID}
+              group={group}
+              rows={rows}
+              setRowRef={setRowRef}
+              setAddBtnRef={setAddBtnRef}
+              setFocusAction={setFocusAction}
+            />
+          );
         })}
       </form>
 

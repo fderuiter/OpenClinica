@@ -67,7 +67,8 @@
   cursor: pointer;
 }
 
-.button:hover, .button:focus {
+.button:hover,
+.button:focus {
   background-color: var(--focus-color);
   outline: 2px solid var(--focus-color);
   outline-offset: 2px;

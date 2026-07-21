@@ -1,132 +1,254 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>prototype- Manage Study</title>
 
-    <script type="text/javascript" language="javascript" src="includes/global_functions_javascript.js"></script>
-    <link rel="stylesheet" href="includes/styles_updated.css" type="text/css">
-    <link rel="stylesheet" href="includes/proto_styles.css" type="text/css">
+    <script
+      type="text/javascript"
+      language="javascript"
+      src="includes/global_functions_javascript.js"
+    ></script>
+    <link rel="stylesheet" href="includes/styles_updated.css" type="text/css" />
+    <link rel="stylesheet" href="includes/proto_styles.css" type="text/css" />
 
-    <script type="text/JavaScript" language="JavaScript" src="includes/Tabs.js"></script>
-    <script type="text/JavaScript" language="JavaScript" src="includes/global_functions_javascript.js"></script>
-    <script type="text/JavaScript" language="JavaScript" src="includes/CalendarPopup.js"></script>
+    <script
+      type="text/JavaScript"
+      language="JavaScript"
+      src="includes/Tabs.js"
+    ></script>
+    <script
+      type="text/JavaScript"
+      language="JavaScript"
+      src="includes/global_functions_javascript.js"
+    ></script>
+    <script
+      type="text/JavaScript"
+      language="JavaScript"
+      src="includes/CalendarPopup.js"
+    ></script>
 
     <!-- Added for the new Calender -->
-    <link rel="stylesheet" type="text/css" media="all" href="includes/new_cal/skins/aqua/theme.css" title="Aqua" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="includes/new_cal/skins/aqua/theme.css"
+      title="Aqua"
+    />
     <script type="text/javascript" src="includes/new_cal/calendar.js"></script>
-    <script type="text/javascript" src="includes/new_cal/lang/calendar-en.js"></script>
-    <script type="text/javascript" src="includes/new_cal/calendar-setup.js"></script>
+    <script
+      type="text/javascript"
+      src="includes/new_cal/lang/calendar-en.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="includes/new_cal/calendar-setup.js"
+    ></script>
     <!-- End new Calender -->
-    <script type="text/JavaScript" language="JavaScript" src="dist/assets/main-vAm2N4M6.js"></script>
+    <script
+      type="text/JavaScript"
+      language="JavaScript"
+      src="dist/assets/main-vAm2N4M6.js"
+    ></script>
+  </head>
+  <body>
+    <div id="headerDiv" style="background-color: yellow">
+      <-- Header width 1024 pixels (px); body tag width 1070 px -->
+      <div id="logoDiv"><img src="images/Logo.gif" alt="logo" /></div>
+      <!-- These DIVs define shaded box borders -->
 
+      <div id="menuContainer"></div>
 
-</head>
-<body>
-<div id="headerDiv" style="background-color:yellow">
-    <-- Header width 1024 pixels (px); body tag width 1070 px -->
-    <div id="logoDiv"><img src="images/Logo.gif" alt="logo"/></div>
-    <!-- These DIVs define shaded box borders -->
-
-    <div id="menuContainer">
-
+      <div id="reportIssueDiv">
+        <a href="javascript:reportBug()"> <span>Report Issue</span> </a> |
+        <a
+          href="javascript:openDocWindow('http://www.openclinica.org/OpenClinica/2.2/support/')"
+          ><span>Support</span></a
+        >
+      </div>
+      <div id="userBoxDiv" class="userbox">
+        <div class="box_T">
+          <div class="box_L">
+            <div class="box_R">
+              <div class="box_B">
+                <div class="box_TL">
+                  <div class="box_TR">
+                    <div class="box_BL">
+                      <div class="box_BR">
+                        <div class="userboxtext_center">
+                          User box
+                          <br /><br /><br /><br />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div id="reportIssueDiv">
-        <a href="javascript:reportBug()"> <span>Report Issue</span> </a> | <a href="javascript:openDocWindow('http://www.openclinica.org/OpenClinica/2.2/support/')"><span>Support</span></a>
+    <div id="sidebarDiv">
+      <div id="alertsDivTop">
+        Alerts<img
+          hspace="5"
+          width="9"
+          height="13"
+          border="0"
+          alt="+"
+          src="images/sidebar_expand.gif"
+          onclick="changeOpenDivButton(this)"
+        />
+      </div>
+      <div id="alertsDiv" class="sideTopBar">
+        <-- Sidebar width 165 pixels (px) -->
+      </div>
+
+      <div id="instructionsDivTop">
+        Instructions<img
+          hspace="5"
+          width="9"
+          height="13"
+          border="0"
+          alt="+"
+          src="images/sidebar_expand.gif"
+          onclick="changeOpenDivButton(this)"
+        />
+      </div>
+      <div id="instructionsDiv" class="sideTopBar"></div>
+
+      <div id="infoDivTop">
+        Info<img
+          hspace="5"
+          width="9"
+          height="13"
+          border="0"
+          alt="+"
+          src="images/sidebar_expand.gif"
+          onclick="changeOpenDivButton(this)"
+        />
+      </div>
+      <div id="infoDiv" class="sideTopBar"></div>
+
+      <div id="inconKeyDivTop">
+        Icon Key<img
+          hspace="5"
+          width="9"
+          height="13"
+          border="0"
+          alt="+"
+          src="images/sidebar_expand.gif"
+          onclick="changeOpenDivButton(this)"
+        />
+      </div>
+      <div id="inconKeyDiv" class="sideTopBar"></div>
     </div>
-    <div id="userBoxDiv" class="userbox">
 
-        <div class="box_T"><div class="box_L"><div class="box_R">
-
-            <div class="box_B"><div class="box_TL"><div class="box_TR">
-                <div class="box_BL"><div class="box_BR">
-
-                    <div class="userboxtext_center">
-
-                        User box
-                        <br /><br /><br /><br />
-
-                    </div></div></div></div></div></div></div></div></div>
-
-    </div>
-</div>
-
-<div id="sidebarDiv">
-
-    <div id="alertsDivTop">Alerts<img hspace="5" width="9" height="13" border="0" alt="+" src="images/sidebar_expand.gif" onclick="changeOpenDivButton(this)"/></div><div id="alertsDiv" class="sideTopBar">
-    <-- Sidebar width 165 pixels (px) -->
-</div>
-
-    <div id="instructionsDivTop">Instructions<img hspace="5" width="9" height="13" border="0" alt="+" src="images/sidebar_expand.gif" onclick="changeOpenDivButton(this)"/></div><div id="instructionsDiv" class="sideTopBar">
-
-
-</div>
-
-    <div id="infoDivTop">Info<img hspace="5" width="9" height="13" border="0" alt="+" src="images/sidebar_expand.gif" onclick="changeOpenDivButton(this)"/></div><div id="infoDiv" class="sideTopBar">
-
-
-</div>
-
-    <div id="inconKeyDivTop">Icon Key<img hspace="5" width="9" height="13" border="0" alt="+" src="images/sidebar_expand.gif" onclick="changeOpenDivButton(this)"/></div><div id="inconKeyDiv" class="sideTopBar">
-
-
-</div>
-</div>
-
-
-<div id="bodyDiv" style="font-size:1em">
-    <-- Body tag width 1070 pixels (px) -->
-    <br />
-    <br />
-    <-- Body div tag width for main content 900 pixels (px); w/5 px left margin -->
-    <br />
-    <br />
-    <-- Option 2: body tag width 1024; body div tag width for main content 854 pixels (px) -->
-    <div id="workflowDiv">
-            <div class="workflowBox_center">
-                <table border="0" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td>
-                            <div class="box_T"><div class="box_L"><div class="box_R"><div class="box_B"><div class="box_TL"><div class="box_TR"><div class="box_BL"><div class="box_BR">
+    <div id="bodyDiv" style="font-size: 1em">
+      <-- Body tag width 1070 pixels (px) -->
+      <br />
+      <br />
+      <-- Body div tag width for main content 900 pixels (px); w/5 px left
+      margin -->
+      <br />
+      <br />
+      <-- Option 2: body tag width 1024; body div tag width for main content 854
+      pixels (px) -->
+      <div id="workflowDiv">
+        <div class="workflowBox_center">
+          <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+              <td>
+                <div class="box_T">
+                  <div class="box_L">
+                    <div class="box_R">
+                      <div class="box_B">
+                        <div class="box_TL">
+                          <div class="box_TR">
+                            <div class="box_BL">
+                              <div class="box_BR">
                                 <div class="textbox_center" align="center">
-<span class="title_home">
-<b>Workflow box</b>
-</span></div>
-                            </div></div></div></div></div></div></div></div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+                                  <span class="title_home">
+                                    <b>Workflow box</b>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
 
-            <!-- Contextual Help Links for Tutorials -->
-            <div id="studyBuildSection" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;">
-                <h2>Study Build Configuration</h2>
-                <p>Configure your study events, design your CRFs, and set up your sites.</p>
-                <a href="../../../../docs/tutorials/build_study.md" target="_blank" rel="noopener noreferrer" style="color: blue; text-decoration: underline;">Help: View Study Build Tutorial</a>
-            </div>
+        <!-- Contextual Help Links for Tutorials -->
+        <div
+          id="studyBuildSection"
+          style="margin-top: 20px; padding: 10px; border: 1px solid #ccc"
+        >
+          <h2>Study Build Configuration</h2>
+          <p>
+            Configure your study events, design your CRFs, and set up your
+            sites.
+          </p>
+          <a
+            href="../../../../docs/tutorials/build_study.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color: blue; text-decoration: underline"
+            >Help: View Study Build Tutorial</a
+          >
+        </div>
 
-            <div id="subdomainSetupSection" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;">
-                <h2>Subdomain & Participate Setup</h2>
-                <p>Set up a customized URL subdomain for participant portals.</p>
-                <a href="../../../../docs/tutorials/participate_setup.md" target="_blank" rel="noopener noreferrer" style="color: blue; text-decoration: underline;">Help: View Subdomain Setup Tutorial</a>
-            </div>
+        <div
+          id="subdomainSetupSection"
+          style="margin-top: 20px; padding: 10px; border: 1px solid #ccc"
+        >
+          <h2>Subdomain & Participate Setup</h2>
+          <p>Set up a customized URL subdomain for participant portals.</p>
+          <a
+            href="../../../../docs/tutorials/participate_setup.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color: blue; text-decoration: underline"
+            >Help: View Subdomain Setup Tutorial</a
+          >
+        </div>
 
-            <div id="randomizationSection" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;">
-                <h2>Randomization Setup</h2>
-                <p>Request and configure the Randomize module for patient assignment.</p>
-                <a href="../../../../docs/tutorials/randomize_setup.md" target="_blank" rel="noopener noreferrer" style="color: blue; text-decoration: underline;">Help: View Randomization Setup Tutorial</a>
-            </div>
+        <div
+          id="randomizationSection"
+          style="margin-top: 20px; padding: 10px; border: 1px solid #ccc"
+        >
+          <h2>Randomization Setup</h2>
+          <p>
+            Request and configure the Randomize module for patient assignment.
+          </p>
+          <a
+            href="../../../../docs/tutorials/randomize_setup.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color: blue; text-decoration: underline"
+            >Help: View Randomization Setup Tutorial</a
+          >
+        </div>
+      </div>
+      <br />
+      <-- Footer div width is not specified in CSS but ends up about 1000 pixels
+      (px) -->
     </div>
-    <br />
-     <-- Footer div width is not specified in CSS but ends up about 1000 pixels (px) -->
-</div>
 
-<div id="footerDiv">
-
-    <div id="footerLinksDiv">
-        <a href="http://www.openclinica.org" target="new">OpenClinica Website</a>
+    <div id="footerDiv">
+      <div id="footerLinksDiv">
+        <a href="http://www.openclinica.org" target="new"
+          >OpenClinica Website</a
+        >
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <a href="javascript:openDocWindow('help/index.html')">Help</a>
 
@@ -137,15 +259,24 @@
         <a href="Contact">Contact</a>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <a href="Enterprise">OpenClinica Enterprise</a>
-     <span class="version">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Version: SNAPSHOT &nbsp;</span>
+        <span class="version"
+          >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Version:
+          SNAPSHOT &nbsp;</span
+        >
         <div id="logoFooterDiv">
-            <a href="http://www.akazaresearch.com"><img src="images/Akazalogo.gif" width="60" height="67" border="0" alt="Developed by Akaza Research" title="Developed by Akaza Research"></a>
+          <a href="http://www.akazaresearch.com"
+            ><img
+              src="images/Akazalogo.gif"
+              width="60"
+              height="67"
+              border="0"
+              alt="Developed by Akaza Research"
+              title="Developed by Akaza Research"
+          /></a>
         </div>
-
+      </div>
     </div>
-</div>
-</body>
+  </body>
 </html>
