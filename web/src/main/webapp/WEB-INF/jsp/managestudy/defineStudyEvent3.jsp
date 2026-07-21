@@ -111,7 +111,8 @@
 
                             <td class="table_cell" colspan="1"><fmt:message key="double_data_entry" bundle="${resword}"/>:<input type="checkbox" name="doubleEntry<c:out value="${count}"/>" value="yes"></td>
 
-                            <td class="table_cell" colspan="1"><fmt:message key="password_required" bundle="${resword}"/>:<input type="checkbox" name="electronicSignature<c:out value="${count}"/>" value="yes"></td>
+                            <td class="table_cell" colspan="1"><fmt:message key="password_required" bundle="${resword}"/>:<input type="checkbox" id="es_checkbox${count}" name="electronicSignature<c:out value="${count}"/>" value="yes">
+                                <c:set var="summary" value="electronicSignature${count}"/>
 
                                 <%-- <td class="table_cell"><fmt:message key="enforce_decision_conditions" bundle="${restext}"/>:<input type="checkbox" name="decisionCondition<c:out value="${count}"/>"  checked value="yes"></td>--%>
 
@@ -172,9 +173,11 @@
                   <c:when test="${definition.repeating == true }">
                           <br />
                     <fmt:message key="offline" bundle="${resword}"/>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;           
-                    <input type="checkbox" name="offline<c:out value="${count}"/>" value="yes" >                    
+                    <input type="checkbox" id="offline_checkbox${count}" name="offline<c:out value="${count}"/>" value="yes" >                    
                   </c:when>
                 </c:choose>
+                <c:set var="summary" value="offline${count}"/>
+                <jsp:include page="../showMessage.jsp"><jsp:param name="key" value="${summary}"/></jsp:include>
           
         </span>
       </td>
@@ -358,3 +361,46 @@
 
 <!-- END WORKFLOW BOX -->
 <jsp:include page="../include/footer.jsp"/>
+<script type="text/javascript">
+    function initMutualExclusion() {
+        var esCheckboxes = document.querySelectorAll('input[id^="es_checkbox"]');
+        for (var i = 0; i < esCheckboxes.length; i++) {
+            (function(esCb) {
+                var count = esCb.id.replace("es_checkbox", "");
+                var offlineCb = document.getElementById("offline_checkbox" + count);
+                if (offlineCb) {
+                    var updateExclusion = function() {
+                        if (esCb.checked) {
+                            offlineCb.disabled = true;
+                            offlineCb.title = "Offline forms cannot perform real-time credential verification";
+                            esCb.disabled = false;
+                            esCb.title = "";
+                        } else if (offlineCb.checked) {
+                            esCb.disabled = true;
+                            esCb.title = "Offline forms cannot perform real-time credential verification";
+                            offlineCb.disabled = false;
+                            offlineCb.title = "";
+                        } else {
+                            esCb.disabled = false;
+                            esCb.title = "";
+                            offlineCb.disabled = false;
+                            offlineCb.title = "";
+                        }
+                    };
+                    
+                    esCb.addEventListener('change', updateExclusion);
+                    offlineCb.addEventListener('change', updateExclusion);
+                    updateExclusion();
+                }
+            })(esCheckboxes[i]);
+        }
+    }
+    
+    if (window.addEventListener) {
+        window.addEventListener("load", initMutualExclusion, false);
+    } else if (window.attachEvent) {
+        window.attachEvent("onload", initMutualExclusion);
+    } else {
+        window.onload = initMutualExclusion;
+    }
+</script>

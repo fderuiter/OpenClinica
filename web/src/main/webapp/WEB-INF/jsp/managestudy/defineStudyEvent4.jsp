@@ -133,12 +133,14 @@
     <td class="table_cell" colspan="1"><fmt:message key="password_required" bundle="${resword}"/>:
         <c:choose>
             <c:when test="${edc.electronicSignature == true}">
-                <input type="checkbox" checked name="electronicSignature<c:out value="${count}"/>" value="yes">
+                <input type="checkbox" id="es_checkbox${count}" checked name="electronicSignature<c:out value="${count}"/>" value="yes">
             </c:when>
             <c:otherwise>
-                <input type="checkbox" name="electronicSignature<c:out value="${count}"/>" value="yes">
+                <input type="checkbox" id="es_checkbox${count}" name="electronicSignature<c:out value="${count}"/>" value="yes">
             </c:otherwise>
         </c:choose>
+        <c:set var="summary" value="electronicSignature${count}"/>
+        <jsp:include page="../showMessage.jsp"><jsp:param name="key" value="${summary}"/></jsp:include>
     </td>
 
                                 <%-- <td class="table_cell"><fmt:message key="enforce_decision_conditions" bundle="${restext}"/>:<input type="checkbox" name="decisionCondition<c:out value="${count}"/>"  checked value="yes"></td>--%>
@@ -255,13 +257,15 @@
                 <fmt:message key="offline" bundle="${resword}"/>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;           
                 <c:choose>
                   <c:when test="${edc.allowAnonymousSubmission == true && definition.repeating == true  && edc.offline == true}">
-                    <input type="checkbox" name="offline<c:out value="${count}"/>" value="yes"  checked>
+                    <input type="checkbox" id="offline_checkbox${count}" name="offline<c:out value="${count}"/>" value="yes"  checked>
                   </c:when>
                   <c:otherwise>
-                    <input type="checkbox" name="offline<c:out value="${count}"/>" value="yes" >
+                    <input type="checkbox" id="offline_checkbox${count}" name="offline<c:out value="${count}"/>" value="yes" >
                   </c:otherwise>
                 </c:choose>
-                
+                <c:set var="summary" value="offline${count}"/>
+                <jsp:include page="../showMessage.jsp"><jsp:param name="key" value="${summary}"/></jsp:include>
+
               </span>
             </c:when>
             <c:otherwise>
@@ -274,11 +278,13 @@
                 <fmt:message key="offline" bundle="${resword}"/>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;           
                 <c:choose>
                   <c:when test="${edc.allowAnonymousSubmission == true && definition.repeating == true  && edc.offline == true}">
-                    <input type="checkbox" name="offline<c:out value="${count}"/>" value="yes"  checked>
+                    <input type="checkbox" id="offline_checkbox${count}" name="offline<c:out value="${count}"/>" value="yes"  checked>
                   </c:when>
                   <c:otherwise>
-                    <input type="checkbox" name="offline<c:out value="${count}"/>" value="yes" >
-                  </c:otherwise>
+                    <input type="checkbox" id="offline_checkbox${count}" name="offline<c:out value="${count}"/>" value="yes" >
+                <c:set var="summary" value="offline${count}"/>
+                <jsp:include page="../showMessage.jsp"><jsp:param name="key" value="${summary}"/></jsp:include>
+
                 </c:choose>
                 
               </span>
@@ -466,3 +472,46 @@
 
 <!-- END WORKFLOW BOX -->
 <jsp:include page="../include/footer.jsp"/>
+<script type="text/javascript">
+    function initMutualExclusion() {
+        var esCheckboxes = document.querySelectorAll('input[id^="es_checkbox"]');
+        for (var i = 0; i < esCheckboxes.length; i++) {
+            (function(esCb) {
+                var count = esCb.id.replace("es_checkbox", "");
+                var offlineCb = document.getElementById("offline_checkbox" + count);
+                if (offlineCb) {
+                    var updateExclusion = function() {
+                        if (esCb.checked) {
+                            offlineCb.disabled = true;
+                            offlineCb.title = "Offline forms cannot perform real-time credential verification";
+                            esCb.disabled = false;
+                            esCb.title = "";
+                        } else if (offlineCb.checked) {
+                            esCb.disabled = true;
+                            esCb.title = "Offline forms cannot perform real-time credential verification";
+                            offlineCb.disabled = false;
+                            offlineCb.title = "";
+                        } else {
+                            esCb.disabled = false;
+                            esCb.title = "";
+                            offlineCb.disabled = false;
+                            offlineCb.title = "";
+                        }
+                    };
+                    
+                    esCb.addEventListener('change', updateExclusion);
+                    offlineCb.addEventListener('change', updateExclusion);
+                    updateExclusion();
+                }
+            })(esCheckboxes[i]);
+        }
+    }
+    
+    if (window.addEventListener) {
+        window.addEventListener("load", initMutualExclusion, false);
+    } else if (window.attachEvent) {
+        window.attachEvent("onload", initMutualExclusion);
+    } else {
+        window.onload = initMutualExclusion;
+    }
+</script>
