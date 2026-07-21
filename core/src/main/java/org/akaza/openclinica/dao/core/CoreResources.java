@@ -429,7 +429,9 @@ public class CoreResources implements ResourceLoaderAware {
         	DATAINFO.setProperty("mail.smtp.ssl.protocols", DATAINFO.getProperty("mailSmtpSslProtocols"));
         }
         
-        DATAINFO.setProperty("mail.errormsg", DATAINFO.getProperty("mailErrorMsg"));
+        if(DATAINFO.getProperty("mailErrorMsg") != null) {
+            DATAINFO.setProperty("mail.errormsg", DATAINFO.getProperty("mailErrorMsg"));
+        }
 
     }
 
