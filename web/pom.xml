@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>OpenClinica-web</artifactId>
@@ -73,7 +74,7 @@
 			<artifactId>rome-fetcher</artifactId>
 			<scope>compile</scope>
 			<exclusions>
-				<!-- We are using jdom 1.1 lib below -->
+				
 				<exclusion>
 					<groupId>jdom</groupId>
 					<artifactId>jdom</artifactId>
@@ -85,7 +86,7 @@
 			<artifactId>rome</artifactId>
 			<scope>compile</scope>
 			<exclusions>
-				<!-- We are using jdom 1.1 lib below -->
+				
 				<exclusion>
 					<groupId>jdom</groupId>
 					<artifactId>jdom</artifactId>
@@ -173,7 +174,7 @@
 			<artifactId>commons-validator</artifactId>
 			<scope>compile</scope>
 		</dependency>
-		<!-- Needed by commons-validator -->
+		
 		
 		<dependency>
 			<groupId>commons-collections</groupId>
@@ -272,27 +273,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-maven-plugin</artifactId>
-                <configuration>
-                    <outputFileName>legacy-openapi</outputFileName>
-                    <outputPath>${project.build.directory}/generated-docs</outputPath>
-                    <outputFormat>JSON</outputFormat>
-                    <resourcePackages>
-                        <resourcePackage>org.akaza.openclinica.web.restful</resourcePackage>
-                    </resourcePackages>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>resolve</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <executions>
@@ -338,17 +318,7 @@
                             <arguments>run build</arguments>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>npm run docs</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run docs</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
+                    </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -385,7 +355,28 @@
         </plugins>
     </build>
 
-    <properties>
+    <profiles><profile><id>docs</id><build><plugins><plugin>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <configuration>
+                    <outputFileName>legacy-openapi</outputFileName>
+                    <outputPath>${project.build.directory}/generated-docs</outputPath>
+                    <outputFormat>JSON</outputFormat>
+                    <resourcePackages>
+                        <resourcePackage>org.akaza.openclinica.web.restful</resourcePackage>
+                    </resourcePackages>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>resolve</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin><groupId>com.github.eirslett</groupId><artifactId>frontend-maven-plugin</artifactId><executions><execution><id>npm run docs</id><phase>prepare-package</phase><goals><goal>npm</goal></goals><configuration><arguments>run docs</arguments></configuration></execution></executions></plugin></plugins></build></profile></profiles><properties>
     	<assembly.name>OpenClinica</assembly.name>
     </properties>
 

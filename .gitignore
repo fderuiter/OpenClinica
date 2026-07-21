@@ -33,13 +33,17 @@ node_modules/
 
 site/
 docs/api/
-docs/frontend-api/
-docs/project-info.md
+docs/reference/frontend-api/
+docs/explanation/project-info.md
 docs/openapi.json
-docs/soap.md
+docs/reference/soap.md
+core/README.md
+web/README.md
+ws/README.md
 README.md
 data/
 dummy_template.xlsx
 *.bak
 *.tmp
 modern/node/
+__pycache__/
