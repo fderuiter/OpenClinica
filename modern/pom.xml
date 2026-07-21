@@ -180,7 +180,7 @@
                                 <configuration>
                                     <executable>bash</executable>
                                     <arguments>
-                                        <argument>${project.parent.basedir}/generate-docs.sh</argument>
+                                        <argument>${project.parent.basedir}/utils/generate-docs.sh</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -401,6 +401,9 @@
                     <excludeRoots>
                         <excludeRoot>${project.build.directory}/generated-sdk</excludeRoot>
                     </excludeRoots>
+                    <rulesets>
+                        <ruleset>${project.basedir}/pmd-ruleset.xml</ruleset>
+                    </rulesets>
                 </configuration>
             </plugin>
         </plugins>

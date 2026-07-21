@@ -15,7 +15,7 @@ try {
 let auditResult = {};
 try {
   auditResult = JSON.parse(auditOutput);
-} catch (e) {
+} catch {
   console.warn(
     'Failed to parse npm audit output as JSON. Assuming no vulnerabilities to prevent build failure.'
   );

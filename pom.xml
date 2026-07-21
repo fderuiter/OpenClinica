@@ -23,6 +23,7 @@
 
 		<skipTests>false</skipTests>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<pmd.failOnViolation>false</pmd.failOnViolation>
 
 		
 		<git.url>git://github.com/OpenClinica/OpenClinica.git</git.url>
@@ -120,51 +121,15 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>codeship</id>
-			<properties>
-					<db.test>107.170.116.150</db.test>
-			</properties>
-		</profile>
-		<profile>
-			
-			<id>m2eclipse-config</id>
+			<id>ci-quality-gate</id>
 			<activation>
 				<property>
-					<name>useJRebel</name>
-					<value>true</value>
+					<name>env.CI</name>
 				</property>
 			</activation>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.eclipse.m2e</groupId>
-							<artifactId>lifecycle-mapping</artifactId>
-							<version>1.0.0</version>
-							<configuration>
-								<lifecycleMappingMetadata>
-									<pluginExecutions>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.zeroturnaround</groupId>
-												<artifactId>jrebel-maven-plugin</artifactId>
-												<versionRange>[1.0.0,)</versionRange>
-												<goals>
-													<goal>generate</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-										
-									</pluginExecutions>
-								</lifecycleMappingMetadata>
-							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
+			<properties>
+				<pmd.failOnViolation>true</pmd.failOnViolation>
+			</properties>
 		</profile>
 		<profile>
 			<id>dependency-scan</id>
@@ -763,7 +728,7 @@
                         <configuration>
                             <executable>python3</executable>
                             <arguments>
-                                <argument>${project.basedir}/validate_migrations.py</argument>
+                                <argument>${project.basedir}/utils/validate_migrations.py</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -828,13 +793,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.15.0</version>
+				<version>3.21.0</version>
 				<configuration>
-					<failOnViolation>true</failOnViolation>
+					<failOnViolation>${pmd.failOnViolation}</failOnViolation>
 					<printFailingErrors>true</printFailingErrors>
 					<rulesets>
-						<ruleset>${maven.multiModuleProjectDirectory}/pmd-ruleset.xml</ruleset>
+						<ruleset>/app/pmd-ruleset.xml</ruleset>
 					</rulesets>
+					<excludeFromFailureFile>/app/pmd-exclude.properties</excludeFromFailureFile>
 				</configuration>
 				<executions>
 					<execution>

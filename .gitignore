@@ -36,8 +36,6 @@ docs/api/
 docs/frontend-api/
 docs/reference/frontend-api/
 docs/explanation/project-info.md
-docs/openapi.json
-docs/soap.md
 __pycache__/
 README.md
 data/

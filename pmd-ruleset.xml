@@ -10,4 +10,11 @@
             <property name="violationSuppressRegex" value="^Avoid unused private methods such as &apos;(closeBreadcrumb|compare|createRuleSetRules|getCrfVersionDao|getDate|getDateFormat|getEventCrfDao|getEventService|getItemDataDao|getParentStudy|getRuleDao|getRuleSetDao|getStatusForStage|getStudyEventDefinitionDao|getStudySubject|getUserAccount|getUserAccountByApiKey|getUserAccountByStudy|isEachSectionReviewedOnce|isLockable|listContainsDisplayItem|mapConfirmation|ruleActionRunLogSaveOrUpdate|saveAndReturnMessage|sendEmail|setUpSidebar|updateLimitRowSelect)\(.*&apos;\.$"/>
         </properties>
     </rule>
+    <rule ref="category/java/codestyle.xml/ControlStatementBraces" />
+    <rule ref="category/java/codestyle.xml/ExtendsObject" />
+    <rule ref="category/java/performance.xml/BigIntegerInstantiation" />
+    <rule ref="category/java/performance.xml/StringInstantiation" />
+    <rule ref="category/java/errorprone.xml/EqualsNull" />
+    <rule ref="category/java/errorprone.xml/EmptyCatchBlock" />
+    <rule ref="category/java/errorprone.xml/JumbledIncrementer" />
 </ruleset>

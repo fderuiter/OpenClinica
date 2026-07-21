@@ -19,7 +19,6 @@
     
      <util:properties id="dataInfo" location="classpath:datainfo.properties"/>
      <util:properties id="extractInfo" location="classpath:extract.properties"/>
-     <util:properties id="enterpriseInfo" location="classpath:enterprise.properties"/>
   <!--
 
   <bean id="ocSessionContext" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
