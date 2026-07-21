@@ -1357,16 +1357,6 @@
     </servlet>
 
 
-    <servlet>
-        <servlet-name>OpenRosaFormDownloadServlet</servlet-name>
-        <display-name>OpenRosaFormDownloadServlet</display-name>
-        <servlet-class>org.akaza.openclinica.web.openrosa.OpenRosaFormDownloadServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>OpenRosaFormDownloadServlet</servlet-name>
-        <url-pattern>/openrosa/formXml</url-pattern>
-    </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>LockCRFVersionServlet</servlet-name>
         <url-pattern>/LockCRFVersion</url-pattern>
