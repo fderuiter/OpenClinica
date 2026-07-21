@@ -69,7 +69,7 @@ const getFieldDiscrepancy = (fieldId, value) => {
   return null;
 };
 
-const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
+const FormField = React.memo(function FormField({ field, fieldId, value, groupOID, index }) {
   const [localValue, setLocalValue] = useState(value || '');
   const { announce } = useAccessibility();
 
@@ -162,7 +162,7 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
   );
 });
 
-const FormRow = React.memo(({ group, row, index }) => {
+const FormRow = React.memo(function FormRow({ group, row, index }) {
   const { announce } = useAccessibility();
 
   return (
@@ -204,7 +204,7 @@ const FormRow = React.memo(({ group, row, index }) => {
   );
 });
 
-const FormGroup = React.memo(({ group, rows }) => {
+const FormGroup = React.memo(function FormGroup({ group, rows }) {
   const { announce } = useAccessibility();
 
   return (
@@ -271,7 +271,7 @@ export default function CRFRenderer() {
       clearTimeout(timer);
       unsubscribe();
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); 
 
   if (loading) {
     return <div className="spinner">Loading CRF Data...</div>;
