@@ -156,6 +156,17 @@ if ! python3 utils/validate_nav.py; then
     fi
 fi
 
+# Validate JSON and XML code snippets
+if ! python3 utils/validate_snippets.py; then
+    if [ "$STRICT_MODE" = "true" ]; then
+        echo "Error: Snippet validation failed."
+        exit 1
+    else
+        echo "Warning: Snippet validation failed. Skipping documentation generation."
+        exit 0
+    fi
+fi
+
 
 # Generate frontend API documentation
 if [ -d "web" ] && [ -f "web/package.json" ]; then
