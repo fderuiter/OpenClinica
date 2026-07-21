@@ -166,6 +166,36 @@
 				</pluginManagement>
 			</build>
 		</profile>
+		<profile>
+			<id>dependency-scan</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.owasp</groupId>
+						<artifactId>dependency-check-maven</artifactId>
+						<version>9.0.9</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals><goal>check</goal></goals>
+							</execution>
+						</executions>
+						<configuration>
+							<failBuildOnCVSS>7.0</failBuildOnCVSS>
+							<failOnError>true</failOnError>
+							<autoUpdate>true</autoUpdate>
+							<nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+							<dataDirectory>${session.executionRootDirectory}/target/dependency-check-data</dataDirectory>
+							<retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled>
+							<nodeAuditAnalyzerEnabled>false</nodeAuditAnalyzerEnabled>
+							<suppressionFiles>
+								<suppressionFile>${session.executionRootDirectory}/dependency-check-suppression.xml</suppressionFile>
+							</suppressionFiles>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 <dependencyManagement>
@@ -740,27 +770,6 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>9.0.9</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals><goal>check</goal></goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <failBuildOnCVSS>7.0</failBuildOnCVSS>
-                    <failOnError>false</failOnError>
-                    <autoUpdate>false</autoUpdate>
-                    <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled>
-                    <nodeAuditAnalyzerEnabled>false</nodeAuditAnalyzerEnabled>
-                    <suppressionFiles>
-                        <suppressionFile>dependency-check-suppression.xml</suppressionFile>
-                    </suppressionFiles>
-                </configuration>
-            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
