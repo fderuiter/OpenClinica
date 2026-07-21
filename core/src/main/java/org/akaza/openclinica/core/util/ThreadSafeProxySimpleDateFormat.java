@@ -140,4 +140,19 @@ public class ThreadSafeProxySimpleDateFormat extends SimpleDateFormat {
     public int hashCode() {
         return threadLocalFormat.get().hashCode();
     }
+
+    @Override
+    public Object clone() {
+        return threadLocalFormat.get().clone();
+    }
+
+    @Override
+    public AttributedCharacterIterator formatToCharacterIterator(Object obj) {
+        return threadLocalFormat.get().formatToCharacterIterator(obj);
+    }
+
+    @Override
+    public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+        return threadLocalFormat.get().format(obj, toAppendTo, pos);
+    }
 }

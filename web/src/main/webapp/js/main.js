@@ -6,6 +6,7 @@ import 'headjs/dist/1.0.0/head.min.js';
 import '@phagento/jquery-tmpl';
 import 'jquery-migrate';
 import 'jquery-blockui';
+import './blockui-a11y.js';
 
 // Initialize the reactive store
 import { store } from './store.js';
@@ -22,35 +23,45 @@ import { createRoot } from 'react-dom/client';
 import Navigation from './components/Navigation.jsx';
 import CRFRenderer from './components/CRFRenderer.jsx';
 import { AccessibilityProvider } from './components/AccessibilityProvider.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 
 function mountReactApp() {
-  // Mount the modern navigation menu if the container exists
-  const menuContainer = document.getElementById('menuContainer');
-  if (menuContainer) {
-    const navRoot = createRoot(menuContainer);
-    navRoot.render(
-      React.createElement(
-        AccessibilityProvider,
-        null,
-        React.createElement(Navigation, null)
-      )
-    );
-  }
-
-  // If this is the print CRF page, replace the body or specific element with the new renderer
-  if (
+  const isPrintableMode =
     (window.app_studyOID !== undefined &&
       document.title.includes('Printable Forms')) ||
-    window.location.pathname.includes('printcrf')
-  ) {
+    window.location.pathname.includes('printcrf');
+
+  if (isPrintableMode) {
+    // If this is the print CRF page, replace the body or specific element with the new renderer
     const crfContainer = document.getElementById('printCRFContainer');
     if (crfContainer) {
       const crfRoot = createRoot(crfContainer);
       crfRoot.render(
         React.createElement(
-          AccessibilityProvider,
+          ErrorBoundary,
           null,
-          React.createElement(CRFRenderer, null)
+          React.createElement(
+            AccessibilityProvider,
+            null,
+            React.createElement(CRFRenderer, null)
+          )
+        )
+      );
+    }
+  } else {
+    // Mount the modern navigation menu if the container exists
+    const menuContainer = document.getElementById('menuContainer');
+    if (menuContainer) {
+      const navRoot = createRoot(menuContainer);
+      navRoot.render(
+        React.createElement(
+          ErrorBoundary,
+          null,
+          React.createElement(
+            AccessibilityProvider,
+            null,
+            React.createElement(Navigation, null)
+          )
         )
       );
     }

@@ -29,7 +29,14 @@ public class MatchPasswordServlet extends SecureController {
         if (password != null && !password.equals("")) {
             SecurityManager securityManager =
                     ((SecurityManager) SpringServletAccess.getApplicationContext(context).getBean("securityManager"));
-            response.getWriter().print(Boolean.toString(securityManager.verifyPassword(password, getUserDetails())));
+            boolean isMatch = securityManager.verifyPassword(password, getUserDetails());
+            if (isMatch) {
+                String token = java.util.UUID.randomUUID().toString();
+                request.getSession().setAttribute("signatureToken", token);
+                response.getWriter().print("true|" + token);
+            } else {
+                response.getWriter().print("false");
+            }
             return;
         }
     }
