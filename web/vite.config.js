@@ -28,8 +28,8 @@ window.Hash = Hash;
 window.Enumerable = Enumerable;`;
           return patched;
         }
-      }
-    }
+      },
+    },
   ],
   build: {
     outDir: 'src/main/webapp/dist',
@@ -37,14 +37,14 @@ window.Enumerable = Enumerable;`;
     manifest: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'src/main/webapp/js/main.js')
+        main: resolve(__dirname, 'src/main/webapp/js/main.js'),
       },
       output: {
         format: 'iife',
         entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]'
-      }
-    }
-  }
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+      },
+    },
+  },
 });

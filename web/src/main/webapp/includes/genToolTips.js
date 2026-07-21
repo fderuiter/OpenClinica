@@ -1,6 +1,3 @@
-
-
-
 /* function genToolTipFromArray(flag){
    	var resStatus = new Array();
    	var detailedNotes= new Array();
@@ -53,7 +50,6 @@ return htmlgen;
  }
 
 */
-function callTip(html)
-{
-	Tip(html,BGCOLOR,'#FFFFE5',BORDERCOLOR,'',STICKY,true );
+function callTip(html) {
+  Tip(html, BGCOLOR, '#FFFFE5', BORDERCOLOR, '', STICKY, true);
 }
