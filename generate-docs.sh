@@ -53,6 +53,20 @@ if [ -f "README.md" ]; then
     fi
 fi
 
+# Check if docs/explanation/project-info.md exists and if it was modified manually
+if [ -f "docs/explanation/project-info.md" ]; then
+    STORED_CHECKSUM=$(tail -n 1 docs/explanation/project-info.md | grep -oP '(?<=<!-- CHECKSUM: )[a-f0-9]+(?= -->)' || echo "")
+    if [ ! -z "$STORED_CHECKSUM" ]; then
+        ACTUAL_CHECKSUM=$(head -n -1 docs/explanation/project-info.md | md5sum | awk '{print $1}')
+        if [ "$STORED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]; then
+            echo "Error: docs/explanation/project-info.md was modified manually! Please edit README.template.md instead."
+            exit 1
+        fi
+    else
+        echo "Warning: docs/explanation/project-info.md lacks a checksum. It may have been manually modified or created from an older version. Overwriting."
+    fi
+fi
+
 awk -v content="$GENERATED_CONTENT" '{
     gsub(/\{\{GENERATED_REQUIREMENTS\}\}/, content)
     print
