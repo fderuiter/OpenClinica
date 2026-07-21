@@ -44,7 +44,6 @@ function processTemplate(content, mainScript) {
   const directiveRegex = /^\s*<%@\s[^%]*%>/;
   let directives = '';
   let remaining = content;
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const match = remaining.match(directiveRegex);
     if (match) {
