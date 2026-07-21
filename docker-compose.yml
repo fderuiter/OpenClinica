@@ -34,9 +34,12 @@ services:
     - 8080:8080
     depends_on:
     - db
+    - redis
     environment:
     - JAVA_OPTS=-Xmx1024m
     - SPRING_QUARTZ_AUTO_STARTUP=false
+    - LIQUIBASE_SHOULD_RUN=false
+    - REDIS_HOST=redis
     env_file:
     - path: .env
       required: false
@@ -58,18 +61,28 @@ services:
     - 8081:8081
     depends_on:
     - db
+    - redis
     environment:
     - spring.datasource.url=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB}
     - spring.datasource.username=${DB_USER}
     - spring.datasource.password=${DB_PASS}
     - SPRING_QUARTZ_AUTO_STARTUP=false
     - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,metrics
+    - LIQUIBASE_SHOULD_RUN=false
+    - REDIS_HOST=redis
+    volumes:
+    - ${HOST_FILE_PATH:-./data}:/opt/clinica/data
+    - ${HOST_CLINICAL_TEMPLATE_PATH:-./dummy_template.xlsx}:/opt/clinica/template.xlsx:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 120s
+  redis:
+    image: redis:7-alpine
+    ports:
+    - 6379:6379
 volumes:
   db-data:
   backup-data:
