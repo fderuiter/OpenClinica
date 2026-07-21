@@ -6,6 +6,7 @@ import 'headjs/dist/1.0.0/head.min.js';
 import '@phagento/jquery-tmpl';
 import 'jquery-migrate';
 import 'jquery-blockui';
+import './blockui-a11y.js';
 
 // Initialize the reactive store
 import { store } from './store.js';
@@ -19,12 +20,16 @@ import './vendor/calendarpopup/CalendarPopup.js';
 // Initialize modern React UI (dynamically imported below)
 
 async function mountReactApp() {
-  const menuContainer = document.getElementById('menuContainer');
-  const isPrintPage = (window.app_studyOID !== undefined && document.title.includes('Printable Forms')) || window.location.pathname.includes('printcrf');
-  const crfContainer = document.getElementById('printCRFContainer');
+  const isPrintableMode =
+    (window.app_studyOID !== undefined && document.title.includes('Printable Forms')) ||
+    window.location.pathname.includes('printcrf');
 
-  const needsNavigation = !!menuContainer;
-  const needsCRF = !!(isPrintPage && crfContainer);
+  const crfContainer = document.getElementById('printCRFContainer');
+  const menuContainer = document.getElementById('menuContainer');
+
+  const needsCRF = !!(isPrintableMode && crfContainer);
+  // Navigation is bypassed if we are in printable mode to fix memory leaks
+  const needsNavigation = !isPrintableMode && !!menuContainer;
 
   if (!needsNavigation && !needsCRF) {
     return;
@@ -40,25 +45,8 @@ async function mountReactApp() {
     import('./components/AccessibilityProvider.jsx')
   ]);
 
-  // Mount the modern navigation menu if the container exists
-  if (needsNavigation) {
-    const Navigation = React.lazy(() => import('./components/Navigation.jsx'));
-    const navRoot = createRoot(menuContainer);
-    navRoot.render(
-      React.createElement(
-        AccessibilityProvider,
-        null,
-        React.createElement(
-          React.Suspense,
-          { fallback: React.createElement('div', null, 'Loading Navigation...') },
-          React.createElement(Navigation, null)
-        )
-      )
-    );
-  }
-
-  // If this is the print CRF page, replace the body or specific element with the new renderer
   if (needsCRF) {
+    // If this is the print CRF page, replace the body or specific element with the new renderer
     const CRFRenderer = React.lazy(() => import('./components/CRFRenderer.jsx'));
     const crfRoot = createRoot(crfContainer);
     crfRoot.render(
@@ -69,6 +57,21 @@ async function mountReactApp() {
           React.Suspense,
           { fallback: React.createElement('div', null, 'Loading CRF...') },
           React.createElement(CRFRenderer, null)
+        )
+      )
+    );
+  } else if (needsNavigation) {
+    // Mount the modern navigation menu if the container exists
+    const Navigation = React.lazy(() => import('./components/Navigation.jsx'));
+    const navRoot = createRoot(menuContainer);
+    navRoot.render(
+      React.createElement(
+        AccessibilityProvider,
+        null,
+        React.createElement(
+          React.Suspense,
+          { fallback: React.createElement('div', null, 'Loading Navigation...') },
+          React.createElement(Navigation, null)
         )
       )
     );

@@ -45,8 +45,7 @@ export default [
       "no-unused-vars": "off",
       "no-undef": "off",
       "no-empty": "off",
-      "no-useless-escape": "off",
-      "jsx-a11y/anchor-is-valid": "off"
+      "no-useless-escape": "off"
     },
     settings: {
       react: {
