@@ -1,8 +1,8 @@
 package org.akaza.openclinica.controller;
 
+import org.akaza.openclinica.dao.core.CoreResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,9 +18,6 @@ public class HelpController {
 
     private static final Logger logger = LoggerFactory.getLogger(HelpController.class);
     private Properties helpMappings;
-
-    @Value("${help.base.url:https://docs.openclinica.com}")
-    private String helpBaseUrl;
 
     public HelpController() {
         helpMappings = new Properties();
@@ -46,7 +43,12 @@ public class HelpController {
                     mappedUrl = mappedUrl.substring(0, mappedUrl.length() - 3) + ".html";
                 }
                 
-                String baseUrl = helpBaseUrl != null ? helpBaseUrl.trim() : "";
+                String helpBaseUrl = CoreResources.getField("help.base.url");
+                if (helpBaseUrl == null || helpBaseUrl.trim().isEmpty()) {
+                    helpBaseUrl = "https://docs.openclinica.com";
+                }
+                
+                String baseUrl = helpBaseUrl.trim();
                 if (baseUrl.endsWith("/") && mappedUrl.startsWith("/")) {
                     targetUrl = baseUrl + mappedUrl.substring(1);
                 } else if (!baseUrl.endsWith("/") && !mappedUrl.startsWith("/") && !baseUrl.isEmpty()) {
