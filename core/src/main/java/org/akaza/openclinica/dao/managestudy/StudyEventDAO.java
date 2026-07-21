@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -46,6 +50,8 @@ import org.akaza.openclinica.service.rule.StudyEventBeanListener;
  *         Modified by ywang.
  *
  */
+@Repository
+@Scope("prototype")
 public class StudyEventDAO extends AuditableEntityDAO implements Listener {
     
 	
@@ -57,6 +63,7 @@ public class StudyEventDAO extends AuditableEntityDAO implements Listener {
         getCurrentPKName = "getCurrentPrimaryKey";
     }
 
+    @Autowired
     public StudyEventDAO(DataSource ds) {
         super(ds);
         setQueryNames();

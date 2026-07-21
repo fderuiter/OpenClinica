@@ -93,7 +93,7 @@ public class InitialDataEntryServlet extends DataEntryServlet {
 //            }
 //        } else if (stage.equals(DataEntryStage.INITIAL_DATA_ENTRY)) {
 //            if (ub.getId() != ecb.getOwnerId() && !r.equals(Role.STUDYDIRECTOR) && !r.equals(Role.COORDINATOR)) {
-//                UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+//                UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
 //                String ownerName = ((UserAccountBean) udao.findByPK(ecb.getOwnerId())).getName();
 //                this.session.setAttribute("mayProcessUploading", "false");
 //                MessageFormat mf = new MessageFormat("");

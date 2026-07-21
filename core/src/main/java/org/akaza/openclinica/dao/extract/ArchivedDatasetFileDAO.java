@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.extract;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.extract.ArchivedDatasetFileBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -30,9 +34,12 @@ import javax.sql.DataSource;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Repository
+@Scope("prototype")
 public class ArchivedDatasetFileDAO extends AuditableEntityDAO {
     private DAODigester digester;
 
+    @Autowired
     public ArchivedDatasetFileDAO(DataSource ds) {
         super(ds);
         digester = SQLFactory.getInstance().getDigester(digesterName);

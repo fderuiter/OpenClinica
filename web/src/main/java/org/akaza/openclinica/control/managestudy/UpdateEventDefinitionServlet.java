@@ -105,7 +105,7 @@ public class UpdateEventDefinitionServlet extends SecureController {
         FormProcessor fp = new FormProcessor(request);
 
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) session.getAttribute("definition");
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);    
         String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();
         if (participateFormStatus.equals("enabled")) baseUrl();
 
@@ -118,7 +118,7 @@ public class UpdateEventDefinitionServlet extends SecureController {
 
         ArrayList <EventDefinitionCRFBean>  edcsInSession = (ArrayList<EventDefinitionCRFBean>) session.getAttribute("eventDefinitionCRFs");
         int parentStudyId=sed.getStudyId();
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
         ArrayList <EventDefinitionCRFBean> eventDefCrfList =(ArrayList <EventDefinitionCRFBean>) edcdao.findAllActiveSitesAndStudiesPerParentStudy(parentStudyId);
          
 
@@ -132,7 +132,7 @@ public class UpdateEventDefinitionServlet extends SecureController {
             
             if(sed.isRepeating() && !repeating) {            	
             	 
-            	 StudyEventDAO seDao = new StudyEventDAO(sm.getDataSource());
+            	 StudyEventDAO seDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
             	 if(seDao.isThisRepeatingEventScheduledMoreThanOneTime(parentStudyId, sed.getId())) {
             		 v.addValidation("repeating", Validator.CAN_NOT_CHANGE_NONE_REPEATING_NOW);
             		 canBeChanged = false;
@@ -151,7 +151,7 @@ public class UpdateEventDefinitionServlet extends SecureController {
             
 
             request.setAttribute("definition", sed);
-            CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+            CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
             ArrayList<EventDefinitionCRFBean> edcs = (ArrayList) session.getAttribute("eventDefinitionCRFs");
             for (int i = 0; i < edcs.size(); i++) {
                 EventDefinitionCRFBean edcBean = (EventDefinitionCRFBean) edcs.get(i);
@@ -271,7 +271,7 @@ public class UpdateEventDefinitionServlet extends SecureController {
     private void submitDefinition() {
         ArrayList edcs = (ArrayList) session.getAttribute("eventDefinitionCRFs");
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) session.getAttribute("definition");
-        StudyEventDefinitionDAO edao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO edao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
         if (sed !=null)
         logger.info("Definition bean to be updated:" + sed.getName() + sed.getCategory());
 
@@ -280,8 +280,8 @@ public class UpdateEventDefinitionServlet extends SecureController {
         sed.setStatus(Status.AVAILABLE);
         edao.update(sed);
 
-        EventDefinitionCRFDAO cdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
+        CRFDAO crfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
 
         for (int i = 0; i < edcs.size(); i++) {
             EventDefinitionCRFBean edc = (EventDefinitionCRFBean) edcs.get(i);
@@ -347,9 +347,9 @@ public class UpdateEventDefinitionServlet extends SecureController {
     }
 
     public void removeAllEventsItems(EventDefinitionCRFBean edc, StudyEventDefinitionBean sed){
-        StudyEventDAO seDao = new StudyEventDAO(sm.getDataSource());
-        EventCRFDAO ecrfDao = new EventCRFDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        StudyEventDAO seDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
+        EventCRFDAO ecrfDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
+        ItemDataDAO iddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
         
         // Getting Study Events
         ArrayList seList = seDao.findAllByStudyEventDefinitionAndCrfOids(sed.getOid(), edc.getCrf().getOid());
@@ -375,7 +375,7 @@ public class UpdateEventDefinitionServlet extends SecureController {
                         item.setUpdater(ub);
                         item.setUpdatedDate(new Date());
                         iddao.update(item);
-                        DiscrepancyNoteDAO dnDao = new DiscrepancyNoteDAO(sm.getDataSource());
+                        DiscrepancyNoteDAO dnDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DiscrepancyNoteDAO.class);
                         List dnNotesOfRemovedItem = dnDao.findExistingNotesForItemData(item.getId());
                         if (!dnNotesOfRemovedItem.isEmpty()) {
                             DiscrepancyNoteBean itemParentNote = null;
@@ -410,9 +410,9 @@ public class UpdateEventDefinitionServlet extends SecureController {
     }
 
     public void restoreAllEventsItems(EventDefinitionCRFBean edc, StudyEventDefinitionBean sed){
-        StudyEventDAO seDao = new StudyEventDAO(sm.getDataSource());
-        EventCRFDAO ecrfDao = new EventCRFDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        StudyEventDAO seDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
+        EventCRFDAO ecrfDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
+        ItemDataDAO iddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
 
         // All Study Events
         ArrayList seList = seDao.findAllByStudyEventDefinitionAndCrfOids(sed.getOid(), edc.getCrf().getOid());

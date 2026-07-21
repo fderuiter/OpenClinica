@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.extract;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.DatasetItemStatus;
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.extract.DatasetBean;
@@ -38,6 +42,8 @@ import javax.sql.DataSource;
  *
  *
  */
+@Repository
+@Scope("prototype")
 public class DatasetDAO extends AuditableEntityDAO {
 
     // private DataSource ds;
@@ -57,6 +63,7 @@ public class DatasetDAO extends AuditableEntityDAO {
      *
      * @param ds
      */
+    @Autowired
     public DatasetDAO(DataSource ds) {
         super(ds);
         this.setQueryNames();

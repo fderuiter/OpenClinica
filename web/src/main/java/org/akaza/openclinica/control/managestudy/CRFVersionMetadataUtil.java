@@ -33,13 +33,13 @@ public class CRFVersionMetadataUtil {
 	 */
     public ArrayList<SectionBean> retrieveFormMetadata(CRFVersionBean version) throws Exception {
 
-        ItemDAO idao = new ItemDAO(dataSource);
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(dataSource);
+        ItemDAO idao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDAO.class);
+        ItemFormMetadataDAO ifmdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemFormMetadataDAO.class);
 
             // tbh, 102007
-            SectionDAO sdao = new SectionDAO(dataSource);
-            ItemGroupDAO igdao = new ItemGroupDAO(dataSource);
-            ItemGroupMetadataDAO igmdao = new ItemGroupMetadataDAO(dataSource);
+            SectionDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SectionDAO.class);
+            ItemGroupDAO igdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemGroupDAO.class);
+            ItemGroupMetadataDAO igmdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemGroupMetadataDAO.class);
             ArrayList sections = (ArrayList) sdao.findByVersionId(version.getId());
             HashMap versionMap = new HashMap();
             for (int i = 0; i < sections.size(); i++) {

@@ -70,13 +70,13 @@ public class CRFDataImportValidator implements Validator {
     }
 
     public StudyDAO getStudyDAO() {
-        return this.studyDAO != null ? studyDAO : new StudyDAO(dataSource);
+        return this.studyDAO != null ? studyDAO : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
     }
 
    
 
     public UserAccountDAO getUserAccountDAO() {
-        return this.userAccountDAO != null ? userAccountDAO : new UserAccountDAO(dataSource);
+        return this.userAccountDAO != null ? userAccountDAO : org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
     }
 
 }

@@ -186,7 +186,7 @@ public class AdministrativeEditingServlet extends DataEntryServlet {
         this.checkUpdateDataPermission(request);
         request.setAttribute("fromResolvingNotes", fromResolvingNotes);
         LOGGER.debug(" +++++++++++++++++++ " + ecb.getStudyEventId());
-        // StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        // StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
         // StudyEventBean sEvent = (StudyEventBean)
         // sedao.findByPK(ecb.getStudyEventId());
         // if (sEvent.getSubjectEventStatus().equals(SubjectEventStatus.SIGNED))

@@ -96,7 +96,7 @@ public class PrintDataEntryServlet extends DataEntryServlet {
         int eventCRFId = fp.getInt("ecId");
         //JN:The following were the the global variables, moved as local.
         EventCRFBean ecb ;
-        SectionDAO sdao = new SectionDAO(getDataSource());
+        SectionDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SectionDAO.class);
        ArrayList<SectionBean> allSectionBeans = new ArrayList<SectionBean>();
         ArrayList sectionBeans = new ArrayList();
         String age = "";
@@ -112,7 +112,7 @@ public class PrintDataEntryServlet extends DataEntryServlet {
             ecb = new EventCRFBean();
             // super.ecb.setCRFVersionId(sb.getCRFVersionId());
         } else {
-            EventCRFDAO ecdao = new EventCRFDAO(getDataSource());
+            EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
             ecb = (EventCRFBean) ecdao.findByPK(eventCRFId);
 
             // Get all the SectionBeans attached to this ECB
@@ -126,16 +126,16 @@ public class PrintDataEntryServlet extends DataEntryServlet {
                 }
             }
             // This is the StudySubjectBean
-            StudySubjectDAO ssdao = new StudySubjectDAO(getDataSource());
+            StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
             StudySubjectBean sub = (StudySubjectBean) ssdao.findByPK(ecb.getStudySubjectId());
             // This is the SubjectBean
-            SubjectDAO subjectDao = new SubjectDAO(getDataSource());
+            SubjectDAO subjectDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectDAO.class);
             int subjectId = sub.getSubjectId();
             int studyId = sub.getStudyId();
             SubjectBean subject = (SubjectBean) subjectDao.findByPK(subjectId);
-            StudyEventDAO sedao = new StudyEventDAO(getDataSource());
+            StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
             StudyEventBean se = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(getDataSource());
+            StudyEventDefinitionDAO seddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(se.getStudyEventDefinitionId());
             se.setStudyEventDefinition(sed);
             // Let us process the age
@@ -144,7 +144,7 @@ public class PrintDataEntryServlet extends DataEntryServlet {
                 age = Utils.getInstacne().processAge(sub.getEnrollmentDate(), subject.getDateOfBirth());
             }
             // Get the study then the parent study
-            StudyDAO studydao = new StudyDAO(getDataSource());
+            StudyDAO studydao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
             StudyBean study = (StudyBean) studydao.findByPK(studyId);
 
             if (study.getParentStudyId() > 0) {
@@ -168,7 +168,7 @@ public class PrintDataEntryServlet extends DataEntryServlet {
         }
 
         // Find out whether the sections involve groups
-        ItemGroupDAO itemGroupDao = new ItemGroupDAO(getDataSource());
+        ItemGroupDAO itemGroupDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemGroupDAO.class);
         // Find truely grouped tables, not groups with a name of 'Ungrouped'
         // CRF VERSION ID WILL BE 0 IF "ecId" IS NOT IN THE QUERYSTRING
         int crfVersionId = ecb.getCRFVersionId();
@@ -189,8 +189,8 @@ public class PrintDataEntryServlet extends DataEntryServlet {
             handler.setEventCRFId(eventCRFId);
             List<DisplaySectionBean> displaySectionBeans = handler.getDisplaySectionBeans();
 
-            CRFVersionDAO crfVersionDAO = new CRFVersionDAO(getDataSource());
-            CRFDAO crfDao = new CRFDAO(getDataSource());
+            CRFVersionDAO crfVersionDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
+            CRFDAO crfDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
 
             request.setAttribute("listOfDisplaySectionBeans", displaySectionBeans);
             // Make available the CRF names and versions for

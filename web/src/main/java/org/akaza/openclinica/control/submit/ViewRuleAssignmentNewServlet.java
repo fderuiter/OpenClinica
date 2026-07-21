@@ -77,17 +77,17 @@ public class ViewRuleAssignmentNewServlet extends SecureController {
 
     private void createStudyEventForInfoPanel() {
 
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        ItemDAO itemdao = new ItemDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
+        EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
+        ItemDAO itemdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDAO.class);
         StudyBean studyWithEventDefinitions = currentStudy;
         if (currentStudy.getParentStudyId() > 0) {
             studyWithEventDefinitions = new StudyBean();
             studyWithEventDefinitions.setId(currentStudy.getParentStudyId());
 
         }
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+        CRFDAO crfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
         ArrayList seds = seddao.findAllActiveByStudy(studyWithEventDefinitions);
 
         HashMap events = new LinkedHashMap();
@@ -186,7 +186,7 @@ public class ViewRuleAssignmentNewServlet extends SecureController {
     }
 
     public ItemFormMetadataDAO getItemFormMetadataDAO() {
-        itemFormMetadataDAO = this.itemFormMetadataDAO == null ? new ItemFormMetadataDAO(sm.getDataSource()) : itemFormMetadataDAO;
+        itemFormMetadataDAO = this.itemFormMetadataDAO == null ? org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemFormMetadataDAO.class) : itemFormMetadataDAO;
         return itemFormMetadataDAO;
     }
 

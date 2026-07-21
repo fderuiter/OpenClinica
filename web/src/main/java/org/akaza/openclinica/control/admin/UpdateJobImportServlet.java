@@ -77,8 +77,8 @@ public class UpdateJobImportServlet extends SecureController {
 
         Date jobDate = trigger.getNextFireTime();
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
 
         // ArrayList studies = udao.findStudyByUser(ub.getName(), (ArrayList)
         // sdao.findAll());
@@ -133,7 +133,7 @@ public class UpdateJobImportServlet extends SecureController {
                 setUpServlet(trigger);
                 forwardPage(Page.UPDATE_JOB_IMPORT);
             } else {
-                StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+                StudyDAO studyDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
                 int studyId = fp.getInt(CreateJobImportServlet.STUDY_ID);
                 StudyBean study = (StudyBean) studyDAO.findByPK(studyId);
                 // in the place of a users' current study, tbh

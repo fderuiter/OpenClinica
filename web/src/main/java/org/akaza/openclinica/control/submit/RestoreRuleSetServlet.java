@@ -70,7 +70,7 @@ public class RestoreRuleSetServlet extends SecureController {
     }
 
     private RuleSetDAO getRuleSetDao() {
-        ruleSetDao = this.ruleSetDao != null ? ruleSetDao : new RuleSetDAO(sm.getDataSource());
+        ruleSetDao = this.ruleSetDao != null ? ruleSetDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(RuleSetDAO.class);
         return ruleSetDao;
     }
 

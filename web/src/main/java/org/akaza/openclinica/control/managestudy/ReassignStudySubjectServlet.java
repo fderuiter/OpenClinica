@@ -57,9 +57,9 @@ public class ReassignStudySubjectServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
         String action = request.getParameter("action");
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
-        SubjectDAO subdao = new SubjectDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
+        StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
+        SubjectDAO subdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectDAO.class);
         FormProcessor fp = new FormProcessor(request);
 
         int studySubId = fp.getInt("id");
@@ -74,7 +74,7 @@ public class ReassignStudySubjectServlet extends SecureController {
             SubjectBean subject = (SubjectBean) subdao.findByPK(subjectId);
             request.setAttribute("subject", subject);
 
-            SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
+            SubjectGroupMapDAO sgmdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectGroupMapDAO.class);
             ArrayList groupMaps = (ArrayList) sgmdao.findAllByStudySubject(studySubId);
 
             if (StringUtil.isBlank(action)) {

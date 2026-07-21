@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.admin;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.admin.AuditEventBean;
 import org.akaza.openclinica.bean.admin.TriggerBean;
 import org.akaza.openclinica.bean.core.EntityBean;
@@ -36,6 +40,8 @@ import javax.sql.DataSource;
  * 
  * 
  */
+@Repository
+@Scope("prototype")
 public class AuditEventDAO extends AuditableEntityDAO {
     private java.util.List<Integer> idCache = new java.util.ArrayList<Integer>();
     private java.util.List<AuditEventBean> batchBuffer = new java.util.ArrayList<AuditEventBean>();
@@ -93,6 +99,7 @@ public class AuditEventDAO extends AuditableEntityDAO {
 
     // private DAODigester digester;
 
+    @Autowired
     public AuditEventDAO(DataSource ds) {
         super(ds);
     }

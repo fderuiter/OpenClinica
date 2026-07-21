@@ -167,19 +167,19 @@ public class StudyEventTransferValidator implements Validator {
     }
 
     public StudyDAO getStudyDAO() {
-        return this.studyDAO != null ? studyDAO : new StudyDAO(dataSource);
+        return this.studyDAO != null ? studyDAO : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
     }
 
     public StudySubjectDAO getStudySubjectDAO() {
-        return this.studySubjectDAO != null ? studySubjectDAO : new StudySubjectDAO(dataSource);
+        return this.studySubjectDAO != null ? studySubjectDAO : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
     }
 
     public StudyEventDefinitionDAO getStudyEventDefinitionDAO() {
-        return this.studyEventDefinitionDAO != null ? studyEventDefinitionDAO : new StudyEventDefinitionDAO(dataSource);
+        return this.studyEventDefinitionDAO != null ? studyEventDefinitionDAO : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
     }
 
     public StudyParameterValueDAO getStudyParameterValueDAO() {
-    	        return this.studyParameterValueDAO != null ? studyParameterValueDAO : new StudyParameterValueDAO(dataSource);
+    	        return this.studyParameterValueDAO != null ? studyParameterValueDAO : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);
     	 }
     	
 }

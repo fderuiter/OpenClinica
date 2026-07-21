@@ -110,14 +110,14 @@ public abstract class ListStudySubjectServlet extends SecureController {
 
         request.setAttribute(PAGINATING_QUERY, paginatingQuery.toString());
 
-        StudyDAO stdao = new StudyDAO(sm.getDataSource());
-        StudySubjectDAO sdao = new StudySubjectDAO(sm.getDataSource());
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-        SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
-        StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudyDAO stdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
+        StudySubjectDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
+        StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
+        SubjectGroupMapDAO sgmdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectGroupMapDAO.class);
+        StudyGroupClassDAO sgcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupClassDAO.class);
+        StudyGroupDAO sgdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupDAO.class);
+        StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
 
         // YW << update study parameters of current study.
         // "collectDob" and "genderRequired" are set as the same as the parent
@@ -138,7 +138,7 @@ public abstract class ListStudySubjectServlet extends SecureController {
             studyGroupClasses = sgcdao.findAllActiveByStudy(currentStudy);
             allDefs = seddao.findAllActiveByStudy(currentStudy);
         }
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);
         StudyParameterValueBean parentSPV = spvdao.findByHandleAndStudy(parentStudyId, "collectDob");
         currentStudy.getStudyParameterConfig().setCollectDob(parentSPV.getValue());
         parentSPV = spvdao.findByHandleAndStudy(parentStudyId, "genderRequired");
@@ -382,8 +382,8 @@ public abstract class ListStudySubjectServlet extends SecureController {
         if (studyEvent == null)
             return false;
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(sm.getDataSource());
-        EventDefinitionCRFDAO eventDefinitionDAO = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventCRFDAO eventCRFDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
+        EventDefinitionCRFDAO eventDefinitionDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
         List<EventCRFBean> crfBeans = new ArrayList<EventCRFBean>();
 
         crfBeans.addAll(eventCRFDAO.findAllByStudyEvent(studyEvent));
@@ -405,10 +405,10 @@ public abstract class ListStudySubjectServlet extends SecureController {
 
     public static DisplayStudyEventBean getDisplayStudyEventsForStudySubject(StudySubjectBean studySub, StudyEventBean event, DataSource ds,
             UserAccountBean ub, StudyUserRoleBean currentRole, StudyBean study) {
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(ds);
-        StudyEventDAO sedao = new StudyEventDAO(ds);
-        EventCRFDAO ecdao = new EventCRFDAO(ds);
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(ds);
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
+        StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
+        EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
 
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(event.getStudyEventDefinitionId());
         event.setStudyEventDefinition(sed);

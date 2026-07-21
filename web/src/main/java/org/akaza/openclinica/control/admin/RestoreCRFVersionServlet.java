@@ -54,7 +54,7 @@ public class RestoreCRFVersionServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
         FormProcessor fp = new FormProcessor(request);
         // checks which module the requests are from
         String module = fp.getString(MODULE);
@@ -74,9 +74,9 @@ public class RestoreCRFVersionServlet extends SecureController {
             }
             CRFVersionBean version = (CRFVersionBean) cvdao.findByPK(versionId);
 
-            SectionDAO secdao = new SectionDAO(sm.getDataSource());
+            SectionDAO secdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SectionDAO.class);
 
-            EventCRFDAO evdao = new EventCRFDAO(sm.getDataSource());
+            EventCRFDAO evdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
             // find all event crfs by version id
             ArrayList eventCRFs = evdao.findAllByCRFVersion(versionId);
             if ("confirm".equalsIgnoreCase(action)) {
@@ -103,7 +103,7 @@ public class RestoreCRFVersionServlet extends SecureController {
                 }
 
                 // all item data related to event crfs
-                ItemDataDAO idao = new ItemDataDAO(sm.getDataSource());
+                ItemDataDAO idao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
                 for (int i = 0; i < eventCRFs.size(); i++) {
                     EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(i);
                     if (eventCRF.getStatus().equals(Status.AUTO_DELETED)) {

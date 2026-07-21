@@ -55,7 +55,7 @@ public class DeleteUserServlet extends SecureController {
 
     @Override
     protected void processRequest() throws Exception {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
 
         FormProcessor fp = new FormProcessor(request);
         int userId = fp.getInt(ARG_USERID);

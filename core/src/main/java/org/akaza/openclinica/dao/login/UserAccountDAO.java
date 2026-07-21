@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.login;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,6 +50,8 @@ import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
  *         <P>
  *         expand on query to get all that from a select star?
  */
+@Repository
+@Scope("prototype")
 public class UserAccountDAO extends AuditableEntityDAO {
     // private DataSource ds;
     // private DAODigester digester;
@@ -60,6 +66,7 @@ public class UserAccountDAO extends AuditableEntityDAO {
         getNextPKName = "getNextPK";
     }
 
+    @Autowired
     public UserAccountDAO(DataSource ds) {
         super(ds);
         setQueryNames();

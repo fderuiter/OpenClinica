@@ -45,10 +45,10 @@ public class RemoveDatasetServlet extends SecureController {
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         int dsId = fp.getInt("dsId");
-        DatasetDAO dsDAO = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(DatasetDAO.class);
         DatasetBean dataset = (DatasetBean) dsDAO.findByPK(dsId);
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         StudyBean study = (StudyBean)sdao.findByPK(dataset.getStudyId());
         checkRoleByUserAndStudy(ub, study.getParentStudyId(), study.getId());
         if (study.getId() != currentStudy.getId() && study.getParentStudyId() != currentStudy.getId()) {
@@ -107,7 +107,7 @@ public class RemoveDatasetServlet extends SecureController {
         FormProcessor fp = new FormProcessor(request);
 
         EntityBeanTable table = fp.getEntityBeanTable();
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DatasetDAO.class);
         ArrayList datasets = new ArrayList();
         // if (ub.isSysAdmin()) {
         // datasets =

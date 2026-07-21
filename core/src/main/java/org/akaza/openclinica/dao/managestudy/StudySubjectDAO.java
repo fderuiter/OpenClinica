@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.Connection;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -36,6 +40,8 @@ import org.apache.commons.lang.StringUtils;
  * @author jxu
  *
  */
+@Repository
+@Scope("prototype")
 public class StudySubjectDAO<K extends String,V extends ArrayList> extends AuditableEntityDAO {
 
     // private DAODigester digester;
@@ -47,6 +53,7 @@ public class StudySubjectDAO<K extends String,V extends ArrayList> extends Audit
 
     }
 
+    @Autowired
     public StudySubjectDAO(DataSource ds) {
         super(ds);
         // digester = SQLFactory.getInstance().getDigester(digesterName);

@@ -51,8 +51,8 @@ public class SetUserRoleServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         FormProcessor fp = new FormProcessor(request);
         int userId = fp.getInt("userId");
         if (userId == 0) {

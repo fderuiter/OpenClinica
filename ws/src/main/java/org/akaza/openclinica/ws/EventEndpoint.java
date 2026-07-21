@@ -267,7 +267,7 @@ public class EventEndpoint {
         } else {
             username = principal.toString();
         }
-        UserAccountDAO userAccountDao = new UserAccountDAO(dataSource);
+        UserAccountDAO userAccountDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         return (UserAccountBean) userAccountDao.findByUserName(username);
     }
 

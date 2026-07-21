@@ -103,8 +103,8 @@ public class ViewJobServlet extends SecureController {
             }
             // setting: frequency, dataset name
             JobDataMap dataMap = new JobDataMap();
-            DatasetDAO datasetDAO = new DatasetDAO(sm.getDataSource());
-            StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+            DatasetDAO datasetDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(DatasetDAO.class);
+            StudyDAO studyDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
             if (trigger.getJobDataMap().size() > 0) {
                 dataMap = trigger.getJobDataMap();
                 int dsId = dataMap.getInt(ExampleSpringJob.DATASET_ID);

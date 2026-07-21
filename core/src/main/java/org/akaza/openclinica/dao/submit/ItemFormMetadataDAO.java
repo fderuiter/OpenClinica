@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.submit.ItemFormMetadataBean;
 import org.akaza.openclinica.bean.submit.ResponseSetBean;
@@ -35,6 +39,8 @@ import javax.sql.DataSource;
 /**
  * @author ssachs
  */
+@Repository
+@Scope("prototype")
 public class ItemFormMetadataDAO<K extends String,V extends ArrayList> extends EntityDAO {
 
     @Override
@@ -49,6 +55,7 @@ public class ItemFormMetadataDAO<K extends String,V extends ArrayList> extends E
         getNextPKName = "getNextPK";
     }
 
+    @Autowired
     public ItemFormMetadataDAO(DataSource ds) {
         super(ds);
       //  setCache(new EhCacheWrapper("ItemFormMetadataDAO",R);

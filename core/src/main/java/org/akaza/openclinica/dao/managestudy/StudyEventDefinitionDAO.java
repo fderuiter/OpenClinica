@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,6 +34,8 @@ import org.akaza.openclinica.dao.core.TypeNames;
  * @author thickerson
  * @author jsampson
  */
+@Repository
+@Scope("prototype")
 public class StudyEventDefinitionDAO<K extends String,V extends ArrayList> extends AuditableEntityDAO {
 
     private void setQueryNames() {
@@ -38,6 +44,7 @@ public class StudyEventDefinitionDAO<K extends String,V extends ArrayList> exten
         findByPKAndStudyName = "findByPKAndStudy";
     }
 
+    @Autowired
     public StudyEventDefinitionDAO(DataSource ds) {
         super(ds);
         setQueryNames();

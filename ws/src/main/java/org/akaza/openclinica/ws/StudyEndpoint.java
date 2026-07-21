@@ -307,12 +307,12 @@ public class StudyEndpoint {
     }
 
     public StudyDAO getStudyDao() {
-        studyDao = studyDao != null ? studyDao : new StudyDAO(dataSource);
+        studyDao = studyDao != null ? studyDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         return studyDao;
     }
 
     public UserAccountDAO getUserAccountDao() {
-        userAccountDao = userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        userAccountDao = userAccountDao != null ? userAccountDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         return userAccountDao;
     }
     

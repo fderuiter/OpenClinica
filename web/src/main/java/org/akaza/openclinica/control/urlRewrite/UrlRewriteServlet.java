@@ -132,7 +132,7 @@ public class UrlRewriteServlet extends CoreSecureController {
 		                    }
 		                    //@pgawade 16-Aug-2012: fix for issue https://issuetracker.openclinica.com/view.php?id=12343#c55853
 		                    //retrieve sectionId from tabId
-		                    SectionDAO sdao = new SectionDAO(getDataSource());
+		                    SectionDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SectionDAO.class);
 		                    if(mapQueryParams.containsKey("tabId")){
 			                    HashMap sectionIdMap = sdao.getSectionIdForTabId(ocResource.getFormVersionID(), Integer.parseInt(mapQueryParams.get("tabId")));
 			                    Integer sectionId = null;
@@ -221,14 +221,14 @@ public class UrlRewriteServlet extends CoreSecureController {
                 String[] tokens = URLPath.split("/");
                 if (tokens.length != 0) {
                     String URLParamValue = "";
-                    StudyDAO stdao = new StudyDAO(getDataSource());
-                    StudySubjectDAO ssubdao = new StudySubjectDAO(getDataSource());
-                    StudyEventDefinitionDAO sedefdao = new StudyEventDefinitionDAO(getDataSource());
-                    CRFDAO crfdao = new CRFDAO(getDataSource());
-                    CRFVersionDAO crfvdao = new CRFVersionDAO(getDataSource());
-                    ItemDAO idao = new ItemDAO(getDataSource());
-                    ItemGroupDAO igdao = new ItemGroupDAO(getDataSource());
-                    StudyEventDAO sedao = new StudyEventDAO(getDataSource());
+                    StudyDAO stdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
+                    StudySubjectDAO ssubdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
+                    StudyEventDefinitionDAO sedefdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
+                    CRFDAO crfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
+                    CRFVersionDAO crfvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
+                    ItemDAO idao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDAO.class);
+                    ItemGroupDAO igdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemGroupDAO.class);
+                    StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
 
                     StudyBean study = null;
                     StudySubjectBean subject = null;

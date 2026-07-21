@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.extract;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.extract.FilterBean;
 import org.akaza.openclinica.bean.extract.FilterObjectBean;
@@ -28,6 +32,8 @@ import javax.sql.DataSource;
  * @author thickerson
  *
  */
+@Repository
+@Scope("prototype")
 public class FilterDAO extends AuditableEntityDAO {
     private DAODigester digester;
 
@@ -42,6 +48,7 @@ public class FilterDAO extends AuditableEntityDAO {
         // TODO figure out the error with current primary keys?
     }
 
+    @Autowired
     public FilterDAO(DataSource ds) {
         super(ds);
         digester = SQLFactory.getInstance().getDigester(digesterName);

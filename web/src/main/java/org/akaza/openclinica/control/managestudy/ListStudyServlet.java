@@ -60,7 +60,7 @@ public class ListStudyServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         ArrayList studies = (ArrayList) sdao.findAll();
         // find all parent studies
         ArrayList parents = (ArrayList) sdao.findAllParents();

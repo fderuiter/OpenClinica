@@ -64,8 +64,8 @@ public class UpdateStudySubjectServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
         FormDiscrepancyNotes discNotes = null;
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectDAO.class);
+        StudySubjectDAO subdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
         FormProcessor fp = new FormProcessor(request);
 
         String fromResolvingNotes = fp.getString("fromResolvingNotes",true);
@@ -91,9 +91,9 @@ public class UpdateStudySubjectServlet extends SecureController {
 
             StudySubjectBean sub = (StudySubjectBean) subdao.findByPK(studySubId);
 
-            StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
-            StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
-            SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
+            StudyGroupClassDAO sgcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupClassDAO.class);
+            StudyGroupDAO sgdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupDAO.class);
+            SubjectGroupMapDAO sgmdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectGroupMapDAO.class);
             ArrayList groupMaps = (ArrayList) sgmdao.findAllByStudySubject(studySubId);
 
             HashMap gMaps = new HashMap();
@@ -103,7 +103,7 @@ public class UpdateStudySubjectServlet extends SecureController {
 
             }
 
-            StudyDAO stdao = new StudyDAO(sm.getDataSource());
+            StudyDAO stdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
             ArrayList classes = new ArrayList();
             if (!"submit".equalsIgnoreCase(action)) {
                 // YW <<
@@ -151,7 +151,7 @@ public class UpdateStudySubjectServlet extends SecureController {
 
                 // save discrepancy notes into DB
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DiscrepancyNoteDAO.class);
                 AddNewSubjectServlet.saveFieldNotes("enrollmentDate", fdn, dndao, subject.getId(), "studySub", currentStudy);
 
                 ArrayList groups = (ArrayList) session.getAttribute("groups");
@@ -234,7 +234,7 @@ public class UpdateStudySubjectServlet extends SecureController {
             errors = v.validate();
 
             if (!StringUtil.isBlank(fp.getString("label"))) {
-                StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+                StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
 
                 StudySubjectBean sub1 = (StudySubjectBean) ssdao.findAnotherBySameLabel(fp.getString("label").trim(), currentStudy.getId(), sub.getId());
 
@@ -298,7 +298,7 @@ public class UpdateStudySubjectServlet extends SecureController {
                     + respage.getString("you_may_enter_study_subject_ID_listed")
                     + respage.getString("study_subject_ID_should_not_contain_protected_information"));
             } else {
-                StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
+                StudySubjectDAO subdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
                 StudySubjectBean sub1 = (StudySubjectBean) subdao.findAnotherBySameLabel(sub.getLabel(), sub.getStudyId(), sub.getId());
                 if (sub1.getId() > 0) {
                     addPageMessage(resexception.getString("subject_ID_used_by_another_choose_unique"));

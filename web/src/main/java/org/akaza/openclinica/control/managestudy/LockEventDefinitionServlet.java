@@ -61,14 +61,14 @@ public class LockEventDefinitionServlet extends SecureController {
         String idString = request.getParameter("id");
 
         int defId = Integer.valueOf(idString.trim()).intValue();
-        StudyEventDefinitionDAO sdao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) sdao.findByPK(defId);
         // find all CRFs
-        EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
         ArrayList eventDefinitionCRFs = (ArrayList) edao.findAllByDefinition(defId);
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
+        CRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
         for (int i = 0; i < eventDefinitionCRFs.size(); i++) {
             EventDefinitionCRFBean edc = (EventDefinitionCRFBean) eventDefinitionCRFs.get(i);
             ArrayList versions = (ArrayList) cvdao.findAllByCRF(edc.getCrfId());
@@ -78,7 +78,7 @@ public class LockEventDefinitionServlet extends SecureController {
         }
 
         // finds all events
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
         ArrayList events = (ArrayList) sedao.findAllByDefinition(sed.getId());
 
         String action = request.getParameter("action");
@@ -116,7 +116,7 @@ public class LockEventDefinitionServlet extends SecureController {
                 }
                 // lock all events
 
-                EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
 
                 for (int j = 0; j < events.size(); j++) {
                     StudyEventBean event = (StudyEventBean) events.get(j);
@@ -127,7 +127,7 @@ public class LockEventDefinitionServlet extends SecureController {
 
                     ArrayList eventCRFs = ecdao.findAllByStudyEvent(event);
                     // remove all the item data
-                    ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                    ItemDataDAO iddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
                     for (int k = 0; k < eventCRFs.size(); k++) {
                         EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(k);
                         eventCRF.setStatus(Status.LOCKED);

@@ -103,7 +103,7 @@ public class CreateNewStudyEventServlet extends SecureController {
         int studyEventDefinitionId = fp.getInt(INPUT_STUDY_EVENT_DEFINITION);
 
         // TODO: make this sensitive to permissions
-        StudySubjectDAO sdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
         StudySubjectBean ssb;
         if (studySubjectId <= 0) {
             ssb = (StudySubjectBean) request.getAttribute(INPUT_STUDY_SUBJECT);
@@ -127,7 +127,7 @@ public class CreateNewStudyEventServlet extends SecureController {
         // ArrayList subjects = sdao.findAllActiveByStudyOrderByLabel(currentStudy);
 
         // TODO: make this sensitive to permissions
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
 
         StudyBean studyWithEventDefinitions = currentStudy;
         if (currentStudy.getParentStudyId() > 0) {
@@ -163,7 +163,7 @@ public class CreateNewStudyEventServlet extends SecureController {
         ArrayList eventDefinitionsScheduled = eventDefinitions;
 
         if (!fp.isSubmitted()) {
-            // StudyEventDAO sed = new StudyEventDAO(sm.getDataSource());
+            // StudyEventDAO sed = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
             // sed.updateSampleOrdinals_v092();
 
             HashMap presetValues = new HashMap();
@@ -474,7 +474,7 @@ public class CreateNewStudyEventServlet extends SecureController {
                 forwardPage(Page.CREATE_NEW_STUDY_EVENT);
             } else {
             	logger.debug("error is empty");
-                StudyEventDAO sed = new StudyEventDAO(sm.getDataSource());
+                StudyEventDAO sed = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
 
                 StudyEventBean studyEvent = new StudyEventBean();
                 studyEvent.setStudyEventDefinitionId(definition.getId());
@@ -527,7 +527,7 @@ public class CreateNewStudyEventServlet extends SecureController {
 
                 // save discrepancy notes into DB
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DiscrepancyNoteDAO.class);
                 String[] eventFields = { INPUT_LOCATION, INPUT_STARTDATE_PREFIX, INPUT_ENDDATE_PREFIX };
                 for (String element : eventFields) {
                     AddNewSubjectServlet.saveFieldNotes(element, fdn, dndao, studyEvent.getId(), "studyEvent", currentStudy);
@@ -670,7 +670,7 @@ public class CreateNewStudyEventServlet extends SecureController {
             return true;
         }
 
-        StudyEventDAO sedao = new StudyEventDAO(ds);
+        StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
         ArrayList allEvents = sedao.findAllByDefinitionAndSubject(studyEventDefinition, studySubject);
 
         if (allEvents.size() > 0) {

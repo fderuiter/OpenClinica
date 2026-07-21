@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.managestudy.StudySubjectBean;
@@ -30,6 +34,8 @@ import javax.sql.DataSource;
 /**
  * @author jxu
  */
+@Repository
+@Scope("prototype")
 public class SubjectDAO extends AuditableEntityDAO {
     // private DataSource ds;
     // private DAODigester digester;
@@ -39,6 +45,7 @@ public class SubjectDAO extends AuditableEntityDAO {
         getCurrentPKName = "getCurrentPrimaryKey";
     }
 
+    @Autowired
     public SubjectDAO(DataSource ds) {
         super(ds);
         setQueryNames();

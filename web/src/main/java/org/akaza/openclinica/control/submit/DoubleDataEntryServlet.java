@@ -125,7 +125,7 @@ public class DoubleDataEntryServlet extends DataEntryServlet {
                 tabNumber = fp.getInt("tab");
             }
         }
-        SectionDAO sectionDao = new SectionDAO(getDataSource());
+        SectionDAO sectionDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SectionDAO.class);
         int crfVersionId = ecb.getCRFVersionId();
         int eventCRFId = ecb.getId();
         ArrayList sections = sectionDao.findAllByCRFVersionId(crfVersionId);
@@ -424,7 +424,7 @@ public class DoubleDataEntryServlet extends DataEntryServlet {
     protected DisplayItemBean validateCalcTypeDisplayItemBean(ScoreItemValidator sv, DisplayItemBean dib, String inputName, HttpServletRequest request) {
 
         org.akaza.openclinica.bean.core.ResponseType rt = dib.getMetadata().getResponseSet().getResponseType();
-        ItemDataDAO iddao = new ItemDataDAO(getDataSource());
+        ItemDataDAO iddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
         boolean isSingleItem = false;
         HttpSession session = request.getSession();
         if (StringUtil.isBlank(inputName)) {// for single items

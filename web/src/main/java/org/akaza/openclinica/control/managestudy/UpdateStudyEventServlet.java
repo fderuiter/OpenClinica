@@ -127,7 +127,7 @@ public class UpdateStudyEventServlet extends SecureController {
             return;
         }
 
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
         StudySubjectBean ssub = null;
         if (studySubjectId > 0) {
             ssub = (StudySubjectBean) ssdao.findByPK(studySubjectId);
@@ -151,8 +151,8 @@ public class UpdateStudyEventServlet extends SecureController {
         // YW
 
         request.setAttribute(STUDY_SUBJECT_ID, new Integer(studySubjectId).toString());
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        EventCRFDAO ecrfdao = new EventCRFDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
+        EventCRFDAO ecrfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
 
         StudyEventBean studyEvent = (StudyEventBean) sedao.findByPK(studyEventId);
 
@@ -191,11 +191,11 @@ public class UpdateStudyEventServlet extends SecureController {
          * set the event back to COMPLETED
          */
 
-        StudyDAO sdao = new StudyDAO(this.sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         StudyBean studyBean = (StudyBean) sdao.findByPK(ssub.getStudyId());
         checkRoleByUserAndStudy(ub, studyBean.getParentStudyId(), studyBean.getId());
         // To remove signed status from the list
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
         boolean removeSign = false;
         // DiscrepancyNoteDAO discDao = new
         // DiscrepancyNoteDAO(sm.getDataSource());
@@ -249,7 +249,7 @@ public class UpdateStudyEventServlet extends SecureController {
         ArrayList getECRFs = studyEvent.getEventCRFs();
         // above removed tbh 102007, require to get all definitions, no matter
         // if they are filled in or now
-        EventDefinitionCRFDAO edefcrfdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edefcrfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
         ArrayList getAllECRFs = (ArrayList) edefcrfdao.findAllByDefinition(studyBean, studyEvent.getStudyEventDefinitionId());
         // does the study event have all complete CRFs which are required?
         logger.debug("found number of ecrfs: " + getAllECRFs.size());
@@ -306,7 +306,7 @@ public class UpdateStudyEventServlet extends SecureController {
         request.setAttribute("statuses", statuses);
 
         String action = fp.getString("action");
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(studyEvent.getStudyEventDefinitionId());
         request.setAttribute(EVENT_DEFINITION_BEAN, sed);
         if (action.equalsIgnoreCase("submit")) {
@@ -314,7 +314,7 @@ public class UpdateStudyEventServlet extends SecureController {
             DiscrepancyValidator v = new DiscrepancyValidator(request, discNotes);
             SubjectEventStatus ses = SubjectEventStatus.get(fp.getInt(SUBJECT_EVENT_STATUS_ID));
             studyEvent.setSubjectEventStatus(ses);
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+            EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
             ArrayList<EventCRFBean> eventCRFs = ecdao.findAllByStudyEvent(studyEvent);
             if (ses.equals(SubjectEventStatus.SKIPPED) || ses.equals(SubjectEventStatus.STOPPED)) {
                 studyEvent.setStatus(Status.UNAVAILABLE);
@@ -405,13 +405,13 @@ public class UpdateStudyEventServlet extends SecureController {
                 studyEvent.setLocation(fp.getString(INPUT_LOCATION));
                 studyEvent.setStudyEventDefinition(sed);
                 // -------------------
-                ssdao = new StudySubjectDAO(sm.getDataSource());
+                ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
                 StudySubjectBean ssb = (StudySubjectBean) ssdao.findByPK(studyEvent.getStudySubjectId());
 
-                ecdao = new EventCRFDAO(sm.getDataSource());
+                ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
                 eventCRFs = ecdao.findAllByStudyEvent(studyEvent);
                 ArrayList<Boolean> doRuleSetsExist = new ArrayList<Boolean>();
-                RuleSetDAO ruleSetDao = new RuleSetDAO(sm.getDataSource());
+                RuleSetDAO ruleSetDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(RuleSetDAO.class);
 
                 StudyBean study = (StudyBean) sdao.findByPK(ssb.getStudyId());
                 ArrayList eventDefinitionCRFs = (ArrayList) edcdao.findAllActiveByEventDefinitionId(study, studyEvent.getStudyEventDefinitionId());
@@ -482,7 +482,7 @@ public class UpdateStudyEventServlet extends SecureController {
 
                 // save discrepancy notes into DB
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DiscrepancyNoteDAO.class);
 
                 AddNewSubjectServlet.saveFieldNotes(INPUT_LOCATION, fdn, dndao, studyEvent.getId(), "studyEvent", currentStudy);
                 AddNewSubjectServlet.saveFieldNotes(INPUT_STARTDATE_PREFIX, fdn, dndao, studyEvent.getId(), "studyEvent", currentStudy);
@@ -529,7 +529,7 @@ public class UpdateStudyEventServlet extends SecureController {
 
                 // save discrepancy notes into DB
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DiscrepancyNoteDAO.class);
 
                 AddNewSubjectServlet.saveFieldNotes(INPUT_LOCATION, fdn, dndao, studyEvent.getId(), "studyEvent", currentStudy);
                 AddNewSubjectServlet.saveFieldNotes(INPUT_STARTDATE_PREFIX, fdn, dndao, studyEvent.getId(), "studyEvent", currentStudy);
@@ -543,14 +543,14 @@ public class UpdateStudyEventServlet extends SecureController {
                 request.setAttribute(STUDY_SUBJECT_ID, new Integer(studySubjectId).toString());
                 request.setAttribute("studyEvent", seb);
                 // -------------------
-                ssdao = new StudySubjectDAO(sm.getDataSource());
+                ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
                 StudySubjectBean ssb = (StudySubjectBean) ssdao.findByPK(studyEvent.getStudySubjectId());
 
                 // prepare to figure out what the display should look like
-                EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
                 ArrayList<EventCRFBean> eventCRFs = ecdao.findAllByStudyEvent(studyEvent);
                 ArrayList<Boolean> doRuleSetsExist = new ArrayList<Boolean>();
-                RuleSetDAO ruleSetDao = new RuleSetDAO(sm.getDataSource());
+                RuleSetDAO ruleSetDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(RuleSetDAO.class);
 
                 StudyBean study = (StudyBean) sdao.findByPK(ssb.getStudyId());
                 ArrayList eventDefinitionCRFs = (ArrayList) edcdao.findAllActiveByEventDefinitionId(study, studyEvent.getStudyEventDefinitionId());
@@ -574,7 +574,7 @@ public class UpdateStudyEventServlet extends SecureController {
         } else {
             logger.debug("no action, go to update page");
 
-            DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(sm.getDataSource());
+            DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(DiscrepancyNoteDAO.class);
             StudySubjectBean studySubjectBean = (StudySubjectBean) ssdao.findByPK(studyEvent.getStudySubjectId());
             int studyId = studySubjectBean.getStudyId();
             boolean subjectStudyIsCurrentStudy = studyId == currentStudy.getId();
@@ -714,8 +714,8 @@ public class UpdateStudyEventServlet extends SecureController {
             startedButIncompleted.put(new Integer(edcrf.getCrfId()), new EventCRFBean());
         }
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
+        ItemDataDAO iddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
         for (i = 0; i < eventCRFs.size(); i++) {
             EventCRFBean ecrf = (EventCRFBean) eventCRFs.get(i);
             int crfId = cvdao.getCRFIdFromCRFVersionId(ecrf.getCRFVersionId());
@@ -743,8 +743,8 @@ public class UpdateStudyEventServlet extends SecureController {
     }
 
     private void populateUncompletedCRFsWithCRFAndVersions(ArrayList uncompletedEventDefinitionCRFs) {
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
 
         int size = uncompletedEventDefinitionCRFs.size();
         for (int i = 0; i < size; i++) {

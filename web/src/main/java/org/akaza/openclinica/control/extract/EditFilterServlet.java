@@ -65,7 +65,7 @@ public class EditFilterServlet extends SecureController {
 
                 // TODO determine if this is necessary
                 int filterId = fp.getInt("filterId");
-                FilterDAO fDAO = new FilterDAO(sm.getDataSource());
+                FilterDAO fDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(FilterDAO.class);
                 FilterBean showFilter = (FilterBean) fDAO.findByPK(filterId);
                 request.setAttribute("filter", showFilter);
                 // maybe just set the above to the session?
@@ -74,7 +74,7 @@ public class EditFilterServlet extends SecureController {
                 forwardPage(Page.EDIT_FILTER);
             } else {
                 int filterId = fp.getInt("filterId");
-                FilterDAO fDAO = new FilterDAO(sm.getDataSource());
+                FilterDAO fDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(FilterDAO.class);
                 FilterBean filter = (FilterBean) fDAO.findByPK(filterId);
                 filter.setName(fp.getString("fName"));
                 filter.setDescription(fp.getString("fDesc"));
@@ -85,7 +85,7 @@ public class EditFilterServlet extends SecureController {
                 // Collection filters = fDAO.findAll();
                 // TODO make findAllByProject?
                 // FormProcessor fp = new FormProcessor(request);
-                FilterDAO fdao = new FilterDAO(sm.getDataSource());
+                FilterDAO fdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(FilterDAO.class);
                 EntityBeanTable table = fp.getEntityBeanTable();
 
                 ArrayList filters = (ArrayList) fdao.findAll();// TODO make
@@ -109,7 +109,7 @@ public class EditFilterServlet extends SecureController {
             }
         } else {
             int filterId = fp.getInt("filterId");
-            FilterDAO fDAO = new FilterDAO(sm.getDataSource());
+            FilterDAO fDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(FilterDAO.class);
             FilterBean showFilter = (FilterBean) fDAO.findByPK(filterId);
             request.setAttribute("filter", showFilter);
             request.setAttribute("statuses", getStatuses());

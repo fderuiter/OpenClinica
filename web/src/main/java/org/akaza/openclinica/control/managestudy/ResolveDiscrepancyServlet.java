@@ -111,7 +111,7 @@ public class ResolveDiscrepancyServlet extends SecureController {
         String entityType = note.getEntityType().toLowerCase();
         int id = note.getEntityId();
         if ("subject".equalsIgnoreCase(entityType)) {
-            StudySubjectDAO ssdao = new StudySubjectDAO(ds);
+            StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
             StudySubjectBean ssb = ssdao.findBySubjectIdAndStudy(id, currentStudy);
 
             request.setAttribute("action", "show");
@@ -123,7 +123,7 @@ public class ResolveDiscrepancyServlet extends SecureController {
         } else if ("eventcrf".equalsIgnoreCase(entityType)) {
             request.setAttribute("editInterview", "1");
 
-            EventCRFDAO ecdao = new EventCRFDAO(ds);
+            EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(id);
             request.setAttribute(TableOfContentsServlet.INPUT_EVENT_CRF_BEAN, ecb);
             // If the request is passed along to ViewSectionDataEntryServlet,
@@ -133,7 +133,7 @@ public class ResolveDiscrepancyServlet extends SecureController {
             // a ClassCastException without the casting to a String
             request.setAttribute(ViewSectionDataEntryServlet.EVENT_CRF_ID, ecb.getId() + "");
         } else if ("studyevent".equalsIgnoreCase(entityType)) {
-            StudyEventDAO sedao = new StudyEventDAO(ds);
+            StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
             StudyEventBean seb = (StudyEventBean) sedao.findByPK(id);
             request.setAttribute(EnterDataForStudyEventServlet.INPUT_EVENT_ID, String.valueOf(id));
             request.setAttribute(UpdateStudyEventServlet.EVENT_ID, String.valueOf(id));
@@ -142,22 +142,22 @@ public class ResolveDiscrepancyServlet extends SecureController {
 
         // this is for item data
         else if ("itemdata".equalsIgnoreCase(entityType)) {
-            ItemDataDAO iddao = new ItemDataDAO(ds);
+            ItemDataDAO iddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
             ItemDataBean idb = (ItemDataBean) iddao.findByPK(id);
 
-            EventCRFDAO ecdao = new EventCRFDAO(ds);
+            EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
 
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(idb.getEventCRFId());
 
-            StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+            StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
 
             StudySubjectBean ssb = (StudySubjectBean) ssdao.findByPK(ecb.getStudySubjectId());
 
-            ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(ds);
+            ItemFormMetadataDAO ifmdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemFormMetadataDAO.class);
             ItemFormMetadataBean ifmb = ifmdao.findByItemIdAndCRFVersionId(idb.getItemId(), ecb.getCRFVersionId());
 
             if (currentRole.getRole().equals(Role.MONITOR) || !isCompleted) {
-                StudyEventDAO sedao = new StudyEventDAO(ds);
+                StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
                 StudyEventBean seb = (StudyEventBean) sedao.findByPK(id);
                 request.setAttribute(EVENT_CRF_ID, String.valueOf(idb.getEventCRFId()));
                 request.setAttribute(STUDY_SUB_ID, String.valueOf(seb.getStudySubjectId()));
@@ -191,9 +191,9 @@ public class ResolveDiscrepancyServlet extends SecureController {
         String module = (String) session.getAttribute("module");
         // Integer subjectId = (Integer) session.getAttribute("subjectId");
 
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO studySubjectDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
 
-        DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+        DiscrepancyNoteDAO dndao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DiscrepancyNoteDAO.class);
         dndao.setFetchMapping(true);
 
         // check that the note exists
@@ -235,10 +235,10 @@ public class ResolveDiscrepancyServlet extends SecureController {
         boolean toView = false;
         boolean isCompleted = false;
         if ("itemdata".equalsIgnoreCase(entityType)) {
-            ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+            ItemDataDAO iddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
             ItemDataBean idb = (ItemDataBean) iddao.findByPK(discrepancyNoteBean.getEntityId());
 
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+            EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
 
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(idb.getEventCRFId());
             StudySubjectBean studySubjectBean = (StudySubjectBean) studySubjectDAO.findByPK(ecb.getStudySubjectId());
@@ -266,7 +266,7 @@ public class ResolveDiscrepancyServlet extends SecureController {
                     .getString("the_discrepancy_note_triying_resolve_has_invalid_type"));
         }else if(p.getFileName().contains("InitialDataEntry")){ //Open form in data entry mode from dn page
 
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+            EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(discrepancyNoteBean.getEventCRFId());
 
             request.setAttribute("event", ecb);

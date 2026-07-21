@@ -50,7 +50,7 @@ public class RemoveCRFFromDefinitionServlet extends SecureController {
         String crfName = "";
 
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) session.getAttribute("definition");
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);    
         String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();
     
         request.setAttribute("participateFormStatus",participateFormStatus );

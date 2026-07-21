@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.admin;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.admin.AuditBean;
 import org.akaza.openclinica.bean.admin.DeletedEventCRFBean;
 import org.akaza.openclinica.bean.core.ApplicationConstants;
@@ -37,6 +41,8 @@ import javax.sql.DataSource;
  * @author jsampson
  *
  */
+@Repository
+@Scope("prototype")
 public class AuditDAO extends EntityDAO {
     // private DAODigester digester;
     // YW 12-06-2007 <<!!! Be careful when there is item with data-type as
@@ -53,6 +59,7 @@ public class AuditDAO extends EntityDAO {
     // conversion is from oc_date_format pattern to local date_format pattern.
     // YW >>
 
+    @Autowired
     public AuditDAO(DataSource ds) {
         super(ds);
     }

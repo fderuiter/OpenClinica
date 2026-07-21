@@ -109,18 +109,18 @@ public class ListEventsForSubjectServlet extends SecureController {
             return;
         }
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(definitionId);
 
-        StudySubjectDAO sdao = new StudySubjectDAO(sm.getDataSource());
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudySubjectDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
+        StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
 
-        SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
+        SubjectGroupMapDAO sgmdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectGroupMapDAO.class);
+        StudyGroupClassDAO sgcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupClassDAO.class);
 
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+        EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
+        CRFDAO crfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
 
         // find all the groups in the current study
         ArrayList studyGroupClasses = sgcdao.findAllActiveByStudy(currentStudy);
@@ -131,7 +131,7 @@ public class ListEventsForSubjectServlet extends SecureController {
 
         if (currentStudy.getParentStudyId() > 0) {
 
-            StudyDAO stdao = new StudyDAO(sm.getDataSource());
+            StudyDAO stdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
             StudyBean parent = (StudyBean) stdao.findByPK(currentStudy.getParentStudyId());
 
             allDefs = seddao.findAllActiveByStudy(parent);

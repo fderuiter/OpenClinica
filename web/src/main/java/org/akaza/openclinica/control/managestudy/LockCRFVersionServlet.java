@@ -62,8 +62,8 @@ public class LockCRFVersionServlet extends SecureController {
            return;
        }
        
-       CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-       CRFDAO cdao = new CRFDAO (sm.getDataSource());
+       CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
+       CRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
        
        CRFVersionBean version = (CRFVersionBean)cvdao.findByPK(crfVersionId);
        //System.out.println("crf version found:" + version.getName());
@@ -76,7 +76,7 @@ public class LockCRFVersionServlet extends SecureController {
            return;
        }
       
-       EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+       EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
        ArrayList eventCRFs = ecdao.findAllStudySubjectByCRFVersion(crfVersionId);
        
        if (StringUtil.isBlank(action)) {
@@ -92,7 +92,7 @@ public class LockCRFVersionServlet extends SecureController {
 
            ArrayList versionList = (ArrayList)cvdao.findAllByCRF(version.getCrfId());
            if(versionList.size() > 0){
-               EventDefinitionCRFDAO edCRFDao = new EventDefinitionCRFDAO(sm.getDataSource());
+               EventDefinitionCRFDAO edCRFDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
                ArrayList edcList = (ArrayList)edCRFDao.findAllByCRF(version.getCrfId());
                for(int i = 0; i < edcList.size(); i++){
                    EventDefinitionCRFBean edcBean = (EventDefinitionCRFBean)edcList.get(i);

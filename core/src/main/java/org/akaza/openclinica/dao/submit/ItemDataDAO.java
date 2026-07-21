@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,6 +49,8 @@ import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
  * 
  * 
  */
+@Repository
+@Scope("prototype")
 public class ItemDataDAO extends AuditableEntityDAO {
 
     boolean formatDates = true;
@@ -98,6 +104,7 @@ public class ItemDataDAO extends AuditableEntityDAO {
         getNextPKName = "getNextPK";
     }
 
+    @Autowired
     public ItemDataDAO(DataSource ds) {
         super(ds);
         setQueryNames();

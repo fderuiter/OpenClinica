@@ -69,7 +69,7 @@ public class InitUpdateSubStudyServlet extends SecureController {
     public void processRequest() throws Exception {
     	//baseUrl();
         String userName = request.getRemoteUser();
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         String idString = request.getParameter("id");
         logger.info("study id:" + idString);
         if (StringUtil.isBlank(idString)) {
@@ -94,7 +94,7 @@ public class InitUpdateSubStudyServlet extends SecureController {
                 ArrayList parentConfigs = currentStudy.getStudyParameters();
                 // logger.info("parentConfigs size:" + parentConfigs.size());
                 ArrayList configs = new ArrayList();
-                StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+                StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);
                 for (int i = 0; i < parentConfigs.size(); i++) {
                     StudyParamsConfig scg = (StudyParamsConfig) parentConfigs.get(i);
                     if (scg != null) {
@@ -147,14 +147,14 @@ public class InitUpdateSubStudyServlet extends SecureController {
 
     private void createEventDefinitions(StudyBean parentStudy) throws MalformedURLException {
         FormProcessor fp = new FormProcessor(request);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);    
 
         int siteId = Integer.valueOf(request.getParameter("id").trim());
         ArrayList<StudyEventDefinitionBean> seds = new ArrayList<StudyEventDefinitionBean>();
-        StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sedDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
+        CRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
         seds = sedDao.findAllByStudy(parentStudy);
         int start = 0;
         for (StudyEventDefinitionBean sed : seds) {

@@ -42,7 +42,7 @@ public class ListUserAccountsServlet extends SecureController {
     protected void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         EntityBeanTable table = fp.getEntityBeanTable();
         // table.setSortingIfNotExplicitlySet(1, false);
 
@@ -92,7 +92,7 @@ public class ListUserAccountsServlet extends SecureController {
      *            UserAccountBean.
      */
     private void setStudyNamesInStudyUserRoles(ArrayList users) {
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         ArrayList allStudies = (ArrayList) sdao.findAll();
         HashMap studiesById = new HashMap();
 

@@ -45,10 +45,10 @@ public class ShowFileServlet extends SecureController {
         FormProcessor fp = new FormProcessor(request);
         int fileId = fp.getInt("fileId");
         int dsId = fp.getInt("datasetId");
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DatasetDAO.class);
         DatasetBean db = (DatasetBean) dsdao.findByPK(dsId);
 
-        ArchivedDatasetFileDAO asdfdao = new ArchivedDatasetFileDAO(sm.getDataSource());
+        ArchivedDatasetFileDAO asdfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ArchivedDatasetFileDAO.class);
         ArchivedDatasetFileBean asdfBean = (ArchivedDatasetFileBean) asdfdao.findByPK(fileId);
 
         ArrayList newFileList = new ArrayList();

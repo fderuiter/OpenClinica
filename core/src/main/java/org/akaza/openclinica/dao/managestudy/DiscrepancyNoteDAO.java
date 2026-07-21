@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +46,8 @@ import org.akaza.openclinica.dao.submit.SubjectDAO;
  *         TODO To change the template for this generated type comment go to Window - Preferences - Java - Code Style -
  *         Code Templates
  */
+@Repository
+@Scope("prototype")
 public class DiscrepancyNoteDAO extends AuditableEntityDAO {
     // if true, we fetch the mapping along with the bean
     // only applies to functions which return a single bean
@@ -67,6 +73,7 @@ public class DiscrepancyNoteDAO extends AuditableEntityDAO {
         getCurrentPKName = "getCurrentPrimaryKey";
     }
 
+    @Autowired
     public DiscrepancyNoteDAO(DataSource ds) {
         super(ds);
         setQueryNames();

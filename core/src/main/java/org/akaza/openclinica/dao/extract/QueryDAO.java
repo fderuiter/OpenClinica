@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.extract;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.extract.QueryBean;
 import org.akaza.openclinica.dao.core.AuditableEntityDAO;
@@ -23,9 +27,12 @@ import javax.sql.DataSource;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
+@Repository
+@Scope("prototype")
 public class QueryDAO extends AuditableEntityDAO {
     // private DataSource ds;
 
+    @Autowired
     public QueryDAO(DataSource ds) {
         super(ds);
     }

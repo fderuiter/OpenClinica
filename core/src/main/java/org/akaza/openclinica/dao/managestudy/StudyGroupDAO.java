@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.managestudy.StudyGroupBean;
 import org.akaza.openclinica.bean.managestudy.StudyGroupClassBean;
@@ -26,6 +30,8 @@ import javax.sql.DataSource;
 /**
  * @author jxu
  */
+@Repository
+@Scope("prototype")
 public class StudyGroupDAO extends AuditableEntityDAO {
     // private DAODigester digester;
 
@@ -34,6 +40,7 @@ public class StudyGroupDAO extends AuditableEntityDAO {
         findByPKAndStudyName = "findByPKAndStudy";
     }
 
+    @Autowired
     public StudyGroupDAO(DataSource ds) {
         super(ds);
         setQueryNames();

@@ -21,7 +21,7 @@ public class CheckCRFLocked extends SecureController {
             int crfId = Integer.parseInt(ecId);
             if (getCrfLocker().isLocked(crfId)) {
                 userId = getCrfLocker().getLockOwner(crfId);
-                UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+                UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
                 UserAccountBean ubean = (UserAccountBean)udao.findByPK(userId);
                 response.getWriter().print(HtmlUtils.htmlEscape(resword.getString("CRF_unavailable")) +
                         "\n"+HtmlUtils.htmlEscape(ubean.getName()) + " "+ HtmlUtils.htmlEscape(resword.getString("Currently_entering_data"))

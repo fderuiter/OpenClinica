@@ -90,14 +90,14 @@ public class CctsSubjectEndpoint {
             public Source doInTransaction(TransactionStatus status) {
                 try {
                     logger.debug("In CreateSubject");
-                    StudyDAO studyDao = new StudyDAO(dataSource);
+                    StudyDAO studyDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
                     StudyBean studyBean = studyDao.findByOid(subjectTransferBean.getStudyOid());
                     if (studyBean == null || studyBean.getId() <= 0) {
                         throw new RuntimeException("Study not found with OID: " + subjectTransferBean.getStudyOid());
                     }
                     subjectTransferBean.setStudy(studyBean);
 
-                    StudySubjectDAO ssdao = new StudySubjectDAO(dataSource);
+                    StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
                     StudySubjectBean ssbean = ssdao.findByLabelAndStudy(subjectTransferBean.getStudySubjectId(), studyBean);
                     if (ssbean != null && ssbean.getId() > 0) {
                         // Subject already exists
@@ -285,7 +285,7 @@ public class CctsSubjectEndpoint {
         } else {
             username = principal.toString();
         }
-        UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+        UserAccountDAO userAccountDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         return (UserAccountBean) userAccountDAO.findByUserName(username);
     }
 

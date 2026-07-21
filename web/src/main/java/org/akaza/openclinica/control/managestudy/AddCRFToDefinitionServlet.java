@@ -63,7 +63,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
         String actionName = request.getParameter("actionName");
         String submit = request.getParameter("Submit");
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
         ArrayList crfs = (ArrayList) cdao.findAllByStatus(Status.AVAILABLE);
         ArrayList edcs = (ArrayList) session.getAttribute("eventDefinitionCRFs");
         if (edcs == null) {
@@ -165,7 +165,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
     private void addCRF() throws Exception {
 
         FormProcessor fp = new FormProcessor(request);
-        CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO vdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
         ArrayList crfArray = new ArrayList();
         Map tmpCRFIdMap = (HashMap) session.getAttribute("tmpCRFIdMap");
         if (tmpCRFIdMap == null) {
@@ -215,7 +215,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
             }
         }
         request.removeAttribute("tmpCRFIdMap");
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);    
 
 
         if (crfArray.size() == 0) {// no crf seleted
@@ -277,7 +277,7 @@ public class AddCRFToDefinitionServlet extends SecureController {
 //        ArrayList crfs = (ArrayList) session.getAttribute("crfsWithVersion");
 //        StudyEventDefinitionBean sed = (StudyEventDefinitionBean) session.getAttribute("definition");
 //        FormProcessor fp = new FormProcessor(request);
-//        CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
+//        CRFVersionDAO vdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
 //        String crfNames = "";
 //        boolean isCRFSelected = false;
 //        int ordinalForNewCRF = edcs.size();

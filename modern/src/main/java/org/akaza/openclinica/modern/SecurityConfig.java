@@ -51,8 +51,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain unifiedFilterChain(HttpSecurity http) throws Exception {
-        UnifiedRepository unifiedRepository = new UnifiedRepository(dataSource);
+    public SecurityFilterChain unifiedFilterChain(HttpSecurity http, UnifiedRepository unifiedRepository) throws Exception {
+        
         LegacyModernContextBridgeFilter bridgeFilter = new LegacyModernContextBridgeFilter(dataSource, unifiedRepository);
 
         http

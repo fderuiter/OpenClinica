@@ -65,7 +65,7 @@ public class ResetPasswordServlet extends SecureController {
     public void processRequest() throws Exception {
         logger.info("Change expired password");
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         Validator v = new Validator(request);
         errors.clear();
         FormProcessor fp = new FormProcessor(request);

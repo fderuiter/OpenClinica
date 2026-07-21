@@ -72,7 +72,7 @@ public class EditUserAccountServlet extends SecureController {
     public static final String USER_ACCOUNT_NOTIFICATION = "notifyPassword";
 
     private ArrayList getAllStudies() {
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         return (ArrayList) sdao.findAll();
     }
 
@@ -101,7 +101,7 @@ public class EditUserAccountServlet extends SecureController {
         int userId = fp.getInt(ARG_USERID);
         
         
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         UserAccountBean user = (UserAccountBean) udao.findByPK(userId);
 
         techAdminProtect(user);
@@ -239,7 +239,7 @@ public class EditUserAccountServlet extends SecureController {
     // }
     //
     // SQLFactory factory = SQLFactory.getInstance();
-    // UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+    // UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
     //
     // HashMap presetValues;
     // } catch (Exception e) {
@@ -318,7 +318,7 @@ public class EditUserAccountServlet extends SecureController {
     }
 
 	public Boolean isApiKeyExist(String uuid) {
-		UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+		UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
 		UserAccountBean uBean = (UserAccountBean) udao.findByApiKey(uuid);
 		if (uBean == null || !uBean.isActive()) {
 			return false;

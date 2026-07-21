@@ -81,8 +81,8 @@ public class CreateJobImportServlet extends SecureController {
         // find all the form items and re-populate them if necessary
         FormProcessor fp2 = new FormProcessor(request);
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
 
         // ArrayList studies = udao.findStudyByUser(ub.getName(), (ArrayList)
         // sdao.findAll());
@@ -141,7 +141,7 @@ public class CreateJobImportServlet extends SecureController {
             } else {
                 logger.info("found no validation errors, continuing");
                 int studyId = fp.getInt(STUDY_ID);
-                StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+                StudyDAO studyDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
                 StudyBean studyBean = (StudyBean) studyDAO.findByPK(studyId);
                 org.quartz.impl.triggers.SimpleTriggerImpl trigger = (org.quartz.impl.triggers.SimpleTriggerImpl) triggerService.generateImportTrigger(fp, sm.getUserBean(), studyBean, LocaleResolver.getLocale(request).getLanguage());
 

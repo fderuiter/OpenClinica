@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.admin;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +35,8 @@ import org.akaza.openclinica.dao.core.TypeNames;
  * @author thickerson
  * 
  */
+@Repository
+@Scope("prototype")
 public class CRFDAO<K extends String, V extends ArrayList> extends AuditableEntityDAO {
     // private DataSource ds;
     // private DAODigester digester;
@@ -40,6 +46,7 @@ public class CRFDAO<K extends String, V extends ArrayList> extends AuditableEnti
         digesterName = SQLFactory.getInstance().DAO_CRF;
     }
 
+    @Autowired
     public CRFDAO(DataSource ds) {
         super(ds);
     }

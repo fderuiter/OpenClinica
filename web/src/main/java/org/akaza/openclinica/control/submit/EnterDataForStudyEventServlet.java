@@ -80,7 +80,7 @@ public class EnterDataForStudyEventServlet extends SecureController {
     public final static String HAS_END_DATE_NOTE = "hasEndDateNote";
 
     private StudyEventBean getStudyEvent(int eventId) throws Exception {
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
 
         StudyBean studyWithSED = currentStudy;
         if (currentStudy.getParentStudyId() > 0) {
@@ -97,7 +97,7 @@ public class EnterDataForStudyEventServlet extends SecureController {
 
         StudyEventBean seb = (StudyEventBean) aeb;
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean sedb = (StudyEventDefinitionBean) seddao.findByPK(seb.getStudyEventDefinitionId());
         seb.setStudyEventDefinition(sedb);
         //A. Hamid mantis issue 5048
@@ -125,11 +125,11 @@ public class EnterDataForStudyEventServlet extends SecureController {
         StudyEventBean seb = getStudyEvent(eventId);
 
         // so we can display the subject's label
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
         StudySubjectBean studySubjectBean = (StudySubjectBean) ssdao.findByPK(seb.getStudySubjectId());
         int studyId = studySubjectBean.getStudyId();
 
-        StudyDAO studydao = new StudyDAO(sm.getDataSource());
+        StudyDAO studydao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         StudyBean study = (StudyBean) studydao.findByPK(studyId);
         // If the study subject derives from a site, and is being viewed from a
         // parent study,
@@ -141,7 +141,7 @@ public class EnterDataForStudyEventServlet extends SecureController {
         boolean isParentStudy = study.getParentStudyId() < 1;
 
         // Get any disc notes for this study event
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(sm.getDataSource());
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(DiscrepancyNoteDAO.class);
         ArrayList<DiscrepancyNoteBean> allNotesforSubjectAndEvent = new ArrayList<DiscrepancyNoteBean>();
 
         /*
@@ -170,10 +170,10 @@ public class EnterDataForStudyEventServlet extends SecureController {
         }
 
         // prepare to figure out what the display should look like
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+        EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
         ArrayList<EventCRFBean> eventCRFs = ecdao.findAllByStudyEvent(seb);
         ArrayList<Boolean> doRuleSetsExist = new ArrayList<Boolean>();
-        RuleSetDAO ruleSetDao = new RuleSetDAO(sm.getDataSource());
+        RuleSetDAO ruleSetDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(RuleSetDAO.class);
 
         for (EventCRFBean eventCrfBean : eventCRFs) {
             // Boolean result = ruleSetDao.findByEventCrf(eventCrfBean) != null
@@ -181,7 +181,7 @@ public class EnterDataForStudyEventServlet extends SecureController {
             // doRuleSetsExist.add(result);
         }
 
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
         ArrayList eventDefinitionCRFs = (ArrayList) edcdao.findAllActiveByEventDefinitionId(study, seb.getStudyEventDefinitionId());
 
         // get the event definition CRFs for which no event CRF exists
@@ -307,8 +307,8 @@ public class EnterDataForStudyEventServlet extends SecureController {
             startedButIncompleted.put(new Integer(edcrf.getCrfId()), new EventCRFBean());
         }
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
+        ItemDataDAO iddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
         for (i = 0; i < eventCRFs.size(); i++) {
             EventCRFBean ecrf = (EventCRFBean) eventCRFs.get(i);
             int crfId = cvdao.getCRFIdFromCRFVersionId(ecrf.getCRFVersionId());
@@ -339,7 +339,7 @@ public class EnterDataForStudyEventServlet extends SecureController {
         if (displayEventDefinitionCRFBeans == null || displayEventDefinitionCRFBeans.isEmpty()) {
             return;
         }
-        UserAccountDAO userAccountDAO = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO userAccountDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         UserAccountBean userAccountBean;
         EventCRFBean eventCRFBean;
         EventDefinitionCRFBean eventDefinitionCRFBean;
@@ -369,8 +369,8 @@ public class EnterDataForStudyEventServlet extends SecureController {
     }
 
     private void populateUncompletedCRFsWithCRFAndVersions(ArrayList uncompletedEventDefinitionCRFs) {
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
 
         int size = uncompletedEventDefinitionCRFs.size();
         for (int i = 0; i < size; i++) {
@@ -460,9 +460,9 @@ public class EnterDataForStudyEventServlet extends SecureController {
             definitionsByCRFId.put(new Integer(edc.getCrfId()), edc);
         }
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        CRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
+        ItemDataDAO iddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
 
         for (i = 0; i < eventCRFs.size(); i++) {
             EventCRFBean ecb = (EventCRFBean) eventCRFs.get(i);

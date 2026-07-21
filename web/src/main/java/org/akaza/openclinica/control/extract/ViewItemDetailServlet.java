@@ -63,12 +63,12 @@ public class ViewItemDetailServlet extends SecureController {
         FormProcessor fp = new FormProcessor(request);
         int itemId = fp.getInt(ITEM_ID);
         String itemOid = fp.getString(ITEM_OID);
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(sm.getDataSource());
-        ItemGroupMetadataDAO igmdao = new ItemGroupMetadataDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        SectionDAO sectionDao = new SectionDAO(sm.getDataSource());
+        ItemDAO idao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDAO.class);
+        ItemFormMetadataDAO ifmdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemFormMetadataDAO.class);
+        ItemGroupMetadataDAO igmdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemGroupMetadataDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
+        CRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
+        SectionDAO sectionDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SectionDAO.class);
 
         if (itemId == 0 && itemOid == null) {
             addPageMessage(respage.getString("please_choose_an_item_first"));

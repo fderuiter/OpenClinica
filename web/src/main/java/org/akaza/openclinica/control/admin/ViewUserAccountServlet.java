@@ -48,7 +48,7 @@ public class ViewUserAccountServlet extends SecureController {
     protected void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         int userId = fp.getInt(ARG_USER_ID, true);
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
 
         UserAccountBean user = getBean(udao, userId);
 
@@ -86,7 +86,7 @@ public class ViewUserAccountServlet extends SecureController {
     // int userId = fp.getInt(ARG_USER_ID);
     //
     // SQLFactory factory = SQLFactory.getInstance();
-    // UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+    // UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
     //
     // UserAccountBean user = getBean(udao, userId);
     //
@@ -111,7 +111,7 @@ public class ViewUserAccountServlet extends SecureController {
 
     private UserAccountBean getBean(UserAccountDAO udao, int id) {
         UserAccountBean answer = (UserAccountBean) udao.findByPK(id);
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
 
         ArrayList roles = answer.getRoles();
 

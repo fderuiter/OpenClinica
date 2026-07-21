@@ -273,7 +273,7 @@ public abstract class CoreSecureController extends HttpServlet {
 
     private String decodeLINKURL(String successMsg, Integer datasetId) {
 
-        ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(getDataSource());
+        ArchivedDatasetFileDAO asdfDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(ArchivedDatasetFileDAO.class);
 
         ArrayList<ArchivedDatasetFileBean> fileBeans = asdfDAO.findByDatasetId(datasetId);
 
@@ -363,10 +363,10 @@ public abstract class CoreSecureController extends HttpServlet {
             request.getSession().setAttribute("sm", sm);
             session.setAttribute("userBean", ub);
 
-            StudyDAO sdao = new StudyDAO(getDataSource());
+            StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
             if (currentStudy == null || currentStudy.getId() <= 0) {
                 if (ub.getId() > 0 && ub.getActiveStudyId() > 0) {
-                    StudyParameterValueDAO spvdao = new StudyParameterValueDAO(getDataSource());
+                    StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);
                     currentStudy = (StudyBean) sdao.findByPK(ub.getActiveStudyId());
 
                     ArrayList studyParameters = spvdao.findParamConfigByStudy(currentStudy);
@@ -765,7 +765,7 @@ public abstract class CoreSecureController extends HttpServlet {
      *            javax.sql.DataSource
      */
     protected boolean entityIncluded(int entityId, String userName, AuditableEntityDAO adao, DataSource ds) {
-        StudyDAO sdao = new StudyDAO(ds);
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         ArrayList<StudyBean> studies = (ArrayList<StudyBean>) sdao.findAllByUserNotRemoved(userName);
         for (int i = 0; i < studies.size(); ++i) {
             if (adao.findByPKAndStudy(entityId, studies.get(i)).getId() > 0) {
@@ -853,8 +853,8 @@ public abstract class CoreSecureController extends HttpServlet {
     }
 
     public ArrayList getEventDefinitionsByCurrentStudy(HttpServletRequest request) {
-        StudyDAO studyDAO = new StudyDAO(getDataSource());
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(getDataSource());
+        StudyDAO studyDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
+        StudyEventDefinitionDAO studyEventDefinitionDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
         StudyBean currentStudy = (StudyBean) request.getSession().getAttribute("study");
         int parentStudyId = currentStudy.getParentStudyId();
         ArrayList allDefs = new ArrayList();
@@ -869,9 +869,9 @@ public abstract class CoreSecureController extends HttpServlet {
     }
 
     public ArrayList getStudyGroupClassesByCurrentStudy(HttpServletRequest request) {
-        StudyDAO studyDAO = new StudyDAO(getDataSource());
-        StudyGroupClassDAO studyGroupClassDAO = new StudyGroupClassDAO(getDataSource());
-        StudyGroupDAO studyGroupDAO = new StudyGroupDAO(getDataSource());
+        StudyDAO studyDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
+        StudyGroupClassDAO studyGroupClassDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupClassDAO.class);
+        StudyGroupDAO studyGroupDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupDAO.class);
         StudyBean currentStudy = (StudyBean) request.getSession().getAttribute("study");
         int parentStudyId = currentStudy.getParentStudyId();
         ArrayList studyGroupClasses = new ArrayList();

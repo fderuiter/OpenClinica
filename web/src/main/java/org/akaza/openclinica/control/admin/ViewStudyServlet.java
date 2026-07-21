@@ -55,7 +55,7 @@ public class ViewStudyServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         FormProcessor fp = new FormProcessor(request);
         int studyId = fp.getInt("id");
         if (studyId == 0) {
@@ -73,7 +73,7 @@ public class ViewStudyServlet extends SecureController {
             StudyConfigService scs = new StudyConfigService(sm.getDataSource());
             study = scs.setParametersForStudy(study);
 
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+            StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);
             String randomizationStatusInOC = spvdao.findByHandleAndStudy(study.getId(), "randomization").getValue();
             String participantStatusInOC = spvdao.findByHandleAndStudy(study.getId(), "participantPortal").getValue();
             if(participantStatusInOC=="") participantStatusInOC="disabled";
@@ -104,8 +104,8 @@ public class ViewStudyServlet extends SecureController {
 
             request.setAttribute("studyToView", study);
             if ("yes".equalsIgnoreCase(viewFullRecords)) {
-                UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
-                StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+                UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
+                StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
                 ArrayList sites = new ArrayList();
                 ArrayList userRoles = new ArrayList();
                 ArrayList subjects = new ArrayList();
@@ -120,9 +120,9 @@ public class ViewStudyServlet extends SecureController {
                 }
 
                 // find all subjects in the study, include ones in sites
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-                EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-                // StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+                StudyEventDefinitionDAO seddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
+                EventDefinitionCRFDAO edcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
+                // StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
 
 //                ArrayList displayStudySubs = new ArrayList();
 //                for (int i = 0; i < subjects.size(); i++) {
@@ -131,7 +131,7 @@ public class ViewStudyServlet extends SecureController {
 //                    ArrayList events = sedao.findAllByStudySubject(studySub);
 //
 //                    // find all eventcrfs for each event
-//                    EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+//                    EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
 //
 //                    DisplayStudySubjectBean dssb = new DisplayStudySubjectBean();
 //                    dssb.setStudyEvents(events);

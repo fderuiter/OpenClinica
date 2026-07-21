@@ -71,7 +71,7 @@ public class DownloadVersionSpreadSheetServlet extends SecureController {
         String crfIdString = fp.getString(CRF_ID);
         int crfVersionId = fp.getInt(CRF_VERSION_ID);
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
 
         CRFVersionBean version = (CRFVersionBean) cvdao.findByPK(crfVersionId);
 

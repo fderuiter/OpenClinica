@@ -54,7 +54,7 @@ public class ListStudyUserServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         ArrayList users = udao.findAllAssignedUsersByStudy(currentStudy.getId());
 
         EntityBeanTable table = fp.getEntityBeanTable();

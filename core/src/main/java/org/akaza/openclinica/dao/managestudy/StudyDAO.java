@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * <P>
  * StudyDAO.java, the data access object that users will access the database for
@@ -36,10 +40,13 @@ import java.util.Locale;
 
 import javax.sql.DataSource;
 
+@Repository
+@Scope("prototype")
 public class StudyDAO <K extends String,V extends ArrayList> extends AuditableEntityDAO {
     // private DataSource ds;
     // private DAODigester digester;
 
+    @Autowired
     public StudyDAO(DataSource ds) {
         super(ds);
     }

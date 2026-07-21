@@ -43,9 +43,9 @@ public class PrintCRFByIdServlet extends PrintCRFServlet {
     public void processRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
         StudyBean currentStudy =    (StudyBean) request.getSession().getAttribute("study");
-        StudyDAO studyDao = new StudyDAO(getDataSource());
+        StudyDAO studyDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         currentStudy = (StudyBean) studyDao.findByPK(1);
-        CRFVersionDAO crfVersionDao = new CRFVersionDAO(getDataSource());
+        CRFVersionDAO crfVersionDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
         if (request.getParameter("id") == null) {
             forwardPage(Page.LOGIN, request, response);
         }

@@ -53,8 +53,8 @@ public class UpdateProfileServlet extends SecureController {
     public void processRequest() throws Exception {
 
         String action = request.getParameter("action");// action sent by user
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
+        UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         UserAccountBean userBean1 = (UserAccountBean) udao.findByUserName(ub.getName());
 
         Collection studies = sdao.findAllByUser(ub.getName());
@@ -137,7 +137,7 @@ public class UpdateProfileServlet extends SecureController {
         userBean1.setPasswdChallengeAnswer(fp.getString("passwdChallengeAnswer"));
         userBean1.setPhone(fp.getString("phone"));
         userBean1.setActiveStudyId(fp.getInt("activeStudyId"));
-        StudyDAO sdao = new StudyDAO(this.sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
 
         StudyBean newActiveStudy = (StudyBean) sdao.findByPK(userBean1.getActiveStudyId());
         request.setAttribute("newActiveStudy", newActiveStudy);

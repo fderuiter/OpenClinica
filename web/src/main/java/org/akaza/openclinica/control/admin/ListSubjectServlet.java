@@ -45,11 +45,11 @@ public class ListSubjectServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectDAO.class);
 
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
-        UserAccountDAO uadao = new UserAccountDAO(sm.getDataSource());
+        StudySubjectDAO subdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
+        StudyDAO studyDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
+        UserAccountDAO uadao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
 
         ListSubjectTableFactory factory = new ListSubjectTableFactory();
         factory.setSubjectDao(sdao);

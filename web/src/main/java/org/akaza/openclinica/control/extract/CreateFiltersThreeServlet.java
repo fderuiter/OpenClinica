@@ -83,7 +83,7 @@ public class CreateFiltersThreeServlet extends SecureController {
                 fb.setOwner(ub);
                 // fb.setOwnerId(ub.getId());
                 logger.info("found owner id: " + fb.getOwner().getId());
-                FilterDAO fDAO = new FilterDAO(sm.getDataSource());
+                FilterDAO fDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(FilterDAO.class);
                 FilterBean fbFinal = (FilterBean) fDAO.create(fb);
                 addPageMessage(restext.getString("the_filter_named") +
                 // fp.getString("fName")+
@@ -97,7 +97,7 @@ public class CreateFiltersThreeServlet extends SecureController {
                     forwardPage(Page.CREATE_DATASET_4);
                 } else {
                     request.removeAttribute("newFilter");
-                    FilterDAO fdao = new FilterDAO(sm.getDataSource());
+                    FilterDAO fdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(FilterDAO.class);
                     EntityBeanTable table = fp.getEntityBeanTable();
 
                     ArrayList filters = (ArrayList) fdao.findAll();

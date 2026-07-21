@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.service;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.service.StudyParameter;
@@ -24,6 +28,8 @@ import java.util.Iterator;
 
 import javax.sql.DataSource;
 
+@Repository
+@Scope("prototype")
 public class StudyParameterValueDAO extends AuditableEntityDAO {
 
     @Override
@@ -32,6 +38,7 @@ public class StudyParameterValueDAO extends AuditableEntityDAO {
 
     }
 
+    @Autowired
     public StudyParameterValueDAO(DataSource ds) {
         super(ds);
     }

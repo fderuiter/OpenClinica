@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,9 +44,12 @@ import org.akaza.openclinica.core.util.ItemGroupCrvVersionUtil;
  * 
  * 
  */
+@Repository
+@Scope("prototype")
 public class ItemDAO<K extends String,V extends ArrayList> extends AuditableEntityDAO {
     // private DAODigester digester;
 
+    @Autowired
     public ItemDAO(DataSource ds) {
         super(ds);
     }

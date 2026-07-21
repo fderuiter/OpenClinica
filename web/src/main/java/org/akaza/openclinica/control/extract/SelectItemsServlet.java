@@ -74,12 +74,12 @@ public class SelectItemsServlet extends SecureController {
     public void setUpStudyGroupPage() {
         ArrayList sgclasses = (ArrayList) session.getAttribute("allSelectedGroups");
         if (sgclasses == null || sgclasses.size() == 0) {
-            StudyDAO studydao = new StudyDAO(sm.getDataSource());
-            StudyGroupClassDAO sgclassdao = new StudyGroupClassDAO(sm.getDataSource());
+            StudyDAO studydao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
+            StudyGroupClassDAO sgclassdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupClassDAO.class);
             StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
             sgclasses = sgclassdao.findAllActiveByStudy(theStudy);
 
-            StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
+            StudyGroupDAO sgdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupDAO.class);
 
             for (int i = 0; i < sgclasses.size(); i++) {
                 StudyGroupClassBean sgclass = (StudyGroupClassBean) sgclasses.get(i);
@@ -102,10 +102,10 @@ public class SelectItemsServlet extends SecureController {
         int CRFAttr = fp.getInt("CRFAttr");
         int groupAttr = fp.getInt("groupAttr");
         int discAttr = fp.getInt("discAttr");
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO imfdao = new ItemFormMetadataDAO(sm.getDataSource());
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        CRFDAO crfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
+        ItemDAO idao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDAO.class);
+        ItemFormMetadataDAO imfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemFormMetadataDAO.class);
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
 
         HashMap events = (HashMap) session.getAttribute(CreateDatasetServlet.EVENTS_FOR_CREATE_DATASET);
         if (events == null) {

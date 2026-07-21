@@ -8,6 +8,10 @@
 
 package org.akaza.openclinica.dao.rule;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.login.UserAccountBean;
@@ -36,6 +40,8 @@ import javax.sql.DataSource;
  * @author Krikor Krumlian
  * 
  */
+@Repository
+@Scope("prototype")
 public class RuleSetRuleDAO extends AuditableEntityDAO {
 
     private RuleDAO ruleDao;
@@ -47,6 +53,7 @@ public class RuleSetRuleDAO extends AuditableEntityDAO {
         this.getCurrentPKName = "getCurrentPK";
     }
 
+    @Autowired
     public RuleSetRuleDAO(DataSource ds) {
         super(ds);
         setQueryNames();

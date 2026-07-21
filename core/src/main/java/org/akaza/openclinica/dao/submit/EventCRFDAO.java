@@ -8,6 +8,10 @@
 
 package org.akaza.openclinica.dao.submit;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -53,6 +57,8 @@ import org.apache.commons.lang.StringUtils;
  * 
  *         TODO test create and update first thing
  */
+@Repository
+@Scope("prototype")
 public class EventCRFDAO<K extends String, V extends ArrayList> extends AuditableEntityDAO {
     // private DAODigester digester;
 
@@ -61,6 +67,7 @@ public class EventCRFDAO<K extends String, V extends ArrayList> extends Auditabl
         this.getCurrentPKName = "getCurrentPK";
     }
 
+    @Autowired
     public EventCRFDAO(DataSource ds) {
         super(ds);
         setQueryNames();

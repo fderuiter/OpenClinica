@@ -345,21 +345,21 @@ public class SubjectTransferValidator implements Validator {
     
     
     public StudyDAO getStudyDAO() {
-        return this.studyDAO != null ? studyDAO : new StudyDAO(dataSource);
+        return this.studyDAO != null ? studyDAO : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
     }
 
     public StudySubjectDAO getStudySubjectDAO() {
-        return this.studySubjectDAO != null ? studySubjectDAO : new StudySubjectDAO(dataSource);
+        return this.studySubjectDAO != null ? studySubjectDAO : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
     }
 
     public StudyParameterValueDAO getStudyParameterValueDAO() {
-        return this.studyParameterValueDAO != null ? studyParameterValueDAO : new StudyParameterValueDAO(dataSource);
+        return this.studyParameterValueDAO != null ? studyParameterValueDAO : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);
     }
     public UserAccountDAO getUserAccountDAO() {
-        return this.userAccountDAO != null ? userAccountDAO : new UserAccountDAO(dataSource);
+        return this.userAccountDAO != null ? userAccountDAO : org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
     }
     public SubjectDAO getSubjectDao() {
-       return this.subjectDao != null ? subjectDao : new SubjectDAO(dataSource);
+       return this.subjectDao != null ? subjectDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectDAO.class);
         
     }
 }

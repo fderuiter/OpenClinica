@@ -280,7 +280,7 @@ public class CreateStudyServlet extends SecureController {
 
             // request.setAttribute("facRecruitStatusMap", facRecruitStatusMap);
             // request.setAttribute("statuses", Status.toActiveArrayList());
-            UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+            UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
             Collection users = udao.findAllByRole("coordinator", "director");
             request.setAttribute("users", users);
 
@@ -307,7 +307,7 @@ public class CreateStudyServlet extends SecureController {
                 request.removeAttribute("newStudy");
                 currentStudy = (StudyBean) session.getAttribute("study");
 
-                UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+                UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
 
                 StudyUserRoleBean sub = new StudyUserRoleBean();
                 sub.setRole(Role.COORDINATOR);
@@ -346,7 +346,7 @@ public class CreateStudyServlet extends SecureController {
                         request.setAttribute("newStudy", new StudyBean());
                     }
 
-                    UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+                    UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
                     Collection users = udao.findAllByRole("coordinator", "director");
                     request.setAttribute("users", users);
 
@@ -379,7 +379,7 @@ public class CreateStudyServlet extends SecureController {
 
         errors = v.validate();
         // check to see if name and uniqueProId are unique, tbh
-        StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+        StudyDAO studyDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         ArrayList<StudyBean> allStudies = (ArrayList<StudyBean>) studyDAO.findAll();
         for (StudyBean thisBean : allStudies) {
             if (fp.getString("name").trim().equals(thisBean.getName())) {
@@ -420,14 +420,14 @@ public class CreateStudyServlet extends SecureController {
             request.setAttribute("statuses", Status.toActiveArrayList());
             logger.info("setting arrays to request, size of list: " + Status.toArrayList().size());
             if (request.getParameter("Save") != null && request.getParameter("Save").length() > 0) {
-                StudyDAO sdao = new StudyDAO(sm.getDataSource());
+                StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
                 studyBean.setOwner(ub);
                 studyBean.setCreatedDate(new Date());
                 studyBean.setStatus(Status.PENDING);
                 studyBean = (StudyBean) sdao.create(studyBean);
                 StudyBean newstudyBean = (StudyBean) sdao.findByName(studyBean.getName());
 
-                UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+                UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
                 String selectedUserIdStr = fp.getString("selectedUser");
                 int selectedUserId = 0;
                 if (selectedUserIdStr != null && selectedUserIdStr.length() > 0) {
@@ -471,7 +471,7 @@ public class CreateStudyServlet extends SecureController {
             logger.info("has validation errors in the first section");
             request.setAttribute("formMessages", errors);
             // request.setAttribute("facRecruitStatusMap", facRecruitStatusMap);
-            UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+            UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
             Collection users = udao.findAllByRole("coordinator", "director");
             request.setAttribute("users", users);
 
@@ -794,8 +794,8 @@ public class CreateStudyServlet extends SecureController {
      *
      */
     private void submitStudy() {
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);
         StudyBean newStudy = (StudyBean) session.getAttribute("newStudy");
 
         logger.info("study bean to be created:" + newStudy.getName() + newStudy.getProtocolDateVerification());

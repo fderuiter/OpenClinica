@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.core;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.AuditableEntityBean;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -64,6 +68,7 @@ public abstract class AuditableEntityDAO<K extends String,V extends ArrayList> e
      */
     protected String findByPKAndStudyName;
 
+    @Autowired
     public AuditableEntityDAO(DataSource ds) {
         super(ds);
         setDigesterName();

@@ -80,13 +80,13 @@ public class CreateFiltersTwoServlet extends SecureController {
             // throw an error
 
         } else if ("begin".equalsIgnoreCase(action)) {
-            StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+            StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
             HashMap events = sedao.findCRFsByStudy(studyWithEventDefs);
             // if events are empty -- resend to first filter page with message
             if (events.isEmpty()) {
                 addPageMessage(respage.getString("no_CRF_assigned_pick_another"));
                 FormProcessor fp = new FormProcessor(request);
-                FilterDAO fdao = new FilterDAO(sm.getDataSource());
+                FilterDAO fdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(FilterDAO.class);
                 EntityBeanTable table = fp.getEntityBeanTable();
 
                 ArrayList filters = (ArrayList) fdao.findAll();
@@ -118,9 +118,9 @@ public class CreateFiltersTwoServlet extends SecureController {
             HashMap errors = new HashMap();
             int crfId = fp.getInt("crfId");
             if (crfId > 0) {
-                CRFVersionDAO cvDAO = new CRFVersionDAO(sm.getDataSource());
-                CRFDAO cDAO = new CRFDAO(sm.getDataSource());
-                SectionDAO secDAO = new SectionDAO(sm.getDataSource());
+                CRFVersionDAO cvDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
+                CRFDAO cDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
+                SectionDAO secDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(SectionDAO.class);
                 Collection sections = secDAO.findByVersionId(crfId);
                 CRFVersionBean cvBean = (CRFVersionBean) cvDAO.findByPK(crfId);
                 CRFBean cBean = (CRFBean) cDAO.findByPK(cvBean.getCrfId());
@@ -132,7 +132,7 @@ public class CreateFiltersTwoServlet extends SecureController {
                 forwardPage(Page.CREATE_FILTER_SCREEN_3_1);
             } else {
                 addPageMessage(respage.getString("select_a_CRF_before_picking"));
-                StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+                StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
                 HashMap events = sedao.findCRFsByStudy(studyWithEventDefs);
 
                 request.setAttribute("events", events);
@@ -146,10 +146,10 @@ public class CreateFiltersTwoServlet extends SecureController {
             FormProcessor fp = new FormProcessor(request);
             int sectionId = fp.getInt("sectionId");
             if (sectionId > 0) {
-                SectionDAO secDAO = new SectionDAO(sm.getDataSource());
+                SectionDAO secDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(SectionDAO.class);
                 SectionBean secBean = (SectionBean) secDAO.findByPK(sectionId);
                 request.setAttribute("secBean", secBean);
-                ItemFormMetadataDAO ifmDAO = new ItemFormMetadataDAO(sm.getDataSource());
+                ItemFormMetadataDAO ifmDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemFormMetadataDAO.class);
                 Collection metadatas = ifmDAO.findAllBySectionId(sectionId);
                 if (metadatas.size() > 0) {
                     request.setAttribute("metadatas", metadatas);
@@ -157,7 +157,7 @@ public class CreateFiltersTwoServlet extends SecureController {
                 } else {
                     CRFVersionBean cvBean = (CRFVersionBean) session.getAttribute("cvBean");
                     addPageMessage(respage.getString("section_not_have_questions_select_another"));
-                    // SectionDAO secDAO = new SectionDAO(sm.getDataSource());
+                    // SectionDAO secDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(SectionDAO.class);
                     Collection sections = secDAO.findByVersionId(cvBean.getId());
 
                     request.setAttribute("sections", sections);
@@ -167,7 +167,7 @@ public class CreateFiltersTwoServlet extends SecureController {
             } else {
                 CRFVersionBean cvBean = (CRFVersionBean) session.getAttribute("cvBean");
                 addPageMessage(respage.getString("select_section_before_select_question"));
-                SectionDAO secDAO = new SectionDAO(sm.getDataSource());
+                SectionDAO secDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(SectionDAO.class);
                 Collection sections = secDAO.findByVersionId(cvBean.getId());
 
                 request.setAttribute("sections", sections);
@@ -182,14 +182,14 @@ public class CreateFiltersTwoServlet extends SecureController {
             // item form metadata bean, and stick them in a collection
             // and send the user to create_filter_screen_4
             if (alist.size() > 0) {
-                ItemFormMetadataDAO ifmDAO = new ItemFormMetadataDAO(sm.getDataSource());
+                ItemFormMetadataDAO ifmDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemFormMetadataDAO.class);
                 Collection questions = ifmDAO.findByMultiplePKs(alist);
                 request.setAttribute("questions", questions);
                 forwardPage(Page.CREATE_FILTER_SCREEN_4);
             } else {
                 SectionBean secBean = (SectionBean) session.getAttribute("secBean");
                 addPageMessage(respage.getString("select_questions_before_set_parameters"));
-                ItemFormMetadataDAO ifmDAO = new ItemFormMetadataDAO(sm.getDataSource());
+                ItemFormMetadataDAO ifmDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemFormMetadataDAO.class);
                 Collection metadatas = ifmDAO.findAllBySectionId(secBean.getId());
                 request.setAttribute("metadatas", metadatas);
                 forwardPage(Page.CREATE_FILTER_SCREEN_3_2);
@@ -253,7 +253,7 @@ public class CreateFiltersTwoServlet extends SecureController {
             request.setAttribute("questions", questions);
             // TODO where does the connector come into play?
             // request.setAttribute("filterobjects",filterobjects);
-            FilterDAO fDAO = new FilterDAO(sm.getDataSource());
+            FilterDAO fDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(FilterDAO.class);
             String newSQL = (String) session.getAttribute("newSQL");
             ArrayList newExp = (ArrayList) session.getAttribute("newExp");
             // human readable explanation
@@ -289,7 +289,7 @@ public class CreateFiltersTwoServlet extends SecureController {
                 request.setAttribute("newSQL", newNewSQL);
                 request.setAttribute("newExp", newNewExp);
                 // add new params, and go back
-                StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+                StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
                 HashMap events = sedao.findCRFsByStudy(currentStudy);
                 //
                 request.setAttribute("events", events);

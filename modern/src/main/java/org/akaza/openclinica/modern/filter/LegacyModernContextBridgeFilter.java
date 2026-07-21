@@ -46,7 +46,7 @@ public class LegacyModernContextBridgeFilter extends OncePerRequestFilter {
             if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
                 String username = authentication.getName();
                 
-                UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+                UserAccountDAO userAccountDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
                 UserAccountBean userBean = (UserAccountBean) userAccountDAO.findByUserName(username);
                 
                 if (userBean != null && userBean.getId() > 0) {

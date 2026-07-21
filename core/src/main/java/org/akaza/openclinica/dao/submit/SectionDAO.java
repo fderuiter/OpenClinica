@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.submit.EventCRFBean;
 import org.akaza.openclinica.bean.submit.SectionBean;
@@ -34,6 +38,8 @@ import javax.sql.DataSource;
  *
  *
  */
+@Repository
+@Scope("prototype")
 public class SectionDAO extends AuditableEntityDAO {
 
     // private DAODigester digester;
@@ -43,6 +49,7 @@ public class SectionDAO extends AuditableEntityDAO {
         digesterName = SQLFactory.getInstance().DAO_SECTION;
     }
 
+    @Autowired
     public SectionDAO(DataSource ds) {
         super(ds);
     }

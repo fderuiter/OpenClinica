@@ -56,8 +56,8 @@ public class RestoreCRFServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
         FormProcessor fp = new FormProcessor(request);
         // checks which module the requests are from
         String module = fp.getString(MODULE);
@@ -73,12 +73,12 @@ public class RestoreCRFServlet extends SecureController {
             CRFBean crf = (CRFBean) cdao.findByPK(crfId);
             ArrayList versions = cvdao.findAllByCRFId(crfId);
             crf.setVersions(versions);
-            EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+            EventDefinitionCRFDAO edcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
             ArrayList edcs = (ArrayList) edcdao.findAllByCRF(crfId);
 
-            SectionDAO secdao = new SectionDAO(sm.getDataSource());
+            SectionDAO secdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SectionDAO.class);
 
-            EventCRFDAO evdao = new EventCRFDAO(sm.getDataSource());
+            EventCRFDAO evdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
             ArrayList eventCRFs = evdao.findAllByCRF(crfId);
             if ("confirm".equalsIgnoreCase(action)) {
                 request.setAttribute("crfToRestore", crf);
@@ -122,7 +122,7 @@ public class RestoreCRFServlet extends SecureController {
                     }
                 }
 
-                ItemDataDAO idao = new ItemDataDAO(sm.getDataSource());
+                ItemDataDAO idao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
                 for (int i = 0; i < eventCRFs.size(); i++) {
                     EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(i);
                     if (eventCRF.getStatus().equals(Status.AUTO_DELETED)) {

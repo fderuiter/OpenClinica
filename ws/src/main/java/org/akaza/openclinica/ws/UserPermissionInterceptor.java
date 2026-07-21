@@ -31,7 +31,7 @@ public class UserPermissionInterceptor implements EndpointInterceptor {
         } else {
             username = principal.toString();
         }
-        UserAccountDAO userAccountDao = new UserAccountDAO(dataSource);
+        UserAccountDAO userAccountDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         UserAccountBean userAccountBean = ((UserAccountBean) userAccountDao.findByUserName(username));
         Boolean result = userAccountBean.getRunWebservices();
         if (!result) {

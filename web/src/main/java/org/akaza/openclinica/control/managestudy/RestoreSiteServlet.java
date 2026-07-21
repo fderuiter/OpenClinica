@@ -68,7 +68,7 @@ public class RestoreSiteServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         String idString = request.getParameter("id");
         logger.info("site id:" + idString);
 
@@ -76,15 +76,15 @@ public class RestoreSiteServlet extends SecureController {
         StudyBean study = (StudyBean) sdao.findByPK(siteId);
 
         // find all user and roles
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         ArrayList userRoles = udao.findAllByStudyId(siteId);
 
         // find all subjects
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
         ArrayList subjects = ssdao.findAllByStudy(study);
 
         // find all events
-        StudyEventDefinitionDAO sefdao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sefdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
         ArrayList definitions = sefdao.findAllByStudy(study);
 
         String action = request.getParameter("action");
@@ -116,7 +116,7 @@ public class RestoreSiteServlet extends SecureController {
             } else {
                 logger.info("submit to restore the site");
                 // change all statuses to unavailable
-                StudyDAO studao = new StudyDAO(sm.getDataSource());
+                StudyDAO studao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
                 study.setStatus(study.getOldStatus());
                 study.setUpdater(ub);
                 study.setUpdatedDate(new Date());
@@ -142,9 +142,9 @@ public class RestoreSiteServlet extends SecureController {
                 if (study.getId() == currentStudy.getId()) {
                     currentStudy.setStatus(Status.AVAILABLE);
 
-                    StudyUserRoleBean r = (new UserAccountDAO(sm.getDataSource())).findRoleByUserNameAndStudyId(ub.getName(), currentStudy.getId());
+                    StudyUserRoleBean r = (org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class)).findRoleByUserNameAndStudyId(ub.getName(), currentStudy.getId());
                     StudyUserRoleBean rInParent =
-                        (new UserAccountDAO(sm.getDataSource())).findRoleByUserNameAndStudyId(ub.getName(), currentStudy.getParentStudyId());
+                        (org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class)).findRoleByUserNameAndStudyId(ub.getName(), currentStudy.getParentStudyId());
                     // according to logic in SecureController.java: inherited
                     // role from parent study, pick the higher role
                     currentRole.setRole(Role.max(r.getRole(), rInParent.getRole()));
@@ -152,8 +152,8 @@ public class RestoreSiteServlet extends SecureController {
                 // YW >>
 
                 // restore all study_group
-                StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
-                SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
+                StudyGroupDAO sgdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupDAO.class);
+                SubjectGroupMapDAO sgmdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectGroupMapDAO.class);
                 ArrayList groups = sgdao.findAllByStudy(study);
                 for (int i = 0; i < groups.size(); i++) {
                     StudyGroupBean group = (StudyGroupBean) groups.get(i);
@@ -177,8 +177,8 @@ public class RestoreSiteServlet extends SecureController {
                 }
 
                 // restore all events with subjects
-                EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-                StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+                EventDefinitionCRFDAO edcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
+                StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
                 for (int i = 0; i < subjects.size(); i++) {
                     StudySubjectBean subject = (StudySubjectBean) subjects.get(i);
                     if (subject.getStatus().equals(Status.AUTO_DELETED)) {
@@ -188,7 +188,7 @@ public class RestoreSiteServlet extends SecureController {
                         ssdao.update(subject);
 
                         ArrayList events = sedao.findAllByStudySubject(subject);
-                        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                        EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
 
                         for (int j = 0; j < events.size(); j++) {
                             StudyEventBean event = (StudyEventBean) events.get(j);
@@ -200,7 +200,7 @@ public class RestoreSiteServlet extends SecureController {
 
                                 ArrayList eventCRFs = ecdao.findAllByStudyEvent(event);
 
-                                ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                                ItemDataDAO iddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
                                 for (int k = 0; k < eventCRFs.size(); k++) {
                                     // YW << fix broken page for storing site
                                     EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(k);
@@ -228,7 +228,7 @@ public class RestoreSiteServlet extends SecureController {
                     }
                 }// for subjects
 
-                DatasetDAO datadao = new DatasetDAO(sm.getDataSource());
+                DatasetDAO datadao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DatasetDAO.class);
                 ArrayList dataset = datadao.findAllByStudyId(study.getId());
                 for (int i = 0; i < dataset.size(); i++) {
                     DatasetBean data = (DatasetBean) dataset.get(i);

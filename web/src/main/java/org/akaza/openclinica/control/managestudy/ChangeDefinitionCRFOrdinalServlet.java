@@ -35,9 +35,9 @@ public class ChangeDefinitionCRFOrdinalServlet extends ChangeOrdinalServlet {
         int prevOrdinal = fp.getInt("previousOrdinal");
 
         int definitionId = fp.getInt("id");
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
         increase(current, previous, currOrdinal, prevOrdinal, definitionId, edcdao);
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         int siteId = fp.getInt("siteId");
         if (siteId > 0) {
             request.setAttribute("idToSort", new Integer(definitionId).toString());

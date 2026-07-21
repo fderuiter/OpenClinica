@@ -72,7 +72,7 @@ public class UpdateSubStudyServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         StudyBean study = (StudyBean) session.getAttribute("newStudy");
         parentStudy = (StudyBean) sdao.findByPK(study.getParentStudyId());
 
@@ -150,7 +150,7 @@ public class UpdateSubStudyServlet extends SecureController {
         errors = v.validate();
 
         // >> tbh
-        StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+        StudyDAO studyDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         ArrayList<StudyBean> allStudies = (ArrayList<StudyBean>) studyDAO.findAll();
         StudyBean oldStudy = (StudyBean) session.getAttribute("newStudy");
         for (StudyBean thisBean : allStudies) {
@@ -198,7 +198,7 @@ public class UpdateSubStudyServlet extends SecureController {
 
         	StudyBean studyCheck = (StudyBean) session.getAttribute("newStudy");
             parentStudy = (StudyBean) studyDAO.findByPK(studyCheck.getParentStudyId());
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+            StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);    
             String participateFormStatus = spvdao.findByHandleAndStudy(parentStudy.getId(), "participantPortal").getValue();
             request.setAttribute("participateFormStatus",participateFormStatus );
      
@@ -310,17 +310,17 @@ public class UpdateSubStudyServlet extends SecureController {
         ArrayList<StudyEventDefinitionBean> seds = new ArrayList<StudyEventDefinitionBean>();
         
         ArrayList<EventDefinitionCRFBean> defCrfs = new ArrayList<EventDefinitionCRFBean>();
-        StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sedDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
 
         StudyBean parentStudyBean;
         if (site.getParentStudyId()==0){
         	parentStudyBean = site;
         }else{
-            StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+            StudyDAO studyDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
              parentStudyBean = (StudyBean) studyDAO.findByPK(site.getParentStudyId());          	
         }
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
         ArrayList <EventDefinitionCRFBean> eventDefCrfList =(ArrayList <EventDefinitionCRFBean>) edcdao.findAllActiveSitesAndStudiesPerParentStudy(parentStudyBean.getId());
 
         ArrayList <EventDefinitionCRFBean> toBeCreatedEventDefBean = new ArrayList<>();
@@ -329,7 +329,7 @@ public class UpdateSubStudyServlet extends SecureController {
         boolean changestate = false;
         seds = (ArrayList<StudyEventDefinitionBean>) session.getAttribute("definitions");
 
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);    
         String participateFormStatus = spvdao.findByHandleAndStudy(parentStudyBean.getId(), "participantPortal").getValue();
         if (participateFormStatus.equals("enabled")) 	baseUrl();
       request.setAttribute("participateFormStatus",participateFormStatus );
@@ -549,7 +549,7 @@ public class UpdateSubStudyServlet extends SecureController {
      * @throws MalformedURLException *
      */
     private void submitStudy() throws MalformedURLException {
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         StudyBean study = (StudyBean) session.getAttribute("newStudy");
         ArrayList parameters = study.getStudyParameters();
         /*
@@ -573,7 +573,7 @@ public class UpdateSubStudyServlet extends SecureController {
         study.setUpdater(ub);
         sdao.update(study);
 
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);
         for (int i = 0; i < parameters.size(); i++) {
             StudyParamsConfig config = (StudyParamsConfig) parameters.get(i);
             StudyParameterValueBean spv = config.getValue();

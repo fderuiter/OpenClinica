@@ -71,8 +71,8 @@ public class ViewSelectedServlet extends SecureController {
     public void setUpStudyGroups() {
         ArrayList sgclasses = (ArrayList) session.getAttribute("allSelectedGroups");
         if (sgclasses == null || sgclasses.size() == 0) {
-            StudyDAO studydao = new StudyDAO(sm.getDataSource());
-            StudyGroupClassDAO sgclassdao = new StudyGroupClassDAO(sm.getDataSource());
+            StudyDAO studydao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
+            StudyGroupClassDAO sgclassdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupClassDAO.class);
             StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
             sgclasses = sgclassdao.findAllActiveByStudy(theStudy);
         }
@@ -91,9 +91,9 @@ public class ViewSelectedServlet extends SecureController {
         }
         request.setAttribute("eventlist", events);
 
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO imfdao = new ItemFormMetadataDAO(sm.getDataSource());
+        CRFDAO crfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
+        ItemDAO idao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDAO.class);
+        ItemFormMetadataDAO imfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemFormMetadataDAO.class);
         ArrayList ids = CreateDatasetServlet.allSedItemIdsInStudy(events, crfdao, idao);// new
                                                                                         // ArrayList();
         // ArrayList allItemsInStudy = EditSelectedServlet.selectAll(events,

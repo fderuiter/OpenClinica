@@ -40,7 +40,7 @@ public class RequestStudyServlet extends SecureController {
     public void processRequest() throws Exception {
 
         String action = request.getParameter("action");
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         ArrayList studies = sdao.findAllByStatus(Status.AVAILABLE);
         ArrayList roles = Role.toArrayList();
         roles.remove(Role.ADMIN); // admin is not a user role, only used for
@@ -82,7 +82,7 @@ public class RequestStudyServlet extends SecureController {
             newRole.setRole(Role.get(fp.getInt("studyRoleId")));
         }
         newRole.setStudyId(fp.getInt("studyId"));
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         StudyBean studyRequested = (StudyBean) sdao.findByPK(newRole.getStudyId());
         newRole.setStudyName(studyRequested.getName());
         session.setAttribute("newRole", newRole);

@@ -65,7 +65,7 @@ public class UpdateStudyServletNew extends SecureController {
         int studyId = fp.getInt("id");
         studyId = studyId == 0 ? fp.getInt("studyId") : studyId;
         String action = fp.getString("action");
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         boolean isInterventional = false;
 
         study = (StudyBean) sdao.findByPK(studyId);
@@ -491,8 +491,8 @@ public class UpdateStudyServletNew extends SecureController {
     }
 
     private void submitStudy(StudyBean newStudy) {
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyParameterValueDAO.class);
 
         StudyBean study1 = newStudy;
         logger.info("study bean to be updated:" + study1.getName());

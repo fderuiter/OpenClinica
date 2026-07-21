@@ -99,8 +99,8 @@ public class ViewCRFServlet extends SecureController {
             addPageMessage(respage.getString("please_choose_a_CRF_to_view"));
             forwardPage(Page.CRF_LIST);
         } else {
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
-            CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
+            CRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
+            CRFVersionDAO vdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
             CRFBean crf = (CRFBean) cdao.findByPK(crfId);
             request.setAttribute("crfName", crf.getName());
             ArrayList<CRFVersionBean> versions = (ArrayList<CRFVersionBean>) vdao.findAllByCRF(crfId);
@@ -110,7 +110,7 @@ public class ViewCRFServlet extends SecureController {
             
             if ("admin".equalsIgnoreCase(module)) {
                 //BWP 3279: generate a table showing a list of studies associated with the CRF>>
-                StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+                StudyDAO studyDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
 
                 studyBeans = findStudiesForCRFId(crfId, studyDAO);
                 //Create the Jmesa table for the studies associated with the CRF
@@ -129,7 +129,7 @@ public class ViewCRFServlet extends SecureController {
     private  ArrayList< ItemGroupCrvVersionUtil> verifyUniqueItemPlacementInGroups(	String crfName){
 		
 		//get all items with group / version info from db 
-		 ItemDAO idao = new ItemDAO(sm.getDataSource());
+		 ItemDAO idao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDAO.class);
 		 int check_group_count = 0;
 		 StringBuffer item_messages = null; String temp_buffer=null; //use for first record in the group
 		 ArrayList< ItemGroupCrvVersionUtil> results = new ArrayList< ItemGroupCrvVersionUtil>();

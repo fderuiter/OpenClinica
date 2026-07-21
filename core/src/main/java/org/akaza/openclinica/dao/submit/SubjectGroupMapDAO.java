@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.submit.SubjectGroupMapBean;
 import org.akaza.openclinica.dao.core.AuditableEntityDAO;
@@ -26,12 +30,15 @@ import javax.sql.DataSource;
  * @author jxu
  * 
  */
+@Repository
+@Scope("prototype")
 public class SubjectGroupMapDAO extends AuditableEntityDAO {
 
     private void setQueryNames() {
         this.getCurrentPKName = "getCurrentPK";
     }
 
+    @Autowired
     public SubjectGroupMapDAO(DataSource ds) {
         super(ds);
         setQueryNames();

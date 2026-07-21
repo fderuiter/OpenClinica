@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,6 +43,8 @@ import org.apache.commons.lang.StringUtils;
  * @author jxu
  * 
  */
+@Repository
+@Scope("prototype")
 public class EventDefinitionCRFDAO extends AuditableEntityDAO {
     // private DAODigester digester;
 
@@ -48,6 +54,7 @@ public class EventDefinitionCRFDAO extends AuditableEntityDAO {
         findAllByStudyName = "findAllByStudy";
     }
 
+    @Autowired
     public EventDefinitionCRFDAO(DataSource ds) {
         super(ds);
         setQueryNames();

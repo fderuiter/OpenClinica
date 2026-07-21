@@ -48,9 +48,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Scope("prototype")
 public class UnifiedWorkflowEnforcementService {
 
     private static final Logger logger = LoggerFactory.getLogger(UnifiedWorkflowEnforcementService.class);
@@ -81,6 +83,13 @@ public class UnifiedWorkflowEnforcementService {
     private DnItemDataMapDao dnItemDataMapDao;
 
     private DataSource dataSource;
+
+    @Autowired private org.springframework.beans.factory.ObjectFactory<EventCRFDAO> eventCrfDaoFactory;
+    @Autowired private org.springframework.beans.factory.ObjectFactory<StudyDAO> studyDaoFactory;
+    @Autowired private org.springframework.beans.factory.ObjectFactory<UserAccountDAO> userAccountDaoFactory;
+    @Autowired private org.springframework.beans.factory.ObjectFactory<StudyEventDefinitionDAO> studyEventDefinitionDaoFactory;
+    @Autowired private org.springframework.beans.factory.ObjectFactory<CRFVersionDAO> crfVersionDaoFactory;
+
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -283,19 +292,19 @@ public class UnifiedWorkflowEnforcementService {
     @Transactional
     public void executeRulesAndMetadata(EventCrf eventCrf, Study study, UserAccount user) {
         try {
-            EventCRFDAO ecdao = new EventCRFDAO(dataSource);
+            EventCRFDAO ecdao = eventCrfDaoFactory.getObject();
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(eventCrf.getEventCrfId());
 
-            StudyDAO sdao = new StudyDAO(dataSource);
+            StudyDAO sdao = studyDaoFactory.getObject();
             StudyBean studyBean = (StudyBean) sdao.findByPK(study.getStudyId());
 
-            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountDAO udao = userAccountDaoFactory.getObject();
             UserAccountBean ub = (UserAccountBean) udao.findByPK(user.getUserId());
 
-            StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(dataSource);
+            StudyEventDefinitionDAO sedDao = studyEventDefinitionDaoFactory.getObject();
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) sedDao.findByPK(eventCrf.getStudyEvent().getStudyEventDefinition().getStudyEventDefinitionId());
 
-            CRFVersionDAO cvDao = new CRFVersionDAO(dataSource);
+            CRFVersionDAO cvDao = crfVersionDaoFactory.getObject();
             CRFVersionBean crfVersion = (CRFVersionBean) cvDao.findByPK(eventCrf.getCrfVersion().getCrfVersionId());
 
             List<RuleSetBean> ruleSets = ruleSetService.getRuleSetsByCrfStudyAndStudyEventDefinition(studyBean, sed, crfVersion);

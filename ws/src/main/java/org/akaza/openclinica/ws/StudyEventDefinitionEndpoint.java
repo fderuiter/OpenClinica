@@ -277,32 +277,32 @@ public class StudyEventDefinitionEndpoint {
     }
 
     public StudyDAO getStudyDao() {
-        studyDao = studyDao != null ? studyDao : new StudyDAO(dataSource);
+        studyDao = studyDao != null ? studyDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         return studyDao;
     }
 
     public CRFDAO getCrfDao() {
-        crfDao = crfDao != null ? crfDao : new CRFDAO(dataSource);
+        crfDao = crfDao != null ? crfDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
         return crfDao;
     }
 
     public CRFVersionDAO getCrfVersionDao() {
-        crfVersionDao = crfVersionDao != null ? crfVersionDao : new CRFVersionDAO(dataSource);
+        crfVersionDao = crfVersionDao != null ? crfVersionDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
         return crfVersionDao;
     }
 
     public StudyEventDefinitionDAO getStudyEventDefinitionDao() {
-        studyEventDefinitionDao = studyEventDefinitionDao != null ? studyEventDefinitionDao : new StudyEventDefinitionDAO(dataSource);
+        studyEventDefinitionDao = studyEventDefinitionDao != null ? studyEventDefinitionDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
         return studyEventDefinitionDao;
     }
 
     public EventDefinitionCRFDAO getEventDefinitionCRFDao() {
-        eventDefinitionCRFDao = eventDefinitionCRFDao != null ? eventDefinitionCRFDao : new EventDefinitionCRFDAO(dataSource);
+        eventDefinitionCRFDao = eventDefinitionCRFDao != null ? eventDefinitionCRFDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(EventDefinitionCRFDAO.class);
         return eventDefinitionCRFDao;
     }
 
     public UserAccountDAO getUserAccountDao() {
-        userAccountDao = userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        userAccountDao = userAccountDao != null ? userAccountDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         return userAccountDao;
     }
 

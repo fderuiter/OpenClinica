@@ -102,8 +102,8 @@ public class ListCRFServlet extends SecureController {
         // spreadsheet
         logger.debug("found directory: " + dir);
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
+        CRFDAO cdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
+        CRFVersionDAO vdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFVersionDAO.class);
         ArrayList crfs = (ArrayList) cdao.findAllByPermission(ub, 1);
         for (int i = 0; i < crfs.size(); i++) {
             CRFBean eb = (CRFBean) crfs.get(i);

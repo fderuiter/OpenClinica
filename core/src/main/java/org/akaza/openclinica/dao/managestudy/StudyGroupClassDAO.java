@@ -7,6 +7,10 @@
  */
 package org.akaza.openclinica.dao.managestudy;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.core.GroupClassType;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
@@ -29,6 +33,8 @@ import javax.sql.DataSource;
  * The data access object that users will access the database for study group
  * class objects
  */
+@Repository
+@Scope("prototype")
 public class StudyGroupClassDAO extends AuditableEntityDAO {
     protected void setQueryNames() {
         findAllByStudyName = "findAllByStudy";
@@ -36,6 +42,7 @@ public class StudyGroupClassDAO extends AuditableEntityDAO {
         getNextPKName = "getNextPK";
     }
 
+    @Autowired
     public StudyGroupClassDAO(DataSource ds) {
         super(ds);
         setQueryNames();

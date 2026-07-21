@@ -64,8 +64,8 @@ public class RemoveStudySubjectServlet extends SecureController {
         String subIdString = request.getParameter("subjectId");
         String studyIdString = request.getParameter("studyId");
 
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectDAO.class);
+        StudySubjectDAO subdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
 
         if (StringUtil.isBlank(studySubIdString) || StringUtil.isBlank(subIdString) || StringUtil.isBlank(studyIdString)) {
             addPageMessage(respage.getString("please_choose_a_study_subject_to_remove"));
@@ -79,13 +79,13 @@ public class RemoveStudySubjectServlet extends SecureController {
 
             StudySubjectBean studySub = (StudySubjectBean) subdao.findByPK(studySubId);
 
-            StudyDAO studydao = new StudyDAO(sm.getDataSource());
+            StudyDAO studydao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
             StudyBean study = (StudyBean) studydao.findByPK(studyId);
 
             checkRoleByUserAndStudy(ub, study.getParentStudyId(), study.getId());
 
             // find study events
-            StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+            StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
 //            ArrayList events = sedao.findAllByStudyAndStudySubjectId(study, studySubId);
             ArrayList<DisplayStudyEventBean> displayEvents = ViewStudySubjectServlet.getDisplayStudyEventsForStudySubject(studySub, sm.getDataSource(), ub, currentRole);
             String action = request.getParameter("action");
@@ -113,7 +113,7 @@ public class RemoveStudySubjectServlet extends SecureController {
 
                 // remove all study events
                 // remove all event crfs
-                EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
 
                 for (int j = 0; j < displayEvents.size(); j++) {
                     DisplayStudyEventBean dispEvent = displayEvents.get(j);
@@ -126,7 +126,7 @@ public class RemoveStudySubjectServlet extends SecureController {
 
                         ArrayList eventCRFs = ecdao.findAllByStudyEvent(event);
 
-                        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                        ItemDataDAO iddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDataDAO.class);
                         for (int k = 0; k < eventCRFs.size(); k++) {
                             EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(k);
                             if (!eventCRF.getStatus().equals(Status.DELETED)) {

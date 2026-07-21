@@ -63,7 +63,7 @@ public class VariableSubstitutionHelper {
                                                       StudyBean study, StudyEventDefinitionBean eventDef,
                                                       StudyEventBean event, DataSource dataSource) {
 
-        ItemDAO itemDAO = new ItemDAO(dataSource);
+        ItemDAO itemDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(ItemDAO.class);
 
         List<ItemBean> items = itemDAO.findAllWithItemDataByCRFVersionId(
                 section.getCrfVersion().getId(), section.getEventCRF().getId());

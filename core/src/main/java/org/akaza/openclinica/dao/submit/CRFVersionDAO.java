@@ -8,6 +8,10 @@
  */
 package org.akaza.openclinica.dao.submit;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,6 +39,8 @@ import org.akaza.openclinica.dao.core.TypeNames;
  * 
  * 
  */
+@Repository
+@Scope("prototype")
 public class CRFVersionDAO<K extends String, V extends ArrayList> extends AuditableEntityDAO {
 
     @Override
@@ -42,6 +48,7 @@ public class CRFVersionDAO<K extends String, V extends ArrayList> extends Audita
         digesterName = SQLFactory.getInstance().DAO_CRFVERSION;
     }
 
+    @Autowired
     public CRFVersionDAO(DataSource ds) {
         super(ds);
     }

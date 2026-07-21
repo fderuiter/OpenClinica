@@ -256,8 +256,8 @@ public class StudySubjectEndpoint {
      * @throws Exception
      */
     private EventsType getEvents(StudySubjectBean studySubject) throws Exception {
-        StudyEventDAO eventDao = new StudyEventDAO(dataSource);
-        StudyEventDefinitionDAO studyEventDefinitionDao = new StudyEventDefinitionDAO(dataSource);
+        StudyEventDAO eventDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
+        StudyEventDefinitionDAO studyEventDefinitionDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
         EventsType eventsType = new EventsType();
         List<StudyEventBean> events = eventDao.findAllByStudySubject(studySubject);
         StudyEventDefinitionBean eb=null;
@@ -432,8 +432,8 @@ public class StudySubjectEndpoint {
      */
     private boolean doesSubjectExist(SubjectTransferBean subjectTransferBean) {
         // TODO: Implement this
-        StudySubjectDAO ssdao = new StudySubjectDAO(dataSource);
-        StudyDAO studyDao = new StudyDAO(dataSource);
+        StudySubjectDAO ssdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudySubjectDAO.class);
+        StudyDAO studyDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         StudyBean studyBean = studyDao.findByUniqueIdentifier(subjectTransferBean.getStudy().getIdentifier());
         StudySubjectBean ssbean = ssdao.findByLabelAndStudy(subjectTransferBean.getStudySubjectId(), studyBean);
         return ssbean.getId() > 0 ? true : false;
@@ -584,7 +584,7 @@ public class StudySubjectEndpoint {
         } else {
             username = principal.toString();
         }
-        UserAccountDAO userAccountDao = new UserAccountDAO(dataSource);
+        UserAccountDAO userAccountDao = org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         return (UserAccountBean) userAccountDao.findByUserName(username);
     }
 
@@ -597,17 +597,17 @@ public class StudySubjectEndpoint {
     }
 
     public StudyDAO getStudyDao() {
-        studyDao = studyDao != null ? studyDao : new StudyDAO(dataSource);
+        studyDao = studyDao != null ? studyDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         return studyDao;
     }
 
     public UserAccountDAO getUserAccountDao() {
-        userAccountDao = userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        userAccountDao = userAccountDao != null ? userAccountDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(UserAccountDAO.class);
         return userAccountDao;
     }
 
     public SubjectDAO getSubjectDao() {
-        subjectDao = subjectDao != null ? subjectDao : new SubjectDAO(dataSource);
+        subjectDao = subjectDao != null ? subjectDao : org.akaza.openclinica.dao.core.DaoBridge.getDao(SubjectDAO.class);
         return subjectDao;
     }
 

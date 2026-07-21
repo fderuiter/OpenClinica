@@ -72,7 +72,7 @@ public class ListSiteServlet extends SecureController {
             forwardPage(Page.MENU_SERVLET);
         } else {
 
-            StudyDAO sdao = new StudyDAO(sm.getDataSource());
+            StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
             ArrayList studies = (ArrayList) sdao.findAllByParent(currentStudy.getId());
 
             EntityBeanTable table = fp.getEntityBeanTable();

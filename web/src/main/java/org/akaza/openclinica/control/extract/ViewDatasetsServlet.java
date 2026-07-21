@@ -55,7 +55,7 @@ public class ViewDatasetsServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DatasetDAO.class);
         String action = request.getParameter("action");
         resetPanel();
         request.setAttribute(STUDY_INFO_PANEL, panel);
@@ -67,9 +67,9 @@ public class ViewDatasetsServlet extends SecureController {
         // YW >>
         if (StringUtil.isBlank(action)) {
             // YW 08-2008 << 2529 fix
-            StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+            StudyEventDAO sedao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDAO.class);
+            StudyEventDefinitionDAO seddao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyEventDefinitionDAO.class);
+            EventCRFDAO ecdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(EventCRFDAO.class);
             StudyBean studyWithEventDefinitions = currentStudy;
             if (currentStudy.getParentStudyId() > 0) {
                 studyWithEventDefinitions = new StudyBean();
@@ -77,7 +77,7 @@ public class ViewDatasetsServlet extends SecureController {
 
             }
             ArrayList seds = seddao.findAllActiveByStudy(studyWithEventDefinitions);
-            CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+            CRFDAO crfdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(CRFDAO.class);
             HashMap events = new LinkedHashMap();
             for (int i = 0; i < seds.size(); i++) {
                 StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seds.get(i);
@@ -153,7 +153,7 @@ public class ViewDatasetsServlet extends SecureController {
                 int datasetId = fp.getInt("datasetId");
 
                 DatasetBean db = initializeAttributes(datasetId);
-                StudyDAO sdao = new StudyDAO(sm.getDataSource());
+                StudyDAO sdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
                 StudyBean study = (StudyBean)sdao.findByPK(db.getStudyId());
 
                 if (study.getId() != currentStudy.getId() && study.getParentStudyId() != currentStudy.getId()) {
@@ -209,13 +209,13 @@ public class ViewDatasetsServlet extends SecureController {
      */
     // @author ywang (Feb, 2008)
     public DatasetBean initializeAttributes(int datasetId) {
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DatasetDAO.class);
         DatasetBean db = dsdao.initialDatasetData(datasetId);
         request.setAttribute("newDataset", db);
         request.setAttribute("allItems", db.getItemDefCrf().clone());
         request.setAttribute("allSelectedItems", db.getItemDefCrf().clone());
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
-        StudyDAO studydao = new StudyDAO(sm.getDataSource());
+        StudyGroupClassDAO sgcdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyGroupClassDAO.class);
+        StudyDAO studydao = org.akaza.openclinica.dao.core.DaoBridge.getDao(StudyDAO.class);
         StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
         ArrayList<StudyGroupClassBean> allSelectedGroups = sgcdao.findAllActiveByStudy(theStudy);
         ArrayList<Integer> selectedSubjectGroupIds = db.getSubjectGroupIds();

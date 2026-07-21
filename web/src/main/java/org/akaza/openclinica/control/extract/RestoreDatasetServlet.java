@@ -42,7 +42,7 @@ public class RestoreDatasetServlet extends SecureController {
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         int dsId = fp.getInt("dsId");
-        DatasetDAO dsDAO = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsDAO = org.akaza.openclinica.dao.core.DaoBridge.getDao(DatasetDAO.class);
         DatasetBean dataset = (DatasetBean) dsDAO.findByPK(dsId);
 
         String action = request.getParameter("action");
@@ -90,7 +90,7 @@ public class RestoreDatasetServlet extends SecureController {
         FormProcessor fp = new FormProcessor(request);
 
         EntityBeanTable table = fp.getEntityBeanTable();
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = org.akaza.openclinica.dao.core.DaoBridge.getDao(DatasetDAO.class);
         ArrayList datasets = new ArrayList();
         // if (ub.isSysAdmin()) {
         // datasets =
