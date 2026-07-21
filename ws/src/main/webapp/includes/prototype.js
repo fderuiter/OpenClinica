@@ -736,15 +736,6 @@ Object.extend(Array.prototype, {
 
   inspect: function() {
     return '[' + this.map(Object.inspect).join(', ') + ']';
-  },
-
-  toJSON: function() {
-    var results = [];
-    this.each(function(object) {
-      var value = Object.toJSON(object);
-      if (value !== undefined) results.push(value);
-    });
-    return '[' + results.join(', ') + ']';
   }
 });
 

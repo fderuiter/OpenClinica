@@ -8,10 +8,13 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+import org.springframework.context.annotation.DependsOn;
+
 @Configuration
 public class EmailConfiguration {
 
     @Bean(name = "mailSender")
+    @DependsOn("coreResources")
     public JavaMailSenderImpl mailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         

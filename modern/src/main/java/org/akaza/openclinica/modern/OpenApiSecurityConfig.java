@@ -1,5 +1,7 @@
 package org.akaza.openclinica.modern;
 
+import org.akaza.openclinica.web.filter.ApiSecurityFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,5 +19,12 @@ public class OpenApiSecurityConfig {
             )
             .csrf(csrf -> csrf.disable());
         return http.build();
+    }
+
+    @Bean
+    public FilterRegistrationBean<ApiSecurityFilter> apiSecurityFilterRegistration(ApiSecurityFilter apiSecurityFilter) {
+        FilterRegistrationBean<ApiSecurityFilter> registration = new FilterRegistrationBean<>(apiSecurityFilter);
+        registration.setEnabled(false);
+        return registration;
     }
 }
