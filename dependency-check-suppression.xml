@@ -3,16 +3,13 @@
     <suppress>
         <notes><![CDATA[Suppress tippy.js CPE false positives]]></notes>
         <packageUrl regex="true">^pkg:npm/tippy\.js@.*$</packageUrl>
-        <cpe regex="true">.*</cpe>
     </suppress>
     <suppress>
         <notes><![CDATA[Suppress flatpickr CPE false positives]]></notes>
         <packageUrl regex="true">^pkg:npm/flatpickr@.*$</packageUrl>
-        <cpe regex="true">.*</cpe>
     </suppress>
     <suppress>
         <notes><![CDATA[Suppress popperjs CPE false positives]]></notes>
         <packageUrl regex="true">^pkg:npm/.*popperjs.*@.*$</packageUrl>
-        <cpe regex="true">.*</cpe>
     </suppress>
 </suppressions>

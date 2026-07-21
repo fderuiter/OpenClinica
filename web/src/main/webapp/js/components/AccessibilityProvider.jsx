@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext, useCallback, useRef } from 'react';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useCallback,
+  useRef,
+} from 'react';
 
 const AccessibilityContext = createContext({
   announce: (message) => {},
@@ -20,7 +26,7 @@ export function AccessibilityProvider({ children }) {
 
     isProcessingRef.current = true;
     const message = queueRef.current.shift();
-    
+
     toggleRef.current = !toggleRef.current;
     const suffix = toggleRef.current ? '\u200B' : '';
     setAnnouncement(message + suffix);
@@ -30,12 +36,15 @@ export function AccessibilityProvider({ children }) {
     }, 200);
   }, []);
 
-  const announce = useCallback((message) => {
-    queueRef.current.push(message);
-    if (!isProcessingRef.current) {
-      processQueue();
-    }
-  }, [processQueue]);
+  const announce = useCallback(
+    (message) => {
+      queueRef.current.push(message);
+      if (!isProcessingRef.current) {
+        processQueue();
+      }
+    },
+    [processQueue]
+  );
 
   return (
     <AccessibilityContext.Provider value={{ announce }}>
