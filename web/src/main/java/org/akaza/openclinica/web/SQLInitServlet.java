@@ -40,7 +40,6 @@ public class SQLInitServlet extends HttpServlet {
 
     private ServletContext context;
     private static Properties params = new Properties();
-    private static Properties entParams = new Properties();
 
     @Override
     public void init() throws ServletException {
@@ -49,10 +48,6 @@ public class SQLInitServlet extends HttpServlet {
         context = getServletContext();
         CoreResources cr = (CoreResources) SpringServletAccess.getApplicationContext(context).getBean("coreResources");
         params = cr.getDATAINFO();
-        entParams =cr.getDATAINFO();
-
-//        params = (Properties) SpringServletAccess.getApplicationContext(context).getBean("dataInfo");
-//        entParams = (Properties) SpringServletAccess.getApplicationContext(context).getBean("enterpriseInfo");
 
         ConfigurationDao configurationDao = SpringServletAccess
                 .getApplicationContext(context)
@@ -120,20 +115,6 @@ public class SQLInitServlet extends HttpServlet {
     public static String getSupportURL() {
         String name = params.getProperty("supportURL");
         return name == null ? "" : name.trim();
-    }
-
-    /**
-     * Gets a field value by its key name from the enterprise.properties file
-     *
-     * @param key
-     * @return String The value of field
-     */
-    public static String getEnterpriseField(String key) {
-        String name = entParams.getProperty(key);
-        if (name != null) {
-            name = name.trim();
-        }
-        return name == null ? "" : name;
     }
 
     /**
