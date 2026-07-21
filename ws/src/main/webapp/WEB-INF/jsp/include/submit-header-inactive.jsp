@@ -47,12 +47,7 @@
 <td valign="top">
 <!-- Header Table -->
 
-<%--<SCRIPT LANGUAGE="JavaScript">
 
-document.write('<table border="0" cellpadding="0" cellspacing="0" width="' +
-               document.body.clientWidth + '" class="header">');
-
-</script>--%>
 <table border="0" cellpadding="0" cellspacing="0" class="header">
   <tr>
     <td valign="top">
