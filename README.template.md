@@ -45,7 +45,7 @@ The application prioritizes environment variables over file-based properties. Th
 - [Report an issue](https://jira.openclinica.com/)
 - [Release notes](https://docs.openclinica.com/release-notes)
 - [Extensions/Contributions](https://community.openclinica.com/extensions)
-- [Installation](https://github.com/OpenClinica/OpenClinica/wiki)
+- [Installation](https://github.com/OpenClinica/OpenClinica/wiki) (Note: Containerized deployment via Docker is the sole supported installation method)
 
 ## Technical Requirements
 
