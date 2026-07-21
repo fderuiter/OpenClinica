@@ -33,25 +33,47 @@ public class LegacyProxyFilter implements Filter {
 
     private RestTemplate restTemplate;
 
+    /**
+     * Max total connections for the connection pool.
+     */
     @Value("${legacy.proxy.pool.max-total:200}")
     private int maxTotalConnections;
 
+    /**
+     * Default max per route for the connection pool.
+     */
     @Value("${legacy.proxy.pool.default-max-per-route:100}")
     private int defaultMaxPerRoute;
 
+    /**
+     * Connection timeout in milliseconds.
+     */
     @Value("${legacy.proxy.timeout.connection:5000}")
     private int connectionTimeout;
 
+    /**
+     * Read timeout in milliseconds.
+     */
     @Value("${legacy.proxy.timeout.read:30000}")
     private int readTimeout;
 
+    /**
+     * Default constructor.
+     */
     public LegacyProxyFilter() {
     }
 
-    public LegacyProxyFilter(RestTemplate restTemplate) {
+    /**
+     * Constructor with RestTemplate.
+     * @param restTemplate the RestTemplate to use
+     */
+    public LegacyProxyFilter(final RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
+    /**
+     * Initialize the RestTemplate with a connection pool.
+     */
     @PostConstruct
     public void init() {
         if (this.restTemplate == null) {
@@ -82,18 +104,28 @@ public class LegacyProxyFilter implements Filter {
         }
     }
 
+    /**
+     * Filter requests and proxy to the legacy application.
+     */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
             throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
+        final HttpServletRequest req = (HttpServletRequest) request;
+        final HttpServletResponse res = (HttpServletResponse) response;
         String uri = req.getRequestURI();
 
-        if (uri.startsWith("/DataEntry") || uri.startsWith("/CRF") || uri.startsWith("/interop") || uri.startsWith("/api") || 
-            uri.startsWith("/v3/api-docs") || uri.startsWith("/swagger-ui") || uri.startsWith("/actuator") ||
-            uri.startsWith("/ListUserAccounts") || uri.startsWith("/CreateUserAccount") || 
-            uri.startsWith("/EditUserAccount") || uri.startsWith("/ViewUserAccount") || 
-            uri.startsWith("/DeleteUser")) {
+        if (uri.startsWith("/DataEntry") 
+            || uri.startsWith("/CRF") 
+            || uri.startsWith("/interop") 
+            || uri.startsWith("/api") 
+            || uri.startsWith("/v3/api-docs") 
+            || uri.startsWith("/swagger-ui") 
+            || uri.startsWith("/actuator") 
+            || uri.startsWith("/ListUserAccounts") 
+            || uri.startsWith("/CreateUserAccount") 
+            || uri.startsWith("/EditUserAccount") 
+            || uri.startsWith("/ViewUserAccount") 
+            || uri.startsWith("/DeleteUser")) {
             chain.doFilter(request, response);
             return;
         }
@@ -123,7 +155,9 @@ public class LegacyProxyFilter implements Filter {
 
             RequestCallback requestCallback = requestMessage -> {
                 requestMessage.getHeaders().putAll(headers);
-                StreamUtils.copy(req.getInputStream(), requestMessage.getBody());
+                if (req.getContentLength() > 0 || req.getHeader("Transfer-Encoding") != null) {
+                    StreamUtils.copy(req.getInputStream(), requestMessage.getBody());
+                }
             };
 
             ResponseExtractor<Void> responseExtractor = responseMessage -> {
