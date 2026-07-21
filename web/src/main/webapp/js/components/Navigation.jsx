@@ -26,7 +26,7 @@ export default function Navigation() {
       >
         <li>
           <a
-            href="#"
+            href="/"
             style={{
               textDecoration: 'none',
               color: '#333',
@@ -38,7 +38,7 @@ export default function Navigation() {
         </li>
         <li>
           <a
-            href="#"
+            href="/manage"
             style={{
               textDecoration: 'none',
               color: '#333',

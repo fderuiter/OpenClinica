@@ -99,6 +99,36 @@ public class DataEndpoint {
      */
     @PayloadRoot(localPart = "importRequest", namespace = NAMESPACE_URI_V1)
     public Source importData(@XPathParam("//ODM") final Element odmElement) throws Exception {
+        
+        if (odmElement != null) {
+            String xml = node2String(odmElement);
+            if (xml != null) {
+                xml = xml.replaceAll("<ODM>", this.ODM_HEADER_NAMESPACE);
+                org.akaza.openclinica.bean.rule.XmlSchemaValidationHelper schemaValidator = new org.akaza.openclinica.bean.rule.XmlSchemaValidationHelper();
+                try {
+                    schemaValidator.validateAgainstSchema(xml, coreResources.getInputStream("ODM1-3-0.xsd"));
+                } catch (Exception e1) {
+                    try {
+                        schemaValidator.validateAgainstSchema(xml, coreResources.getInputStream("ODM1-2-1.xsd"));
+                    } catch (Exception e2) {
+                        String studyOid = null;
+                        try {
+                            org.akaza.openclinica.logic.importdata.StreamingSubjectDataList sl = new org.akaza.openclinica.logic.importdata.StreamingSubjectDataList(xml);
+                            studyOid = sl.getStudyOid();
+                        } catch (Exception ex) {
+                            // ignore fallback parser errors
+                        }
+                        
+                        String errorMsg = e1.getMessage();
+                        if (studyOid != null) {
+                            errorMsg = errorMsg + " (Study OID: " + studyOid + ")";
+                        }
+                        throw new RuntimeException("Validation Error: " + errorMsg, e1);
+                    }
+                }
+            }
+        }
+        
         return getTransactionTemplate().execute(new TransactionCallback<Source>() {
             public Source doInTransaction(TransactionStatus status) {
                 try {
@@ -160,6 +190,12 @@ public class DataEndpoint {
                 if (errorMessagesFromValidation.size() > 0) {
                     String err_msg = convertToErrorString(errorMessagesFromValidation);
                     return new DOMSource(mapFailConfirmation(null, err_msg));
+                }
+
+                if (odmContainer.getCrfDataPostImportContainer().getSubjectData() instanceof org.akaza.openclinica.logic.importdata.StreamingSubjectDataList) {
+                    org.akaza.openclinica.logic.importdata.StreamingSubjectDataList streamingList = (org.akaza.openclinica.logic.importdata.StreamingSubjectDataList) odmContainer.getCrfDataPostImportContainer().getSubjectData();
+                    org.akaza.openclinica.web.crfdata.ImportCRFDataService importService = new org.akaza.openclinica.web.crfdata.ImportCRFDataService(dataSource, locale);
+                    importService.updateElectronicSignatures(streamingList.getEventSignatureMap(), streamingList.getFormSignatureMap(), userBean);
                 }
 
                 // setup ruleSets to run if applicable
