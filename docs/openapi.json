@@ -1,0 +1,1233 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Unified OpenClinica REST API",
+    "version": "1.0.0",
+    "description": "Interactive documentation for all OpenClinica REST endpoints."
+  },
+  "paths": {
+    "/app/rest/oc/authorizations": {
+      "get": {
+        "parameters": [
+          {
+            "name": "studyoid",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "instanceurl",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Authorization"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Authorization"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Authorization"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app/permit/studys/name": {
+      "get": {
+        "parameters": [
+          {
+            "name": "hostName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app/rest/oc/email": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParticipantDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParticipantDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app/rest/oc/submission": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Submission"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SiteForm"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app/rest/oc/se_randomizations": {
+      "get": {
+        "parameters": [
+          {
+            "name": "studyoid",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "instanceurl",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeRandomizationDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeRandomizationDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeRandomizationDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/randomisation": {
+      "get": {
+        "operationId": "getRandomisation",
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/randomise": {
+      "post": {
+        "operationId": "randomiseSubject",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "identifier": {
+                    "type": "string"
+                  },
+                  "siteIdentifier": {
+                    "type": "string"
+                  },
+                  "user": {
+                    "type": "string"
+                  },
+                  "question1": {
+                    "type": "string"
+                  },
+                  "question2": {
+                    "type": "string"
+                  },
+                  "question3": {
+                    "type": "string"
+                  },
+                  "question4": {
+                    "type": "string"
+                  },
+                  "question5": {
+                    "type": "string"
+                  },
+                  "question6": {
+                    "type": "string"
+                  },
+                  "question7": {
+                    "type": "string"
+                  },
+                  "question8": {
+                    "type": "string"
+                  },
+                  "question9": {
+                    "type": "string"
+                  },
+                  "question10": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/studies/{uniqueProtocolID}/status": {
+      "put": {
+        "tags": [
+          "Study Status"
+        ],
+        "summary": "Update Study Status",
+        "description": "Safely executes relational updates across study, study_event, and item_data tables.",
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "uniqueProtocolID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudyStatusTransitionDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/config/draft/{id}": {
+      "get": {
+        "tags": [
+          "configuration-draft-controller"
+        ],
+        "operationId": "getDraft",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseConfigurationDraft"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "configuration-draft-controller"
+        ],
+        "operationId": "updateDraft",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigurationDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/interop/pipeline/commit": {
+      "post": {
+        "tags": [
+          "interop-controller"
+        ],
+        "operationId": "pipelineCommit",
+        "parameters": [
+          {
+            "name": "recordId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interop/pipeline/batch-commit": {
+      "post": {
+        "tags": [
+          "interop-controller"
+        ],
+        "operationId": "pipelineBatchCommit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interop/mapping/data": {
+      "get": {
+        "tags": [
+          "interop-controller"
+        ],
+        "operationId": "getMappingInterface",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringString"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "interop-controller"
+        ],
+        "operationId": "saveMapping",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MappingDataRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interop/hl7": {
+      "post": {
+        "tags": [
+          "interop-controller"
+        ],
+        "operationId": "ingestHl7",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interop/fhir": {
+      "post": {
+        "tags": [
+          "interop-controller"
+        ],
+        "operationId": "ingestFhir",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/odm/import": {
+      "post": {
+        "tags": [
+          "odm-controller"
+        ],
+        "operationId": "importOdm",
+        "requestBody": {
+          "content": {
+            "application/xml": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dde/validate": {
+      "post": {
+        "tags": [
+          "dde-controller"
+        ],
+        "operationId": "validateDde",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DdeValidationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/config/draft": {
+      "post": {
+        "tags": [
+          "configuration-draft-controller"
+        ],
+        "operationId": "createDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigurationDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseConfigurationDraft"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/config/draft/{id}/commit": {
+      "post": {
+        "tags": [
+          "configuration-draft-controller"
+        ],
+        "operationId": "commitDraft",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/token": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "token",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interop/pipeline/review": {
+      "get": {
+        "tags": [
+          "interop-controller"
+        ],
+        "operationId": "pipelineReview",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/odm/export": {
+      "get": {
+        "tags": [
+          "odm-controller"
+        ],
+        "operationId": "exportOdm",
+        "parameters": [
+          {
+            "name": "studyOid",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/jwks.json": {
+      "get": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "jwks",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Authorization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "authorizationStatus": {
+            "$ref": "#/components/schemas/AuthorizationStatus"
+          },
+          "study": {
+            "$ref": "#/components/schemas/Study"
+          },
+          "pformUrl": {
+            "type": "string"
+          },
+          "pformApiKey": {
+            "type": "string"
+          }
+        }
+      },
+      "AuthorizationStatus": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "Study": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "studyOid": {
+            "type": "string"
+          },
+          "instanceUrl": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "studyName": {
+            "type": "string"
+          },
+          "openClinicaVersion": {
+            "type": "string"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/Organization"
+          }
+        }
+      },
+      "Organization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "customerNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "ParticipantDTO": {
+        "type": "object",
+        "properties": {
+          "fName": {
+            "type": "string"
+          },
+          "accessCode": {
+            "type": "string"
+          },
+          "studyName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "studyURL": {
+            "type": "string"
+          },
+          "origMessage": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "eventName": {
+            "type": "string"
+          },
+          "participantEmailAccount": {
+            "type": "string"
+          },
+          "emailAccount": {
+            "type": "string"
+          },
+          "origEmailSubject": {
+            "type": "string"
+          },
+          "emailSubject": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "loginUrl": {
+            "type": "string"
+          },
+          "encryptedEmailAccount": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Submission": {
+        "type": "object",
+        "properties": {
+          "study": {
+            "$ref": "#/components/schemas/Study"
+          },
+          "study_event_def_id": {
+            "type": "integer"
+          },
+          "study_event_def_ordinal": {
+            "type": "integer"
+          },
+          "crf_version_id": {
+            "type": "integer"
+          }
+        }
+      },
+      "SiteForm": {
+        "type": "object",
+        "properties": {
+          "siteIdentifier": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "timezone": {
+            "type": "string"
+          }
+        }
+      },
+      "SeRandomizationDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "url": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "string"
+          },
+          "instanceUrl": {
+            "type": "string"
+          },
+          "studyOid": {
+            "type": "string"
+          },
+          "ocUser_username": {
+            "type": "string"
+          },
+          "ocUser_name": {
+            "type": "string"
+          },
+          "ocUser_lastname": {
+            "type": "string"
+          },
+          "ocUser_emailAddress": {
+            "type": "string"
+          },
+          "studyName": {
+            "type": "string"
+          },
+          "openClinicaVersion": {
+            "type": "string"
+          }
+        }
+      },
+      "StudyStatusTransitionDTO": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "maxLength": 2147483647,
+            "minLength": 1,
+            "type": "string"
+          }
+        }
+      },
+      "ConfigurationDraftRequest": {
+        "required": [
+          "draftData"
+        ],
+        "type": "object",
+        "properties": {
+          "userName": {
+            "type": "string"
+          },
+          "draftData": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseString": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "MappingDataRequest": {
+        "required": [
+          "event_id",
+          "item_value",
+          "subject_id"
+        ],
+        "type": "object",
+        "properties": {
+          "subject_id": {
+            "type": "string"
+          },
+          "event_id": {
+            "type": "string"
+          },
+          "item_value": {
+            "type": "string"
+          }
+        }
+      },
+      "DdeValidationRequest": {
+        "required": [
+          "itemOid",
+          "subjectOid",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "subjectOid": {
+            "type": "string"
+          },
+          "itemOid": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "override": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseConfigurationDraft": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ConfigurationDraft"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "ConfigurationDraft": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "draftType": {
+            "type": "string"
+          },
+          "draftData": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiResponseListString": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "ApiResponseMapStringString": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  }
+}
