@@ -75,8 +75,7 @@ public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigr
         SpreadSheetTableRepeating htab = new SpreadSheetTableRepeating(inStream, systemUser, "1.0", Locale.ENGLISH, study.getId());
         // Note: MeasurementUnitDao requires SessionFactory, but wait! We can bypass it if it's not strictly used or we can initialize it?
         // Actually spreadSheetTableRepeating only needs it if we use units. We can try bypassing or getting it from Spring.
-        // Let's get it from ApplicationContextProvider!
-        MeasurementUnitDao muDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean("measurementUnitDao", MeasurementUnitDao.class);
+        MeasurementUnitDao muDao = this.applicationContext.getBean("measurementUnitDao", MeasurementUnitDao.class);
         htab.setMeasurementUnitDao(muDao);
         
         NewCRFBean nib = null;
