@@ -31,6 +31,9 @@
 		    COMMIT;
 		    Select fix_duplicates_in_study_defs();
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="thickerson" id="2010-07-30-5255-2" dbms="oracle">
         <comment>updating ordinals in study event definition table to remove duplicates</comment>
@@ -63,5 +66,8 @@
 			EXECUTE fix_duplicates_in_study_defs();
             DROP PROCEDURE fix_duplicates_in_study_defs;
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 </databaseChangeLog>

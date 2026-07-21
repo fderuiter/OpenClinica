@@ -36,6 +36,9 @@ where
 and dn.discrepancy_note_id = totals.parent_dn_id;
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-02" dbms="postgresql">
@@ -50,6 +53,9 @@ join study_event se on (edc.study_event_definition_id = se.study_event_definitio
 join crf_version cv on (edc.crf_id = cv.crf_id)
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-03" dbms="postgresql">
@@ -64,6 +70,9 @@ join study_event se on (edc.study_event_definition_id = se.study_event_definitio
 join crf_version cv on (edc.crf_id = cv.crf_id)
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
 
@@ -125,6 +134,9 @@ join study s on (ss.study_id = s.study_id)
 left join user_account ua on (dn.assigned_user_id = ua.user_id);
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-05" dbms="postgresql">
@@ -188,6 +200,9 @@ join study s on (ss.study_id = s.study_id)
 left join user_account ua on (dn.assigned_user_id = ua.user_id);
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-06" dbms="postgresql">
@@ -249,6 +264,9 @@ left join user_account ua on (dn.assigned_user_id = ua.user_id)
 
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-07" dbms="postgresql">
@@ -303,6 +321,9 @@ left join user_account ua on (dn.assigned_user_id = ua.user_id)
 
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-08" dbms="postgresql">
@@ -361,6 +382,9 @@ join study s on (ss.study_id = s.study_id)
 left join user_account ua on (dn.assigned_user_id = ua.user_id);
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-09" dbms="postgresql">
@@ -379,6 +403,9 @@ union all
 select * from view_dn_subject;
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
      </changeSet>
      
      <changeSet author="drodrigues" id="2012-08-29-14122-10" dbms="postgresql" failOnError="false">
@@ -396,6 +423,9 @@ create index event_definition_crf_idx_parent_null on event_definition_crf(parent
 create index event_definition_crf_idx_parent_zero on event_definition_crf(parent_id) where (parent_id is not null or parent_id <> 0);
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
      
      
@@ -447,6 +477,9 @@ create index event_definition_crf_idx_parent_zero on event_definition_crf(parent
       and dn.discrepancy_note_id = j.parent_dn_id
     ]]>
     </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
   </changeSet>
 
 
@@ -464,6 +497,9 @@ create or replace view view_study_hidden_evt_def_crf as
     on (edc.crf_id = cv.crf_id)
       ]]>
     </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
   </changeSet>
 
   <changeSet author="leonelag" id="2012-08-29-14122-03-ora" dbms="oracle">
@@ -483,6 +519,9 @@ create or replace view view_site_hidden_evt_def_crf as
     on (edc.crf_id = cv.crf_id)
       ]]>
     </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
   </changeSet>
 
 
@@ -547,6 +586,9 @@ create or replace view view_dn_item_data as
     left join user_account ua on (dn.assigned_user_id = ua.user_id)
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-05-ora" dbms="oracle">
@@ -627,6 +669,9 @@ create or replace view view_dn_event_crf as
 
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-06-ora" dbms="oracle">
@@ -696,6 +741,9 @@ create or replace view view_dn_study_event as
       on (dn.assigned_user_id = ua.user_id)
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-07-ora" dbms="oracle">
@@ -756,6 +804,9 @@ create or replace view view_dn_study_event as
        on (dn.assigned_user_id = ua.user_id)
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-08-ora" dbms="oracle">
@@ -823,6 +874,9 @@ create or replace view view_dn_subject as
       on (dn.assigned_user_id = ua.user_id)
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
      <changeSet author="drodrigues" id="2012-08-29-14122-09-ora" dbms="oracle">
@@ -841,6 +895,9 @@ union all
 select * from view_dn_subject;
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
      </changeSet>
      
      <!-- 
@@ -858,6 +915,9 @@ update dn_study_event_map set column_name = 'start_date' where column_name = 'da
 update dn_study_event_map set column_name = 'end_date' where column_name = 'date_end';
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
      </changeSet>
 
 </databaseChangeLog>

@@ -67,6 +67,9 @@
 		'
 		    LANGUAGE plpgsql;
     	 </sql>
+         <rollback>
+             <!-- Rollback handled manually or not required -->
+         </rollback>
     </changeSet>
     
    <changeSet author="htaycher " id="2011-10-03-11376-2">
@@ -80,6 +83,9 @@
 		    FOR EACH ROW
 		    EXECUTE PROCEDURE event_crf_version_change_trigger();
     	 </sql>
+         <rollback>
+             <!-- Rollback handled manually or not required -->
+         </rollback>
     </changeSet>
 
   <changeSet author="htaycher" id="2011-11-03-11376-9">
@@ -155,6 +161,9 @@ CREATE OR REPLACE TRIGGER crf_version_update
 		
 		 /* -------------------------------------------------------------------------------- */
 		 </sql>
+         <rollback>
+             <!-- Rollback handled manually or not required -->
+         </rollback>
 	</changeSet>
 
 	

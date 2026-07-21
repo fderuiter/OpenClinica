@@ -27,6 +27,9 @@
 	select distinct on (v.temp_oid) v.temp_oid, v.name from view_item_unit v 
 	where not exists (select mu.* from measurement_unit mu where mu.name = v.name or mu.oc_oid = v.temp_oid)
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="ywang" id="2011-03-01-6567-4" dbms="oracle">
 		<comment>insert into measurement_unit.name and oc_oid</comment>
@@ -35,6 +38,9 @@
 	select distinct v.temp_oid, v.name from view_item_unit v 
 	where not exists (select mu.* from measurement_unit mu where mu.name = v.name or mu.oc_oid = v.temp_oid)
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="ywang" id="2011-03-01-6567-5" dbms="postgresql">
 		<comment>insert into measurement_unit.name and oc_oid</comment>
@@ -46,6 +52,9 @@
 	where not exists (select mu.* from measurement_unit mu where mu.name = v.name) 
 	and v.temp_oid in (select mu.oc_oid from measurement_unit mu where mu.oc_oid = v.temp_oid and mu.name != v.name)
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="ywang" id="2011-03-01-6567-6" dbms="oracle">
 		<comment>insert into measurement_unit.name and oc_oid</comment>
@@ -57,6 +66,9 @@
 	where not exists (select mu.* from measurement_unit mu where mu.name = v.name) 
 	and v.temp_oid in (select mu.oc_oid from measurement_unit mu where mu.oc_oid = v.temp_oid and mu.name != v.name)
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="ywang" id="2011-03-01-6567-7" dbms="postgresql">
 		<comment>update measurement_unit.oc_oid</comment>
@@ -64,6 +76,9 @@
              update measurement_unit set oc_oid = 'MU_'||round(random()*10000000)
 		where measurement_unit.oc_oid = 'MU_'
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="ywang" id="2011-03-01-6567-8" dbms="oracle">
 		<comment>update measurement_unit.oc_oid</comment>
@@ -71,6 +86,9 @@
              update measurement_unit set oc_oid = 'MU_'||trunc(dbms_random.value(0,10000000))
 		where measurement_unit.oc_oid = 'MU_'
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="ywang" id="2011-03-01-6567-9">
 		<comment>drop temporary view</comment>

@@ -17,6 +17,9 @@
                 id.event_crf_id = ec.event_crf_id and ec.study_event_id = se.study_event_id and id.item_data_id = dn_item_data_map.item_data_id
             )
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="kkrumlian" id="2010-03-03-NA01-3">
         <preConditions onFail="MARK_RAN">
@@ -36,6 +39,9 @@
         '
             LANGUAGE plpgsql;
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="kkrumlian" id="2010-03-03-NA01-4">
         <preConditions onFail="MARK_RAN">
@@ -47,6 +53,9 @@
             FOR EACH ROW
             EXECUTE PROCEDURE populate_ssid_in_didm_trigger();
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
      <changeSet author="kkrumlian" id="2010-03-03-NA01-5">
         <preConditions onFail="MARK_RAN">
@@ -68,6 +77,9 @@
         END t_autonomous_tx;
         /* / */
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="kkrumlian" id="2010-03-03-NA01-6">
         <comment>update discrepancy_note table</comment>
