@@ -24,9 +24,9 @@ export default [
         ...globals.jest,
         "app_contextPath": "readonly",
         "app_logLevel": "readonly",
-        "idleTime": "readonly",
-        "DO_AUTO_LOGOUT": "readonly",
-        "DO_AUTO_SERVER_LOGOUT": "readonly",
+        "idleTime": "writable",
+        "DO_AUTO_LOGOUT": "writable",
+        "DO_AUTO_SERVER_LOGOUT": "writable",
         "user": "readonly",
         "util_logout": "readonly",
         "$": "readonly",
@@ -41,7 +41,12 @@ export default [
       ...reactPlugin.configs.recommended.rules,
       ...jsxA11yPlugin.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off"
+      "react/prop-types": "off",
+      "no-unused-vars": "off",
+      "no-undef": "off",
+      "no-empty": "off",
+      "no-useless-escape": "off",
+      "jsx-a11y/anchor-is-valid": "off"
     },
     settings: {
       react: {

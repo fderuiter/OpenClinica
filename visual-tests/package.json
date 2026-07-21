@@ -6,7 +6,10 @@
   "scripts": {
     "test": "playwright test",
     "test:visual": "playwright test",
-    "test:visual:update": "playwright test --update-snapshots"
+    "test:visual:update": "playwright test --update-snapshots",
+    "lint": "eslint .",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
