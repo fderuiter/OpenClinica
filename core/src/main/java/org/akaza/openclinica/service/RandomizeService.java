@@ -206,10 +206,7 @@ public class RandomizeService extends RandomizationRegistrar {
             }
         }
         
-        org.akaza.openclinica.sdk.randomize.ApiClient randClient = new org.akaza.openclinica.sdk.randomize.ApiClient();
-        randClient.updateBaseUri(client.getBaseUri());
-        randClient.setRequestInterceptor(client.getRequestInterceptor());
-        org.akaza.openclinica.sdk.randomize.api.DefaultApi api = new org.akaza.openclinica.sdk.randomize.api.DefaultApi(randClient);
+        org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
 
         try {
             Object response = api.getRandomisation(studySubject.getOid());
@@ -265,10 +262,7 @@ public class RandomizeService extends RandomizationRegistrar {
                 requestBuilder.header("Authorization", authHeader);
             });
         }
-                org.akaza.openclinica.sdk.randomize.ApiClient randClient = new org.akaza.openclinica.sdk.randomize.ApiClient();
-        randClient.updateBaseUri(client.getBaseUri());
-        randClient.setRequestInterceptor(client.getRequestInterceptor());
-        org.akaza.openclinica.sdk.randomize.api.DefaultApi api = new org.akaza.openclinica.sdk.randomize.api.DefaultApi(randClient);
+        org.akaza.openclinica.sdk.api.DefaultApi api = new org.akaza.openclinica.sdk.api.DefaultApi(client);
 
         java.util.Map<String, Object> subjectMap = new java.util.HashMap<>();
         subjectMap.put("identifier", String.valueOf(studySubject.getOid()));
@@ -290,7 +284,7 @@ public class RandomizeService extends RandomizationRegistrar {
         JSONObject jsonObject = null;
 
         try {
-            org.akaza.openclinica.sdk.randomize.model.GetRandomisation200Response responseObj = api.randomiseSubject(
+            org.akaza.openclinica.sdk.model.GetRandomisation200Response responseObj = api.randomiseSubject(
                 (String) subjectMap.get("identifier"),
                 (String) subjectMap.get("siteIdentifier"),
                 (String) subjectMap.get("user"),

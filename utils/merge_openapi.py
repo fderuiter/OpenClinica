@@ -48,6 +48,14 @@ def merge_specs():
                         sys.exit(1)
                     base_spec['components'][comp_type][comp_key] = comp_val
 
+            if 'security' in spec:
+                if 'security' not in base_spec:
+                    base_spec['security'] = []
+                for sec_req in spec['security']:
+                    if sec_req not in base_spec['security']:
+                        base_spec['security'].append(sec_req)
+
+
     os.makedirs('docs', exist_ok=True)
     with open('docs/openapi.json', 'w', encoding='utf-8') as f:
         json.dump(base_spec, f, indent=2)
