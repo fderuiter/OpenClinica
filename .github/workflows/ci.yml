@@ -210,9 +210,9 @@ jobs:
       uses: actions/cache@v4
       with:
         path: target/dependency-check-data
-        key: ${{ runner.os }}-nvd-${{ github.run_id }}
+        key: ${{ runner.os }}-nvd-v12-${{ github.run_id }}
         restore-keys: |
-          ${{ runner.os }}-nvd-
+          ${{ runner.os }}-nvd-v12-
     - name: Run dependency scan
       env:
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
