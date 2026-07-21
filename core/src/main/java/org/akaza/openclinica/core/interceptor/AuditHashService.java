@@ -21,27 +21,49 @@ public class AuditHashService {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @org.springframework.beans.factory.annotation.Value("${audit.seal.time.buffer.seconds:60}")
+    private int auditSealTimeBufferSeconds;
+
     @Scheduled(fixedDelay = 60000)
     public void sealAudits() {
         StatelessSession session = sessionFactory.openStatelessSession();
         try {
-            // Find last sealed hash that is not a legacy record
-            Query<AuditLogEvent> lastSealedQ = session.createQuery(
-                "FROM AuditLogEvent WHERE chainHash IS NOT NULL AND chainHash != 'LEGACY_UNCHAINED' ORDER BY auditId DESC", AuditLogEvent.class);
-            lastSealedQ.setMaxResults(1);
-            AuditLogEvent lastSealed = lastSealedQ.uniqueResult();
-            String prevHash = lastSealed != null ? lastSealed.getChainHash() : null;
-            Integer lastSealedId = lastSealed != null ? lastSealed.getAuditId() : 0;
-
-            // Find unsealed audits (excluding LEGACY_UNCHAINED)
-            Query<AuditLogEvent> unsealedQ = session.createQuery(
-                "FROM AuditLogEvent WHERE auditId > :lastSealedId AND (chainHash IS NULL OR chainHash != 'LEGACY_UNCHAINED') ORDER BY auditId ASC", AuditLogEvent.class);
-            unsealedQ.setParameter("lastSealedId", lastSealedId);
-            unsealedQ.setFetchSize(100);
-            
-            ScrollableResults<AuditLogEvent> results = unsealedQ.scroll(ScrollMode.FORWARD_ONLY);
             session.getTransaction().begin();
             try {
+                // 1. Cluster coordination using a pessimistic database lock on an existing configuration record
+                Query<org.akaza.openclinica.domain.technicaladmin.ConfigurationBean> lockQ = session.createQuery(
+                    "FROM ConfigurationBean c WHERE c.key = 'user.lock.switch'", 
+                    org.akaza.openclinica.domain.technicaladmin.ConfigurationBean.class);
+                lockQ.setLockMode(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+                org.akaza.openclinica.domain.technicaladmin.ConfigurationBean lockRecord = lockQ.uniqueResult();
+                
+                if (lockRecord == null) {
+                    Query<org.akaza.openclinica.domain.technicaladmin.ConfigurationBean> fallbackLockQ = session.createQuery(
+                        "FROM ConfigurationBean c", org.akaza.openclinica.domain.technicaladmin.ConfigurationBean.class);
+                    fallbackLockQ.setMaxResults(1);
+                    fallbackLockQ.setLockMode(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+                    lockRecord = fallbackLockQ.uniqueResult();
+                }
+
+                // 2. Find last sealed hash that is not a legacy record
+                Query<AuditLogEvent> lastSealedQ = session.createQuery(
+                    "FROM AuditLogEvent WHERE chainHash IS NOT NULL AND chainHash != 'LEGACY_UNCHAINED' ORDER BY auditId DESC", AuditLogEvent.class);
+                lastSealedQ.setMaxResults(1);
+                AuditLogEvent lastSealed = lastSealedQ.uniqueResult();
+                String prevHash = lastSealed != null ? lastSealed.getChainHash() : null;
+                Integer lastSealedId = lastSealed != null ? lastSealed.getAuditId() : 0;
+
+                // 3. Time-buffered safety window
+                java.util.Date safeLimit = new java.util.Date(System.currentTimeMillis() - (auditSealTimeBufferSeconds * 1000L));
+
+                // 4. Find unsealed audits (excluding LEGACY_UNCHAINED) created before the safeLimit
+                Query<AuditLogEvent> unsealedQ = session.createQuery(
+                    "FROM AuditLogEvent WHERE auditId > :lastSealedId AND (chainHash IS NULL OR chainHash != 'LEGACY_UNCHAINED') AND auditDate < :safeLimit ORDER BY auditId ASC", AuditLogEvent.class);
+                unsealedQ.setParameter("lastSealedId", lastSealedId);
+                unsealedQ.setParameter("safeLimit", safeLimit);
+                unsealedQ.setFetchSize(100);
+                
+                ScrollableResults<AuditLogEvent> results = unsealedQ.scroll(ScrollMode.FORWARD_ONLY);
                 while (results.next()) {
                     AuditLogEvent event = results.get();
                     if ("LEGACY_UNCHAINED".equals(event.getChainHash())) {
@@ -54,7 +76,9 @@ public class AuditHashService {
                 }
                 session.getTransaction().commit();
             } catch (Exception e) {
-                session.getTransaction().rollback();
+                if (session.getTransaction().isActive()) {
+                    session.getTransaction().rollback();
+                }
                 throw e;
             }
         } finally {
