@@ -16,44 +16,62 @@ import './vendor/new_cal/index.js';
 import './vendor/wz_tooltip/wz_tooltip.js';
 import './vendor/calendarpopup/CalendarPopup.js';
 
-// Initialize modern React UI
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import Navigation from './components/Navigation.jsx';
-import CRFRenderer from './components/CRFRenderer.jsx';
-import { AccessibilityProvider } from './components/AccessibilityProvider.jsx';
+// Initialize modern React UI (dynamically imported below)
 
-function mountReactApp() {
-  // Mount the modern navigation menu if the container exists
+async function mountReactApp() {
   const menuContainer = document.getElementById('menuContainer');
-  if (menuContainer) {
+  const isPrintPage = (window.app_studyOID !== undefined && document.title.includes('Printable Forms')) || window.location.pathname.includes('printcrf');
+  const crfContainer = document.getElementById('printCRFContainer');
+
+  const needsNavigation = !!menuContainer;
+  const needsCRF = !!(isPrintPage && crfContainer);
+
+  if (!needsNavigation && !needsCRF) {
+    return;
+  }
+
+  const [
+    { default: React },
+    { createRoot },
+    { AccessibilityProvider }
+  ] = await Promise.all([
+    import('react'),
+    import('react-dom/client'),
+    import('./components/AccessibilityProvider.jsx')
+  ]);
+
+  // Mount the modern navigation menu if the container exists
+  if (needsNavigation) {
+    const Navigation = React.lazy(() => import('./components/Navigation.jsx'));
     const navRoot = createRoot(menuContainer);
     navRoot.render(
       React.createElement(
         AccessibilityProvider,
         null,
-        React.createElement(Navigation, null)
+        React.createElement(
+          React.Suspense,
+          { fallback: React.createElement('div', null, 'Loading Navigation...') },
+          React.createElement(Navigation, null)
+        )
       )
     );
   }
 
   // If this is the print CRF page, replace the body or specific element with the new renderer
-  if (
-    (window.app_studyOID !== undefined &&
-      document.title.includes('Printable Forms')) ||
-    window.location.pathname.includes('printcrf')
-  ) {
-    const crfContainer = document.getElementById('printCRFContainer');
-    if (crfContainer) {
-      const crfRoot = createRoot(crfContainer);
-      crfRoot.render(
+  if (needsCRF) {
+    const CRFRenderer = React.lazy(() => import('./components/CRFRenderer.jsx'));
+    const crfRoot = createRoot(crfContainer);
+    crfRoot.render(
+      React.createElement(
+        AccessibilityProvider,
+        null,
         React.createElement(
-          AccessibilityProvider,
-          null,
+          React.Suspense,
+          { fallback: React.createElement('div', null, 'Loading CRF...') },
           React.createElement(CRFRenderer, null)
         )
-      );
-    }
+      )
+    );
   }
 }
 
