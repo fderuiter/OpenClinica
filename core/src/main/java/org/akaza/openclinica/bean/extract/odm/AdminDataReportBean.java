@@ -66,37 +66,43 @@ public class AdminDataReportBean extends OdmXmlReportBean {
     }
     
     public void addNodeAdminData(OdmAdminDataBean a) {
-        if(a.getUsers().size()>0) {
-            StringBuffer xml = this.getXmlOutput();
-            String indent = this.getIndent();
-            xml.append(indent + "<AdminData StudyOID=\"" + StringEscapeUtils.escapeXml(a.getStudyOID()) + "\">");
-            xml.append(nls);
-            for(UserBean u : a.getUsers()) {
-                addOneUser(u, indent+indent);
-            }
-            //for(LocationBean l : this.adminData.getLocations()) {
-            //    addOneLocation(l, indent+indent);
-            //}
-            xml.append(indent + "</AdminData>");
-            xml.append(nls);
+        StringBuffer xml = this.getXmlOutput();
+        String indent = this.getIndent();
+        xml.append(indent + "<AdminData StudyOID=\"" + StringEscapeUtils.escapeXml(a.getStudyOID()) + "\">");
+        xml.append(nls);
+        for(UserBean u : a.getUsers()) {
+            addOneUser(u, indent+indent);
         }
+        xml.append(indent + indent + "<SignatureDef OID=\"SIG_01\" Methodology=\"Electronic\">");
+        xml.append(nls);
+        xml.append(indent + indent + indent + "<Meaning>Electronic Signature</Meaning>");
+        xml.append(nls);
+        xml.append(indent + indent + indent + "<LegalReason>I confirm that the electronic case report forms for this subject are a full, accurate, and complete record of the observations recorded. I intend for this electronic signature to be the legally binding equivalent of my written signature.</LegalReason>");
+        xml.append(nls);
+        xml.append(indent + indent + "</SignatureDef>");
+        xml.append(nls);
+        xml.append(indent + "</AdminData>");
+        xml.append(nls);
     }
     
     public void addNodeAdminData() {
-        if(this.adminData.getUsers().size()>0) {
-            StringBuffer xml = this.getXmlOutput();
-            String indent = this.getIndent();
-            xml.append(indent + "<AdminData StudyOID=\"" + StringEscapeUtils.escapeXml(adminData.getStudyOID()) + "\">");
-            xml.append(nls);
-            for(UserBean u : this.adminData.getUsers()) {
-                addOneUser(u, indent+indent);
-            }
-            //for(LocationBean l : this.adminData.getLocations()) {
-            //    addOneLocation(l, indent+indent);
-            //}
-            xml.append(indent + "</AdminData>");
-            xml.append(nls);
+        StringBuffer xml = this.getXmlOutput();
+        String indent = this.getIndent();
+        xml.append(indent + "<AdminData StudyOID=\"" + StringEscapeUtils.escapeXml(adminData.getStudyOID()) + "\">");
+        xml.append(nls);
+        for(UserBean u : this.adminData.getUsers()) {
+            addOneUser(u, indent+indent);
         }
+        xml.append(indent + indent + "<SignatureDef OID=\"SIG_01\" Methodology=\"Electronic\">");
+        xml.append(nls);
+        xml.append(indent + indent + indent + "<Meaning>Electronic Signature</Meaning>");
+        xml.append(nls);
+        xml.append(indent + indent + indent + "<LegalReason>I confirm that the electronic case report forms for this subject are a full, accurate, and complete record of the observations recorded. I intend for this electronic signature to be the legally binding equivalent of my written signature.</LegalReason>");
+        xml.append(nls);
+        xml.append(indent + indent + "</SignatureDef>");
+        xml.append(nls);
+        xml.append(indent + "</AdminData>");
+        xml.append(nls);
     }
     
     public void addOneUser(UserBean user, String currentIndent) {

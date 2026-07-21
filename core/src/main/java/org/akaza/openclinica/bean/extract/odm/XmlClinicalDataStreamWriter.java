@@ -56,6 +56,21 @@ public class XmlClinicalDataStreamWriter implements ClinicalDataStreamWriter {
         }
         reader.close();
 
+        // Write AdminData with SignatureDef
+        writer.writeStartElement("AdminData");
+        writer.writeAttribute("StudyOID", studyOID == null ? "" : studyOID);
+        writer.writeStartElement("SignatureDef");
+        writer.writeAttribute("OID", "SIG_01");
+        writer.writeAttribute("Methodology", "Electronic");
+        writer.writeStartElement("Meaning");
+        writer.writeCharacters("Electronic Signature");
+        writer.writeEndElement(); // Meaning
+        writer.writeStartElement("LegalReason");
+        writer.writeCharacters("I confirm that the electronic case report forms for this subject are a full, accurate, and complete record of the observations recorded. I intend for this electronic signature to be the legally binding equivalent of my written signature.");
+        writer.writeEndElement(); // LegalReason
+        writer.writeEndElement(); // SignatureDef
+        writer.writeEndElement(); // AdminData
+
         // Now write Start for ClinicalData
         writer.writeStartElement("ClinicalData");
         writer.writeAttribute("StudyOID", studyOID == null ? "" : studyOID);
@@ -142,10 +157,17 @@ public class XmlClinicalDataStreamWriter implements ClinicalDataStreamWriter {
             writer.writeAttribute("StudyEventRepeatKey", se.getStudyEventRepeatKey());
         }
 
+        if ("Yes".equalsIgnoreCase(se.getSigned())) {
+            AuditLogBean sigAudit = findSignatureAudit(se.getAuditLogs());
+            if (sigAudit != null) {
+                writeSignature(sigAudit, se.getLocation());
+            }
+        }
+
         ArrayList<ExportFormDataBean> forms = se.getExportFormData();
         if (forms != null) {
             for (ExportFormDataBean form : forms) {
-                writeFormData(form);
+                writeFormData(form, se);
             }
         }
 
@@ -157,7 +179,7 @@ public class XmlClinicalDataStreamWriter implements ClinicalDataStreamWriter {
         writer.writeEndElement(); // StudyEventData
     }
 
-    private void writeFormData(ExportFormDataBean form) throws Exception {
+    private void writeFormData(ExportFormDataBean form, ExportStudyEventDataBean se) throws Exception {
         writer.writeStartElement("FormData");
         writer.writeAttribute("FormOID", form.getFormOID() == null ? "" : form.getFormOID());
 
@@ -176,6 +198,16 @@ public class XmlClinicalDataStreamWriter implements ClinicalDataStreamWriter {
                 writer.writeAttribute("OpenClinica:Signed", "Yes");
             if ("Yes".equalsIgnoreCase(form.getStopped()))
                 writer.writeAttribute("OpenClinica:Stopped", "Yes");
+        }
+
+        if ("Yes".equalsIgnoreCase(form.getSigned())) {
+            AuditLogBean sigAudit = findSignatureAudit(form.getAuditLogs());
+            if (sigAudit == null) {
+                sigAudit = findSignatureAudit(se.getAuditLogs());
+            }
+            if (sigAudit != null) {
+                writeSignature(sigAudit, se.getLocation());
+            }
         }
 
         ArrayList<ImportItemGroupDataBean> igs = form.getItemGroupData();
@@ -399,5 +431,41 @@ public class XmlClinicalDataStreamWriter implements ClinicalDataStreamWriter {
                 return i1.compareTo(i2);
             }
         });
+    }
+
+    private AuditLogBean findSignatureAudit(AuditLogsBean auditLogs) {
+        if (auditLogs == null) return null;
+        ArrayList<AuditLogBean> audits = auditLogs.getAuditLogs();
+        if (audits == null) return null;
+        AuditLogBean sigAudit = null;
+        for (AuditLogBean audit : audits) {
+            Integer typeId = audit.getAuditLogEventTypeId();
+            if (typeId != null && (typeId == 31 || typeId == 14 || typeId == 15 || typeId == 16)) {
+                if (sigAudit == null || audit.getDatetimeStamp().after(sigAudit.getDatetimeStamp())) {
+                    sigAudit = audit;
+                }
+            }
+        }
+        return sigAudit;
+    }
+
+    private void writeSignature(AuditLogBean sigAudit, String location) throws Exception {
+        if (location == null || location.trim().length() == 0) location = "Unknown";
+        writer.writeStartElement("Signature");
+        
+        writer.writeEmptyElement("UserRef");
+        writer.writeAttribute("UserOID", sigAudit.getUserId());
+        
+        writer.writeEmptyElement("LocationRef");
+        writer.writeAttribute("LocationOID", location);
+        
+        writer.writeEmptyElement("SignatureRef");
+        writer.writeAttribute("SignatureOID", "SIG_01");
+        
+        writer.writeStartElement("DateTimeStamp");
+        writer.writeCharacters(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(sigAudit.getDatetimeStamp()));
+        writer.writeEndElement();
+        
+        writer.writeEndElement(); // Signature
     }
 }
