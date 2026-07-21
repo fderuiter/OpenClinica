@@ -6,8 +6,13 @@ cd "$DIR"
 
 # Check for Python and pip presence early on
 if ! command -v python3 &> /dev/null || ! python3 -m pip --version &> /dev/null; then
-    echo "Warning: Python 3 or pip is not installed. Skipping documentation generation."
-    exit 0
+    if [ "$STRICT_MODE" = "true" ]; then
+        echo "Error: Python 3 or pip is not installed."
+        exit 1
+    else
+        echo "Warning: Python 3 or pip is not installed. Skipping documentation generation."
+        exit 0
+    fi
 fi
 
 # Fail the build if metadata cannot be extracted
@@ -61,8 +66,13 @@ rm README.md.tmp
 # Install MkDocs and plugins if not present
 if ! python3 -c "import mkdocs_redirects" &> /dev/null; then
     if ! python3 -m pip install --user mkdocs mkdocs-material mkdocs-redirects pyyaml; then
-        echo "Warning: Failed to install Python dependencies. Skipping documentation generation."
-        exit 0
+        if [ "$STRICT_MODE" = "true" ]; then
+            echo "Error: Failed to install Python dependencies."
+            exit 1
+        else
+            echo "Warning: Failed to install Python dependencies. Skipping documentation generation."
+            exit 0
+        fi
     fi
 fi
 
@@ -131,20 +141,35 @@ fi
 
 # Generate REST API docs (Unified OpenAPI)
 if ! python3 merge_openapi.py; then
-    echo "Warning: Python tools failed (merge_openapi.py). Skipping documentation generation."
-    exit 0
+    if [ "$STRICT_MODE" = "true" ]; then
+        echo "Error: Python tools failed (merge_openapi.py)."
+        exit 1
+    else
+        echo "Warning: Python tools failed (merge_openapi.py). Skipping documentation generation."
+        exit 0
+    fi
 fi
 
 # Extract static SOAP definitions
 if ! python3 extract_soap.py; then
-    echo "Warning: Python tools failed (extract_soap.py). Skipping documentation generation."
-    exit 0
+    if [ "$STRICT_MODE" = "true" ]; then
+        echo "Error: Python tools failed (extract_soap.py)."
+        exit 1
+    else
+        echo "Warning: Python tools failed (extract_soap.py). Skipping documentation generation."
+        exit 0
+    fi
 fi
 
 # Build the documentation site
 if ! python3 -m mkdocs build; then
-    echo "Warning: Python tools failed (mkdocs build). Skipping documentation generation."
-    exit 0
+    if [ "$STRICT_MODE" = "true" ]; then
+        echo "Error: Python tools failed (mkdocs build)."
+        exit 1
+    else
+        echo "Warning: Python tools failed (mkdocs build). Skipping documentation generation."
+        exit 0
+    fi
 fi
 
 # Validate that no placeholders remain in documentation

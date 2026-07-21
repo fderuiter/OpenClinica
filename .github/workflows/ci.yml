@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  STRICT_MODE: "true"
+
 jobs:
   build:
     runs-on: ubuntu-latest
