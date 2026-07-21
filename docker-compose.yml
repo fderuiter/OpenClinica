@@ -3,11 +3,12 @@ services:
   db:
     image: postgres:15-alpine
     environment:
-      POSTGRES_DB: clinica
-      POSTGRES_USER: clinica
-      POSTGRES_PASSWORD: clinica
+      POSTGRES_DB: ${DB}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      PGPORT: ${DB_PORT}
     ports:
-    - 5432:5432
+    - ${DB_PORT}:${DB_PORT}
     volumes:
     - db-data:/var/lib/postgresql/data
   admin:
@@ -16,11 +17,11 @@ services:
     depends_on:
     - db
     environment:
-    - DB_HOST=db
-    - DB_PORT=5432
-    - DB_USER=clinica
-    - DB_PASS=clinica
-    - DB_NAME=clinica
+    - DB_HOST=${DB_HOST}
+    - DB_PORT=${DB_PORT}
+    - DB_USER=${DB_USER}
+    - DB_PASS=${DB_PASS}
+    - DB_NAME=${DB}
     - DB_SCHEMA=app_schema
     - BACKUP_FILE=/tmp/backup/db_backup.dump
     volumes:
@@ -55,9 +56,9 @@ services:
     depends_on:
     - db
     environment:
-    - spring.datasource.url=jdbc:postgresql://db:5432/clinica
-    - spring.datasource.username=clinica
-    - spring.datasource.password=clinica
+    - spring.datasource.url=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB}
+    - spring.datasource.username=${DB_USER}
+    - spring.datasource.password=${DB_PASS}
     - SPRING_QUARTZ_AUTO_STARTUP=false
     - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,metrics
     healthcheck:

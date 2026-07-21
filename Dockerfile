@@ -4,13 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y maven openjdk-17-jdk
 WORKDIR /app
 COPY . .
-RUN mvn clean package -DskipTests \
-    -DdbHost=db \
-    -DdbType=postgres \
-    -DdbUser=clinica \
-    -DdbPass=clinica \
-    -Ddb=clinica \
-    -DdbPort=5432
+RUN mvn clean package -DskipTests
 
 # Stage 2: Run Tomcat
 FROM ubuntu:22.04

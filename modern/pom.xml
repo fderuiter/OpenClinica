@@ -355,6 +355,16 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>npm run lint</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run lint</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>npm build</id>
                         <phase>generate-resources</phase>
                         <goals>
