@@ -16,15 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-public class IntegrationTests {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+public class IntegrationTests extends AbstractIntegrationTest {
 
     @Test
     public void testOdmExport() throws Exception {
