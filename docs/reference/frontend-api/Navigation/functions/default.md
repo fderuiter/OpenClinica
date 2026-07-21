@@ -8,7 +8,7 @@
 
 > **default**(): `any`
 
-Defined in: [Navigation.jsx:5](https://github.com/fderuiter/OpenClinica/blob/0105669566235d36dfdbeafc915bc47ed4a06356/web/src/main/webapp/js/components/Navigation.jsx#L5)
+Defined in: [Navigation.jsx:5](https://github.com/fderuiter/OpenClinica/blob/bc2de4d57c28678104b584c4e5b0b0061422cbcb/web/src/main/webapp/js/components/Navigation.jsx#L5)
 
 ## Returns
 
