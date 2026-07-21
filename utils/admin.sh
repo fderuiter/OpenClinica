@@ -15,13 +15,8 @@ case "$ACTION" in
             echo "ERROR: Backup file missing or empty."
             exit 1
         fi
-        (
-          echo "BEGIN;"
-          echo "DROP SCHEMA IF EXISTS \"$DB_SCHEMA\" CASCADE;"
-          echo "CREATE SCHEMA \"$DB_SCHEMA\";"
-          pg_restore --clean --if-exists "$BACKUP_FILE"
-          echo "COMMIT;"
-        ) | PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -v ON_ERROR_STOP=1
+        PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -v ON_ERROR_STOP=1 -c "DROP SCHEMA IF EXISTS \"$DB_SCHEMA\" CASCADE; CREATE SCHEMA \"$DB_SCHEMA\";"
+        PGPASSWORD="$DB_PASS" pg_restore --clean --if-exists -1 -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" "$BACKUP_FILE"
         echo "Restore complete."
         ;;
     *)

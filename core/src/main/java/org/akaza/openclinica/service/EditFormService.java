@@ -94,7 +94,7 @@ public class EditFormService {
 
     private String getPopulatedInstance(CrfVersion crfVersion, EventCrf eventCrf) throws Exception {
         boolean isXform = false;
-        if (crfVersion.getXform() != null && !crfVersion.getXform().equals(""))
+        if (crfVersion.getXformName() != null && !crfVersion.getXformName().equals(""))
             isXform = true;
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -136,7 +136,7 @@ public class EditFormService {
                     ItemData itemData = itemDataDao.findByItemEventCrfOrdinal(item.getItemId(), eventCrf.getEventCrfId(), i + 1);
 
                     Element question = null;
-                    if (crfVersion.getXform() != null && !crfVersion.getXform().equals(""))
+                    if (crfVersion.getXformName() != null && !crfVersion.getXformName().equals(""))
                         question = doc.createElement(item.getName());
                     else
                         question = doc.createElement(item.getOcOid());

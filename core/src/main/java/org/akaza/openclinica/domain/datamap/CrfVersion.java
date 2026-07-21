@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -201,6 +202,7 @@ public class CrfVersion extends DataMapDomainObject {
         this.ocOid = ocOid;
     }
 
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "xform")
     public String getXform() {
         return xform;
