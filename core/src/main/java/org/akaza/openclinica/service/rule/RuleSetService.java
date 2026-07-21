@@ -95,7 +95,13 @@ public class RuleSetService implements RuleSetServiceInterface {
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private DataSource dataSource;
     @org.springframework.beans.factory.annotation.Autowired
-    private org.akaza.openclinica.repository.UnifiedRepository unifiedRepository;
+    private org.akaza.openclinica.repository.StudyRepository studyRepository;
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.akaza.openclinica.repository.SubjectRepository subjectRepository;
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.akaza.openclinica.repository.FormRepository formRepository;
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.akaza.openclinica.repository.ItemRepository itemRepository;
     private RuleSetDao ruleSetDao;
     private RuleSetAuditDao ruleSetAuditDao;
     private RuleDao ruleDao;
@@ -380,7 +386,7 @@ public class RuleSetService implements RuleSetServiceInterface {
      */
 
     public List<RuleSetBean> getRuleSetsByCrfStudyAndStudyEventDefinition(StudyBean study, StudyEventDefinitionBean sed, CRFVersionBean crfVersion) {
-        CRFBean crf = unifiedRepository.getCrfBeanByVersionId(crfVersion.getId());
+        CRFBean crf = formRepository.getCrfBeanByVersionId(crfVersion.getId());
         logger.debug("crfVersionID : " + crfVersion.getId() + " studyId : " + study.getId() + " studyEventDefinition : " + sed.getId());
         List<RuleSetBean> ruleSets = getRuleSetDao().findByCrfVersionOrCrfAndStudyAndStudyEventDefinition(crfVersion, crf, study, sed);
         logger.info("getRuleSetsByCrfStudyAndStudyEventDefinition() : ruleSets Size {} : ", ruleSets.size());
@@ -480,20 +486,20 @@ public class RuleSetService implements RuleSetServiceInterface {
     }
 
     public RuleSetBean getObjects(RuleSetBean ruleSetBean) {
-        ruleSetBean.setStudy(unifiedRepository.getStudyBean(ruleSetBean.getStudyId()));
+        ruleSetBean.setStudy(studyRepository.getStudyBean(ruleSetBean.getStudyId()));
         if (ruleSetBean.getStudyEventDefinitionId() != null && ruleSetBean.getStudyEventDefinitionId() != 0) {
-            ruleSetBean.setStudyEventDefinition(unifiedRepository.getStudyEventDefinitionBean(ruleSetBean.getStudyEventDefinitionId()));
+            ruleSetBean.setStudyEventDefinition(itemRepository.getStudyEventDefinitionBean(ruleSetBean.getStudyEventDefinitionId()));
         }
         if (ruleSetBean.getCrfId() != null && ruleSetBean.getCrfId() != 0) {
-            ruleSetBean.setCrf(unifiedRepository.getCrfBean(ruleSetBean.getCrfId()));
+            ruleSetBean.setCrf(formRepository.getCrfBean(ruleSetBean.getCrfId()));
         }
 
         if (ruleSetBean.getCrfVersionId() != null) {
-            ruleSetBean.setCrfVersion(unifiedRepository.getCrfVersionBean(ruleSetBean.getCrfVersionId()));
+            ruleSetBean.setCrfVersion(formRepository.getCrfVersionBean(ruleSetBean.getCrfVersionId()));
         }
         ruleSetBean.setItemGroup(getExpressionService().getItemGroupExpression(ruleSetBean.getTarget().getValue()));
         if (ruleSetBean.getItemId() != null && ruleSetBean.getItemId() != 0) {
-            ruleSetBean.setItem(unifiedRepository.getItemBean(ruleSetBean.getItemId()));
+            ruleSetBean.setItem(itemRepository.getItemBean(ruleSetBean.getItemId()));
         }
         // ruleSetBean.setItem(getExpressionService().getItemExpression(ruleSetBean.getTarget().getValue(), ruleSetBean.getItemGroup()));
 
@@ -509,7 +515,7 @@ public class RuleSetService implements RuleSetServiceInterface {
             // ruleSetBean = getRuleSetById(currentStudy, String.valueOf(ruleSetRule.getRuleSetBean().getId()), ruleSetRule.getRuleBean());
             ruleSetBean = ruleSetRule.getRuleSetBean();
             filterByRules(ruleSetBean, ruleSetRule.getRuleBean().getId());
-            CRFVersionBean crfVersion = unifiedRepository.getCrfVersionBean(Integer.valueOf(crfVersionId));
+            CRFVersionBean crfVersion = formRepository.getCrfVersionBean(Integer.valueOf(crfVersionId));
             ruleSetBean = replaceCrfOidInTargetExpression(ruleSetBean, crfVersion.getOid());
         }
         return ruleSetBean;
@@ -618,8 +624,8 @@ public class RuleSetService implements RuleSetServiceInterface {
         for (RuleSetBean ruleSetBean : ruleSets) {
             logMe("Entering the filterRuleSetsBy HiddenItems? Thread::"+Thread.currentThread()+"eventCrf?"+eventCrf+"crfVersion??"+crfVersion+"ruleSets?"+ruleSets);
             ItemBean target = ruleSetBean.getItem();
-            ItemFormMetadataBean metadataBean = this.unifiedRepository.getItemFormMetadataBeanByItemIdAndCRFVersionId(target.getId(), crfVersion.getId());
-            ItemDataBean itemData = this.unifiedRepository.getItemDataBeanByItemIdAndEventCRFId(target.getId(), eventCrf.getId());
+            ItemFormMetadataBean metadataBean = this.itemRepository.getItemFormMetadataBeanByItemIdAndCRFVersionId(target.getId(), crfVersion.getId());
+            ItemDataBean itemData = this.itemRepository.getItemDataBeanByItemIdAndEventCRFId(target.getId(), eventCrf.getId());
             DynamicsItemFormMetadataBean dynamicsBean = this.getDynamicsItemFormMetadataDao().findByMetadataBean(metadataBean, eventCrf, itemData);
             if(itemBeansWithSCDShown==null)itemBeansWithSCDShown= new ArrayList<ItemBean>();
             if (dynamicsBean == null) {
@@ -654,8 +660,8 @@ public class RuleSetService implements RuleSetServiceInterface {
             if (ruleSet.getExpressions()!=null){
             for (ExpressionBean expression : ruleSet.getExpressions()) {
                 String studyEventId = getExpressionService().getStudyEventDefinitionOrdninalCurated(expression.getValue());
-                  StudyEventBean studyEvent = unifiedRepository.getStudyEventBean(Integer.valueOf(studyEventId));
-                  StudySubjectBean studySubject   = unifiedRepository.getStudySubjectBean(studyEvent.getStudySubjectId());
+                  StudyEventBean studyEvent = itemRepository.getStudyEventBean(Integer.valueOf(studyEventId));
+                  StudySubjectBean studySubject   = subjectRepository.getStudySubjectBean(studyEvent.getStudySubjectId());
                 
                   
                   if (doTriggerRule(ruleSet, studySubject)){
@@ -689,15 +695,15 @@ public class RuleSetService implements RuleSetServiceInterface {
             if (studyEventDefinitionOid != null && crfOrCrfVersionOid != null) {
             	List<StudyEventBean> studyEvents =null;
                 if (crfOrCrfVersionOid.equals("STARTDATE") || crfOrCrfVersionOid.equals("STATUS")) {
-                   StudyEventDefinitionBean sedBean = unifiedRepository.getStudyEventDefinitionBeanByOid(studyEventDefinitionOid);
+                   StudyEventDefinitionBean sedBean = itemRepository.getStudyEventDefinitionBeanByOid(studyEventDefinitionOid);
                 
-                   studyEvents = unifiedRepository.findAllStudyEventsByDefinition(sedBean.getId());
+                   studyEvents = itemRepository.findAllStudyEventsByDefinition(sedBean.getId());
                     logger.debug("studyEventDefinitionOrdinal {} , studyEventDefinitionOid {} , crfOrCrfVersionOid {} , studyEvents {}", new Object[] {
                         studyEventDefinitionOrdinal, studyEventDefinitionOid, crfOrCrfVersionOid, studyEvents.size() });
                 	
                 }else{
 
-            	 studyEvents = unifiedRepository.findAllStudyEventsByStudyEventDefinitionAndCrfOids(studyEventDefinitionOid, crfOrCrfVersionOid);
+            	 studyEvents = itemRepository.findAllStudyEventsByStudyEventDefinitionAndCrfOids(studyEventDefinitionOid, crfOrCrfVersionOid);
                 logger.debug("studyEventDefinitionOrdinal {} , studyEventDefinitionOid {} , crfOrCrfVersionOid {} , studyEvents {}", new Object[] {
                     studyEventDefinitionOrdinal, studyEventDefinitionOid, crfOrCrfVersionOid, studyEvents.size() });
                 }
@@ -721,34 +727,34 @@ public class RuleSetService implements RuleSetServiceInterface {
                 List<CRFVersionBean> crfVersions = new ArrayList<CRFVersionBean>();
                 CRFVersionBean crfVersion = null;
                 if (crfOrCrfVersionOid == null) {
-                    crf = unifiedRepository.getCrfBeanByItemOid(getExpressionService().getItemOid(ruleSetBean.getTarget().getValue()));
+                    crf = formRepository.getCrfBeanByItemOid(getExpressionService().getItemOid(ruleSetBean.getTarget().getValue()));
                     if (crfVersionId != null) {
-                        crfVersion = unifiedRepository.getCrfVersionBean(Integer.valueOf(crfVersionId));
+                        crfVersion = formRepository.getCrfVersionBean(Integer.valueOf(crfVersionId));
                         crfVersions.add(crfVersion);
                     } else {
-                        crfVersions = unifiedRepository.findAllCrfVersionsByCrf(crf.getId());
+                        crfVersions = formRepository.findAllCrfVersionsByCrf(crf.getId());
                     }
                 } else {
                     crf = getExpressionService().getCRFFromExpression(ruleSetBean.getTarget().getValue());
                     if (crfVersionId != null) {
-                        crfVersion = unifiedRepository.getCrfVersionBean(Integer.valueOf(crfVersionId));
+                        crfVersion = formRepository.getCrfVersionBean(Integer.valueOf(crfVersionId));
                     } else {
                         crfVersion = getExpressionService().getCRFVersionFromExpression(ruleSetBean.getTarget().getValue());
                     }
                     if (crfVersion != null) {
                         crfVersions.add(crfVersion);
                     } else {
-                        crfVersions = unifiedRepository.findAllCrfVersionsByCrf(crf.getId());
+                        crfVersions = formRepository.findAllCrfVersionsByCrf(crf.getId());
                     }
                 }
-                List<StudyEventDefinitionBean> studyEventDefinitions = unifiedRepository.findAllStudyEventDefinitionsByCrf(crf);
+                List<StudyEventDefinitionBean> studyEventDefinitions = itemRepository.findAllStudyEventDefinitionsByCrf(crf);
                 for (StudyEventDefinitionBean studyEventDefinitionBean : studyEventDefinitions) {
                     for (CRFVersionBean crfVersionBean : crfVersions) {
                         String expression =
                             getExpressionService().constructFullExpressionIfPartialProvided(ruleSetBean.getTarget().getValue(), crfVersionBean,
                                     studyEventDefinitionBean);
                         List<StudyEventBean> studyEvents =
-                            unifiedRepository.findAllStudyEventsByStudyEventDefinitionAndCrfOids(studyEventDefinitionBean.getOid(), crfVersionBean.getOid());
+                            itemRepository.findAllStudyEventsByStudyEventDefinitionAndCrfOids(studyEventDefinitionBean.getOid(), crfVersionBean.getOid());
                         logger.debug("studyEventDefinitionOrdinal {} , studyEventDefinitionOid {} , crfOrCrfVersionOid {} , studyEvents {}", new Object[] {
                             studyEventDefinitionOrdinal, studyEventDefinitionBean.getOid(), crfVersionBean.getOid(), studyEvents.size() });
                         for (StudyEventBean studyEvent : studyEvents) {
@@ -862,7 +868,7 @@ public class RuleSetService implements RuleSetServiceInterface {
 	       	String itemOid = getExpressionService().getItemOid(ruleSetBean.getExpressions().get(0).getValue());
 	        String itemGroupOid = getExpressionService().getItemGroupOid(ruleSetBean.getExpressions().get(0).getValue());
            
-            HashMap itemDataCountHm = unifiedRepository.findItemDataCountByStudyEventAndOIDs(ruleSetBean.getStudyId(), itemOid, itemGroupOid);
+            HashMap itemDataCountHm = itemRepository.findItemDataCountByStudyEventAndOIDs(ruleSetBean.getStudyId(), itemOid, itemGroupOid);
            
             
             int itemDataSize = 0; 

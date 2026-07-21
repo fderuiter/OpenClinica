@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Repository
+@Deprecated
 public class UnifiedRepository {
 
     private DataSource dataSource;

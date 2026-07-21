@@ -7,6 +7,7 @@ import org.akaza.openclinica.bean.service.StudyParameterValueBean;
 import org.akaza.openclinica.bean.submit.SubjectBean;
 import org.akaza.openclinica.dao.service.StudyParameterValueDAO;
 import org.akaza.openclinica.repository.UnifiedRepository;
+import org.akaza.openclinica.repository.SubjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,19 @@ public class EnrollmentManager {
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     
     private final UnifiedRepository unifiedRepository;
+    private final SubjectRepository subjectRepository;
     private final StudyParameterValueDAO studyParameterValueDAO;
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public EnrollmentManager(DataSource dataSource) {
+        this(dataSource, null);
+    }
+
+    @Autowired
+    public EnrollmentManager(DataSource dataSource, SubjectRepository subjectRepository) {
         this.unifiedRepository = new UnifiedRepository(dataSource);
+        this.subjectRepository = subjectRepository;
         this.studyParameterValueDAO = new StudyParameterValueDAO(dataSource);
         if (dataSource != null) {
             this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -40,13 +48,13 @@ public class EnrollmentManager {
     @Transactional
     public String enrollSubject(SubjectBean subjectBean, StudyBean studyBean, Date enrollmentDate, String secondaryId) {
         if (subjectBean.getUniqueIdentifier() != null && subjectBean.getUniqueIdentifier().trim().length() > 0 && 
-                unifiedRepository.getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier()).getId() != 0) {
+                subjectRepository.getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier()).getId() != 0) {
             String label = subjectBean.getLabel();
-            subjectBean = unifiedRepository.getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier());
+            subjectBean = subjectRepository.getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier());
             subjectBean.setLabel(label);
         } else {
             subjectBean.setStatus(Status.AVAILABLE);
-            subjectBean = unifiedRepository.createSubjectBean(subjectBean);
+            subjectBean = subjectRepository.createSubjectBean(subjectBean);
         }
         
         StudySubjectBean studySubject = new StudySubjectBean();
@@ -68,7 +76,7 @@ public class EnrollmentManager {
             subjectBean.setLabel(null);
         }
         
-        unifiedRepository.createStudySubjectBean(studySubject);
+        subjectRepository.createStudySubjectBean(studySubject);
         return studySubject.getLabel();
     }
     
@@ -88,7 +96,7 @@ public class EnrollmentManager {
         try {
             Integer currentValue = jdbcTemplate.queryForObject("SELECT label_value FROM subject_label_sequence FOR UPDATE", Integer.class);
             if (currentValue == null || currentValue == 0) {
-                currentValue = unifiedRepository.findTheGreatestStudySubjectLabel();
+                currentValue = subjectRepository.findTheGreatestStudySubjectLabel();
                 if (currentValue < 0) {
                     currentValue = 0;
                 }
