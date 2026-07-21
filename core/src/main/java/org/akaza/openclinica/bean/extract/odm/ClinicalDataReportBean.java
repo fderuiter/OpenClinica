@@ -130,6 +130,15 @@ public class ClinicalDataReportBean extends OdmXmlReportBean {
                     if ("Yes".equalsIgnoreCase(se.getSigned())) {
                         xml.append("\" OpenClinica:Signed=\"Yes");
                     }
+                    if (se.getSignerName() != null) {
+                        xml.append("\" OpenClinica:SignerName=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(se.getSignerName()));
+                    }
+                    if (se.getSignatureDate() != null) {
+                        xml.append("\" OpenClinica:SignatureDate=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(se.getSignatureDate()));
+                    }
+                    if (se.getSignatureReason() != null) {
+                        xml.append("\" OpenClinica:SignatureReason=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(se.getSignatureReason()));
+                    }
                     if ("Yes".equalsIgnoreCase(se.getStopped())) {
                         xml.append("\" OpenClinica:Stopped=\"Yes");
                     }
@@ -165,6 +174,15 @@ public class ClinicalDataReportBean extends OdmXmlReportBean {
                         }
                         if ("Yes".equalsIgnoreCase(form.getSigned())) {
                             xml.append("\" OpenClinica:Signed=\"Yes");
+                        }
+                        if (form.getSignerName() != null) {
+                            xml.append("\" OpenClinica:SignerName=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(form.getSignerName()));
+                        }
+                        if (form.getSignatureDate() != null) {
+                            xml.append("\" OpenClinica:SignatureDate=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(form.getSignatureDate()));
+                        }
+                        if (form.getSignatureReason() != null) {
+                            xml.append("\" OpenClinica:SignatureReason=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(form.getSignatureReason()));
                         }
                         if ("Yes".equalsIgnoreCase(form.getStopped())) {
                             xml.append("\" OpenClinica:Stopped=\"Yes");
