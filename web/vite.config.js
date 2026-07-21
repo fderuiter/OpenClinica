@@ -7,9 +7,21 @@ export default defineConfig({
     react(),
     {
       name: 'patch-prototype',
+      enforce: 'pre',
       transform(code, id) {
+        if (id.includes('calendar.js') && !id.includes('calendar-en.js')) {
+          return 'var Calendar;\n' + code + '\nwindow.Calendar = Calendar;';
+        }
         if (id.includes('prototype.js')) {
           let patched = code.replace(/\}\)\(this\);/g, '})(window);');
+          patched = patched.replace(
+            /Event\.prototype = window\.Event\.prototype \|\| document\.createEvent\('HTMLEvents'\)\.__proto__;/g,
+            'try { Event.prototype = window.Event.prototype || document.createEvent("HTMLEvents").__proto__; } catch (e) {}'
+          );
+          patched = patched.replace(
+            /if \(GLOBAL\.Event\) Object\.extend\(window\.Event, Event\);/g,
+            'if (GLOBAL.Event) { var _E = Object.assign({}, Event); delete _E.prototype; Object.extend(window.Event, _E); }'
+          );
           patched += `\nwindow.Prototype = Prototype;
 window.Class = Class;
 if (typeof $ !== 'undefined') window.$ = $;
