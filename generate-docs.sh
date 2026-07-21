@@ -127,6 +127,16 @@ if ! python3 validate_prose.py docs/tutorials/*.md; then
     exit 1
 fi
 
+# Validate navigation config for orphaned files
+if ! python3 validate_nav.py; then
+    if [ "$STRICT_MODE" = "true" ]; then
+        exit 1
+    else
+        exit 1 # We always want this to fail based on requirements
+    fi
+fi
+
+
 # Generate frontend API documentation
 if [ -d "web" ] && [ -f "web/package.json" ]; then
     echo "Generating frontend API documentation..."
