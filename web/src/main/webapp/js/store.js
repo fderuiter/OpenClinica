@@ -1,3 +1,5 @@
+import { useSyncExternalStore } from 'react';
+
 export const store = {
   state: {
     studyOID: window.app_studyOID || '',
@@ -85,3 +87,10 @@ Object.defineProperty(window, 'app_studyOID', {
   },
   configurable: true,
 });
+
+export function useStore(selector) {
+  return useSyncExternalStore(
+    (listener) => store.subscribe(listener),
+    () => selector(store.getState())
+  );
+}

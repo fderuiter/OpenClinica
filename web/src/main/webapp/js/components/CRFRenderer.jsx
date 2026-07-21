@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { store } from '../store';
+import { store, useStore } from '../store';
 import { THEME } from '../theme';
 import { useAccessibility } from './AccessibilityProvider.jsx';
 
@@ -59,8 +59,8 @@ const discrepancyRegistry = {
 };
 
 export default function CRFRenderer() {
-  const [studyOID, setStudyOID] = useState(store.getState().studyOID);
-  const [formData, setFormData] = useState(store.getState().formData);
+  const studyOID = useStore(state => state.studyOID);
+  const formData = useStore(state => state.formData);
   const [loading, setLoading] = useState(true);
   const { announce } = useAccessibility();
 
@@ -81,14 +81,8 @@ export default function CRFRenderer() {
       announce('Form loading completed');
     }, 500);
 
-    const unsubscribe = store.subscribe((state) => {
-      setStudyOID(state.studyOID);
-      setFormData(state.formData);
-    });
-
     return () => {
       clearTimeout(timer);
-      unsubscribe();
     };
   }, []);
 

@@ -1,15 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { store } from '../store';
+import React from 'react';
+import { useStore } from '../store';
 import { THEME } from '../theme';
 
 export default function Navigation() {
-  const [studyOID, setStudyOID] = useState(store.getState().studyOID);
-
-  useEffect(() => {
-    return store.subscribe((state) => {
-      setStudyOID(state.studyOID);
-    });
-  }, []);
+  const studyOID = useStore(state => state.studyOID);
 
   return (
     <nav
