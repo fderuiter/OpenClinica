@@ -130,15 +130,21 @@ jobs:
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       run: mvn -B verify -Pdependency-scan -DskipTests
 
-    - name: Start Application Server
-      run: mvn -B spring-boot:start -pl modern -Dspring-boot.run.profiles=build -Dspring-boot.run.jvmArguments="-Ddb.test=localhost"
+    - name: Run Database Migration Validation
+      run: python ./utils/validate_migrations.py
 
     - name: Run Validation and Verification Phase
       run: mvn -B verify -Ddb.test=localhost
 
-    - name: Stop Application Server
-      if: always()
-      run: mvn -B spring-boot:stop -pl modern
+    - name: Upload Visual Test Results
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: visual-test-reports
+        path: |
+          visual-tests/playwright-report/
+          visual-tests/test-results/
+        retention-days: 14
 
     - name: Upload JaCoCo HTML Reports
       uses: actions/upload-artifact@v4

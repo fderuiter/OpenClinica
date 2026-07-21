@@ -672,6 +672,21 @@ public class CreateSubStudyServlet extends SecureController {
            Validator.addError(errors, "expectedTotalEnrollment", respage.getString("expected_total_enrollment_must_be_a_positive_number"));
        }
 
+       for (StudyEventDefinitionBean sed1 : seds) {
+           int start1 = 0;
+           for (Object obj : sed1.getCrfs()) {
+               EventDefinitionCRFBean edc1 = (EventDefinitionCRFBean) obj;
+               int edcStatusId1 = edc1.getStatus().getId();
+               if (edcStatusId1 != 5 && edcStatusId1 != 7) {
+                   String order1 = start1 + "-" + edc1.getId();
+                   if (edc1.isOffline() && edc1.isElectronicSignature()) {
+                       Validator.addError(errors, "electronicSignature" + order1, respage.getString("offline_and_electronic_signature_mutually_exclusive"));
+                   }
+               }
+               start1++;
+           }
+       }
+
        if (!errors.isEmpty()) {
     //       logger.info("has errors");
            StudyBean study = createStudyBean();
