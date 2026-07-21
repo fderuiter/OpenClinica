@@ -123,10 +123,7 @@ if [ ! -z "$MALFORMED_CITATIONS" ]; then
 fi
 
 # Validate Diátaxis structural definition for tutorials
-VIOLATING_TUTORIALS=$(grep -ilE '\btasks?\b' docs/tutorials/*.md || true)
-if [ ! -z "$VIOLATING_TUTORIALS" ]; then
-    echo "Error: The following tutorial files violate Diátaxis structural standards by including task-oriented language:"
-    echo "$VIOLATING_TUTORIALS"
+if ! python3 validate_prose.py docs/tutorials/*.md; then
     exit 1
 fi
 
@@ -182,8 +179,8 @@ if ! python3 -m mkdocs build; then
     fi
 fi
 
-# Validate that no placeholders remain in documentation
-UNRESOLVED=$(find docs core ws web -type f -name "*.md" -not -path "*/node_modules/*" -exec grep -lE '\$\{[a-zA-Z0-9._]+\}' {} + || true)
+# Validate that no placeholders remain in documentation and final outputs
+UNRESOLVED=$(find docs core ws web site -type f \( -name "*.md" -o -name "*.html" \) -not -path "*/node_modules/*" -exec grep -lE '\$\{[a-zA-Z0-9._]+\}' {} + || true)
 if [ ! -z "$UNRESOLVED" ]; then
     echo "Error: Unreplaced placeholders found in the following files:"
     echo "$UNRESOLVED"
