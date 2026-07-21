@@ -170,7 +170,36 @@ var app_error_print_CRF_Message_at_Loading='<oc:jsEscape key="error_print_CRF_Me
  </head>
 
  <body style="margin-left: 2cm; margin-right: 2cm">
-     <div id="loading_msg"> ${app_print_CRF_Message_at_Loading}</div>
-    <img id="loading" src="${pageContext.request.contextPath}/images/loading_wh.gif" class="spinner"/>
+     <div id="printCRFContainer">
+       <div class="crf-renderer-skeleton" style="padding: 20px; font-family: sans-serif;">
+         <h1 style="background: #e0e0e0; width: 250px; height: 32px; border-radius: 4px; color: transparent; margin-bottom: 20px;">Printable CRF View</h1>
+         <div class="crf-details" style="margin-bottom: 20px;">
+           <h2 style="background: #e0e0e0; width: 150px; height: 24px; border-radius: 4px; color: transparent; margin-bottom: 10px;">Study Details</h2>
+           <p style="background: #e0e0e0; width: 200px; height: 16px; border-radius: 4px; color: transparent; margin-bottom: 10px;"></p>
+           <p style="background: #e0e0e0; width: 400px; height: 16px; border-radius: 4px; color: transparent; margin-bottom: 10px;"></p>
+         </div>
+         <div style="margin-top: 20px; border: 1px solid #ccc; padding: 10px; min-height: 150px;">
+           <h3 style="background: #e0e0e0; width: 120px; height: 20px; border-radius: 4px; color: transparent; margin-bottom: 15px;">General Info</h3>
+           <div style="margin-bottom: 15px; padding: 10px; background-color: #f9f9f9;">
+              <div style="background: #e0e0e0; width: 150px; height: 16px; display: inline-block;"></div>
+              <div style="background: #e0e0e0; width: 200px; height: 20px; display: inline-block;"></div>
+           </div>
+         </div>
+         <div style="margin-top: 20px; border: 1px solid #ccc; padding: 10px; min-height: 250px;">
+           <h3 style="background: #e0e0e0; width: 150px; height: 20px; border-radius: 4px; color: transparent; margin-bottom: 15px;">Adverse Events</h3>
+           <div style="margin-bottom: 15px; padding: 10px; background-color: #f9f9f9;">
+              <div style="background: #e0e0e0; width: 150px; height: 16px; display: inline-block; margin-bottom: 10px;"></div>
+              <div style="background: #e0e0e0; width: 200px; height: 20px; display: inline-block; margin-bottom: 10px;"></div><br>
+              <div style="background: #e0e0e0; width: 150px; height: 16px; display: inline-block; margin-bottom: 10px;"></div>
+              <div style="background: #e0e0e0; width: 200px; height: 20px; display: inline-block; margin-bottom: 10px;"></div><br>
+           </div>
+         </div>
+         <div style="margin-top: 40px; border-top: 1px solid #000; padding-top: 10px;">
+            <p style="background: #e0e0e0; width: 300px; height: 16px; border-radius: 4px; color: transparent; margin-bottom: 10px;"></p>
+            <p style="background: #e0e0e0; width: 350px; height: 16px; border-radius: 4px; color: transparent; margin-bottom: 10px;"></p>
+            <p style="background: #e0e0e0; width: 400px; height: 16px; border-radius: 4px; color: transparent;"></p>
+         </div>
+       </div>
+     </div>
  </body>
 </html>

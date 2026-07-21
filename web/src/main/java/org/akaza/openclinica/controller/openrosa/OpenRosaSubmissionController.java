@@ -2,6 +2,7 @@ package org.akaza.openclinica.controller.openrosa;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,7 +86,7 @@ public class OpenRosaSubmissionController {
         DataBinder dataBinder = new DataBinder(null);
         Errors errors = dataBinder.getBindingResult();
         Study study = studyDao.findByOcOID(studyOID);
-        String requestBody=null;
+        InputStream requestBody = null;
 
         HashMap<String,String> map = new HashMap();
         ArrayList <HashMap> listOfUploadFilePaths = new ArrayList();
@@ -111,12 +112,12 @@ public class OpenRosaSubmissionController {
                         map.put(item.getFieldName(), file.getPath());
 
                     } else if (item.getFieldName().equals("xml_submission_file")) {
-                        requestBody = item.getString("UTF-8");
+                        requestBody = item.getInputStream();
                     }
                 }
                 listOfUploadFilePaths.add(map);
             } else  {                
-                requestBody = IOUtils.toString(request.getInputStream(), "UTF-8");
+                requestBody = request.getInputStream();
             }
 
             // Load user context from ecid

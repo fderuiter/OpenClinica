@@ -40,10 +40,21 @@ window.Enumerable = Enumerable;`;
         main: resolve(__dirname, 'src/main/webapp/js/main.js'),
       },
       output: {
-        format: 'iife',
+        format: 'es',
         entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('prototype-js-core') || id.includes('scriptaculous-js') || id.includes('jquery')) {
+              return 'legacy-vendor';
+            }
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+            return 'vendor';
+          }
+        }
       },
     },
   },

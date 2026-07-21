@@ -1,12 +1,49 @@
 #!/bin/bash
 # Enterprise Automated Deployment and Rollback Script
 
+WEB_IMG=$(docker compose images -q web 2>/dev/null)
+MODERN_IMG=$(docker compose images -q modern 2>/dev/null)
+if [ -n "$WEB_IMG" ]; then
+    echo "Tagging current web image ($WEB_IMG) as stable..."
+    docker tag "$WEB_IMG" app-web:stable
+fi
+if [ -n "$MODERN_IMG" ]; then
+    echo "Tagging current modern image ($MODERN_IMG) as stable..."
+    docker tag "$MODERN_IMG" app-modern:stable
+fi
+
 echo "Starting deployment..."
 docker compose up -d web modern
 
-echo "Waiting up to 120 seconds for application initialization..."
+echo "Waiting up to 50 seconds for application initialization..."
 # Wait for health checks
-if ! docker compose up --wait web modern; then
+HEALTHY_DEPLOY=false
+for i in {1..10}; do
+    ALL_HEALTHY=true
+    
+    CONTAINERS=$(docker compose ps -q web modern)
+    
+    if [ -z "$CONTAINERS" ]; then
+        ALL_HEALTHY=false
+    else
+        for container_id in $CONTAINERS; do
+            status=$(docker inspect --format='{{.State.Health.Status}}' "$container_id" 2>/dev/null)
+            if [ "$status" != "healthy" ]; then
+                ALL_HEALTHY=false
+                break
+            fi
+        done
+    fi
+    
+    if [ "$ALL_HEALTHY" = true ]; then
+        HEALTHY_DEPLOY=true
+        break
+    fi
+    
+    sleep 5
+done
+
+if [ "$HEALTHY_DEPLOY" = false ]; then
     echo "WARNING: Health check failed. Initiating automated rollback procedure..."
     
     # Scale to 0 to terminate active client connections and drop locks
@@ -19,14 +56,16 @@ if ! docker compose up --wait web modern; then
     
     # Restart applications
     echo "Restarting application containers..."
-    docker compose up -d --scale web=1 --scale modern=1 web modern
+    IMAGE_TAG=stable docker compose up -d --scale web=1 --scale modern=1 web modern
     
     # Verify they are back online
     echo "Verifying application health post-rollback..."
-    docker compose up --wait web modern
+    if ! IMAGE_TAG=stable docker compose up --wait web modern; then
+        echo "ERROR: Rollback health check failed. Manual intervention required."
+        exit 1
+    fi
     
     echo "Rollback completed successfully."
-    # Exit with a non-zero status to indicate deployment failed but rollback succeeded
     exit 1
 fi
 

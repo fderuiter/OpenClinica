@@ -28,6 +28,7 @@ services:
     - backup-data:/tmp/backup
     - ./utils/admin.sh:/utils/admin.sh:ro
   web:
+    image: app-web:${IMAGE_TAG:-latest}
     build: .
     ports:
     - 8080:8080
@@ -49,6 +50,7 @@ services:
       retries: 5
       start_period: 120s
   modern:
+    image: app-modern:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: Dockerfile.modern
