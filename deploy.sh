@@ -35,11 +35,24 @@ for i in $(seq 1 $MAX_RETRIES); do
         break
     fi
 
-    # Check native health using docker inspect
-    WEB_HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' $(docker compose ps -q web) 2>/dev/null || echo "\"unhealthy\"")
-    MODERN_HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' $(docker compose ps -q modern) 2>/dev/null || echo "\"unhealthy\"")
+    WEB_CONTAINERS=$(docker compose ps -q web)
+    MODERN_CONTAINERS=$(docker compose ps -q modern)
+    
+    ALL_HEALTHY=true
+    
+    if [ -z "$WEB_CONTAINERS" ] || [ -z "$MODERN_CONTAINERS" ]; then
+        ALL_HEALTHY=false
+    else
+        for CONTAINER_ID in $WEB_CONTAINERS $MODERN_CONTAINERS; do
+            CONTAINER_HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' "$CONTAINER_ID" 2>/dev/null || echo "\"unhealthy\"")
+            if [ "$CONTAINER_HEALTH" != "\"healthy\"" ]; then
+                ALL_HEALTHY=false
+                break
+            fi
+        done
+    fi
 
-    if [ "$WEB_HEALTH" == "\"healthy\"" ] && [ "$MODERN_HEALTH" == "\"healthy\"" ]; then
+    if [ "$ALL_HEALTHY" = true ]; then
         HEALTH_CHECK_PASSED=true
         break
     fi
