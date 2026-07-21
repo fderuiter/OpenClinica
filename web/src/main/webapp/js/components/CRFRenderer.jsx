@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { store } from '../store';
 import { THEME } from '../theme';
@@ -269,7 +270,7 @@ export default function CRFRenderer() {
       clearTimeout(timer);
       unsubscribe();
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return <div className="spinner">Loading CRF Data...</div>;

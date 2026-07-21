@@ -188,12 +188,6 @@
 				<version>2.3.2</version>
 			</dependency>
 			<dependency>
-				<groupId>org.quartz-scheduler</groupId>
-				<artifactId>quartz-oracle</artifactId>
-				<version>2.1.7</version>
-			</dependency>
-
-					<dependency>
 				<groupId>commons-validator</groupId>
 				<artifactId>commons-validator</artifactId>
 				<version>1.8.0</version>
@@ -478,11 +472,6 @@
 				<groupId>opensymphony</groupId>
 				<artifactId>sitemesh</artifactId>
 				<version>2.3</version>
-			</dependency>
-			<dependency>
-				<groupId>com.oracle.database.jdbc</groupId>
-				<artifactId>ojdbc11</artifactId>
-				<version>21.18.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.xmlgraphics</groupId>

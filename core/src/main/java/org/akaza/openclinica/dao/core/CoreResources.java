@@ -305,7 +305,7 @@ public class CoreResources implements ResourceLoaderAware {
         DATAINFO.setProperty("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
 
         if (database.equalsIgnoreCase("oracle")) {
-            DATAINFO.setProperty("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.oracle.OracleDelegate");
+            throw new IllegalStateException("Active Oracle database configuration detected. Oracle is no longer supported. Please migrate to PostgreSQL.");
         } else if (database.equalsIgnoreCase("postgres")) {
             DATAINFO.setProperty("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.PostgreSQLDelegate");
         }
@@ -447,10 +447,6 @@ public class CoreResources implements ResourceLoaderAware {
             url = "jdbc:postgresql:" + "//" + DATAINFO.getProperty("dbHost") + ":" + DATAINFO.getProperty("dbPort") + "/" + DATAINFO.getProperty("db") + "?stringtype=unspecified&convertBooleanToNumeric=true";
             driver = "org.postgresql.Driver";
             hibernateDialect = "org.hibernate.dialect.PostgreSQLDialect";
-        } else if (database.equalsIgnoreCase("oracle")) {
-            url = "jdbc:oracle:thin:" + "@" + DATAINFO.getProperty("dbHost") + ":" + DATAINFO.getProperty("dbPort") + ":" + DATAINFO.getProperty("db");
-            driver = "oracle.jdbc.driver.OracleDriver";
-            hibernateDialect = "org.hibernate.dialect.OracleDialect";
         }
      
         DATAINFO.setProperty("dataBase", database);
@@ -911,11 +907,7 @@ public class CoreResources implements ResourceLoaderAware {
 
     public static SQLDialect getSQLDialect() {
         if (sqlDialect == null) {
-            if ("oracle".equalsIgnoreCase(getDBName())) {
-                sqlDialect = new OracleSQLDialect();
-            } else {
-                sqlDialect = new PostgresSQLDialect();
-            }
+            sqlDialect = new PostgresSQLDialect();
         }
         return sqlDialect;
     }
