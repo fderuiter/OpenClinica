@@ -10,7 +10,7 @@ env:
   STRICT_MODE: "true"
 
 jobs:
-  pipeline:
+  build:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -104,20 +104,25 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nvd-
 
-    - name: Run Checksum Duplication Guard
-      run: ./utils/check_duplicates.sh
-
-    - name: Run Documentation Generation
-      env:
-        STRICT_MODE: "true"
-      run: ./utils/generate-docs.sh
-
     - name: Build with Maven
       run: mvn -B clean install -DskipTests
+
+    - name: Cache Generated OpenAPI Specs
+      uses: actions/cache@v4
+      with:
+        path: |
+          web/target/generated-docs/
+          modern/target/generated-docs/
+        key: ${{ runner.os }}-generated-openapi-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-generated-openapi-
 
     - name: Frontend Quality Gates
       run: |
         npm install
+        npm --prefix web install
+        npm --prefix modern install
+        npm --prefix visual-tests install
         npm --prefix web run lint
         npm --prefix web run format:check
         npm --prefix modern run lint
@@ -254,3 +259,52 @@ jobs:
             generate_summary()
         PYEOF
         python generate_summary.py
+
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.13.0'
+
+    - name: Cache pip packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('mkdocs.yml', 'utils/**/*.py', '.github/workflows/ci.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Cache web node_modules
+      uses: actions/cache@v4
+      with:
+        path: web/node_modules/
+        key: ${{ runner.os }}-web-node_modules-${{ hashFiles('web/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-web-node_modules-
+
+    - name: Restore Generated OpenAPI Specs
+      uses: actions/cache@v4
+      with:
+        path: |
+          web/target/generated-docs/
+          modern/target/generated-docs/
+        key: ${{ runner.os }}-generated-openapi-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-generated-openapi-
+
+    - name: Run Checksum Duplication Guard
+      run: ./utils/check_duplicates.sh
+
+    - name: Run Documentation Generation
+      env:
+        STRICT_MODE: "true"
+      run: ./utils/generate-docs.sh

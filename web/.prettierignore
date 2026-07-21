@@ -1,4 +1,9 @@
 node_modules/
 target/
+dist/
 src/main/webapp/dist/
+vendor/
+.husky/
+.git/
+*.min.js
 package-lock.json
