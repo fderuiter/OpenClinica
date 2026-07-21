@@ -2,7 +2,6 @@ package org.akaza.openclinica.modern.filter;
 
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
-import org.akaza.openclinica.dao.login.UserAccountDAO;
 import org.akaza.openclinica.log.LoggingConstants;
 import org.akaza.openclinica.repository.UnifiedRepository;
 import org.slf4j.MDC;
@@ -46,8 +45,7 @@ public class LegacyModernContextBridgeFilter extends OncePerRequestFilter {
             if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
                 String username = authentication.getName();
                 
-                UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
-                UserAccountBean userBean = (UserAccountBean) userAccountDAO.findByUserName(username);
+                UserAccountBean userBean = unifiedRepository.getUserAccountBeanByUserName(username);
                 
                 if (userBean != null && userBean.getId() > 0) {
                     requestToChain = new StatelessSessionRequestWrapper(request);
@@ -122,10 +120,10 @@ public class LegacyModernContextBridgeFilter extends OncePerRequestFilter {
                             return method.invoke(originalSession, args);
                         }
                         
-                        if ("getId".equals(methodName)) return "stateless-session";
-                        if ("getCreationTime".equals(methodName)) return System.currentTimeMillis();
-                        if ("getLastAccessedTime".equals(methodName)) return System.currentTimeMillis();
-                        if ("getServletContext".equals(methodName)) return super.getServletContext();
+                        if ("getId".equals(methodName)) { return "stateless-session"; }
+                        if ("getCreationTime".equals(methodName)) { return System.currentTimeMillis(); }
+                        if ("getLastAccessedTime".equals(methodName)) { return System.currentTimeMillis(); }
+                        if ("getServletContext".equals(methodName)) { return super.getServletContext(); }
                         
                         if (method.getReturnType().equals(Void.TYPE)) {
                             return null;

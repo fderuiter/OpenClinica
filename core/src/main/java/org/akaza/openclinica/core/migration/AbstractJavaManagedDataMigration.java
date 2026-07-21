@@ -1,41 +1,39 @@
 package org.akaza.openclinica.core.migration;
 
-import liquibase.change.custom.CustomTaskChange;
-import liquibase.database.Database;
-import liquibase.exception.CustomChangeException;
-import liquibase.exception.ValidationErrors;
-import liquibase.resource.ResourceAccessor;
-import liquibase.exception.SetupException;
-
 import org.akaza.openclinica.bean.login.UserAccountBean;
-import org.akaza.openclinica.core.ApplicationContextProvider;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 import javax.sql.DataSource;
 
-public abstract class AbstractJavaManagedDataMigration implements CustomTaskChange {
+public abstract class AbstractJavaManagedDataMigration implements ApplicationListener<ContextRefreshedEvent> {
 
-    protected ResourceAccessor resourceAccessor;
     protected UserAccountBean systemUser;
     protected DataSource dataSource;
+    protected ApplicationContext applicationContext;
     
     protected static final int DEFAULT_BATCH_SIZE = 1000;
+    
+    private boolean executed = false;
 
     @Override
-    public void execute(Database database) throws CustomChangeException {
+    public synchronized void onApplicationEvent(ContextRefreshedEvent event) {
+        if (executed) {
+            return;
+        }
         try {
-            setupDependencies();
+            this.applicationContext = event.getApplicationContext();
+            setupDependencies(this.applicationContext);
             doMigration();
+            executed = true;
         } catch (Exception e) {
-            throw new CustomChangeException("Migration failed", e);
+            throw new RuntimeException("Migration failed", e);
         }
     }
 
-    protected void setupDependencies() {
-        if (ApplicationContextProvider.getApplicationContext() == null) {
-            throw new IllegalStateException("ApplicationContext is not initialized");
-        }
-        
-        this.dataSource = ApplicationContextProvider.getApplicationContext().getBean("dataSource", DataSource.class);
+    protected void setupDependencies(ApplicationContext context) {
+        this.dataSource = context.getBean("dataSource", DataSource.class);
         
         systemUser = new UserAccountBean();
         systemUser.setId(1); // default
@@ -55,23 +53,4 @@ public abstract class AbstractJavaManagedDataMigration implements CustomTaskChan
     }
 
     protected abstract void doMigration() throws Exception;
-
-    @Override
-    public String getConfirmationMessage() {
-        return "Java-Managed Data Migration completed successfully.";
-    }
-
-    @Override
-    public void setUp() throws SetupException {
-    }
-
-    @Override
-    public void setFileOpener(ResourceAccessor resourceAccessor) {
-        this.resourceAccessor = resourceAccessor;
-    }
-
-    @Override
-    public ValidationErrors validate(Database database) {
-        return new ValidationErrors();
-    }
 }

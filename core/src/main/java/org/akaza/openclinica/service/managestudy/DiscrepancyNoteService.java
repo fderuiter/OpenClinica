@@ -9,7 +9,6 @@ package org.akaza.openclinica.service.managestudy;
 
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
-import org.akaza.openclinica.core.ApplicationContextProvider;
 import org.akaza.openclinica.dao.hibernate.DiscrepancyNoteDao;
 import org.akaza.openclinica.dao.hibernate.DiscrepancyNoteTypeDao;
 import org.akaza.openclinica.dao.hibernate.ResolutionStatusDao;
@@ -26,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 import org.akaza.openclinica.domain.rule.action.RuleActionRunLogBean;
 import org.akaza.openclinica.dao.hibernate.RuleActionRunLogDao;
@@ -35,10 +36,25 @@ public class DiscrepancyNoteService {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     DataSource ds;
+    
+    @Autowired
+    @Lazy
     private DiscrepancyNoteDao discrepancyNoteDao;
+    
+    @Autowired
+    @Lazy
     private StudyDao studyDao;
+    
+    @Autowired
+    @Lazy
     private UserAccountDao userAccountDao;
+    
+    @Autowired
+    @Lazy
     private ResolutionStatusDao resolutionStatusDao;
+    
+    @Autowired
+    @Lazy
     private DiscrepancyNoteTypeDao discrepancyNoteTypeDao;
 
     public DiscrepancyNoteService() {
@@ -87,37 +103,22 @@ public class DiscrepancyNoteService {
     }
 
     private DiscrepancyNoteDao getDiscrepancyNoteDao() {
-        if (discrepancyNoteDao == null) {
-            discrepancyNoteDao = (DiscrepancyNoteDao) ApplicationContextProvider.getApplicationContext().getBean("discrepancyNoteDao");
-        }
         return discrepancyNoteDao;
     }
 
     private StudyDao getStudyDao() {
-        if (studyDao == null) {
-            studyDao = (StudyDao) ApplicationContextProvider.getApplicationContext().getBean("studyDao");
-        }
         return studyDao;
     }
 
     private UserAccountDao getUserAccountDao() {
-        if (userAccountDao == null) {
-            userAccountDao = (UserAccountDao) ApplicationContextProvider.getApplicationContext().getBean("userAccountDao");
-        }
         return userAccountDao;
     }
 
     private ResolutionStatusDao getResolutionStatusDao() {
-        if (resolutionStatusDao == null) {
-            resolutionStatusDao = (ResolutionStatusDao) ApplicationContextProvider.getApplicationContext().getBean("resolutionStatusDao");
-        }
         return resolutionStatusDao;
     }
 
     private DiscrepancyNoteTypeDao getDiscrepancyNoteTypeDao() {
-        if (discrepancyNoteTypeDao == null) {
-            discrepancyNoteTypeDao = (DiscrepancyNoteTypeDao) ApplicationContextProvider.getApplicationContext().getBean("discrepancyNoteTypeDao");
-        }
         return discrepancyNoteTypeDao;
     }
 

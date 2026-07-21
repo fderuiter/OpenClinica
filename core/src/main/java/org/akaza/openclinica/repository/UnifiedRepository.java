@@ -59,6 +59,8 @@ public class UnifiedRepository {
     private org.akaza.openclinica.dao.submit.ItemFormMetadataDAO itemFormMetadataDaoJdbc; 
 
 
+    private org.akaza.openclinica.dao.login.UserAccountDAO userAccountDaoJdbc;
+
     @Autowired
     public UnifiedRepository(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -72,8 +74,13 @@ public class UnifiedRepository {
         this.itemDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDAO(dataSource);
         this.itemDataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDataDAO(dataSource);
         this.itemFormMetadataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemFormMetadataDAO(dataSource);
+        this.userAccountDaoJdbc = new org.akaza.openclinica.dao.login.UserAccountDAO(dataSource);
     }
     
+    public org.akaza.openclinica.bean.login.UserAccountBean getUserAccountBeanByUserName(String userName) {
+        return (org.akaza.openclinica.bean.login.UserAccountBean) userAccountDaoJdbc.findByUserName(userName);
+    }
+
     public void setStudyDaoHibernate(StudyDao studyDaoHibernate) {
         this.studyDaoHibernate = studyDaoHibernate;
     }
@@ -159,22 +166,22 @@ public class UnifiedRepository {
     
     // Automatic Mappings
     public StudyBean mapToBean(Study study) {
-        if (study == null) return null;
+        if (study == null) { return null; }
         return getStudyBean(study.getStudyId());
     }
     
     public Study mapToEntity(StudyBean studyBean) {
-        if (studyBean == null) return null;
+        if (studyBean == null) { return null; }
         return getStudyEntity(studyBean.getId());
     }
     
     public StudySubjectBean mapToBean(StudySubject studySubject) {
-        if (studySubject == null) return null;
+        if (studySubject == null) { return null; }
         return getStudySubjectBean(studySubject.getStudySubjectId());
     }
     
     public StudySubject mapToEntity(StudySubjectBean studySubjectBean) {
-        if (studySubjectBean == null) return null;
+        if (studySubjectBean == null) { return null; }
         return getStudySubjectEntity(studySubjectBean.getId());
     }
 
@@ -195,9 +202,9 @@ public class UnifiedRepository {
     @Transactional
     public StudyBean save(StudyBean bean) {
         Study entity = mapToEntity(bean);
-        if (entity == null) entity = new Study();
+        if (entity == null) { entity = new Study(); }
         BeanUtils.copyProperties(bean, entity, "id");
-        if (bean.getId() > 0) entity.setStudyId(bean.getId());
+        if (bean.getId() > 0) { entity.setStudyId(bean.getId()); }
         entity = studyDaoHibernate.saveOrUpdate(entity);
         studyDaoHibernate.getEntityManager().flush();
         studyDaoHibernate.getEntityManager().clear();
@@ -211,9 +218,9 @@ public class UnifiedRepository {
         if (bean.getId() > 0) {
             entity = subjectDaoHibernate.findById(bean.getId());
         }
-        if (entity == null) entity = new Subject();
+        if (entity == null) { entity = new Subject(); }
         BeanUtils.copyProperties(bean, entity, "id");
-        if (bean.getId() > 0) entity.setSubjectId(bean.getId());
+        if (bean.getId() > 0) { entity.setSubjectId(bean.getId()); }
         entity = subjectDaoHibernate.saveOrUpdate(entity);
         subjectDaoHibernate.getEntityManager().flush();
         subjectDaoHibernate.getEntityManager().clear();
@@ -224,9 +231,9 @@ public class UnifiedRepository {
     @Transactional
     public StudySubjectBean save(StudySubjectBean bean) {
         StudySubject entity = mapToEntity(bean);
-        if (entity == null) entity = new StudySubject();
+        if (entity == null) { entity = new StudySubject(); }
         BeanUtils.copyProperties(bean, entity, "id");
-        if (bean.getId() > 0) entity.setStudySubjectId(bean.getId());
+        if (bean.getId() > 0) { entity.setStudySubjectId(bean.getId()); }
         entity = studySubjectDaoHibernate.saveOrUpdate(entity);
         studySubjectDaoHibernate.getEntityManager().flush();
         studySubjectDaoHibernate.getEntityManager().clear();
@@ -240,9 +247,9 @@ public class UnifiedRepository {
         if (bean.getId() > 0) {
             entity = crfDaoHibernate.findById(bean.getId());
         }
-        if (entity == null) entity = new CrfBean();
+        if (entity == null) { entity = new CrfBean(); }
         BeanUtils.copyProperties(bean, entity, "id");
-        if (bean.getId() > 0) entity.setCrfId(bean.getId());
+        if (bean.getId() > 0) { entity.setCrfId(bean.getId()); }
         entity = crfDaoHibernate.saveOrUpdate(entity);
         crfDaoHibernate.getEntityManager().flush();
         crfDaoHibernate.getEntityManager().clear();
@@ -256,9 +263,9 @@ public class UnifiedRepository {
         if (bean.getId() > 0) {
             entity = eventCrfDaoHibernate.findById(bean.getId());
         }
-        if (entity == null) entity = new EventCrf();
+        if (entity == null) { entity = new EventCrf(); }
         BeanUtils.copyProperties(bean, entity, "id");
-        if (bean.getId() > 0) entity.setEventCrfId(bean.getId());
+        if (bean.getId() > 0) { entity.setEventCrfId(bean.getId()); }
         entity = eventCrfDaoHibernate.saveOrUpdate(entity);
         eventCrfDaoHibernate.getEntityManager().flush();
         eventCrfDaoHibernate.getEntityManager().clear();
