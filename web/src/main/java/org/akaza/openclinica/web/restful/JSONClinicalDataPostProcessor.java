@@ -27,11 +27,11 @@ public class JSONClinicalDataPostProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(JSONClinicalDataPostProcessor.class);
 
-    private static final DateFormat DATE_INTERNAL_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final ThreadLocal<DateFormat> DATE_INTERNAL_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd"));
 
-    private static final DateFormat DATE_TIME_INTERNAL_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final ThreadLocal<DateFormat> DATE_TIME_INTERNAL_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
 
-    private static final DateFormat DATE_TIME_AUDIT_LOG_INTERNAL_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private static final ThreadLocal<DateFormat> DATE_TIME_AUDIT_LOG_INTERNAL_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
 
     private static final String DATE_FORMAT_KEY = "date_format_string";
 
@@ -122,13 +122,13 @@ public class JSONClinicalDataPostProcessor {
                 DateFormat formatter;
 
                 if (isShort) {
-                    date = DATE_INTERNAL_FORMAT.parse(elem);
+                    date = DATE_INTERNAL_FORMAT.get().parse(elem);
                     formatter = new SimpleDateFormat(formatResourceBundle.getString(DATE_FORMAT_KEY), locale);
                 } else if (isLong) {
-                    date = DATE_TIME_INTERNAL_FORMAT.parse(elem);
+                    date = DATE_TIME_INTERNAL_FORMAT.get().parse(elem);
                     formatter = new SimpleDateFormat(formatResourceBundle.getString(DATE_TIME_FORMAT_KEY), locale);
                 } else {
-                    date = DATE_TIME_AUDIT_LOG_INTERNAL_FORMAT.parse(elem);
+                    date = DATE_TIME_AUDIT_LOG_INTERNAL_FORMAT.get().parse(elem);
                     formatter = new SimpleDateFormat(formatResourceBundle.getString(DATE_TIME_FORMAT_KEY), locale);
                 }
 
