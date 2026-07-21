@@ -9,4 +9,11 @@
             <property name="ignoredAnnotations" value="javax.annotation.PostConstruct,org.springframework.beans.factory.annotation.Autowired,javax.persistence.PrePersist,javax.persistence.PreUpdate"/>
         </properties>
     </rule>
+    <rule ref="category/java/codestyle.xml/ControlStatementBraces" />
+    <rule ref="category/java/codestyle.xml/ExtendsObject" />
+    <rule ref="category/java/performance.xml/BigIntegerInstantiation" />
+    <rule ref="category/java/performance.xml/StringInstantiation" />
+    <rule ref="category/java/errorprone.xml/EqualsNull" />
+    <rule ref="category/java/errorprone.xml/EmptyCatchBlock" />
+    <rule ref="category/java/errorprone.xml/JumbledIncrementer" />
 </ruleset>
