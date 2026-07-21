@@ -56,30 +56,6 @@ public class SubjectService implements SubjectServiceInterface {
         return this.enrollmentManager.enrollSubject(subjectBean, studyBean, enrollmentDate, secondaryId);
     }
 
-    private StudySubjectBean createStudySubject(SubjectBean subject, StudyBean studyBean, Date enrollmentDate, String secondaryId) {
-        // Obsolete, left here just in case internal legacy code calls it, though it shouldn't
-        StudySubjectBean studySubject = new StudySubjectBean();
-        studySubject.setSecondaryLabel(secondaryId);
-        studySubject.setOwner(subject.getOwner());
-        studySubject.setEnrollmentDate(enrollmentDate);
-        studySubject.setSubjectId(subject.getId());
-        studySubject.setStudyId(studyBean.getId());
-        studySubject.setStatus(Status.AVAILABLE);
-        
-        int handleStudyId = studyBean.getParentStudyId() > 0 ? studyBean.getParentStudyId() : studyBean.getId();
-        StudyParameterValueBean subjectIdGenerationParameter = getStudyParameterValueDAO().findByHandleAndStudy(handleStudyId, "subjectIdGeneration");
-        String idSetting = subjectIdGenerationParameter.getValue();
-        if (idSetting.equals("auto editable") || idSetting.equals("auto non-editable")) {
-            int nextLabel = getUnifiedRepository().findTheGreatestStudySubjectLabel() + 1;
-            studySubject.setLabel(Integer.toString(nextLabel));
-        } else {
-        	studySubject.setLabel(subject.getLabel());
-        	subject.setLabel(null);
-        }
-        
-        return studySubject;
-    }
-
     public String generateSubjectId(StudyBean studyBean) {
         if (this.enrollmentManager == null) {
             this.enrollmentManager = new EnrollmentManager(dataSource);
@@ -89,18 +65,6 @@ public class SubjectService implements SubjectServiceInterface {
 
     public void validateSubjectTransfer(SubjectTransferBean subjectTransferBean) {
         // TODO: Validate here
-    }
-
-    /**
-     * Getting the first user account from the database. This would be replaced by an authenticated user who is doing the SOAP requests .
-     * 
-     * @return UserAccountBean
-     */
-    private UserAccountBean getUserAccount() {
-
-        UserAccountBean user = new UserAccountBean();
-        user.setId(1);
-        return user;
     }
 
     
