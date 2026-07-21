@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Repository
+@Deprecated
 public class UnifiedRepository {
 
     private DataSource dataSource;
@@ -165,12 +166,12 @@ public class UnifiedRepository {
     
     // Automatic Mappings
     public StudyBean mapToBean(Study study) {
-        if (study == null) return null;
+        if (study == null) { return null; }
         return getStudyBean(study.getStudyId());
     }
     
     public Study mapToEntity(StudyBean bean) {
-        if (bean == null) return null;
+        if (bean == null) { return null; }
         Study entity = new Study();
         entity.setStudyId(bean.getId());
         entity.setName(bean.getName());
@@ -222,17 +223,17 @@ public class UnifiedRepository {
         entity.setOc_oid(bean.getOid());
         entity.setDateCreated(bean.getCreatedDate());
         entity.setDateUpdated(bean.getUpdatedDate());
-        if (bean.getUpdater() != null) entity.setUpdateId(bean.getUpdater().getId());
+        if (bean.getUpdater() != null) { entity.setUpdateId(bean.getUpdater().getId()); }
         return entity;
     }
     
     public StudySubjectBean mapToBean(StudySubject studySubject) {
-        if (studySubject == null) return null;
+        if (studySubject == null) { return null; }
         return getStudySubjectBean(studySubject.getStudySubjectId());
     }
     
     public StudySubject mapToEntity(StudySubjectBean bean) {
-        if (bean == null) return null;
+        if (bean == null) { return null; }
         StudySubject entity = new StudySubject();
         entity.setStudySubjectId(bean.getId());
         entity.setLabel(bean.getLabel());
@@ -241,12 +242,12 @@ public class UnifiedRepository {
         entity.setDateCreated(bean.getCreatedDate());
         entity.setDateUpdated(bean.getUpdatedDate());
         entity.setOcOid(bean.getOid());
-        if (bean.getUpdater() != null) entity.setUpdateId(bean.getUpdater().getId());
+        if (bean.getUpdater() != null) { entity.setUpdateId(bean.getUpdater().getId()); }
         return entity;
     }
 
     public Subject mapToEntity(SubjectBean bean) {
-        if (bean == null) return null;
+        if (bean == null) { return null; }
         Subject entity = new Subject();
         entity.setSubjectId(bean.getId());
         entity.setDateOfBirth(bean.getDateOfBirth());
@@ -255,12 +256,12 @@ public class UnifiedRepository {
         entity.setDobCollected(bean.isDobCollected());
         entity.setDateCreated(bean.getCreatedDate());
         entity.setDateUpdated(bean.getUpdatedDate());
-        if (bean.getUpdater() != null) entity.setUpdateId(bean.getUpdater().getId());
+        if (bean.getUpdater() != null) { entity.setUpdateId(bean.getUpdater().getId()); }
         return entity;
     }
 
     public CrfBean mapToEntity(org.akaza.openclinica.bean.admin.CRFBean bean) {
-        if (bean == null) return null;
+        if (bean == null) { return null; }
         CrfBean entity = new CrfBean();
         entity.setCrfId(bean.getId());
         entity.setName(bean.getName());
@@ -268,12 +269,12 @@ public class UnifiedRepository {
         entity.setOcOid(bean.getOid());
         entity.setDateCreated(bean.getCreatedDate());
         entity.setDateUpdated(bean.getUpdatedDate());
-        if (bean.getUpdater() != null) entity.setUpdateId(bean.getUpdater().getId());
+        if (bean.getUpdater() != null) { entity.setUpdateId(bean.getUpdater().getId()); }
         return entity;
     }
 
     public EventCrf mapToEntity(org.akaza.openclinica.bean.submit.EventCRFBean bean) {
-        if (bean == null) return null;
+        if (bean == null) { return null; }
         EventCrf entity = new EventCrf();
         entity.setEventCrfId(bean.getId());
         entity.setDateInterviewed(bean.getDateInterviewed());
@@ -290,7 +291,7 @@ public class UnifiedRepository {
         entity.setSdvUpdateId(bean.getSdvUpdateId());
         entity.setDateCreated(bean.getCreatedDate());
         entity.setDateUpdated(bean.getUpdatedDate());
-        if (bean.getUpdater() != null) entity.setUpdateId(bean.getUpdater().getId());
+        if (bean.getUpdater() != null) { entity.setUpdateId(bean.getUpdater().getId()); }
         return entity;
     }
 
