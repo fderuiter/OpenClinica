@@ -63,14 +63,14 @@ Calendar = function (firstDayOfWeek, dateStr, onSelected, onClose) {
     // table of short day names
     if (typeof Calendar._SDN_len == 'undefined') Calendar._SDN_len = 3;
     var ar = new Array();
-    for (var i = 8; i > 0; ) {
+    for (var i = 8; i > 0;) {
       ar[--i] = Calendar._DN[i].substr(0, Calendar._SDN_len);
     }
     Calendar._SDN = ar;
     // table of short month names
     if (typeof Calendar._SMN_len == 'undefined') Calendar._SMN_len = 3;
     ar = new Array();
-    for (var i = 12; i > 0; ) {
+    for (var i = 12; i > 0;) {
       ar[--i] = Calendar._MN[i].substr(0, Calendar._SMN_len);
     }
     Calendar._SMN = ar;
@@ -141,7 +141,7 @@ Calendar.removeClass = function (el, className) {
   }
   var cls = el.className.split(' ');
   var ar = new Array();
-  for (var i = cls.length; i > 0; ) {
+  for (var i = cls.length; i > 0;) {
     if (cls[--i] != className) {
       ar[ar.length] = cls[i];
     }
@@ -415,7 +415,7 @@ Calendar.tableMouseOver = function (ev) {
     var range = el._range;
     var current = el._current;
     var count = Math.floor(dx / 10) % range.length;
-    for (var i = range.length; --i >= 0; ) if (range[i] == current) break;
+    for (var i = range.length; --i >= 0;) if (range[i] == current) break;
     while (count-- > 0)
       if (decrease) {
         if (--i < 0) i = range.length - 1;
@@ -676,7 +676,7 @@ Calendar.cellClick = function (el, ev) {
       case 50:
         var range = el._range;
         var current = el.innerHTML;
-        for (var i = range.length; --i >= 0; ) if (range[i] == current) break;
+        for (var i = range.length; --i >= 0;) if (range[i] == current) break;
         if (ev && ev.shiftKey) {
           if (--i < 0) i = range.length - 1;
         } else if (++i >= range.length) i = 0;
@@ -1325,11 +1325,11 @@ Calendar._checkCalendar = function (ev) {
 /** Shows the calendar. */
 Calendar.prototype.show = function () {
   var rows = this.table.getElementsByTagName('tr');
-  for (var i = rows.length; i > 0; ) {
+  for (var i = rows.length; i > 0;) {
     var row = rows[--i];
     Calendar.removeClass(row, 'rowhilite');
     var cells = row.getElementsByTagName('td');
-    for (var j = cells.length; j > 0; ) {
+    for (var j = cells.length; j > 0;) {
       var cell = cells[--j];
       Calendar.removeClass(cell, 'hilite');
       Calendar.removeClass(cell, 'active');
@@ -1513,11 +1513,11 @@ Calendar.prototype.hideShowCovered = function () {
   var EY1 = p.y;
   var EY2 = el.offsetHeight + EY1;
 
-  for (var k = tags.length; k > 0; ) {
+  for (var k = tags.length; k > 0;) {
     var ar = document.getElementsByTagName(tags[--k]);
     var cc = null;
 
-    for (var i = ar.length; i > 0; ) {
+    for (var i = ar.length; i > 0;) {
       cc = ar[--i];
 
       p = Calendar.getAbsolutePos(cc);
@@ -1603,7 +1603,7 @@ Calendar.prototype._dragStart = function (ev) {
 Date._MD = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
 /** Constants used for time computations */
-Date.SECOND = 1000 /* milliseconds */;
+Date.SECOND = 1000; /* milliseconds */
 Date.MINUTE = 60 * Date.SECOND;
 Date.HOUR = 60 * Date.MINUTE;
 Date.DAY = 24 * Date.HOUR;

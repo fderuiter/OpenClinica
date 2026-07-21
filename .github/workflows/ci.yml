@@ -118,6 +118,9 @@ jobs:
     - name: Frontend Quality Gates
       run: |
         npm install
+        npm ci --prefix web
+        npm ci --prefix modern
+        npm ci --prefix visual-tests
         npm --prefix web run lint
         npm --prefix web run format:check
         npm --prefix modern run lint

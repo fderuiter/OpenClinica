@@ -276,7 +276,7 @@ function ot(e, t) {
     r = e.constructor,
     i = (j(r) && r.prototype) || o,
     a = `constructor`;
-  for (Fe(e, a) && !t.contains(a) && t.push(a); n--; )
+  for (Fe(e, a) && !t.contains(a) && t.push(a); n--;)
     ((a = b[n]), a in e && e[a] !== i[a] && !t.contains(a) && t.push(a));
 }
 var st = e(() => {
@@ -338,7 +338,7 @@ var mt = e(() => {
   Ze();
 });
 function ht(e, t) {
-  for (var n = [{ a: e, b: t }], r = [], i = []; n.length; ) {
+  for (var n = [{ a: e, b: t }], r = [], i = []; n.length;) {
     var a = n.pop();
     if (a === !0) {
       (r.pop(), i.pop());
@@ -400,7 +400,7 @@ function ht(e, t) {
       )
         return !1;
     }
-    for (var p = r.length; p--; )
+    for (var p = r.length; p--;)
       if (r[p] === e) {
         if (i[p] === t) break;
         return !1;
@@ -408,12 +408,12 @@ function ht(e, t) {
     if (!(p >= 0))
       if ((r.push(e), i.push(t), n.push(!0), l)) {
         if (((p = e.length), p !== t.length)) return !1;
-        for (; p--; ) n.push({ a: e[p], b: t[p] });
+        for (; p--;) n.push({ a: e[p], b: t[p] });
       } else {
         var m = N(e),
           h;
         if (((p = m.length), N(t).length !== p)) return !1;
-        for (; p--; ) {
+        for (; p--;) {
           if (((h = m[p]), !Fe(t, h))) return !1;
           n.push({ a: e[h], b: t[h] });
         }
@@ -918,7 +918,7 @@ var gr = e(() => {
           r = function () {
             for (var i = 0, a = t.length, o = Array(a), s = 0; s < a; s++)
               o[s] = t[s] === n ? arguments[i++] : t[s];
-            for (; i < arguments.length; ) o.push(arguments[i++]);
+            for (; i < arguments.length;) o.push(arguments[i++]);
             return hr(e, r, this, this, o);
           };
         return r;
@@ -944,7 +944,7 @@ var gr = e(() => {
   });
 function Sr(e, t, n) {
   !t && t !== 0 && (t = 1 / 0);
-  for (var r = [], i = 0, a = 0, o = M(e) || 0, s = []; ; ) {
+  for (var r = [], i = 0, a = 0, o = M(e) || 0, s = []; ;) {
     if (a >= o) {
       if (!s.length) break;
       var c = s.pop();
@@ -972,7 +972,7 @@ var Cr = e(() => {
         t = Sr(t, !1, !1);
         var n = t.length;
         if (n < 1) throw Error(`bindAll must be passed function names`);
-        for (; n--; ) {
+        for (; n--;) {
           var r = t[n];
           e[r] = yr(e[r], e);
         }
@@ -1089,7 +1089,7 @@ function Br() {
   var e = arguments,
     t = e.length - 1;
   return function () {
-    for (var n = t, r = e[t].apply(this, arguments); n--; )
+    for (var n = t, r = e[t].apply(this, arguments); n--;)
       r = e[n].call(this, r);
     return r;
   };
@@ -1141,7 +1141,7 @@ var Zr = e(() => {
   });
 function ni(e, t, n, r) {
   n = I(n, r, 1);
-  for (var i = n(t), a = 0, o = M(e); a < o; ) {
+  for (var i = n(t), a = 0, o = M(e); a < o;) {
     var s = Math.floor((a + o) / 2);
     n(e[s]) < i ? (a = s + 1) : (o = s);
   }
@@ -1688,7 +1688,7 @@ function Ga(e, t, n) {
 var Ka = e(() => {});
 function qa(e, t) {
   if (t == null || t < 1) return [];
-  for (var n = [], r = 0, i = e.length; r < i; ) n.push(l.call(e, r, (r += t)));
+  for (var n = [], r = 0, i = e.length; r < i;) n.push(l.call(e, r, (r += t)));
   return n;
 }
 var Ja = e(() => {
@@ -2727,10 +2727,10 @@ var bo,
       }),
       (Vs = function (e, t) {
         if (!(!e || !t))
-          for (var n = 0, r, i, a, o, s, c; n < t.length && !s; ) {
+          for (var n = 0, r, i, a, o, s, c; n < t.length && !s;) {
             var l = t[n],
               u = t[n + 1];
-            for (r = i = 0; r < l.length && !s && l[r]; )
+            for (r = i = 0; r < l.length && !s && l[r];)
               if (((s = l[r++].exec(e)), s))
                 for (a = 0; a < u.length; a++)
                   ((c = s[++i]),
@@ -3747,8 +3747,7 @@ var bo,
             if (e[Lo]) {
               var l;
               if (typeof e[Lo] != `string`)
-                for (var u = 0; !l && u < e[Lo].length; )
-                  l = Us(e[Lo][u++], Gs);
+                for (var u = 0; !l && u < e[Lo].length;) l = Us(e[Lo][u++], Gs);
               else l = Us(e[Lo], Gs);
               this.set(G, l);
             }
@@ -4592,7 +4591,7 @@ var bo,
                           h;
                       for (i in e)
                         !(n && i == `prototype`) && s.call(e, i) && t(i);
-                      for (o = a.length; (i = a[--o]); ) s.call(e, i) && t(i);
+                      for (o = a.length; (i = a[--o]);) s.call(e, i) && t(i);
                     })),
                 T(e, t)
               );
@@ -4735,7 +4734,7 @@ var bo,
                       return D(`` + s);
                   }
                   if (typeof s == `object`) {
-                    for (v = o.length; v--; ) if (o[v] === s) throw u();
+                    for (v = o.length; v--;) if (o[v] === s) throw u();
                     if ((o.push(s), (f = []), (y = a), (a += i), d == S)) {
                       for (h = 0, v = s.length; h < v; h++)
                         ((p = O(h, s, n, r, i, a, o)),
@@ -4784,7 +4783,7 @@ var bo,
                   if (((s = m.call(t)), s == ee)) a = t;
                   else if (s == S) {
                     o = {};
-                    for (var c = 0, l = t.length, u; c < l; )
+                    for (var c = 0, l = t.length, u; c < l;)
                       ((u = t[c++]),
                         (s = m.call(u)),
                         (s == `[object String]` || s == `[object Number]`) &&
@@ -4794,7 +4793,7 @@ var bo,
                 if (n)
                   if (((s = m.call(n)), s == te)) {
                     if ((n -= n % 1) > 0)
-                      for (n > 10 && (n = 10), i = ``; i.length < n; ) i += ` `;
+                      for (n > 10 && (n = 10), i = ``; i.length < n;) i += ` `;
                   } else s == x && (i = n.length <= 10 ? n : n.slice(0, 10));
                 return O(``, ((u = {}), (u[``] = e), u), a, o, i, ``, []);
               };
@@ -4819,7 +4818,7 @@ var bo,
                 throw ((k = de = null), l());
               },
               fe = function () {
-                for (var e = de, t = e.length, n, r, i, a, o; k < t; )
+                for (var e = de, t = e.length, n, r, i, a, o; k < t;)
                   switch (((o = e.charCodeAt(k)), o)) {
                     case 9:
                     case 10:
@@ -4835,7 +4834,7 @@ var bo,
                     case 44:
                       return ((n = w ? e.charAt(k) : e[k]), k++, n);
                     case 34:
-                      for (n = `@`, k++; k < t; )
+                      for (n = `@`, k++; k < t;)
                         if (((o = e.charCodeAt(k)), o < 32)) A();
                         else if (o == 92)
                           switch (((o = e.charCodeAt(++k)), o)) {
@@ -4923,7 +4922,7 @@ var bo,
                 if ((e == `$` && A(), typeof e == `string`)) {
                   if ((w ? e.charAt(0) : e[0]) == `@`) return e.slice(1);
                   if (e == `[`) {
-                    for (t = []; (e = fe()), e != `]`; )
+                    for (t = []; (e = fe()), e != `]`;)
                       (n
                         ? e == `,`
                           ? ((e = fe()), e == `]` && A())
@@ -4933,7 +4932,7 @@ var bo,
                         t.push(pe(e)));
                     return t;
                   } else if (e == `{`) {
-                    for (t = {}; (e = fe()), e != `}`; )
+                    for (t = {}; (e = fe()), e != `}`;)
                       (n
                         ? e == `,`
                           ? ((e = fe()), e == `}` && A())
@@ -4960,7 +4959,7 @@ var bo,
                   i;
                 if (typeof r == `object` && r)
                   if (m.call(r) == S)
-                    for (i = r.length; i--; ) me(m, T, r, i, n);
+                    for (i = r.length; i--;) me(m, T, r, i, n);
                   else
                     T(r, function (e) {
                       me(r, e, n);

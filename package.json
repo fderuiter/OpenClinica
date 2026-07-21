@@ -37,8 +37,7 @@
       "eslint --fix"
     ],
     "**/*.{css,scss}": [
-      "prettier --write",
-      "stylelint --fix"
+      "prettier --write"
     ],
     "**/*.java": [
       "./hooks/check_java.sh"

@@ -196,7 +196,7 @@ var require_setup_globals = __commonJSMin(() => {
     (function ($) {
       var tableFacades = {},
         getFormByTableId = function (e) {
-          for (var t = document.getElementById(e), r = !1; !r; ) {
+          for (var t = document.getElementById(e), r = !1; !r;) {
             if (t.nodeName == `FORM`) return ((r = !0), t);
             t = t.parentNode;
           }
@@ -746,12 +746,12 @@ var require_setup_globals = __commonJSMin(() => {
         Calendar._SDN === void 0)
       ) {
         Calendar._SDN_len === void 0 && (Calendar._SDN_len = 3);
-        for (var o = [], c = 8; c > 0; )
+        for (var o = [], c = 8; c > 0;)
           o[--c] = Calendar._DN[c].substr(0, Calendar._SDN_len);
         ((Calendar._SDN = o),
           Calendar._SMN_len === void 0 && (Calendar._SMN_len = 3),
           (o = []));
-        for (var c = 12; c > 0; )
+        for (var c = 12; c > 0;)
           o[--c] = Calendar._MN[c].substr(0, Calendar._SMN_len);
         Calendar._SMN = o;
       }
@@ -789,7 +789,7 @@ var require_setup_globals = __commonJSMin(() => {
             ? (r = t.fromElement)
             : a == `mouseout` && (r = t.toElement);
         }
-        for (; r; ) {
+        for (; r;) {
           if (r == e) return !0;
           r = r.parentNode;
         }
@@ -797,7 +797,7 @@ var require_setup_globals = __commonJSMin(() => {
       }),
       (Calendar.removeClass = function (e, t) {
         if (e && e.className) {
-          for (var r = e.className.split(` `), a = [], o = r.length; o > 0; )
+          for (var r = e.className.split(` `), a = [], o = r.length; o > 0;)
             r[--o] != t && (a[a.length] = r[o]);
           e.className = a.join(` `);
         }
@@ -1003,7 +1003,7 @@ var require_setup_globals = __commonJSMin(() => {
                 g = p.length;
               --g >= 0 && p[g] != m;
             );
-            for (; h-- > 0; )
+            for (; h-- > 0;)
               f ? --g < 0 && (g = p.length - 1) : ++g >= p.length && (g = 0);
             ((r.innerHTML = p[g]), t.onUpdateTime());
           }
@@ -1674,7 +1674,7 @@ http://dynarch.com/mishoo/calendar.epl
         ) {
           var r = e[--t];
           Calendar.removeClass(r, `rowhilite`);
-          for (var a = r.getElementsByTagName(`td`), o = a.length; o > 0; ) {
+          for (var a = r.getElementsByTagName(`td`), o = a.length; o > 0;) {
             var c = a[--o];
             (Calendar.removeClass(c, `hilite`),
               Calendar.removeClass(c, `active`));
@@ -2291,7 +2291,7 @@ Time selection:
             e.multiple)
           ) {
             c.multiple = {};
-            for (var l = e.multiple.length; --l >= 0; ) {
+            for (var l = e.multiple.length; --l >= 0;) {
               var u = e.multiple[l],
                 f = u.print(`%Y%m%d`);
               c.multiple[f] = u;
@@ -2777,7 +2777,7 @@ Each command must be followed by a value.`,
         tt_aV[CLOSEBTN])
       ) {
         tt_aV[CLOSEBTNCOLORS] || (tt_aV[CLOSEBTNCOLORS] = [``, ``, ``, ``]);
-        for (var e = 4; e; )
+        for (var e = 4; e;)
           (--e,
             tt_aV[CLOSEBTNCOLORS][e].length ||
               (tt_aV[CLOSEBTNCOLORS][e] =
@@ -2995,11 +2995,11 @@ Each command must be followed by a value.`,
         (t = e.childNodes || e.children || null),
         t)
       )
-        for (var r = t.length; r; ) tt_DeAlt(t[--r]);
+        for (var r = t.length; r;) tt_DeAlt(t[--r]);
     }
     function tt_OpDeHref(e) {
       if (tt_op)
-        for (tt_elDeHref && tt_OpReHref(); e; ) {
+        for (tt_elDeHref && tt_OpReHref(); e;) {
           if (e.hasAttribute && e.hasAttribute(`href`)) {
             ((e.t_href = e.getAttribute(`href`)),
               (e.t_stats = window.status),
@@ -3282,7 +3282,7 @@ Each command must be followed by a value.`,
             (eval(s + ` = ` + tt_aV.length), (tt_aV[tt_aV.length] = null)));
     }
     function tt_ExtCallFncs(e, t) {
-      for (var r = !1, a = tt_aExt.length; a; ) {
+      for (var r = !1, a = tt_aExt.length; a;) {
         --a;
         var o = tt_aExt[a][`On` + t];
         o && o(e) && (r = !0);
@@ -3367,7 +3367,7 @@ Each command must be followed by a value.`,
       );
     }
     function AnchorPosition_getPageOffsetLeft(e) {
-      for (var t = e.offsetLeft; (e = e.offsetParent) != null; )
+      for (var t = e.offsetLeft; (e = e.offsetParent) != null;)
         t += e.offsetLeft;
       return t;
     }
@@ -3375,8 +3375,7 @@ Each command must be followed by a value.`,
       return AnchorPosition_getPageOffsetLeft(e) - document.body.scrollLeft;
     }
     function AnchorPosition_getPageOffsetTop(e) {
-      for (var t = e.offsetTop; (e = e.offsetParent) != null; )
-        t += e.offsetTop;
+      for (var t = e.offsetTop; (e = e.offsetParent) != null;) t += e.offsetTop;
       return t;
     }
     function AnchorPosition_getWindowOffsetTop(e) {
@@ -3493,7 +3492,7 @@ Each command must be followed by a value.`,
           P.ss = LZ(g);
         a < t.length;
       ) {
-        for (o = t.charAt(a), c = ``; t.charAt(a) == o && a < t.length; )
+        for (o = t.charAt(a), c = ``; t.charAt(a) == o && a < t.length;)
           c += t.charAt(a++);
         P[c] == null ? (r += c) : (r += P[c]);
       }
@@ -3532,7 +3531,7 @@ Each command must be followed by a value.`,
           x = ``;
         a < t.length;
       ) {
-        for (o = t.charAt(a), c = ``; t.charAt(a) == o && a < t.length; )
+        for (o = t.charAt(a), c = ``; t.charAt(a) == o && a < t.length;)
           c += t.charAt(a++);
         if (c == `yyyy` || c == `yy` || c == `y`) {
           if (
@@ -3773,13 +3772,13 @@ Each command must be followed by a value.`,
             r < a.top + a.clip.height
           );
         } else if (document.all) {
-          for (var a = window.event.srcElement; a.parentElement != null; ) {
+          for (var a = window.event.srcElement; a.parentElement != null;) {
             if (a.id == this.divName) return !0;
             a = a.parentElement;
           }
           return !1;
         } else if (this.use_gebi && e) {
-          for (var a = e.originalTarget; a.parentNode != null; ) {
+          for (var a = e.originalTarget; a.parentNode != null;) {
             if (a.id == this.divName) return !0;
             a = a.parentNode;
           }

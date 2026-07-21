@@ -298,7 +298,7 @@ var require_prototype = __commonJSMin((exports, module) => {
         (function () {
           var e = Array.prototype.slice;
           function t(e, t) {
-            for (var n = e.length, r = t.length; r--; ) e[n + r] = t[r];
+            for (var n = e.length, r = t.length; r--;) e[n + r] = t[r];
             return e;
           }
           function n(n, r) {
@@ -481,7 +481,7 @@ var require_prototype = __commonJSMin((exports, module) => {
               !(e.length || isNonEmptyRegExp(e)))
             )
               return ((t = t(``)), t + r.split(``).join(t) + t);
-            for (; r.length > 0; )
+            for (; r.length > 0;)
               ((i = r.match(e)),
                 i && i[0].length > 0
                   ? ((n += r.slice(0, i.index)),
@@ -719,7 +719,7 @@ var require_prototype = __commonJSMin((exports, module) => {
               i = t[3],
               a = /^([^.[]+|\[((?:.*?[^\\])?)\])(\.|\[|$)/;
             if (((t = a.exec(i)), t == null)) return n;
-            for (; t != null; ) {
+            for (; t != null;) {
               var o = t[1].startsWith(`[`) ? t[2].replace(/\\\\]/g, `]`) : t[1];
               if (((r = r[o]), r == null || t[3] == ``)) break;
               ((i = i.substring(t[3] == `[` ? t[1].length : t[0].length)),
@@ -746,7 +746,7 @@ var require_prototype = __commonJSMin((exports, module) => {
             i = [],
             a = this.toArray();
           if (e < 1) return a;
-          for (; (r += e) < a.length; ) i.push(a.slice(r, r + e));
+          for (; (r += e) < a.length;) i.push(a.slice(r, r + e));
           return i.collect(t, n);
         }
         function n(e, t) {
@@ -823,7 +823,7 @@ var require_prototype = __commonJSMin((exports, module) => {
           return (
             (t = Object.isUndefined(t) ? null : t),
             this.eachSlice(e, function (n) {
-              for (; n.length < e; ) n.push(t);
+              for (; n.length < e;) n.push(t);
               return n;
             })
           );
@@ -956,7 +956,7 @@ var require_prototype = __commonJSMin((exports, module) => {
     function $A(e) {
       if (!e) return [];
       if (`toArray` in Object(e)) return e.toArray();
-      for (var t = e.length || 0, n = Array(t); t--; ) n[t] = e[t];
+      for (var t = e.length || 0, n = Array(t); t--;) n[t] = e[t];
       return n;
     }
     function $w(e) {
@@ -1883,8 +1883,7 @@ var require_prototype = __commonJSMin((exports, module) => {
           })();
         function C(e, t) {
           e = i(e);
-          for (var n = e.getElementsByTagName(`*`), r = n.length; r--; )
-            F(n[r]);
+          for (var n = e.getElementsByTagName(`*`), r = n.length; r--;) F(n[r]);
           if ((t && t.toElement && (t = t.toElement()), Object.isElement(t)))
             return e.update().insert(t);
           t = Object.toHTML(t);
@@ -1892,11 +1891,11 @@ var require_prototype = __commonJSMin((exports, module) => {
           if (a === `SCRIPT` && S) return ((e.text = t), e);
           if (x)
             if (a in T.tags) {
-              for (; e.firstChild; ) e.removeChild(e.firstChild);
+              for (; e.firstChild;) e.removeChild(e.firstChild);
               for (var o = N(a, t.stripScripts()), r = 0, s; (s = o[r]); r++)
                 e.appendChild(s);
             } else if (b && Object.isString(t) && t.indexOf(`<link`) > -1) {
-              for (; e.firstChild; ) e.removeChild(e.firstChild);
+              for (; e.firstChild;) e.removeChild(e.firstChild);
               for (
                 var o = N(a, t.stripScripts(), !0), r = 0, s;
                 (s = o[r]);
@@ -2013,7 +2012,7 @@ var require_prototype = __commonJSMin((exports, module) => {
         }
         function j(e) {
           e = i(e);
-          for (var t = e.firstChild; t; ) {
+          for (var t = e.firstChild; t;) {
             var n = t.nextSibling;
             (t.nodeType === Node.TEXT_NODE &&
               !/\S/.test(t.nodeValue) &&
@@ -2032,7 +2031,7 @@ var require_prototype = __commonJSMin((exports, module) => {
           if ((!o && n && ((o = !0), (i = [``, ``, 0])), o)) {
             ((a.innerHTML = `&#160;` + i[0] + t + i[1]),
               a.removeChild(a.firstChild));
-            for (var s = i[2]; s--; ) a = a.firstChild;
+            for (var s = i[2]; s--;) a = a.firstChild;
           } else a.innerHTML = t;
           return $A(a.childNodes);
         }
@@ -2040,7 +2039,7 @@ var require_prototype = __commonJSMin((exports, module) => {
           if ((e = i(e))) {
             var r = e.cloneNode(n);
             if (!Qe && ((r._prototypeUID = t), n))
-              for (var a = l.select(r, `*`), o = a.length; o--; )
+              for (var a = l.select(r, `*`), o = a.length; o--;)
                 a[o]._prototypeUID = t;
             return l.extend(r);
           }
@@ -2055,7 +2054,7 @@ var require_prototype = __commonJSMin((exports, module) => {
         function I(e) {
           if ((e = i(e))) {
             F(e);
-            for (var t = e.getElementsByTagName(`*`), n = t.length; n--; )
+            for (var t = e.getElementsByTagName(`*`), n = t.length; n--;)
               F(t[n]);
             return null;
           }
@@ -2088,12 +2087,12 @@ var require_prototype = __commonJSMin((exports, module) => {
           return l.select(e, `*`);
         }
         function re(e) {
-          for (e = i(e).firstChild; e && e.nodeType !== Node.ELEMENT_NODE; )
+          for (e = i(e).firstChild; e && e.nodeType !== Node.ELEMENT_NODE;)
             e = e.nextSibling;
           return i(e);
         }
         function ie(e) {
-          for (var t = [], n = i(e).firstChild; n; )
+          for (var t = [], n = i(e).firstChild; n;)
             (n.nodeType === Node.ELEMENT_NODE && t.push(l.extend(n)),
               (n = n.nextSibling));
           return t;
@@ -2173,7 +2172,7 @@ var require_prototype = __commonJSMin((exports, module) => {
         }
         function pe(e, t) {
           if (((e = i(e)), (t = i(t)), !e || !t)) return !1;
-          for (; (e = e.parentNode); ) if (e === t) return !0;
+          for (; (e = e.parentNode);) if (e === t) return !0;
           return !1;
         }
         function me(e, t) {
@@ -2832,7 +2831,7 @@ var require_prototype = __commonJSMin((exports, module) => {
           return 0;
         }
         function a(e) {
-          for (; e && e.parentNode; ) {
+          for (; e && e.parentNode;) {
             if (e.getStyle(`display`) === `none`) return !1;
             e = $(e.parentNode);
           }
@@ -3168,7 +3167,7 @@ var require_prototype = __commonJSMin((exports, module) => {
           if (O(e) || k(e) || E(e) || D(e)) return $(document.body);
           if (Element.getStyle(e, `display`) !== `inline` && e.offsetParent)
             return t(e.offsetParent);
-          for (; (e = e.parentNode) && e !== document.body; )
+          for (; (e = e.parentNode) && e !== document.body;)
             if (Element.getStyle(e, `position`) !== `static`) return t(e);
           return $(document.body);
         }
@@ -3680,7 +3679,7 @@ var require_prototype = __commonJSMin((exports, module) => {
                   j.apply(e, N.call(t));
                 }
               : function (e, t) {
-                  for (var n = e.length, r = 0; (e[n++] = t[r++]); );
+                  for (var n = e.length, r = 0; (e[n++] = t[r++]););
                   e.length = n - 1;
                 },
           };
@@ -3773,8 +3772,7 @@ var require_prototype = __commonJSMin((exports, module) => {
           }
         }
         function ge(e, t) {
-          for (var n = e.split(`|`), i = e.length; i--; )
-            r.attrHandle[n[i]] = t;
+          for (var n = e.split(`|`), i = e.length; i--;) r.attrHandle[n[i]] = t;
         }
         function G(e, t) {
           var n = t && e,
@@ -3785,7 +3783,7 @@ var require_prototype = __commonJSMin((exports, module) => {
               (~t.sourceIndex || O) - (~e.sourceIndex || O);
           if (r) return r;
           if (n) {
-            for (; (n = n.nextSibling); ) if (n === t) return -1;
+            for (; (n = n.nextSibling);) if (n === t) return -1;
           }
           return e ? 1 : -1;
         }
@@ -3805,7 +3803,7 @@ var require_prototype = __commonJSMin((exports, module) => {
             return (
               (t = +t),
               U(function (n, r) {
-                for (var i, a = e([], n.length, t), o = a.length; o--; )
+                for (var i, a = e([], n.length, t), o = a.length; o--;)
                   n[(i = a[o])] && (n[i] = !(r[i] = n[i]));
               })
             );
@@ -3902,7 +3900,7 @@ var require_prototype = __commonJSMin((exports, module) => {
                         i = 0,
                         a = t.getElementsByTagName(e);
                       if (e === `*`) {
-                        for (; (n = a[i++]); ) n.nodeType === 1 && r.push(n);
+                        for (; (n = a[i++]);) n.nodeType === 1 && r.push(n);
                         return r;
                       }
                       return a;
@@ -3970,7 +3968,7 @@ var require_prototype = __commonJSMin((exports, module) => {
                       }
                     : function (e, t) {
                         if (t) {
-                          for (; (t = t.parentNode); ) if (t === e) return !0;
+                          for (; (t = t.parentNode);) if (t === e) return !0;
                         }
                         return !1;
                       }),
@@ -4020,9 +4018,9 @@ var require_prototype = __commonJSMin((exports, module) => {
                                   ? P.call(l, e) - P.call(l, t)
                                   : 0;
                       if (a === o) return G(e, t);
-                      for (n = e; (n = n.parentNode); ) s.unshift(n);
-                      for (n = t; (n = n.parentNode); ) c.unshift(n);
-                      for (; s[r] === c[r]; ) r++;
+                      for (n = e; (n = n.parentNode);) s.unshift(n);
+                      for (n = t; (n = n.parentNode);) c.unshift(n);
+                      for (; s[r] === c[r];) r++;
                       return r
                         ? G(s[r], c[r])
                         : s[r] === b
@@ -4081,8 +4079,8 @@ var require_prototype = __commonJSMin((exports, module) => {
             e.sort(E),
             u)
           ) {
-            for (; (t = e[a++]); ) t === e[a] && (i = r.push(a));
-            for (; i--; ) e.splice(r[i], 1);
+            for (; (t = e[a++]);) t === e[a] && (i = r.push(a));
+            for (; i--;) e.splice(r[i], 1);
           }
           return ((l = null), e);
         }),
@@ -4092,7 +4090,7 @@ var require_prototype = __commonJSMin((exports, module) => {
               n = ``,
               r = 0,
               a = e.nodeType;
-            if (!a) for (; (t = e[r++]); ) n += i(t);
+            if (!a) for (; (t = e[r++]);) n += i(t);
             else if (a === 1 || a === 9 || a === 11) {
               if (typeof e.textContent == `string`) return e.textContent;
               for (e = e.firstChild; e; e = e.nextSibling) n += i(e);
@@ -4222,8 +4220,8 @@ var require_prototype = __commonJSMin((exports, module) => {
                         v = !c && !s;
                       if (g) {
                         if (a) {
-                          for (; h; ) {
-                            for (d = t; (d = d[h]); )
+                          for (; h;) {
+                            for (d = t; (d = d[h]);)
                               if (
                                 s
                                   ? d.nodeName.toLowerCase() === _
@@ -4286,7 +4284,7 @@ var require_prototype = __commonJSMin((exports, module) => {
                     ? ((n = [e, e, ``, t]),
                       r.setFilters.hasOwnProperty(e.toLowerCase())
                         ? U(function (e, n) {
-                            for (var r, a = i(e, t), o = a.length; o--; )
+                            for (var r, a = i(e, t), o = a.length; o--;)
                               ((r = P.call(e, a[o])), (e[r] = !(n[r] = a[o])));
                           })
                         : function (e) {
@@ -4302,7 +4300,7 @@ var require_prototype = __commonJSMin((exports, module) => {
                   r = o(e.replace(ie, `$1`));
                 return r[y]
                   ? U(function (e, t, n, i) {
-                      for (var a, o = r(e, null, i, []), s = e.length; s--; )
+                      for (var a, o = r(e, null, i, []), s = e.length; s--;)
                         (a = o[s]) && (e[s] = !(t[s] = a));
                     })
                   : function (e, i, a) {
@@ -4419,11 +4417,11 @@ var require_prototype = __commonJSMin((exports, module) => {
                 return e;
               }),
               lt: ye(function (e, t, n) {
-                for (var r = n < 0 ? n + t : n; --r >= 0; ) e.push(r);
+                for (var r = n < 0 ? n + t : n; --r >= 0;) e.push(r);
                 return e;
               }),
               gt: ye(function (e, t, n) {
-                for (var r = n < 0 ? n + t : n; ++r < t; ) e.push(r);
+                for (var r = n < 0 ? n + t : n; ++r < t;) e.push(r);
                 return e;
               }),
             },
@@ -4444,7 +4442,7 @@ var require_prototype = __commonJSMin((exports, module) => {
             l,
             u = w[e + ` `];
           if (u) return t ? 0 : u.slice(0);
-          for (s = e, c = [], l = r.preFilter; s; ) {
+          for (s = e, c = [], l = r.preFilter; s;) {
             for (o in ((!n || (i = R.exec(s))) &&
               (i && (s = s.slice(i[0].length) || s), c.push((a = []))),
             (n = !1),
@@ -4472,7 +4470,7 @@ var require_prototype = __commonJSMin((exports, module) => {
             a = S++;
           return t.first
             ? function (t, n, a) {
-                for (; (t = t[r]); )
+                for (; (t = t[r]);)
                   if (t.nodeType === 1 || i) return e(t, n, a);
               }
             : function (t, n, o) {
@@ -4480,10 +4478,10 @@ var require_prototype = __commonJSMin((exports, module) => {
                   c,
                   l = [x, a];
                 if (o) {
-                  for (; (t = t[r]); )
+                  for (; (t = t[r]);)
                     if ((t.nodeType === 1 || i) && e(t, n, o)) return !0;
                 } else
-                  for (; (t = t[r]); )
+                  for (; (t = t[r]);)
                     if (t.nodeType === 1 || i) {
                       if (
                         ((c = t[y] || (t[y] = {})),
@@ -4497,7 +4495,7 @@ var require_prototype = __commonJSMin((exports, module) => {
         function Te(e) {
           return e.length > 1
             ? function (t, n, r) {
-                for (var i = e.length; i--; ) if (!e[i](t, n, r)) return !1;
+                for (var i = e.length; i--;) if (!e[i](t, n, r)) return !1;
                 return !0;
               }
             : e[0];
@@ -4526,16 +4524,16 @@ var require_prototype = __commonJSMin((exports, module) => {
                 g = e && (a || !t) ? De(h, f, e, s, c) : h,
                 _ = n ? (i || (a ? e : m || r) ? [] : o) : g;
               if ((n && n(g, _, s, c), r))
-                for (l = De(_, p), r(l, [], s, c), u = l.length; u--; )
+                for (l = De(_, p), r(l, [], s, c), u = l.length; u--;)
                   (d = l[u]) && (_[p[u]] = !(g[p[u]] = d));
               if (a) {
                 if (i || e) {
                   if (i) {
-                    for (l = [], u = _.length; u--; )
+                    for (l = [], u = _.length; u--;)
                       (d = _[u]) && l.push((g[u] = d));
                     i(null, (_ = []), l, c);
                   }
-                  for (u = _.length; u--; )
+                  for (u = _.length; u--;)
                     (d = _[u]) &&
                       (l = i ? P.call(a, d) : f[u]) > -1 &&
                       (a[l] = !(o[l] = d));
@@ -4623,7 +4621,7 @@ var require_prototype = __commonJSMin((exports, module) => {
                 g++
               ) {
                 if (i && d) {
-                  for (p = 0; (m = e[p++]); )
+                  for (p = 0; (m = e[p++]);)
                     if (m(d, o, s)) {
                       l.push(d);
                       break;
@@ -4633,9 +4631,9 @@ var require_prototype = __commonJSMin((exports, module) => {
                 n && ((d = !m && d) && h--, a && _.push(d));
               }
               if (((h += g), n && g !== h)) {
-                for (p = 0; (m = t[p++]); ) m(_, v, o, s);
+                for (p = 0; (m = t[p++]);) m(_, v, o, s);
                 if (a) {
-                  if (h > 0) for (; g--; ) _[g] || v[g] || (v[g] = ee.call(l));
+                  if (h > 0) for (; g--;) _[g] || v[g] || (v[g] = ee.call(l));
                   v = De(v);
                 }
                 (M.apply(l, v),
@@ -4656,7 +4654,7 @@ var require_prototype = __commonJSMin((exports, module) => {
               i = [],
               a = T[e + ` `];
             if (!a) {
-              for (t ||= Se(e), n = t.length; n--; )
+              for (t ||= Se(e), n = t.length; n--;)
                 ((a = Oe(t[n])), a[y] ? r.push(a) : i.push(a));
               ((a = T(e, q(i, r))), (a.selector = e));
             }
@@ -5194,7 +5192,7 @@ var require_prototype = __commonJSMin((exports, module) => {
           var n = h(e),
             r = Prototype.Selector;
           if (!t) return Element.extend(n);
-          for (; n; ) {
+          for (; n;) {
             if (Object.isElement(n) && r.match(n, t)) return Element.extend(n);
             n = n.parentNode;
           }
@@ -5323,14 +5321,14 @@ var require_prototype = __commonJSMin((exports, module) => {
         function A(t, n, r) {
           var i = O(t);
           i[n] || (i[n] = []);
-          for (var a = i[n], o = a.length; o--; )
+          for (var a = i[n], o = a.length; o--;)
             if (a[o].handler === r) return null;
           var s = T(t),
             c = { responder: e.Event._createResponder(s, n, r), handler: r };
           return (a.push(c), c);
         }
         function ee(e, t, n) {
-          for (var r = O(e), i = r[t] || [], a = i.length, o; a--; )
+          for (var r = O(e), i = r[t] || [], a = i.length, o; a--;)
             if (i[a].handler === n) {
               o = i[a];
               break;
@@ -5393,14 +5391,14 @@ var require_prototype = __commonJSMin((exports, module) => {
             var i, a;
             for (var o in r)
               if (o !== `element`)
-                for (i = r[o], a = i.length; a--; ) ne(t, o, i[a].responder);
+                for (i = r[o], a = i.length; a--;) ne(t, o, i[a].responder);
           }
         }
         function te(e, t) {
           var n = O(e),
             r = n[t];
           (r && delete n[t], (r ||= []));
-          for (var i = r.length; i--; ) ne(e, t, r[i].responder);
+          for (var i = r.length; i--;) ne(e, t, r[i].responder);
           for (var a in n) if (a !== `element`) return;
           k(e);
         }
@@ -5526,7 +5524,7 @@ var require_prototype = __commonJSMin((exports, module) => {
           return function (t) {
             var r = Event.cache[e].element;
             Event.extend(t, r);
-            for (var i = t.relatedTarget; i && i !== r; )
+            for (var i = t.relatedTarget; i && i !== r;)
               try {
                 i = i.parentNode;
               } catch {
@@ -6018,7 +6016,7 @@ function jQueryFactory$1(e, t) {
           n = ``,
           r = 0,
           i = e.nodeType;
-        if (!i) for (; (t = e[r++]); ) n += S.text(t);
+        if (!i) for (; (t = e[r++]);) n += S.text(t);
         return i === 1 || i === 11
           ? e.textContent
           : i === 9
@@ -6190,7 +6188,7 @@ function jQueryFactory$1(e, t) {
       c,
       l = se[e + ` `];
     if (l) return t ? 0 : l.slice(0);
-    for (o = e, s = [], c = S.expr.preFilter; o; ) {
+    for (o = e, s = [], c = S.expr.preFilter; o;) {
       for (a in ((!n || (r = oe.exec(o))) &&
         (r && (o = o.slice(r[0].length) || o), s.push((i = []))),
       (n = !1),
@@ -6313,7 +6311,7 @@ function jQueryFactory$1(e, t) {
         var n,
           r = 0,
           i = t && t.match(B);
-        if (i && e.nodeType === 1) for (; (n = i[r++]); ) e.removeAttribute(n);
+        if (i && e.nodeType === 1) for (; (n = i[r++]);) e.removeAttribute(n);
       },
     }),
     E &&
@@ -6365,8 +6363,8 @@ function jQueryFactory$1(e, t) {
       r = 0,
       i = 0;
     if (((V = !1), pe.call(e, H), V)) {
-      for (; (t = e[i++]); ) t === e[i] && (r = n.push(i));
-      for (; r--; ) me.call(e, n[r], 1);
+      for (; (t = e[i++]);) t === e[i] && (r = n.push(i));
+      for (; r--;) me.call(e, n[r], 1);
     }
     return e;
   }),
@@ -6496,7 +6494,7 @@ function jQueryFactory$1(e, t) {
       return (
         (t = +t),
         J(function (n, r) {
-          for (var i, a = e([], n.length, t), o = a.length; o--; )
+          for (var i, a = e([], n.length, t), o = a.length; o--;)
             n[(i = a[o])] && (n[i] = !(r[i] = n[i]));
         })
       );
@@ -6633,8 +6631,8 @@ function jQueryFactory$1(e, t) {
                 v = !1;
               if (h) {
                 if (a) {
-                  for (; m; ) {
-                    for (d = t; (d = d[m]); )
+                  for (; m;) {
+                    for (d = t; (d = d[m]);)
                       if (s ? C(d, g) : d.nodeType === 1) return !1;
                     p = m = e === `only` && !p && `nextSibling`;
                   }
@@ -6692,7 +6690,7 @@ function jQueryFactory$1(e, t) {
           r = Ve(e.replace(O, `$1`));
         return r[S.expando]
           ? J(function (e, t, n, i) {
-              for (var a, o = r(e, null, i, []), s = e.length; s--; )
+              for (var a, o = r(e, null, i, []), s = e.length; s--;)
                 (a = o[s]) && (e[s] = !(t[s] = a));
             })
           : function (e, i, a) {
@@ -6798,11 +6796,11 @@ function jQueryFactory$1(e, t) {
         return e;
       }),
       lt: Me(function (e, t, n) {
-        for (var r = n < 0 ? n + t : n > t ? t : n; --r >= 0; ) e.push(r);
+        for (var r = n < 0 ? n + t : n > t ? t : n; --r >= 0;) e.push(r);
         return e;
       }),
       gt: Me(function (e, t, n) {
-        for (var r = n < 0 ? n + t : n; ++r < t; ) e.push(r);
+        for (var r = n < 0 ? n + t : n; ++r < t;) e.push(r);
         return e;
       }),
     },
@@ -6821,7 +6819,7 @@ function jQueryFactory$1(e, t) {
       s = ve++;
     return t.first
       ? function (t, n, i) {
-          for (; (t = t[r]); ) if (t.nodeType === 1 || o) return e(t, n, i);
+          for (; (t = t[r]);) if (t.nodeType === 1 || o) return e(t, n, i);
           return !1;
         }
       : function (t, n, c) {
@@ -6829,10 +6827,10 @@ function jQueryFactory$1(e, t) {
             u,
             d = [_e, s];
           if (c) {
-            for (; (t = t[r]); )
+            for (; (t = t[r]);)
               if ((t.nodeType === 1 || o) && e(t, n, c)) return !0;
           } else
-            for (; (t = t[r]); )
+            for (; (t = t[r]);)
               if (t.nodeType === 1 || o) {
                 if (((u = t[S.expando] || (t[S.expando] = {})), i && C(t, i)))
                   t = t[r] || t;
@@ -6846,7 +6844,7 @@ function jQueryFactory$1(e, t) {
   function Fe(e) {
     return e.length > 1
       ? function (t, n, r) {
-          for (var i = e.length; i--; ) if (!e[i](t, n, r)) return !1;
+          for (var i = e.length; i--;) if (!e[i](t, n, r)) return !1;
           return !0;
         }
       : e[0];
@@ -6878,16 +6876,15 @@ function jQueryFactory$1(e, t) {
           (n ? ((m = i || (a ? e : _ || r) ? [] : c), n(y, m, l, u)) : (m = y),
           r)
         )
-          for (d = Le(m, g), r(d, [], l, u), f = d.length; f--; )
+          for (d = Le(m, g), r(d, [], l, u), f = d.length; f--;)
             (p = d[f]) && (m[g[f]] = !(y[g[f]] = p));
         if (a) {
           if (i || e) {
             if (i) {
-              for (d = [], f = m.length; f--; )
-                (p = m[f]) && d.push((y[f] = p));
+              for (d = [], f = m.length; f--;) (p = m[f]) && d.push((y[f] = p));
               i(null, (m = []), d, u);
             }
-            for (f = m.length; f--; )
+            for (f = m.length; f--;)
               (p = m[f]) &&
                 (d = i ? s.call(a, p) : h[f]) > -1 &&
                 (a[d] = !(c[d] = p));
@@ -6986,9 +6983,9 @@ function jQueryFactory$1(e, t) {
           n && ((u = !f && u) && p--, i && h.push(u));
         }
         if (((p += m), n && m !== p)) {
-          for (d = 0; (f = t[d++]); ) f(h, g, a, s);
+          for (d = 0; (f = t[d++]);) f(h, g, a, s);
           if (i) {
-            if (p > 0) for (; m--; ) h[m] || g[m] || (g[m] = w.call(c));
+            if (p > 0) for (; m--;) h[m] || g[m] || (g[m] = w.call(c));
             g = Le(g);
           }
           (o.apply(c, g),
@@ -7004,7 +7001,7 @@ function jQueryFactory$1(e, t) {
       i = [],
       a = be[e + ` `];
     if (!a) {
-      for (t ||= ce(e), n = t.length; n--; )
+      for (t ||= ce(e), n = t.length; n--;)
         ((a = ze(t[n])), a[S.expando] ? r.push(a) : i.push(a));
       ((a = be(e, Be(i, r))), (a.selector = e));
     }
@@ -7057,7 +7054,7 @@ function jQueryFactory$1(e, t) {
     (q.setDocument = Ne),
     (q.tokenize = ce));
   function Ue(e, t, n) {
-    for (var r = [], i = n !== void 0; (e = e[t]) && e.nodeType !== 9; )
+    for (var r = [], i = n !== void 0; (e = e[t]) && e.nodeType !== 9;)
       if (e.nodeType === 1) {
         if (i && S(e).is(n)) break;
         r.push(e);
@@ -7216,7 +7213,7 @@ function jQueryFactory$1(e, t) {
     },
   });
   function et(e, t) {
-    for (; (e = e[t]) && e.nodeType !== 1; );
+    for (; (e = e[t]) && e.nodeType !== 1;);
     return e;
   }
   S.each(
@@ -7295,7 +7292,7 @@ function jQueryFactory$1(e, t) {
       s = -1,
       c = function () {
         for (i ||= e.once, r = t = !0; o.length; s = -1)
-          for (n = o.shift(); ++s < a.length; )
+          for (n = o.shift(); ++s < a.length;)
             a[s].apply(n[0], n[1]) === !1 &&
               e.stopOnFalse &&
               ((s = a.length), (n = !1));
@@ -7320,7 +7317,7 @@ function jQueryFactory$1(e, t) {
         remove: function () {
           return (
             S.each(arguments, function (e, t) {
-              for (var n; (n = S.inArray(t, a, n)) > -1; )
+              for (var n; (n = S.inArray(t, a, n)) > -1;)
                 (a.splice(n, 1), n <= s && s--);
             }),
             this
@@ -7548,7 +7545,7 @@ function jQueryFactory$1(e, t) {
         o.state() === `pending` || typeof (a[n] && a[n].then) == `function`)
       )
         return o.then();
-      for (; n--; ) it(a[n], s(n), o.reject);
+      for (; n--;) it(a[n], s(n), o.reject);
       return o.promise();
     },
   });
@@ -7719,7 +7716,7 @@ function jQueryFactory$1(e, t) {
             this.length &&
             ((i = Z.get(a)), a.nodeType === 1 && !X.get(a, `hasDataAttrs`))
           ) {
-            for (n = o.length; n--; )
+            for (n = o.length; n--;)
               o[n] &&
                 ((r = o[n].name),
                 r.indexOf(`data-`) === 0 &&
@@ -7836,7 +7833,7 @@ function jQueryFactory$1(e, t) {
           s = function () {
             --r || i.resolveWith(a, [a]);
           };
-        for (typeof e != `string` && ((t = e), (e = void 0)), e ||= `fx`; o--; )
+        for (typeof e != `string` && ((t = e), (e = void 0)), e ||= `fx`; o--;)
           ((n = X.get(a[o], e + `queueHooks`)),
             n && n.empty && (r++, n.empty.add(s)));
         return (s(), i.promise(t));
@@ -7873,7 +7870,7 @@ function jQueryFactory$1(e, t) {
       l = (n && n[3]) || (Ct(t) ? `px` : ``),
       u = e.nodeType && (!Ct(t) || (l !== `px` && +c)) && vt.exec(S.css(e, t));
     if (u && u[3] !== l) {
-      for (c /= 2, l ||= u[3], u = +c || 1; o--; )
+      for (c /= 2, l ||= u[3], u = +c || 1; o--;)
         (S.style(e, t, u + l),
           (1 - a) * (1 - (a = s() / c || 0.5)) <= 0 && (o = 0),
           (u /= a));
@@ -8005,13 +8002,13 @@ function jQueryFactory$1(e, t) {
             (s = f.firstChild),
             (s.textContent = ``));
         }
-    for (f.textContent = ``, h = 0; (o = p[h++]); ) {
+    for (f.textContent = ``, h = 0; (o = p[h++]);) {
       if (i && S.inArray(o, i) > -1) {
         a && a.push(o);
         continue;
       }
       if (((u = At(o)), (s = Q(f.appendChild(o), `script`)), u && Ft(s), r))
-        for (d = 0; (o = s[d++]); ) Pt.test(o.type || ``) && r.push(o);
+        for (d = 0; (o = s[d++]);) Pt.test(o.type || ``) && r.push(o);
     }
     return f;
   }
@@ -8186,7 +8183,7 @@ function jQueryFactory$1(e, t) {
         h,
         g = X.hasData(e) && X.get(e);
       if (!(!g || !(c = g.events))) {
-        for (t = (t || ``).match(B) || [``], l = t.length; l--; ) {
+        for (t = (t || ``).match(B) || [``], l = t.length; l--;) {
           if (
             ((s = Ht.exec(t[l]) || []),
             (p = h = s[1]),
@@ -8771,7 +8768,7 @@ function jQueryFactory$1(e, t) {
   var nn = [`Webkit`, `Moz`, `ms`],
     rn = _.createElement(`div`).style;
   function an(e) {
-    for (var t = e[0].toUpperCase() + e.slice(1), n = nn.length; n--; )
+    for (var t = e[0].toUpperCase() + e.slice(1), n = nn.length; n--;)
       if (((e = nn[n] + t), e in rn)) return e;
   }
   function on(e) {
@@ -9357,7 +9354,7 @@ function jQueryFactory$1(e, t) {
               o = X.get(this);
             if (i) o[i] && o[i].stop && r(o[i]);
             else for (i in o) o[i] && o[i].stop && bn.test(i) && r(o[i]);
-            for (i = a.length; i--; )
+            for (i = a.length; i--;)
               a[i].elem === this &&
                 (e == null || a[i].queue === e) &&
                 (a[i].anim.stop(n), (t = !1), a.splice(i, 1));
@@ -9566,7 +9563,7 @@ function jQueryFactory$1(e, t) {
                     n)
                   ) {
                     for (a = 0; a < t.length; a++)
-                      for (i = t[a]; n.indexOf(` ` + i + ` `) > -1; )
+                      for (i = t[a]; n.indexOf(` ` + i + ` `) > -1;)
                         n = n.replace(` ` + i + ` `, ` `);
                     ((o = An(n)), r !== o && this.setAttribute(`class`, o));
                   }
@@ -9597,7 +9594,7 @@ function jQueryFactory$1(e, t) {
       var t,
         n,
         r = 0;
-      for (t = ` ` + e + ` `; (n = this[r++]); )
+      for (t = ` ` + e + ` `; (n = this[r++]);)
         if (n.nodeType === 1 && (` ` + An(jn(n)) + ` `).indexOf(t) > -1)
           return !0;
       return !1;
@@ -9733,7 +9730,7 @@ function jQueryFactory$1(e, t) {
           s === (r.ownerDocument || _) &&
             m.push(s.defaultView || s.parentWindow || e);
         }
-        for (a = 0; (o = m[a++]) && !t.isPropagationStopped(); )
+        for (a = 0; (o = m[a++]) && !t.isPropagationStopped();)
           ((p = o),
             (t.type = a > 1 ? c : f.bindType || g),
             (d =
@@ -9903,7 +9900,7 @@ function jQueryFactory$1(e, t) {
         i = 0,
         a = t.toLowerCase().match(B) || [];
       if (typeof n == `function`)
-        for (; (r = a[i++]); )
+        for (; (r = a[i++]);)
           r[0] === `+`
             ? ((r = r.slice(1) || `*`), (e[r] = e[r] || []).unshift(n))
             : (e[r] = e[r] || []).push(n);
@@ -9935,7 +9932,7 @@ function jQueryFactory$1(e, t) {
     return (r && S.extend(!0, e, r), e);
   }
   function rr(e, t, n) {
-    for (var r, i, a, o, s = e.contents, c = e.dataTypes; c[0] === `*`; )
+    for (var r, i, a, o, s = e.contents, c = e.dataTypes; c[0] === `*`;)
       (c.shift(),
         r === void 0 &&
           (r = e.mimeType || t.getResponseHeader(`Content-Type`)));
@@ -9968,7 +9965,7 @@ function jQueryFactory$1(e, t) {
       l = {},
       u = e.dataTypes.slice();
     if (u[1]) for (o in e.converters) l[o.toLowerCase()] = e.converters[o];
-    for (a = u.shift(); a; )
+    for (a = u.shift(); a;)
       if (
         (e.responseFields[a] && (n[e.responseFields[a]] = t),
         !c && r && e.dataFilter && (t = e.dataFilter(t, e.dataType)),
@@ -10070,7 +10067,7 @@ function jQueryFactory$1(e, t) {
             var t;
             if (l) {
               if (!o)
-                for (o = {}; (t = Kn.exec(a)); )
+                for (o = {}; (t = Kn.exec(a));)
                   o[t[1].toLowerCase() + ` `] = (
                     o[t[1].toLowerCase() + ` `] || []
                   ).concat(t[2]);
@@ -10289,7 +10286,7 @@ function jQueryFactory$1(e, t) {
             this[0].parentNode && t.insertBefore(this[0]),
             t
               .map(function () {
-                for (var e = this; e.firstElementChild; )
+                for (var e = this; e.firstElementChild;)
                   e = e.firstElementChild;
                 return e;
               })
@@ -11138,7 +11135,7 @@ var jQuery$2,
               (s = e.data(t.parentNode, `tmplItem`)),
               (s = s ? s.key : 0));
           if (p) {
-            for (f = p; f && f.key != s; ) (f.nodes.push(t), (f = f.parent));
+            for (f = p; f && f.key != s;) (f.nodes.push(t), (f = f.parent));
             (delete p._ctnt, delete p._wrap, e.data(t, `tmplItem`, p));
           }
           function h(e) {
@@ -11459,7 +11456,7 @@ function jQueryFactory(e, t) {
               (r = [t, t, ``, n]),
               e.expr.setFilters.hasOwnProperty(t.toLowerCase())
                 ? E(function (e, t) {
-                    for (var r, a = i(e, n), o = a.length; o--; )
+                    for (var r, a = i(e, n), o = a.length; o--;)
                       ((r = Array.prototype.indexOf.call(e, a[o])),
                         (e[r] = !(t[r] = a[o])));
                   })

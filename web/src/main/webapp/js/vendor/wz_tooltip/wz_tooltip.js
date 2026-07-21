@@ -463,7 +463,7 @@ function tt_HideSrcTagsRecurs(dad) {
   // (.childNodes first since .children is bugous in Safari)
   var a = dad.childNodes || dad.children || null;
 
-  for (var i = a ? a.length : 0; i; ) {
+  for (var i = a ? a.length : 0; i;) {
     --i;
     if (!tt_HideSrcTagsRecurs(a[i])) return false;
     ovr = a[i].getAttribute
@@ -552,7 +552,7 @@ function tt_AdaptConfig1() {
     // Use title colours for non-specified closebutton colours
     if (!tt_aV[CLOSEBTNCOLORS])
       tt_aV[CLOSEBTNCOLORS] = new Array('', '', '', '');
-    for (var i = 4; i; ) {
+    for (var i = 4; i;) {
       --i;
       if (!tt_aV[CLOSEBTNCOLORS][i].length)
         tt_aV[CLOSEBTNCOLORS][i] =
@@ -810,7 +810,7 @@ function tt_DeAlt(el) {
     if (el.title) el.title = '';
     aKid = el.childNodes || el.children || null;
     if (aKid) {
-      for (var i = aKid.length; i; ) tt_DeAlt(aKid[--i]);
+      for (var i = aKid.length; i;) tt_DeAlt(aKid[--i]);
     }
   }
 }
@@ -1163,7 +1163,7 @@ function tt_ExtCmdEnum() {
 }
 function tt_ExtCallFncs(arg, sFnc) {
   var b = false;
-  for (var i = tt_aExt.length; i; ) {
+  for (var i = tt_aExt.length; i;) {
     --i;
     var fnc = tt_aExt[i]['On' + sFnc];
     // Call the method the extension has defined for this event
