@@ -12,7 +12,9 @@ import org.akaza.openclinica.patterns.ocobserver.OnStudyEventUpdated;
 import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,8 +22,12 @@ public class RuleSetListenerService implements ApplicationListener<OnStudyEventU
 
     protected final Logger LOGGER = LoggerFactory.getLogger(getClass().getName());
 
-	private RuleSetService ruleSetService;
+	@Autowired
+	@Lazy
+	private RuleSetServiceInterface ruleSetService;
 
+	@Autowired
+	@Lazy
 	private RuleSetDao ruleSetDao;
 
 
@@ -59,12 +65,12 @@ public class RuleSetListenerService implements ApplicationListener<OnStudyEventU
 
 }
 
-public RuleSetService getRuleSetService() {
+public RuleSetServiceInterface getRuleSetService() {
 	return ruleSetService;
 }
 
 
-public void setRuleSetService(RuleSetService ruleSetService) {
+public void setRuleSetService(RuleSetServiceInterface ruleSetService) {
 	this.ruleSetService = ruleSetService;
 }
 

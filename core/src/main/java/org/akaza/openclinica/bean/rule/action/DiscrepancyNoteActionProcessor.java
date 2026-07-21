@@ -27,9 +27,6 @@ public class DiscrepancyNoteActionProcessor implements ActionProcessor {
                     discrepancyNoteService = (DiscrepancyNoteService) context.getBean("discrepancyNoteService");
                 }
             } catch (Exception e) {}
-            if (discrepancyNoteService == null) {
-                discrepancyNoteService = new DiscrepancyNoteService(ds);
-            }
         }
         return discrepancyNoteService;
     }

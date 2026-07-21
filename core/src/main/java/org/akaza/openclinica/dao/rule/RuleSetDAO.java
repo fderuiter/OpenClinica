@@ -67,39 +67,111 @@ public class RuleSetDAO extends AuditableEntityDAO {
     }
 
     private StudyEventDefinitionDAO getStudyEventDefinitionDao() {
-        return this.studyEventDefinitionDAO != null ? this.studyEventDefinitionDAO : new StudyEventDefinitionDAO(ds);
+        if (studyEventDefinitionDAO == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    studyEventDefinitionDAO = (StudyEventDefinitionDAO) context.getBean("studyEventDefinitionDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return studyEventDefinitionDAO;
     }
 
     private CRFDAO getCrfDao() {
-        return this.crfDao != null ? this.crfDao : new CRFDAO(ds);
+        if (crfDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    crfDao = (CRFDAO) context.getBean("crfDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return crfDao;
     }
 
     private CRFVersionDAO getCrfVersionDao() {
-        return this.crfVersionDao != null ? this.crfVersionDao : new CRFVersionDAO(ds);
+        if (crfVersionDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    crfVersionDao = (CRFVersionDAO) context.getBean("crfVersionDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return crfVersionDao;
     }
 
     private EventCRFDAO getEventCrfDao() {
-        return this.eventCrfDao != null ? this.eventCrfDao : new EventCRFDAO(ds);
+        if (eventCrfDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    eventCrfDao = (EventCRFDAO) context.getBean("eventCrfDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return eventCrfDao;
     }
 
     private RuleDAO getRuleDao() {
-        return this.ruleDao != null ? this.ruleDao : new RuleDAO(ds);
+        if (ruleDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    ruleDao = (RuleDAO) context.getBean("ruleDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return ruleDao;
     }
 
     private RuleSetAuditDAO getRuleSetAuditDao() {
-        return this.ruleSetAuditDao != null ? this.ruleSetAuditDao : new RuleSetAuditDAO(ds);
+        if (ruleSetAuditDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    ruleSetAuditDao = (RuleSetAuditDAO) context.getBean("ruleSetAuditDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return ruleSetAuditDao;
     }
 
     private ExpressionDAO getExpressionDao() {
-        return this.expressionDao != null ? this.expressionDao : new ExpressionDAO(ds);
+        if (expressionDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    expressionDao = (ExpressionDAO) context.getBean("expressionDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return expressionDao;
     }
 
     private ExpressionService getExpressionService() {
-        return this.expressionService != null ? this.expressionService : new ExpressionService(ds);
+        if (expressionService == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    expressionService = (ExpressionService) context.getBean("expressionService");
+                }
+            } catch (Exception e) {}
+        }
+        return expressionService;
     }
 
     private RuleSetRuleDAO getRuleSetRuleDao() {
-        return this.ruleSetRuleDao != null ? this.ruleSetRuleDao : new RuleSetRuleDAO(ds);
+        if (ruleSetRuleDao == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    ruleSetRuleDao = (RuleSetRuleDAO) context.getBean("ruleSetRuleDaoJDBC");
+                }
+            } catch (Exception e) {}
+        }
+        return ruleSetRuleDao;
     }
 
     public RuleSetDAO(DataSource ds, DAODigester digester) {

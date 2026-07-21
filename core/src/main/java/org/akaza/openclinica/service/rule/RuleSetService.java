@@ -90,6 +90,9 @@ import org.springframework.transaction.annotation.Transactional;
  * @author krikor
  *
  */
+import org.springframework.transaction.annotation.Transactional;
+
+@Transactional
 public class RuleSetService implements RuleSetServiceInterface {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
@@ -1007,7 +1010,14 @@ public class RuleSetService implements RuleSetServiceInterface {
 
 
     private ExpressionService getExpressionService() {
-        expressionService = this.expressionService != null ? expressionService : new ExpressionService(dataSource);
+        if (expressionService == null) {
+            try {
+                org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+                if (context != null) {
+                    expressionService = (ExpressionService) context.getBean("expressionService");
+                }
+            } catch (Exception e) {}
+        }
         return expressionService;
     }
     //JN:No reason to use global variables, they could cause potential concurrency issues.

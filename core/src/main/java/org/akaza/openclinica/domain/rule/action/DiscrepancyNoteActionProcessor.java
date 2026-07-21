@@ -64,9 +64,6 @@ public class DiscrepancyNoteActionProcessor implements ActionProcessor {
             } catch (Exception e) {
                 // fallback
             }
-            if (discrepancyNoteService == null) {
-                discrepancyNoteService = new DiscrepancyNoteService(ds);
-            }
         }
         return discrepancyNoteService;
     }

@@ -1454,29 +1454,59 @@ public class ExpressionService {
 
     private ItemDAO getItemDao() {
         // itemDao = this.itemDao != null ? itemDao : new ItemDAO(ds);
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (ItemDAO) context.getBean("itemDaoJDBC");
+            }
+        } catch (Exception e) {}
         return new ItemDAO(ds);
     }
 
     private ItemDataDAO getItemDataDao() {
         // itemDataDao = this.itemDataDao != null ? itemDataDao : new
         // ItemDataDAO(ds);
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (ItemDataDAO) context.getBean("itemDataDaoJDBC");
+            }
+        } catch (Exception e) {}
         return new ItemDataDAO(ds);
     }
 
     private CRFVersionDAO getCrfVersionDao() {
         // crfVersionDao = this.crfVersionDao != null ? crfVersionDao : new
         // CRFVersionDAO(ds);
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (CRFVersionDAO) context.getBean("crfVersionDaoJDBC");
+            }
+        } catch (Exception e) {}
         return new CRFVersionDAO(ds);
     }
 
     private CRFDAO getCrfDao() {
         // crfDao = this.crfDao != null ? crfDao : new CRFDAO(ds);
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (CRFDAO) context.getBean("crfDaoJDBC");
+            }
+        } catch (Exception e) {}
         return new CRFDAO(ds);
     }
 
     private ItemGroupDAO getItemGroupDao() {
         // itemGroupDao = this.itemGroupDao != null ? itemGroupDao : new
         // ItemGroupDAO(ds);
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (ItemGroupDAO) context.getBean("itemGroupDaoJDBC");
+            }
+        } catch (Exception e) {}
         return new ItemGroupDAO(ds);
     }
 
@@ -1484,6 +1514,12 @@ public class ExpressionService {
         // itemGroupMetadataDao = this.itemGroupMetadataDao != null ?
         // itemGroupMetadataDao : new ItemGroupMetadataDAO(ds);
         // return itemGroupMetadataDao;
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (ItemGroupMetadataDAO) context.getBean("itemGroupMetadataDaoJDBC");
+            }
+        } catch (Exception e) {}
         return new ItemGroupMetadataDAO(ds);
     }
 
@@ -1491,6 +1527,12 @@ public class ExpressionService {
         // eventDefinitionCRFDao = this.eventDefinitionCRFDao != null ?
         // eventDefinitionCRFDao : new EventDefinitionCRFDAO(ds);
         // return eventDefinitionCRFDao;
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (EventDefinitionCRFDAO) context.getBean("eventDefinitionCrfDaoJDBC");
+            }
+        } catch (Exception e) {}
         return new EventDefinitionCRFDAO(ds);
     }
 
@@ -1498,6 +1540,12 @@ public class ExpressionService {
         // studyEventDefinitionDao = this.studyEventDefinitionDao != null ?
         // studyEventDefinitionDao : new StudyEventDefinitionDAO(ds);
         // return studyEventDefinitionDao;
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (StudyEventDefinitionDAO) context.getBean("studyEventDefinitionDaoJDBC");
+            }
+        } catch (Exception e) {}
         return new StudyEventDefinitionDAO(ds);
     }
 
@@ -1505,10 +1553,22 @@ public class ExpressionService {
         // studyEventDao = this.studyEventDao != null ? studyEventDao : new
         // StudyEventDAO(ds);
         // return studyEventDao;
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (StudyEventDAO) context.getBean("studyeventdaojdbc");
+            }
+        } catch (Exception e) {}
         return new StudyEventDAO(ds);
     }
 
     private StudySubjectDAO getStudySubjectDao() {
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (StudySubjectDAO) context.getBean("studySubjectDaoJDBC");
+            }
+        } catch (Exception e) {}
         return new StudySubjectDAO(ds);
     }
 
@@ -1516,6 +1576,12 @@ public class ExpressionService {
         // eventCRFDao = this.eventCRFDao != null ? eventCRFDao : new
         // EventCRFDAO(ds);
         // return eventCRFDao;
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (EventCRFDAO) context.getBean("eventCrfDaoJDBC");
+            }
+        } catch (Exception e) {}
         return new EventCRFDAO(ds);
     }
 
@@ -1524,6 +1590,12 @@ public class ExpressionService {
     }
 
     public ItemFormMetadataDAO getItemFormMetadataDao() {
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (ItemFormMetadataDAO) context.getBean("itemFormMetadataDaoJDBC");
+            }
+        } catch (Exception e) {}
         return new ItemFormMetadataDAO(ds);
     }
 

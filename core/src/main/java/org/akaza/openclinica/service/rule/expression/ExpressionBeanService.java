@@ -147,7 +147,13 @@ public class ExpressionBeanService {
         }
 
     private StudySubjectDAO getStudySubjectDao() {
-        return  new StudySubjectDAO(ds);
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                return (StudySubjectDAO) context.getBean("studySubjectDaoJDBC");
+            }
+        } catch (Exception e) {}
+        return new StudySubjectDAO(ds);
     }
 
 }

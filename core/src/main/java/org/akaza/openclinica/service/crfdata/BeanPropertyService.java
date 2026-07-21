@@ -53,7 +53,6 @@ public class BeanPropertyService{
 	public BeanPropertyService(DataSource ds) {
     	// itemsAlreadyShown = new ArrayList<Integer>();
         this.ds = ds;
-        this.expressionService = new ExpressionService(ds);
     }
 
 
