@@ -3,6 +3,11 @@ package org.akaza.openclinica.modern.service;
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.domain.Status;
 import org.akaza.openclinica.domain.datamap.*;
+import org.akaza.openclinica.domain.user.UserAccount;
+import org.akaza.openclinica.patterns.ocobserver.StudyEventChangeDetails;
+import org.akaza.openclinica.patterns.ocobserver.StudyEventContainer;
+import org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService;
+import org.akaza.openclinica.service.clinical.exception.ClinicalWorkflowException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -68,6 +73,9 @@ public class StudyStatusService {
             }
         }
         
+        UnifiedWorkflowEnforcementService workflowService = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UnifiedWorkflowEnforcementService.class);
+        UserAccount userAccount = entityManager.find(UserAccount.class, userBean.getId());
+
         // Update subjects and related entities (for parent and all sites)
         List<Study> allStudies = new ArrayList<>();
         allStudies.add(parentStudy);
@@ -86,30 +94,41 @@ public class StudyStatusService {
                     .getResultList();
                 for (StudyEvent event : events) {
                     event.setStatusId(statusId);
-                    entityManager.merge(event);
                     
                     List<EventCrf> eventCrfs = entityManager.createQuery("SELECT e FROM EventCrf e WHERE e.studyEvent = :event", EventCrf.class)
                         .setParameter("event", event)
                         .getResultList();
                     for (EventCrf eventCrf : eventCrfs) {
                         eventCrf.setStatusId(statusId);
-                        entityManager.merge(eventCrf);
                         
                         List<ItemData> itemDatas = entityManager.createQuery("SELECT i FROM ItemData i WHERE i.eventCrf = :eventCrf", ItemData.class)
                             .setParameter("eventCrf", eventCrf)
                             .getResultList();
                         for (ItemData itemData : itemDatas) {
                             itemData.setStatus(status);
-                            entityManager.merge(itemData);
+                            try {
+                                workflowService.saveItemData(itemData, eventCrf, s, userAccount, subject);
+                            } catch (ClinicalWorkflowException ex) {
+                                throw new ClinicalWorkflowException("ItemData " + itemData.getItemDataId() + " validation failed: " + ex.getMessage());
+                            }
                         }
+                        
+                        try {
+                            workflowService.saveEventCrf(eventCrf);
+                        } catch (ClinicalWorkflowException ex) {
+                            throw new ClinicalWorkflowException("EventCRF " + eventCrf.getEventCrfId() + " validation failed: " + ex.getMessage());
+                        }
+                    }
+                    
+                    try {
+                        StudyEventChangeDetails changeDetails = new StudyEventChangeDetails(true, false);
+                        StudyEventContainer container = new StudyEventContainer(event, changeDetails);
+                        workflowService.saveStudyEvent(container);
+                    } catch (ClinicalWorkflowException ex) {
+                        throw new ClinicalWorkflowException("StudyEvent " + event.getStudyEventId() + " validation failed: " + ex.getMessage());
                     }
                 }
             }
         }
-        
-        // TODO: Wait, does the legacy audit listener catch all these changes? Yes, the interceptor/listeners are mapped to hibernate.
-        // TODO: Wait, what about the manual audit_event insertion that used to be there?
-        // But the context says: "All database modifications initiated by modern services must trigger the standard entity-level audit logging listeners... Using Hibernate domain entities/DAOs directly will naturally trigger these listeners, fulfilling the audit requirements."
-        // Because we update the Study entity and merge it, Hibernate triggers the audit listener. Thus we no longer need the explicit audit_event manual insert!
     }
 }
