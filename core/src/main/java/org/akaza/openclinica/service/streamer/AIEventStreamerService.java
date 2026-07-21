@@ -2,9 +2,10 @@ package org.akaza.openclinica.service.streamer;
 
 import org.akaza.openclinica.bean.submit.ItemDataBean;
 import org.akaza.openclinica.dao.submit.ItemDataDAO;
-import org.akaza.openclinica.core.ApplicationContextProvider;
 import org.akaza.openclinica.dao.core.CoreResources;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.sql.DataSource;
 import java.util.*;
@@ -20,6 +21,10 @@ import jakarta.annotation.PreDestroy;
 public class AIEventStreamerService {
 
     private static final Logger logger = LoggerFactory.getLogger(AIEventStreamerService.class);
+
+    @Autowired
+    @Lazy
+    private DataSource dataSource;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
     private final ExecutorService senderExecutor = Executors.newFixedThreadPool(10);
@@ -58,7 +63,7 @@ public class AIEventStreamerService {
         }
 
         try {
-            DataSource ds = (DataSource) ApplicationContextProvider.getApplicationContext().getBean("dataSource");
+            DataSource ds = this.dataSource;
             ItemDataDAO itemDataDao = new ItemDataDAO(ds);
             ArrayList<ItemDataBean> items = itemDataDao.findAllByEventCRFId(eventCrfId);
             

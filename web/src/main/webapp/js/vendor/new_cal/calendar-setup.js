@@ -103,13 +103,15 @@ Calendar.setup = function (params) {
       params[tmp[i]] = document.getElementById(params[tmp[i]]);
     }
   }
-  if (!(
-    params.flat ||
-    params.multiple ||
-    params.inputField ||
-    params.displayArea ||
-    params.button
-  )) {
+  if (
+    !(
+      params.flat ||
+      params.multiple ||
+      params.inputField ||
+      params.displayArea ||
+      params.button
+    )
+  ) {
     alert(
       'Calendar.setup:\n  Nothing to setup (no fields found).  Please check your code'
     );
@@ -191,7 +193,7 @@ Calendar.setup = function (params) {
     }
     if (params.multiple) {
       cal.multiple = {};
-      for (var i = params.multiple.length; --i >= 0;) {
+      for (var i = params.multiple.length; --i >= 0; ) {
         var d = params.multiple[i];
         var ds = d.print('%Y%m%d');
         cal.multiple[ds] = d;

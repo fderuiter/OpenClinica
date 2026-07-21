@@ -44,14 +44,10 @@ function processTemplate(content, mainScript) {
   const directiveRegex = /^\s*<%@\s[^%]*%>/;
   let directives = '';
   let remaining = content;
-  while (true) {
-    const match = remaining.match(directiveRegex);
-    if (match) {
-      directives += match[0];
-      remaining = remaining.substring(match[0].length);
-    } else {
-      break;
-    }
+  let match;
+  while ((match = remaining.match(directiveRegex)) !== null) {
+    directives += match[0];
+    remaining = remaining.substring(match[0].length);
   }
 
   // 2. Shield remaining JSP custom tags and scriptlets
