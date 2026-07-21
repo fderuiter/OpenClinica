@@ -1,5 +1,6 @@
 package org.akaza.openclinica.domain.rule.action;
 
+import org.akaza.openclinica.core.ApplicationContextProvider;
 import org.akaza.openclinica.dao.hibernate.RuleActionRunLogDao;
 import org.akaza.openclinica.domain.rule.RuleSetBean;
 import org.akaza.openclinica.domain.rule.RuleSetRuleBean;
@@ -14,6 +15,17 @@ public class ActionProcessorFacade {
     public static ActionProcessor getActionProcessor(ActionType actionType, DataSource ds, JavaMailSenderImpl mailSender,
             DynamicsMetadataService itemMetadataService, RuleSetBean ruleSet, RuleActionRunLogDao ruleActionRunLogDao, RuleSetRuleBean ruleSetRule)
             throws OpenClinicaSystemException {
+            
+        if (mailSender == null && ApplicationContextProvider.getApplicationContext() != null) {
+            mailSender = (JavaMailSenderImpl) ApplicationContextProvider.getApplicationContext().getBean("mailSender");
+        }
+        if (itemMetadataService == null && ApplicationContextProvider.getApplicationContext() != null) {
+            itemMetadataService = (DynamicsMetadataService) ApplicationContextProvider.getApplicationContext().getBean("dynamicsMetadataService");
+        }
+        if (ruleActionRunLogDao == null && ApplicationContextProvider.getApplicationContext() != null) {
+            ruleActionRunLogDao = (RuleActionRunLogDao) ApplicationContextProvider.getApplicationContext().getBean("ruleActionRunLogDao");
+        }
+
         switch (actionType) {
         case FILE_DISCREPANCY_NOTE:
             return new DiscrepancyNoteActionProcessor(ds, ruleActionRunLogDao, ruleSetRule);
