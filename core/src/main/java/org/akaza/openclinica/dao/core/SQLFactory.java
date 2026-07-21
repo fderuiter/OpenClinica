@@ -264,13 +264,14 @@ public class SQLFactory {
 
             try {
          
-                if (System.getProperty("catalina.home") == null) {
-                    String path = getPropertiesDir();
-                    newDaoDigester.setInputStream(new FileInputStream(path + DAOFileName));
-                } else {
-                    String path = CoreResources.PROPERTIES_DIR;
+                if (resourceLoader != null) {
                     newDaoDigester.setInputStream(resourceLoader.getResource("classpath:properties/" + DAOFileName).getInputStream());
-                    //newDaoDigester.setInputStream(new FileInputStream(path + DAOFileName));
+                } else {
+                    java.io.InputStream is = this.getClass().getClassLoader().getResourceAsStream("properties/" + DAOFileName);
+                    if (is == null) {
+                        is = new FileInputStream(getPropertiesDir() + DAOFileName);
+                    }
+                    newDaoDigester.setInputStream(is);
                 }
                 try {
                     newDaoDigester.run();

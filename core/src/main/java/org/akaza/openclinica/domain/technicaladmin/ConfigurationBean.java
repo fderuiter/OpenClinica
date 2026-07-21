@@ -23,7 +23,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "configuration")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "configuration_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "configuration_id_seq"), @Parameter(name = "increment_size", value = "1") })
 public class ConfigurationBean extends AbstractMutableDomainObject {
 
     private String key;

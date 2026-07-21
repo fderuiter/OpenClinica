@@ -26,7 +26,7 @@ import org.hibernate.annotations.Type;
 */
 @Entity
 @Table(name = "completion_status")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "completion_status_completion_status_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "completion_status_completion_status_id_seq"), @Parameter(name = "increment_size", value = "1") })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CompletionStatus  extends DataMapDomainObject {
 

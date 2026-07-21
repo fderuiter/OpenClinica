@@ -45,7 +45,7 @@ import org.hibernate.annotations.Parameter;
 
 @Entity
 @Table(name = "rule_set_rule")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_set_rule_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_set_rule_id_seq"), @Parameter(name = "increment_size", value = "1") })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @XmlRootElement(name="RuleRef")
 @XmlAccessorType(XmlAccessType.FIELD)

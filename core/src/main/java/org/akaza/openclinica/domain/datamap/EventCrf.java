@@ -30,7 +30,7 @@ import org.hibernate.annotations.Parameter;
  */
 @Entity
 @Table(name = "event_crf")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "event_crf_event_crf_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "event_crf_event_crf_id_seq"), @Parameter(name = "increment_size", value = "1") })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 
 public class EventCrf  extends DataMapDomainObject {
@@ -330,7 +330,7 @@ public class EventCrf  extends DataMapDomainObject {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "eventCrf")
-	@OrderBy("discrepancyNote")
+	@OrderBy("dnEventCrfMapId.discrepancyNoteId")
 	public List<DnEventCrfMap> getDnEventCrfMaps() {
 		return this.dnEventCrfMaps;
 	}

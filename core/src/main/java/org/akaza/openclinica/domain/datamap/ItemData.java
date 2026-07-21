@@ -32,7 +32,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = "item_data")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "item_data_item_data_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "item_data_item_data_id_seq"), @Parameter(name = "increment_size", value = "1") })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 
 public class ItemData  extends DataMapDomainObject {
@@ -198,7 +198,7 @@ public class ItemData  extends DataMapDomainObject {
 
 
 	@OneToMany(fetch = FetchType.LAZY,cascade = {CascadeType.ALL}, mappedBy = "itemData")
-	@OrderBy("discrepancyNote")
+	@OrderBy("dnItemDataMapId.discrepancyNoteId")
 	public List<DnItemDataMap> getDnItemDataMaps() {
 		return this.dnItemDataMaps;
 	}
