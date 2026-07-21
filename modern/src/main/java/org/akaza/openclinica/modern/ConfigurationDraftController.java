@@ -2,7 +2,6 @@ package org.akaza.openclinica.modern;
 
 import org.akaza.openclinica.modern.dto.ConfigurationDraftRequest;
 import org.akaza.openclinica.modern.model.ConfigurationDraft;
-import org.akaza.openclinica.sdk.dto.ApiResponse;
 import org.akaza.openclinica.modern.service.ConfigurationDraftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +20,17 @@ public class ConfigurationDraftController {
     }
 
     @PostMapping("/draft")
-    public ResponseEntity<ApiResponse<ConfigurationDraft>> createDraft(@Valid @RequestBody ConfigurationDraftRequest payload) {
+    public ResponseEntity<ConfigurationDraft> createDraft(@Valid @RequestBody ConfigurationDraftRequest payload) {
         String userName = payload.getUserName() != null ? payload.getUserName() : "system";
         String draftData = payload.getDraftData() != null ? payload.getDraftData() : "{}";
         ConfigurationDraft draft = draftService.saveDraft(userName, "DATASET", draftData);
-        return ResponseEntity.ok(new ApiResponse<>(draft));
+        return ResponseEntity.ok(draft);
     }
 
     @GetMapping("/draft/{id}")
-    public ResponseEntity<ApiResponse<ConfigurationDraft>> getDraft(@PathVariable String id) {
+    public ResponseEntity<ConfigurationDraft> getDraft(@PathVariable String id) {
         ConfigurationDraft draft = draftService.getDraft(id);
-        return ResponseEntity.ok(new ApiResponse<>(draft));
+        return ResponseEntity.ok(draft);
     }
 
     @PutMapping("/draft/{id}")
@@ -42,11 +41,11 @@ public class ConfigurationDraftController {
     }
 
     @PostMapping("/draft/{id}/commit")
-    public ResponseEntity<ApiResponse<String>> commitDraft(@PathVariable String id) {
+    public ResponseEntity<String> commitDraft(@PathVariable String id) {
         ConfigurationDraft draft = draftService.getDraft(id);
         // Normally would convert draftData to DatasetBean and save it using dataset DAOs
         // For the headless foundation, deleting the draft signifies a successful commit
         draftService.deleteDraft(id);
-        return ResponseEntity.ok(new ApiResponse<>("Dataset successfully created and committed."));
+        return ResponseEntity.ok("Dataset successfully created and committed.");
     }
 }

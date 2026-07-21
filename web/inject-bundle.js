@@ -31,19 +31,32 @@ function copyAndReplace(dir) {
       let changed = false;
 
       if (fullPath.endsWith('load_scripts.js')) {
-        content = `head.js(
-                         app_contextPath + "/dist/${mainScript}",
-                         app_contextPath + "/js/util.js"
-                       );`;
+        content = `
+          var bundleScript = document.createElement('script');
+          bundleScript.type = 'module';
+          bundleScript.src = app_contextPath + "/dist/${mainScript}";
+          document.head.appendChild(bundleScript);
+
+          var utilScript = document.createElement('script');
+          utilScript.src = app_contextPath + "/js/util.js";
+          document.head.appendChild(utilScript);
+        `;
         changed = true;
       } else {
-        // Match prototype.js
-        const regex = /(['"])([\.\/]*?)includes\/prototype\.js\1/g;
-        if (regex.test(content)) {
-          content = content.replace(regex, (match, quote, prefix) => {
-            return `${quote}${prefix}dist/${mainScript}${quote}`;
-          });
+        // Match script tag for prototype.js and replace it with a module script
+        const scriptTagRegex = /<script[^>]*src=(['"])([\.\/]*?)includes\/prototype\.js\1[^>]*><\/script>/g;
+        if (scriptTagRegex.test(content)) {
+          content = content.replace(scriptTagRegex, `<script type="module" src=$1$2dist/${mainScript}$1></script>`);
           changed = true;
+        } else {
+          // Fallback if it's just the path
+          const regex = /(['"])([\.\/]*?)includes\/prototype\.js\1/g;
+          if (regex.test(content)) {
+            content = content.replace(regex, (match, quote, prefix) => {
+              return `${quote}${prefix}dist/${mainScript}${quote}`;
+            });
+            changed = true;
+          }
         }
 
         // Remove scriptaculous and effects
