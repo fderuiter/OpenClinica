@@ -19,15 +19,19 @@ function modifyScripts(rootNode, mainScript) {
     const src = script.getAttribute('src');
     if (src && src.includes('includes/prototype.js')) {
       script.setAttribute('type', 'module');
-      script.setAttribute('src', src.replace(/includes\/prototype\.js/, `dist/${mainScript}`));
+      script.setAttribute(
+        'src',
+        src.replace(/includes\/prototype\.js/, `dist/${mainScript}`)
+      );
       changed = true;
-    } else if (src && (
-      src.includes('includes/scriptaculous.js') ||
-      src.includes('includes/effects.js') ||
-      src.includes('includes/ua-parser.min.js') ||
-      src.includes('/js/lib/head.min.js') ||
-      src.includes('includes/head.min.js')
-    )) {
+    } else if (
+      src &&
+      (src.includes('includes/scriptaculous.js') ||
+        src.includes('includes/effects.js') ||
+        src.includes('includes/ua-parser.min.js') ||
+        src.includes('/js/lib/head.min.js') ||
+        src.includes('includes/head.min.js'))
+    ) {
       script.remove();
       changed = true;
     }
@@ -40,6 +44,7 @@ function processTemplate(content, mainScript) {
   const directiveRegex = /^\s*<%@\s[^%]*%>/;
   let directives = '';
   let remaining = content;
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const match = remaining.match(directiveRegex);
     if (match) {
@@ -53,9 +58,10 @@ function processTemplate(content, mainScript) {
   // 2. Shield remaining JSP custom tags and scriptlets
   const placeholders = [];
   let placeholderCounter = 0;
-  
+
   // Matches <%...%> scriptlets and <prefix:name ...> or </prefix:name> tags
-  const jspRegex = /(<%[\s\S]*?%>|<\/?[a-zA-Z0-9_-]+:[a-zA-Z0-9_-]+(?:\s+(?:[^"'>]|"[^"]*"|'[^']*')*)*\s*\/?>)/gi;
+  const jspRegex =
+    /(<%[\s\S]*?%>|<\/?[a-zA-Z0-9_-]+:[a-zA-Z0-9_-]+(?:\s+(?:[^"'>]|"[^"]*"|'[^']*')*)*\s*\/?>)/gi;
 
   const shielded = remaining.replace(jspRegex, (match) => {
     const id = placeholderCounter++;
@@ -71,16 +77,16 @@ function processTemplate(content, mainScript) {
   if (hasHtmlTag) {
     const dom = new JSDOM(shielded);
     const document = dom.window.document;
-    
+
     changed = modifyScripts(document, mainScript);
-    
+
     serialized = dom.serialize();
   } else {
     const dom = new JSDOM();
     const fragment = JSDOM.fragment(shielded);
-    
+
     changed = modifyScripts(fragment, mainScript);
-    
+
     const tempContainer = dom.window.document.createElement('div');
     tempContainer.appendChild(fragment);
     serialized = tempContainer.innerHTML;
@@ -91,7 +97,7 @@ function processTemplate(content, mainScript) {
   for (const ph of placeholders) {
     const unescaped = `<!-- JSP_PLACEHOLDER_${ph.id} -->`;
     const escaped = `&lt;!-- JSP_PLACEHOLDER_${ph.id} --&gt;`;
-    
+
     restored = restored.split(unescaped).join(ph.original);
     restored = restored.split(escaped).join(ph.original);
   }
@@ -102,9 +108,12 @@ function processTemplate(content, mainScript) {
   // 6. Run fallback string replacement on final output (to catch raw javascript/inline occurrences)
   const fallbackRegex = /(['"])([\.\/]*?)includes\/prototype\.js\1/g;
   if (fallbackRegex.test(finalContent)) {
-    finalContent = finalContent.replace(fallbackRegex, (match, quote, prefix) => {
-      return `${quote}${prefix}dist/${mainScript}${quote}`;
-    });
+    finalContent = finalContent.replace(
+      fallbackRegex,
+      (match, quote, prefix) => {
+        return `${quote}${prefix}dist/${mainScript}${quote}`;
+      }
+    );
     changed = true;
   }
 
@@ -133,7 +142,7 @@ function copyAndReplace(dir) {
       if (fullPath.endsWith('load_scripts.js')) {
         const cssFiles = manifest['src/main/webapp/js/main.js'].css || [];
         let cssTags = '';
-        cssFiles.forEach(css => {
+        cssFiles.forEach((css) => {
           cssTags += `
           var bundleCss = document.createElement('link');
           bundleCss.rel = 'stylesheet';
