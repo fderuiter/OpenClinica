@@ -29,7 +29,7 @@
       <property name="changeLog" value="classpath:migration/master.xml" />
       <property name="changeLogParameters">
           <map>
-              <entry key="dbUser" value="s[username]"/>
+              <entry key="dbUser" value="${username:clinica}"/>
           </map>
       </property>
     </bean>

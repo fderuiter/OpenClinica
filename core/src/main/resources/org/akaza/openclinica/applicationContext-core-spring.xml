@@ -59,8 +59,6 @@
 
          <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
 
-        p:placeholderPrefix="s["
-        p:placeholderSuffix="]"
      >
      <property name="properties"><ref bean="dataInfoProperties"/></property>
 
