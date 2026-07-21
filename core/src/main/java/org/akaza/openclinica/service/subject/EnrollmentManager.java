@@ -48,13 +48,13 @@ public class EnrollmentManager {
     @Transactional
     public String enrollSubject(SubjectBean subjectBean, StudyBean studyBean, Date enrollmentDate, String secondaryId) {
         if (subjectBean.getUniqueIdentifier() != null && subjectBean.getUniqueIdentifier().trim().length() > 0 && 
-                subjectRepository.getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier()).getId() != 0) {
+                getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier()).getId() != 0) {
             String label = subjectBean.getLabel();
-            subjectBean = subjectRepository.getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier());
+            subjectBean = getSubjectBeanByUniqueIdentifier(subjectBean.getUniqueIdentifier());
             subjectBean.setLabel(label);
         } else {
             subjectBean.setStatus(Status.AVAILABLE);
-            subjectBean = subjectRepository.createSubjectBean(subjectBean);
+            subjectBean = createSubjectBean(subjectBean);
         }
         
         StudySubjectBean studySubject = new StudySubjectBean();
@@ -76,7 +76,7 @@ public class EnrollmentManager {
             subjectBean.setLabel(null);
         }
         
-        subjectRepository.createStudySubjectBean(studySubject);
+        createStudySubjectBean(studySubject);
         return studySubject.getLabel();
     }
     
@@ -96,7 +96,7 @@ public class EnrollmentManager {
         try {
             Integer currentValue = jdbcTemplate.queryForObject("SELECT label_value FROM subject_label_sequence FOR UPDATE", Integer.class);
             if (currentValue == null || currentValue == 0) {
-                currentValue = subjectRepository.findTheGreatestStudySubjectLabel();
+                currentValue = findTheGreatestStudySubjectLabel();
                 if (currentValue < 0) {
                     currentValue = 0;
                 }
@@ -108,5 +108,20 @@ public class EnrollmentManager {
             logger.error("Failed to generate subject label", e);
             throw new RuntimeException("Failed to generate subject label", e);
         }
+    }
+    private SubjectBean getSubjectBeanByUniqueIdentifier(String identifier) {
+        return subjectRepository != null ? subjectRepository.getSubjectBeanByUniqueIdentifier(identifier) : unifiedRepository.getSubjectBeanByUniqueIdentifier(identifier);
+    }
+    
+    private SubjectBean createSubjectBean(SubjectBean bean) {
+        return subjectRepository != null ? subjectRepository.createSubjectBean(bean) : unifiedRepository.createSubjectBean(bean);
+    }
+    
+    private StudySubjectBean createStudySubjectBean(StudySubjectBean bean) {
+        return subjectRepository != null ? subjectRepository.createStudySubjectBean(bean) : unifiedRepository.createStudySubjectBean(bean);
+    }
+    
+    private int findTheGreatestStudySubjectLabel() {
+        return subjectRepository != null ? subjectRepository.findTheGreatestStudySubjectLabel() : unifiedRepository.findTheGreatestStudySubjectLabel();
     }
 }
