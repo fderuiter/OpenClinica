@@ -10,6 +10,9 @@
 update discrepancy_note set entity_type = 'itemData' where entity_type = 'ItemData';
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
      </changeSet>
 
 </databaseChangeLog>

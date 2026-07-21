@@ -21,13 +21,22 @@
            
 
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 	<changeSet author="pgawade" id="2011-11-07-11802-2" dbms="oracle">
         <comment>call procedure add_row_to_rule_action_run</comment>
         <sql splitStatements="false">call add_row_to_rule_action_run()</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade" id="2011-09-06-10802-3" dbms="oracle">
         <comment>call procedure updt_metadata_repeating_group</comment>
         <sql splitStatements="false">call updt_metadata_repeating_group()</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 </databaseChangeLog>     

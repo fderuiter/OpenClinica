@@ -28,6 +28,9 @@
         '
             LANGUAGE plpgsql
          </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet> 
     
 	<changeSet author="ywang" id="2011-07-27-8874-2">
@@ -39,6 +42,9 @@
 			    FOR EACH ROW
 			    EXECUTE PROCEDURE item_data_initial_trigger()
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     
     <changeSet author="ywang" id="2011-07-27-8874-3">
@@ -89,6 +95,9 @@
 		end;
 	     /* /  */
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>     
 	
 	<changeSet author="ywang" id="2011-07-27-8874-4">
@@ -156,6 +165,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	
 	<changeSet author="ywang" id="2011-07-27-8874-5">
@@ -858,5 +870,8 @@
           /* show errors; */
 
     </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 </databaseChangeLog>

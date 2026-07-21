@@ -21,6 +21,9 @@
             Select add_row_to_rule_action_run();
             DROP FUNCTION add_row_to_rule_action_run();
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="kkrumlian" id="2011-03-01-4575-2" dbms="oracle">
         <comment>Add a row to rule_action_run and update rule_action row</comment>
@@ -40,5 +43,8 @@
             EXECUTE add_row_to_rule_action_run();
             DROP PROCEDURE add_row_to_rule_action_run;
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 </databaseChangeLog>

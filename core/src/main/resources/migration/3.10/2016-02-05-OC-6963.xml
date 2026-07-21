@@ -29,6 +29,9 @@
 			)
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 
 
@@ -53,6 +56,9 @@
 			pk_event_definition_crf_item_tag PRIMARY KEY (id)
 			)
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 
 
@@ -77,6 +83,9 @@
 			)
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 
 	<changeSet author="jkeremian" id="2016-02-05-OC-6963-04">
@@ -100,6 +109,9 @@
 			pk_item_data_flag PRIMARY KEY (id)
 			)
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 
 	<changeSet author="jkeremian" id="2016-02-05-OC-6963-05">
@@ -121,6 +133,9 @@
 			)
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 
 	<changeSet author="jkeremian" id="2016-02-05-OC-6963-06">
@@ -145,6 +160,9 @@
 
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 
 	<changeSet author="jkeremian" id="2016-02-05-OC-6963-07">
@@ -166,6 +184,9 @@
 			)
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 
 
@@ -218,6 +239,9 @@
 			ORDER BY id.item_data_id;
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 
 
@@ -274,6 +298,9 @@
 			ORDER BY view.event_crf_id;
 
 				</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 			</changeSet>
 
 

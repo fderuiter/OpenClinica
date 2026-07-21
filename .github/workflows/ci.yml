@@ -2,56 +2,15 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, main ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, main ]
 
 env:
   STRICT_MODE: "true"
 
 jobs:
-  documentation:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-    - name: Cache pip packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('mkdocs.yml', 'utils/**/*.py', '.github/workflows/ci.yml') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22.13.0'
-    - name: Cache Node and NPM binaries
-      uses: actions/cache@v4
-      with:
-        path: |
-          modern/node/
-          web/node/
-          visual-tests/node/
-        key: ${{ runner.os }}-node-v22.13.0-npm-9.6.7
-    - name: Cache web node_modules
-      uses: actions/cache@v4
-      with:
-        path: web/node_modules/
-        key: ${{ runner.os }}-web-node_modules-${{ hashFiles('web/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-web-node_modules-
-    - name: Run Checksum Duplication Guard
-      run: ./utils/check_duplicates.sh
-    - name: Run Documentation Generation
-      env:
-        STRICT_MODE: "true"
-      run: ./utils/generate-docs.sh
-
-  build:
+  pipeline:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -70,12 +29,32 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.13.0'
+
+    - name: Cache pip packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('mkdocs.yml', 'utils/**/*.py', '.github/workflows/ci.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
     - name: Cache Node and NPM binaries
       uses: actions/cache@v4
       with:
@@ -117,8 +96,25 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-playwright-
 
+    - name: Cache NVD database
+      uses: actions/cache@v4
+      with:
+        path: target/dependency-check-data
+        key: ${{ runner.os }}-nvd-v12-${{ github.run_id }}
+        restore-keys: |
+          ${{ runner.os }}-nvd-v12-
+
+    - name: Run Checksum Duplication Guard
+      run: ./utils/check_duplicates.sh
+
+    - name: Run Documentation Generation
+      env:
+        STRICT_MODE: "true"
+      run: ./utils/generate-docs.sh
+
     - name: Build with Maven
       run: mvn -B clean install -DskipTests
+
     - name: Frontend Quality Gates
       run: |
         npm install
@@ -128,64 +124,18 @@ jobs:
         npm --prefix modern run format:check
         npm --prefix visual-tests run lint
         npm --prefix visual-tests run format:check
-    - name: Run tests (core, web, modern)
-      run: mvn -B test -pl core,web,modern -Ddb.test=localhost
 
-  visual-validation:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Cache Node and NPM binaries
-      uses: actions/cache@v4
-      with:
-        path: |
-          modern/node/
-          web/node/
-          visual-tests/node/
-        key: ${{ runner.os }}-node-v22.13.0-npm-9.6.7
+    - name: Run dependency scan
+      env:
+        NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+      run: mvn -B verify -Pdependency-scan -DskipTests
 
-    - name: Cache modern node_modules
-      uses: actions/cache@v4
-      with:
-        path: modern/node_modules/
-        key: ${{ runner.os }}-modern-node_modules-${{ hashFiles('modern/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-modern-node_modules-
+    - name: Run Database Migration Validation
+      run: python ./utils/validate_migrations.py
 
-    - name: Cache web node_modules
-      uses: actions/cache@v4
-      with:
-        path: web/node_modules/
-        key: ${{ runner.os }}-web-node_modules-${{ hashFiles('web/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-web-node_modules-
+    - name: Run Validation and Verification Phase
+      run: mvn -B verify -Ddb.test=localhost
 
-    - name: Cache visual-tests node_modules
-      uses: actions/cache@v4
-      with:
-        path: visual-tests/node_modules/
-        key: ${{ runner.os }}-visual-tests-node_modules-${{ hashFiles('visual-tests/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-visual-tests-node_modules-
-
-    - name: Cache Playwright browser binaries
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/ms-playwright
-        key: ${{ runner.os }}-playwright-${{ hashFiles('visual-tests/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-playwright-
-
-    - name: Build with Maven
-      run: mvn -B clean install -DskipTests
-    - name: Run visual regression tests
-      run: mvn -B verify -pl visual-tests -Ddb.test=localhost
     - name: Upload Visual Test Results
       if: failure()
       uses: actions/upload-artifact@v4
@@ -196,61 +146,6 @@ jobs:
           visual-tests/test-results/
         retention-days: 14
 
-  vulnerability-scan:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Cache NVD database
-      uses: actions/cache@v4
-      with:
-        path: target/dependency-check-data
-        key: ${{ runner.os }}-nvd-v12-${{ github.run_id }}
-        restore-keys: |
-          ${{ runner.os }}-nvd-v12-
-    - name: Run dependency scan
-      env:
-        NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-      run: mvn -B verify -Pdependency-scan -DskipTests
-
-  verification:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: clinica
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres -d clinica"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-    - name: Run Database Migration Validation
-      run: python ./utils/validate_migrations.py
-    - name: Run Validation and Verification Phase
-      run: mvn -B clean verify -Ddb.test=localhost
     - name: Upload JaCoCo HTML Reports
       uses: actions/upload-artifact@v4
       with:
@@ -259,6 +154,7 @@ jobs:
           **/target/site/jacoco/**
           **/target/site/jacoco-aggregate/**
         retention-days: 14
+
     - name: Upload PMD Warning Reports
       uses: actions/upload-artifact@v4
       with:
@@ -268,3 +164,93 @@ jobs:
           **/target/site/pmd.html
         retention-days: 14
 
+    - name: Generate Summary Script
+      run: |
+        cat << 'PYEOF' > generate_summary.py
+        import os
+        import glob
+        import xml.etree.ElementTree as ET
+
+        def generate_summary():
+            summary_lines = []
+            summary_lines.append("## 📊 Quality & Coverage Report Summary\n")
+            
+            # 1. PMD Static Analysis Summary
+            summary_lines.append("### 🔍 PMD Static Analysis")
+            pmd_files = glob.glob("**/target/pmd.xml", recursive=True)
+            total_violations = 0
+            pmd_table = ["| Module / File | Violations |", "| --- | --- |"]
+            
+            for f in pmd_files:
+                try:
+                    tree = ET.parse(f)
+                    root = tree.getroot()
+                    violations = sum(1 for el in root.iter() if el.tag.endswith('violation'))
+                    if violations > 0:
+                        module_name = os.path.dirname(os.path.dirname(f))
+                        pmd_table.append(f"| `{module_name}` | {violations} |")
+                        total_violations += violations
+                except Exception as e:
+                    print(f"Error parsing PMD file {f}: {e}")
+                    
+            if total_violations == 0:
+                summary_lines.append("✅ No PMD violations found!\n")
+            else:
+                summary_lines.extend(pmd_table)
+                summary_lines.append(f"\n**Total PMD Violations:** {total_violations}\n")
+                
+            # 2. JaCoCo Coverage Summary
+            summary_lines.append("### 📈 Code Coverage (JaCoCo)")
+            jacoco_files = glob.glob("**/target/site/jacoco/jacoco.xml", recursive=True)
+            aggregate_files = glob.glob("**/target/site/jacoco-aggregate/jacoco.xml", recursive=True)
+            all_jacoco_files = list(set(jacoco_files + aggregate_files))
+            
+            jacoco_table = ["| Module | Line Coverage | Branch Coverage | Instruction Coverage |", "| --- | --- | --- | --- |"]
+            found_coverage = False
+            
+            for f in all_jacoco_files:
+                try:
+                    tree = ET.parse(f)
+                    root = tree.getroot()
+                    counters = {c.get('type'): (int(c.get('missed', 0)), int(c.get('covered', 0))) for c in root.findall('counter')}
+                    
+                    def get_coverage_pct(type_name):
+                        if type_name in counters:
+                            missed, covered = counters[type_name]
+                            total = missed + covered
+                            if total > 0:
+                                return f"{(covered / total) * 100:.2f}%"
+                        return "N/A"
+                        
+                    line_cov = get_coverage_pct("LINE")
+                    branch_cov = get_coverage_pct("BRANCH")
+                    inst_cov = get_coverage_pct("INSTRUCTION")
+                    
+                    if "jacoco-aggregate" in f:
+                        module_name = "**Aggregated / Overall**"
+                    else:
+                        module_name = f"`{os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(f))))}`"
+                        
+                    jacoco_table.append(f"| {module_name} | {line_cov} | {branch_cov} | {inst_cov} |")
+                    found_coverage = True
+                except Exception as e:
+                    print(f"Error parsing JaCoCo file {f}: {e}")
+                    
+            if found_coverage:
+                jacoco_table.sort(key=lambda row: "**Aggregated" not in row)  # Place aggregate at top/bottom
+                summary_lines.extend(jacoco_table)
+            else:
+                summary_lines.append("⚠️ No JaCoCo coverage reports found.")
+                
+            summary_content = "\n".join(summary_lines)
+            summary_file = os.environ.get("GITHUB_STEP_SUMMARY")
+            if summary_file:
+                with open(summary_file, "a") as sf:
+                    sf.write(summary_content + "\n")
+            else:
+                print(summary_content)
+
+        if __name__ == "__main__":
+            generate_summary()
+        PYEOF
+        python generate_summary.py
