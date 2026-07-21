@@ -169,9 +169,61 @@ public class UnifiedRepository {
         return getStudyBean(study.getStudyId());
     }
     
-    public Study mapToEntity(StudyBean studyBean) {
-        if (studyBean == null) return null;
-        return getStudyEntity(studyBean.getId());
+    public Study mapToEntity(StudyBean bean) {
+        if (bean == null) return null;
+        Study entity = new Study();
+        entity.setStudyId(bean.getId());
+        entity.setName(bean.getName());
+        entity.setUniqueIdentifier(bean.getIdentifier());
+        entity.setSecondaryIdentifier(bean.getSecondaryIdentifier());
+        entity.setSummary(bean.getSummary());
+        entity.setDatePlannedStart(bean.getDatePlannedStart());
+        entity.setDatePlannedEnd(bean.getDatePlannedEnd());
+        entity.setPrincipalInvestigator(bean.getPrincipalInvestigator());
+        entity.setFacilityName(bean.getFacilityName());
+        entity.setFacilityCity(bean.getFacilityCity());
+        entity.setFacilityState(bean.getFacilityState());
+        entity.setFacilityZip(bean.getFacilityZip());
+        entity.setFacilityCountry(bean.getFacilityCountry());
+        entity.setFacilityRecruitmentStatus(bean.getFacilityRecruitmentStatus());
+        entity.setFacilityContactName(bean.getFacilityContactName());
+        entity.setFacilityContactDegree(bean.getFacilityContactDegree());
+        entity.setFacilityContactPhone(bean.getFacilityContactPhone());
+        entity.setFacilityContactEmail(bean.getFacilityContactEmail());
+        entity.setProtocolType(bean.getProtocolType());
+        entity.setProtocolDescription(bean.getProtocolDescription());
+        entity.setProtocolDateVerification(bean.getProtocolDateVerification());
+        entity.setPhase(bean.getPhase());
+        entity.setExpectedTotalEnrollment(bean.getExpectedTotalEnrollment());
+        entity.setSponsor(bean.getSponsor());
+        entity.setCollaborators(bean.getCollaborators());
+        entity.setMedlineIdentifier(bean.getMedlineIdentifier());
+        entity.setUrl(bean.getUrl());
+        entity.setUrlDescription(bean.getUrlDescription());
+        entity.setConditions(bean.getConditions());
+        entity.setKeywords(bean.getKeywords());
+        entity.setEligibility(bean.getEligibility());
+        entity.setGender(bean.getGender());
+        entity.setAgeMax(bean.getAgeMax());
+        entity.setAgeMin(bean.getAgeMin());
+        entity.setHealthyVolunteerAccepted(bean.getHealthyVolunteerAccepted());
+        entity.setPurpose(bean.getPurpose());
+        entity.setAllocation(bean.getAllocation());
+        entity.setMasking(bean.getMasking());
+        entity.setControl(bean.getControl());
+        entity.setAssignment(bean.getAssignment());
+        entity.setEndpoint(bean.getEndpoint());
+        entity.setInterventions(bean.getInterventions());
+        entity.setDuration(bean.getDuration());
+        entity.setSelection(bean.getSelection());
+        entity.setTiming(bean.getTiming());
+        entity.setOfficialTitle(bean.getOfficialTitle());
+        entity.setResultsReference(bean.isResultsReference());
+        entity.setOc_oid(bean.getOid());
+        entity.setDateCreated(bean.getCreatedDate());
+        entity.setDateUpdated(bean.getUpdatedDate());
+        if (bean.getUpdater() != null) entity.setUpdateId(bean.getUpdater().getId());
+        return entity;
     }
     
     public StudySubjectBean mapToBean(StudySubject studySubject) {
@@ -179,9 +231,73 @@ public class UnifiedRepository {
         return getStudySubjectBean(studySubject.getStudySubjectId());
     }
     
-    public StudySubject mapToEntity(StudySubjectBean studySubjectBean) {
-        if (studySubjectBean == null) return null;
-        return getStudySubjectEntity(studySubjectBean.getId());
+    public StudySubject mapToEntity(StudySubjectBean bean) {
+        if (bean == null) return null;
+        StudySubject entity = new StudySubject();
+        entity.setStudySubjectId(bean.getId());
+        entity.setLabel(bean.getLabel());
+        entity.setSecondaryLabel(bean.getSecondaryLabel());
+        entity.setEnrollmentDate(bean.getEnrollmentDate());
+        entity.setDateCreated(bean.getCreatedDate());
+        entity.setDateUpdated(bean.getUpdatedDate());
+        entity.setOcOid(bean.getOid());
+        if (bean.getUpdater() != null) entity.setUpdateId(bean.getUpdater().getId());
+        return entity;
+    }
+
+    public Subject mapToEntity(SubjectBean bean) {
+        if (bean == null) return null;
+        Subject entity = new Subject();
+        entity.setSubjectId(bean.getId());
+        entity.setDateOfBirth(bean.getDateOfBirth());
+        entity.setGender(bean.getGender());
+        entity.setUniqueIdentifier(bean.getUniqueIdentifier());
+        entity.setDobCollected(bean.isDobCollected());
+        entity.setDateCreated(bean.getCreatedDate());
+        entity.setDateUpdated(bean.getUpdatedDate());
+        if (bean.getUpdater() != null) entity.setUpdateId(bean.getUpdater().getId());
+        return entity;
+    }
+
+    public CrfBean mapToEntity(org.akaza.openclinica.bean.admin.CRFBean bean) {
+        if (bean == null) return null;
+        CrfBean entity = new CrfBean();
+        entity.setCrfId(bean.getId());
+        entity.setName(bean.getName());
+        entity.setDescription(bean.getDescription());
+        entity.setOcOid(bean.getOid());
+        entity.setDateCreated(bean.getCreatedDate());
+        entity.setDateUpdated(bean.getUpdatedDate());
+        if (bean.getUpdater() != null) entity.setUpdateId(bean.getUpdater().getId());
+        return entity;
+    }
+
+    public EventCrf mapToEntity(org.akaza.openclinica.bean.submit.EventCRFBean bean) {
+        if (bean == null) return null;
+        EventCrf entity = new EventCrf();
+        entity.setEventCrfId(bean.getId());
+        entity.setDateInterviewed(bean.getDateInterviewed());
+        entity.setInterviewerName(bean.getInterviewerName());
+        entity.setAnnotations(bean.getAnnotations());
+        entity.setDateCompleted(bean.getDateCompleted());
+        entity.setValidatorId(bean.getValidatorId());
+        entity.setDateValidate(bean.getDateValidate());
+        entity.setDateValidateCompleted(bean.getDateValidateCompleted());
+        entity.setValidatorAnnotations(bean.getValidatorAnnotations());
+        entity.setValidateString(bean.getValidateString());
+        entity.setElectronicSignatureStatus(bean.isElectronicSignatureStatus());
+        entity.setSdvStatus(bean.isSdvStatus());
+        entity.setSdvUpdateId(bean.getSdvUpdateId());
+        entity.setDateCreated(bean.getCreatedDate());
+        entity.setDateUpdated(bean.getUpdatedDate());
+        if (bean.getUpdater() != null) entity.setUpdateId(bean.getUpdater().getId());
+        return entity;
+    }
+
+    private void checkInitialization() {
+        if (studyDaoHibernate == null || subjectDaoHibernate == null || studySubjectDaoHibernate == null || crfDaoHibernate == null || eventCrfDaoHibernate == null) {
+            throw new IllegalStateException("Persistence modules not fully initialized");
+        }
     }
 
     // ==========================================
@@ -200,74 +316,55 @@ public class UnifiedRepository {
 
     @Transactional
     public StudyBean save(StudyBean bean) {
+        checkInitialization();
         Study entity = mapToEntity(bean);
-        if (entity == null) entity = new Study();
-        BeanUtils.copyProperties(bean, entity, "id");
-        if (bean.getId() > 0) entity.setStudyId(bean.getId());
         entity = studyDaoHibernate.saveOrUpdate(entity);
         studyDaoHibernate.getEntityManager().flush();
-        studyDaoHibernate.getEntityManager().clear();
+        studyDaoHibernate.getEntityManager().detach(entity);
         bean.setId(entity.getStudyId());
         return bean;
     }
 
     @Transactional
     public SubjectBean save(SubjectBean bean) {
-        Subject entity = null;
-        if (bean.getId() > 0) {
-            entity = subjectDaoHibernate.findById(bean.getId());
-        }
-        if (entity == null) entity = new Subject();
-        BeanUtils.copyProperties(bean, entity, "id");
-        if (bean.getId() > 0) entity.setSubjectId(bean.getId());
+        checkInitialization();
+        Subject entity = mapToEntity(bean);
         entity = subjectDaoHibernate.saveOrUpdate(entity);
         subjectDaoHibernate.getEntityManager().flush();
-        subjectDaoHibernate.getEntityManager().clear();
+        subjectDaoHibernate.getEntityManager().detach(entity);
         bean.setId(entity.getSubjectId());
         return bean;
     }
 
     @Transactional
     public StudySubjectBean save(StudySubjectBean bean) {
+        checkInitialization();
         StudySubject entity = mapToEntity(bean);
-        if (entity == null) entity = new StudySubject();
-        BeanUtils.copyProperties(bean, entity, "id");
-        if (bean.getId() > 0) entity.setStudySubjectId(bean.getId());
         entity = studySubjectDaoHibernate.saveOrUpdate(entity);
         studySubjectDaoHibernate.getEntityManager().flush();
-        studySubjectDaoHibernate.getEntityManager().clear();
+        studySubjectDaoHibernate.getEntityManager().detach(entity);
         bean.setId(entity.getStudySubjectId());
         return bean;
     }
 
     @Transactional
     public org.akaza.openclinica.bean.admin.CRFBean save(org.akaza.openclinica.bean.admin.CRFBean bean) {
-        CrfBean entity = null;
-        if (bean.getId() > 0) {
-            entity = crfDaoHibernate.findById(bean.getId());
-        }
-        if (entity == null) entity = new CrfBean();
-        BeanUtils.copyProperties(bean, entity, "id");
-        if (bean.getId() > 0) entity.setCrfId(bean.getId());
+        checkInitialization();
+        CrfBean entity = mapToEntity(bean);
         entity = crfDaoHibernate.saveOrUpdate(entity);
         crfDaoHibernate.getEntityManager().flush();
-        crfDaoHibernate.getEntityManager().clear();
+        crfDaoHibernate.getEntityManager().detach(entity);
         bean.setId(entity.getCrfId());
         return bean;
     }
 
     @Transactional
     public org.akaza.openclinica.bean.submit.EventCRFBean save(org.akaza.openclinica.bean.submit.EventCRFBean bean) {
-        EventCrf entity = null;
-        if (bean.getId() > 0) {
-            entity = eventCrfDaoHibernate.findById(bean.getId());
-        }
-        if (entity == null) entity = new EventCrf();
-        BeanUtils.copyProperties(bean, entity, "id");
-        if (bean.getId() > 0) entity.setEventCrfId(bean.getId());
+        checkInitialization();
+        EventCrf entity = mapToEntity(bean);
         entity = eventCrfDaoHibernate.saveOrUpdate(entity);
         eventCrfDaoHibernate.getEntityManager().flush();
-        eventCrfDaoHibernate.getEntityManager().clear();
+        eventCrfDaoHibernate.getEntityManager().detach(entity);
         bean.setId(entity.getEventCrfId());
         return bean;
     }
