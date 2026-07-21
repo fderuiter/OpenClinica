@@ -1,24 +1,5019 @@
-import{n as e,r as t,t as n}from"./rolldown-runtime-BgaNhQyE.js";var r,i,a,o,s,c,l,u,d,f,p,m,h,g,_,v,y,ee,b,te,x=e((()=>{r=`1.13.8`,i=typeof self==`object`&&self.self===self&&self||typeof global==`object`&&global.global===global&&global||Function(`return this`)()||{},a=Array.prototype,o=Object.prototype,s=typeof Symbol<`u`?Symbol.prototype:null,c=a.push,l=a.slice,u=o.toString,d=o.hasOwnProperty,f=typeof ArrayBuffer<`u`,p=typeof DataView<`u`,m=Array.isArray,h=Object.keys,g=Object.create,_=f&&ArrayBuffer.isView,v=isNaN,y=isFinite,ee=!{toString:null}.propertyIsEnumerable(`toString`),b=[`valueOf`,`isPrototypeOf`,`toString`,`propertyIsEnumerable`,`hasOwnProperty`,`toLocaleString`],te=2**53-1}));function S(e,t){return t=t==null?e.length-1:+t,function(){for(var n=Math.max(arguments.length-t,0),r=Array(n),i=0;i<n;i++)r[i]=arguments[i+t];switch(t){case 0:return e.call(this,r);case 1:return e.call(this,arguments[0],r);case 2:return e.call(this,arguments[0],arguments[1],r)}var a=Array(t+1);for(i=0;i<t;i++)a[i]=arguments[i];return a[t]=r,e.apply(this,a)}}var C=e((()=>{}));function w(e){var t=typeof e;return t===`function`||t===`object`&&!!e}var T=e((()=>{}));function ne(e){return e===null}var re=e((()=>{}));function E(e){return e===void 0}var ie=e((()=>{}));function ae(e){return e===!0||e===!1||u.call(e)===`[object Boolean]`}var oe=e((()=>{x()}));function se(e){return!!(e&&e.nodeType===1)}var ce=e((()=>{}));function D(e){var t=`[object `+e+`]`;return function(e){return u.call(e)===t}}var O=e((()=>{x()})),le,ue=e((()=>{O(),le=D(`String`)})),k,de=e((()=>{O(),k=D(`Number`)})),A,fe=e((()=>{O(),A=D(`Date`)})),pe,me=e((()=>{O(),pe=D(`RegExp`)})),he,ge=e((()=>{O(),he=D(`Error`)})),_e,ve=e((()=>{O(),_e=D(`Symbol`)})),ye,be=e((()=>{O(),ye=D(`ArrayBuffer`)})),xe,Se,j,Ce=e((()=>{O(),x(),xe=D(`Function`),Se=i.document&&i.document.childNodes,typeof/./!=`function`&&typeof Int8Array!=`object`&&typeof Se!=`function`&&(xe=function(e){return typeof e==`function`||!1}),j=xe})),we,Te=e((()=>{O(),we=D(`Object`)})),Ee,De,Oe=e((()=>{x(),Te(),Ee=p&&(!/\[native code\]/.test(String(DataView))||we(new DataView(new ArrayBuffer(8)))),De=typeof Map<`u`&&we(new Map)}));function ke(e){return e!=null&&j(e.getInt8)&&ye(e.buffer)}var Ae,je,Me=e((()=>{O(),Ce(),be(),Oe(),Ae=D(`DataView`),je=Ee?ke:Ae})),Ne,Pe=e((()=>{x(),O(),Ne=m||D(`Array`)}));function Fe(e,t){return e!=null&&d.call(e,t)}var Ie=e((()=>{x()})),Le,Re,ze=e((()=>{O(),Ie(),Le=D(`Arguments`),(function(){Le(arguments)||(Le=function(e){return Fe(e,`callee`)})})(),Re=Le}));function Be(e){return!_e(e)&&y(e)&&!isNaN(parseFloat(e))}var Ve=e((()=>{x(),ve()}));function He(e){return k(e)&&v(e)}var Ue=e((()=>{x(),de()}));function We(e){return function(){return e}}var Ge=e((()=>{}));function Ke(e){return function(t){var n=e(t);return typeof n==`number`&&n>=0&&n<=te}}var qe=e((()=>{x()}));function Je(e){return function(t){return t?.[e]}}var Ye=e((()=>{})),Xe,Ze=e((()=>{Ye(),Xe=Je(`byteLength`)})),Qe,$e=e((()=>{qe(),Ze(),Qe=Ke(Xe)}));function et(e){return _?_(e)&&!je(e):Qe(e)&&tt.test(u.call(e))}var tt,nt,rt=e((()=>{x(),Me(),Ge(),$e(),tt=/\[object ((I|Ui)nt(8|16|32)|Float(32|64)|Uint8Clamped|Big(I|Ui)nt64)Array\]/,nt=f?et:We(!1)})),M,it=e((()=>{Ye(),M=Je(`length`)}));function at(e){for(var t={},n=e.length,r=0;r<n;++r)t[e[r]]=!0;return{contains:function(e){return t[e]===!0},push:function(n){return t[n]=!0,e.push(n)}}}function ot(e,t){t=at(t);var n=b.length,r=e.constructor,i=j(r)&&r.prototype||o,a=`constructor`;for(Fe(e,a)&&!t.contains(a)&&t.push(a);n--;)a=b[n],a in e&&e[a]!==i[a]&&!t.contains(a)&&t.push(a)}var st=e((()=>{x(),Ce(),Ie()}));function N(e){if(!w(e))return[];if(h)return h(e);var t=[];for(var n in e)Fe(e,n)&&t.push(n);return ee&&ot(e,t),t}var P=e((()=>{T(),x(),Ie(),st()}));function ct(e){if(e==null)return!0;var t=M(e);return typeof t==`number`&&(Ne(e)||le(e)||Re(e))?t===0:M(N(e))===0}var lt=e((()=>{it(),Pe(),ue(),ze(),P()}));function ut(e,t){var n=N(t),r=n.length;if(e==null)return!r;for(var i=Object(e),a=0;a<r;a++){var o=n[a];if(t[o]!==i[o]||!(o in i))return!1}return!0}var dt=e((()=>{P()}));function F(e){if(e instanceof F)return e;if(!(this instanceof F))return new F(e);this._wrapped=e}var ft=e((()=>{x(),F.VERSION=r,F.prototype.value=function(){return this._wrapped},F.prototype.valueOf=F.prototype.toJSON=F.prototype.value,F.prototype.toString=function(){return String(this._wrapped)}}));function pt(e){return new Uint8Array(e.buffer||e,e.byteOffset||0,Xe(e))}var mt=e((()=>{Ze()}));function ht(e,t){for(var n=[{a:e,b:t}],r=[],i=[];n.length;){var a=n.pop();if(a===!0){r.pop(),i.pop();continue}if(e=a.a,t=a.b,e===t){if(e!==0||1/e==1/t)continue;return!1}if(e==null||t==null)return!1;if(e!==e){if(t!==t)continue;return!1}var o=typeof e;if(o!==`function`&&o!==`object`&&typeof t!=`object`)return!1;e instanceof F&&(e=e._wrapped),t instanceof F&&(t=t._wrapped);var c=u.call(e);if(c!==u.call(t))return!1;if(Ee&&c==`[object Object]`&&je(e)){if(!je(t))return!1;c=gt}switch(c){case`[object RegExp]`:case`[object String]`:if(``+e==``+t)continue;return!1;case`[object Number]`:n.push({a:+e,b:+t});continue;case`[object Date]`:case`[object Boolean]`:if(+e==+t)continue;return!1;case`[object Symbol]`:if(s.valueOf.call(e)===s.valueOf.call(t))continue;return!1;case`[object ArrayBuffer]`:case gt:n.push({a:pt(e),b:pt(t)});continue}var l=c===`[object Array]`;if(!l&&nt(e)){if(Xe(e)!==Xe(t))return!1;if(e.buffer===t.buffer&&e.byteOffset===t.byteOffset)continue;l=!0}if(!l){if(typeof e!=`object`||typeof t!=`object`)return!1;var d=e.constructor,f=t.constructor;if(d!==f&&!(j(d)&&d instanceof d&&j(f)&&f instanceof f)&&`constructor`in e&&`constructor`in t)return!1}for(var p=r.length;p--;)if(r[p]===e){if(i[p]===t)break;return!1}if(!(p>=0))if(r.push(e),i.push(t),n.push(!0),l){if(p=e.length,p!==t.length)return!1;for(;p--;)n.push({a:e[p],b:t[p]})}else{var m=N(e),h;if(p=m.length,N(t).length!==p)return!1;for(;p--;){if(h=m[p],!Fe(t,h))return!1;n.push({a:e[h],b:t[h]})}}}return!0}var gt,_t=e((()=>{ft(),x(),Ze(),rt(),Ce(),Oe(),Me(),P(),Ie(),mt(),gt=`[object DataView]`}));function vt(e){if(!w(e))return[];var t=[];for(var n in e)t.push(n);return ee&&ot(e,t),t}var yt=e((()=>{T(),x(),st()}));function bt(e){var t=M(e);return function(n){if(n==null||M(vt(n)))return!1;for(var r=0;r<t;r++)if(!j(n[e[r]]))return!1;return e!==Et||!j(n[xt])}}var xt,St,Ct,wt,Tt,Et,Dt,Ot=e((()=>{it(),Ce(),yt(),xt=`forEach`,St=`has`,Ct=[`clear`,`delete`],wt=[`get`,St,`set`],Tt=Ct.concat(xt,wt),Et=Ct.concat(wt),Dt=[`add`].concat(Ct,xt,St)})),kt,At=e((()=>{O(),Oe(),Ot(),kt=De?bt(Tt):D(`Map`)})),jt,Mt=e((()=>{O(),Oe(),Ot(),jt=De?bt(Et):D(`WeakMap`)})),Nt,Pt=e((()=>{O(),Oe(),Ot(),Nt=De?bt(Dt):D(`Set`)})),Ft,It=e((()=>{O(),Ft=D(`WeakSet`)}));function Lt(e){for(var t=N(e),n=t.length,r=Array(n),i=0;i<n;i++)r[i]=e[t[i]];return r}var Rt=e((()=>{P()}));function zt(e){for(var t=N(e),n=t.length,r=Array(n),i=0;i<n;i++)r[i]=[t[i],e[t[i]]];return r}var Bt=e((()=>{P()}));function Vt(e){for(var t={},n=N(e),r=0,i=n.length;r<i;r++)t[e[n[r]]]=n[r];return t}var Ht=e((()=>{P()}));function Ut(e){var t=[];for(var n in e)j(e[n])&&t.push(n);return t.sort()}var Wt=e((()=>{Ce()}));function Gt(e,t){return function(n){var r=arguments.length;if(t&&(n=Object(n)),r<2||n==null)return n;for(var i=1;i<r;i++)for(var a=arguments[i],o=e(a),s=o.length,c=0;c<s;c++){var l=o[c];(!t||n[l]===void 0)&&(n[l]=a[l])}return n}}var Kt=e((()=>{})),qt,Jt=e((()=>{Kt(),yt(),qt=Gt(vt)})),Yt,Xt=e((()=>{Kt(),P(),Yt=Gt(N)})),Zt,Qt=e((()=>{Kt(),yt(),Zt=Gt(vt,!0)}));function $t(){return function(){}}function en(e){if(!w(e))return{};if(g)return g(e);var t=$t();t.prototype=e;var n=new t;return t.prototype=null,n}var tn=e((()=>{T(),x()}));function nn(e,t){var n=en(e);return t&&Yt(n,t),n}var rn=e((()=>{tn(),Xt()}));function an(e){return w(e)?Ne(e)?e.slice():qt({},e):e}var on=e((()=>{T(),Pe(),Jt()}));function sn(e,t){return t(e),e}var cn=e((()=>{}));function ln(e){return Ne(e)?e:[e]}var un=e((()=>{ft(),Pe(),F.toPath=ln}));function dn(e){return F.toPath(e)}var fn=e((()=>{ft(),un()}));function pn(e,t){for(var n=t.length,r=0;r<n;r++){if(e==null)return;e=e[t[r]]}return n?e:void 0}var mn=e((()=>{}));function hn(e,t,n){var r=pn(e,dn(t));return E(r)?n:r}var gn=e((()=>{fn(),mn(),ie()}));function _n(e,t){t=dn(t);for(var n=t.length,r=0;r<n;r++){var i=t[r];if(!Fe(e,i))return!1;e=e[i]}return!!n}var vn=e((()=>{Ie(),fn()}));function yn(e){return e}var bn=e((()=>{}));function xn(e){return e=Yt({},e),function(t){return ut(t,e)}}var Sn=e((()=>{Xt(),dt()}));function Cn(e){return e=dn(e),function(t){return pn(t,e)}}var wn=e((()=>{mn(),fn()}));function Tn(e,t,n){if(t===void 0)return e;switch(n??3){case 1:return function(n){return e.call(t,n)};case 3:return function(n,r,i){return e.call(t,n,r,i)};case 4:return function(n,r,i,a){return e.call(t,n,r,i,a)}}return function(){return e.apply(t,arguments)}}var En=e((()=>{}));function Dn(e,t,n){return e==null?yn:j(e)?Tn(e,t,n):w(e)&&!Ne(e)?xn(e):Cn(e)}var On=e((()=>{bn(),Ce(),T(),Pe(),Sn(),wn(),En()}));function kn(e,t){return Dn(e,t,1/0)}var An=e((()=>{ft(),On(),F.iteratee=kn}));function I(e,t,n){return F.iteratee===kn?Dn(e,t,n):F.iteratee(e,t)}var L=e((()=>{ft(),On(),An()}));function jn(e,t,n){t=I(t,n);for(var r=N(e),i=r.length,a={},o=0;o<i;o++){var s=r[o];a[s]=t(e[s],s,e)}return a}var Mn=e((()=>{L(),P()}));function Nn(){}var Pn=e((()=>{}));function Fn(e){return e==null?Nn:function(t){return hn(e,t)}}var In=e((()=>{Pn(),gn()}));function Ln(e,t,n){var r=Array(Math.max(0,e));t=Tn(t,n,1);for(var i=0;i<e;i++)r[i]=t(i);return r}var Rn=e((()=>{En()}));function zn(e,t){return t??(t=e,e=0),e+Math.floor(Math.random()*(t-e+1))}var Bn=e((()=>{})),Vn,Hn=e((()=>{Vn=Date.now||function(){return new Date().getTime()}}));function Un(e){var t=function(t){return e[t]},n=`(?:`+N(e).join(`|`)+`)`,r=RegExp(n),i=RegExp(n,`g`);return function(e){return e=e==null?``:``+e,r.test(e)?e.replace(i,t):e}}var Wn=e((()=>{P()})),Gn,Kn=e((()=>{Gn={"&":`&amp;`,"<":`&lt;`,">":`&gt;`,'"':`&quot;`,"'":`&#x27;`,"`":`&#x60;`}})),qn,Jn=e((()=>{Wn(),Kn(),qn=Un(Gn)})),Yn,Xn=e((()=>{Ht(),Kn(),Yn=Vt(Gn)})),Zn,Qn=e((()=>{Wn(),Xn(),Zn=Un(Yn)})),$n,er=e((()=>{ft(),$n=F.templateSettings={evaluate:/<%([\s\S]+?)%>/g,interpolate:/<%=([\s\S]+?)%>/g,escape:/<%-([\s\S]+?)%>/g}}));function tr(e){return`\\`+ir[e]}function nr(e,t,n){!t&&n&&(t=n),t=Zt({},t,F.templateSettings);var r=RegExp([(t.escape||rr).source,(t.interpolate||rr).source,(t.evaluate||rr).source].join(`|`)+`|$`,`g`),i=0,a=`__p+='`;e.replace(r,function(t,n,r,o,s){return a+=e.slice(i,s).replace(ar,tr),i=s+t.length,n?a+=`'+
-((__t=(`+n+`))==null?'':_.escape(__t))+
-'`:r?a+=`'+
-((__t=(`+r+`))==null?'':__t)+
-'`:o&&(a+=`';
-`+o+`
-__p+='`),t}),a+=`';
-`;var o=t.variable;if(o){if(!or.test(o))throw Error(`variable is not a bare identifier: `+o)}else a=`with(obj||{}){
-`+a+`}
-`,o=`obj`;a=`var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-`+a+`return __p;
-`;var s;try{s=Function(o,`_`,a)}catch(e){throw e.source=a,e}var c=function(e){return s.call(this,e,F)};return c.source=`function(`+o+`){
-`+a+`}`,c}var rr,ir,ar,or,sr=e((()=>{Qt(),ft(),er(),rr=/(.)^/,ir={"'":`'`,"\\":`\\`,"\r":`r`,"\n":`n`,"\u2028":`u2028`,"\u2029":`u2029`},ar=/\\|'|\r|\n|\u2028|\u2029/g,or=/^\s*(\w|\$)+\s*$/}));function cr(e,t,n){t=dn(t);var r=t.length;if(!r)return j(n)?n.call(e):n;for(var i=0;i<r;i++){var a=e?.[t[i]];a===void 0&&(a=n,i=r),e=j(a)?a.call(e):a}return e}var lr=e((()=>{Ce(),fn()}));function ur(e){var t=++dr+``;return e?e+t:t}var dr,fr=e((()=>{dr=0}));function pr(e){var t=F(e);return t._chain=!0,t}var mr=e((()=>{ft()}));function hr(e,t,n,r,i){if(!(r instanceof t))return e.apply(n,i);var a=en(e.prototype),o=e.apply(a,i);return w(o)?o:a}var gr=e((()=>{tn(),T()})),_r,vr=e((()=>{C(),gr(),ft(),_r=S(function(e,t){var n=_r.placeholder,r=function(){for(var i=0,a=t.length,o=Array(a),s=0;s<a;s++)o[s]=t[s]===n?arguments[i++]:t[s];for(;i<arguments.length;)o.push(arguments[i++]);return hr(e,r,this,this,o)};return r}),_r.placeholder=F})),yr,br=e((()=>{C(),Ce(),gr(),yr=S(function(e,t,n){if(!j(e))throw TypeError(`Bind must be called on a function`);var r=S(function(i){return hr(e,r,t,this,n.concat(i))});return r})})),R,xr=e((()=>{qe(),it(),R=Ke(M)}));function Sr(e,t,n){!t&&t!==0&&(t=1/0);for(var r=[],i=0,a=0,o=M(e)||0,s=[];;){if(a>=o){if(!s.length)break;var c=s.pop();a=c.i,e=c.v,o=M(e);continue}var l=e[a++];s.length>=t?r[i++]=l:R(l)&&(Ne(l)||Re(l))?(s.push({i:a,v:e}),a=0,e=l,o=M(e)):n||(r[i++]=l)}return r}var Cr=e((()=>{it(),xr(),Pe(),ze()})),wr,Tr=e((()=>{C(),Cr(),br(),wr=S(function(e,t){t=Sr(t,!1,!1);var n=t.length;if(n<1)throw Error(`bindAll must be passed function names`);for(;n--;){var r=t[n];e[r]=yr(e[r],e)}return e})}));function Er(e,t){var n=function(r){var i=n.cache,a=``+(t?t.apply(this,arguments):r);return Fe(i,a)||(i[a]=e.apply(this,arguments)),i[a]};return n.cache={},n}var Dr=e((()=>{Ie()})),Or,kr=e((()=>{C(),Or=S(function(e,t,n){return setTimeout(function(){return e.apply(null,n)},t)})})),Ar,jr=e((()=>{vr(),kr(),ft(),Ar=_r(Or,F,1)}));function Mr(e,t,n){var r,i,a,o,s=0;n||={};var c=function(){s=n.leading===!1?0:Vn(),r=null,o=e.apply(i,a),r||(i=a=null)},l=function(){var l=Vn();!s&&n.leading===!1&&(s=l);var u=t-(l-s);return i=this,a=arguments,u<=0||u>t?(r&&=(clearTimeout(r),null),s=l,o=e.apply(i,a),r||(i=a=null)):!r&&n.trailing!==!1&&(r=setTimeout(c,u)),o};return l.cancel=function(){clearTimeout(r),s=0,r=i=a=null},l}var Nr=e((()=>{Hn()}));function Pr(e,t,n){var r,i,a,o,s,c=function(){var l=Vn()-i;t>l?r=setTimeout(c,t-l):(r=null,n||(o=e.apply(s,a)),r||(a=s=null))},l=S(function(l){return s=this,a=l,i=Vn(),r||(r=setTimeout(c,t),n&&(o=e.apply(s,a))),o});return l.cancel=function(){clearTimeout(r),r=a=s=null},l}var Fr=e((()=>{C(),Hn()}));function Ir(e,t){return _r(t,e)}var Lr=e((()=>{vr()}));function Rr(e){return function(){return!e.apply(this,arguments)}}var zr=e((()=>{}));function Br(){var e=arguments,t=e.length-1;return function(){for(var n=t,r=e[t].apply(this,arguments);n--;)r=e[n].call(this,r);return r}}var Vr=e((()=>{}));function Hr(e,t){return function(){if(--e<1)return t.apply(this,arguments)}}var Ur=e((()=>{}));function Wr(e,t){var n;return function(){return--e>0&&(n=t.apply(this,arguments)),e<=1&&(t=null),n}}var Gr=e((()=>{})),Kr,qr=e((()=>{vr(),Gr(),Kr=_r(Wr,2)}));function Jr(e,t,n){t=I(t,n);for(var r=N(e),i,a=0,o=r.length;a<o;a++)if(i=r[a],t(e[i],i,e))return i}var Yr=e((()=>{L(),P()}));function Xr(e){return function(t,n,r){n=I(n,r);for(var i=M(t),a=e>0?0:i-1;a>=0&&a<i;a+=e)if(n(t[a],a,t))return a;return-1}}var Zr=e((()=>{L(),it()})),Qr,$r=e((()=>{Zr(),Qr=Xr(1)})),ei,ti=e((()=>{Zr(),ei=Xr(-1)}));function ni(e,t,n,r){n=I(n,r,1);for(var i=n(t),a=0,o=M(e);a<o;){var s=Math.floor((a+o)/2);n(e[s])<i?a=s+1:o=s}return a}var ri=e((()=>{L(),it()}));function ii(e,t,n){return function(r,i,a){var o=0,s=M(r);if(typeof a==`number`)e>0?o=a>=0?a:Math.max(a+s,o):s=a>=0?Math.min(a+1,s):a+s+1;else if(n&&a&&s)return a=n(r,i),r[a]===i?a:-1;if(i!==i)return a=t(l.call(r,o,s),He),a>=0?a+o:-1;for(a=e>0?o:s-1;a>=0&&a<s;a+=e)if(r[a]===i)return a;return-1}}var ai=e((()=>{it(),x(),Ue()})),oi,si=e((()=>{ri(),$r(),ai(),oi=ii(1,Qr,ni)})),ci,li=e((()=>{ti(),ai(),ci=ii(-1,ei)}));function ui(e,t,n){var r=(R(e)?Qr:Jr)(e,t,n);if(r!==void 0&&r!==-1)return e[r]}var di=e((()=>{xr(),$r(),Yr()}));function fi(e,t){return ui(e,xn(t))}var pi=e((()=>{di(),Sn()}));function mi(e,t,n){t=Tn(t,n);var r,i;if(R(e))for(r=0,i=e.length;r<i;r++)t(e[r],r,e);else{var a=N(e);for(r=0,i=a.length;r<i;r++)t(e[a[r]],a[r],e)}return e}var hi=e((()=>{En(),xr(),P()}));function gi(e,t,n){t=I(t,n);for(var r=!R(e)&&N(e),i=(r||e).length,a=Array(i),o=0;o<i;o++){var s=r?r[o]:o;a[o]=t(e[s],s,e)}return a}var _i=e((()=>{L(),xr(),P()}));function vi(e){var t=function(t,n,r,i){var a=!R(t)&&N(t),o=(a||t).length,s=e>0?0:o-1;for(i||(r=t[a?a[s]:s],s+=e);s>=0&&s<o;s+=e){var c=a?a[s]:s;r=n(r,t[c],c,t)}return r};return function(e,n,r,i){var a=arguments.length>=3;return t(e,Tn(n,i,4),r,a)}}var yi=e((()=>{xr(),P(),En()})),bi,xi=e((()=>{yi(),bi=vi(1)})),Si,Ci=e((()=>{yi(),Si=vi(-1)}));function wi(e,t,n){var r=[];return t=I(t,n),mi(e,function(e,n,i){t(e,n,i)&&r.push(e)}),r}var Ti=e((()=>{L(),hi()}));function Ei(e,t,n){return wi(e,Rr(I(t)),n)}var Di=e((()=>{Ti(),zr(),L()}));function Oi(e,t,n){t=I(t,n);for(var r=!R(e)&&N(e),i=(r||e).length,a=0;a<i;a++){var o=r?r[a]:a;if(!t(e[o],o,e))return!1}return!0}var ki=e((()=>{L(),xr(),P()}));function Ai(e,t,n){t=I(t,n);for(var r=!R(e)&&N(e),i=(r||e).length,a=0;a<i;a++){var o=r?r[a]:a;if(t(e[o],o,e))return!0}return!1}var ji=e((()=>{L(),xr(),P()}));function Mi(e,t,n,r){return R(e)||(e=Lt(e)),(typeof n!=`number`||r)&&(n=0),oi(e,t,n)>=0}var Ni=e((()=>{xr(),Rt(),si()})),Pi,Fi=e((()=>{C(),Ce(),_i(),mn(),fn(),Pi=S(function(e,t,n){var r,i;return j(t)?i=t:(t=dn(t),r=t.slice(0,-1),t=t[t.length-1]),gi(e,function(e){var a=i;if(!a){if(r&&r.length&&(e=pn(e,r)),e==null)return;a=e[t]}return a==null?a:a.apply(e,n)})})}));function Ii(e,t){return gi(e,Cn(t))}var Li=e((()=>{_i(),wn()}));function Ri(e,t){return wi(e,xn(t))}var zi=e((()=>{Ti(),Sn()}));function Bi(e,t,n){var r=-1/0,i=-1/0,a,o;if(t==null||typeof t==`number`&&typeof e[0]!=`object`&&e!=null){e=R(e)?e:Lt(e);for(var s=0,c=e.length;s<c;s++)a=e[s],a!=null&&a>r&&(r=a)}else t=I(t,n),mi(e,function(e,n,a){o=t(e,n,a),(o>i||o===-1/0&&r===-1/0)&&(r=e,i=o)});return r}var Vi=e((()=>{xr(),Rt(),L(),hi()}));function Hi(e,t,n){var r=1/0,i=1/0,a,o;if(t==null||typeof t==`number`&&typeof e[0]!=`object`&&e!=null){e=R(e)?e:Lt(e);for(var s=0,c=e.length;s<c;s++)a=e[s],a!=null&&a<r&&(r=a)}else t=I(t,n),mi(e,function(e,n,a){o=t(e,n,a),(o<i||o===1/0&&r===1/0)&&(r=e,i=o)});return r}var Ui=e((()=>{xr(),Rt(),L(),hi()}));function Wi(e){return e?Ne(e)?l.call(e):le(e)?e.match(Gi):R(e)?gi(e,yn):Lt(e):[]}var Gi,Ki=e((()=>{Pe(),x(),ue(),xr(),_i(),bn(),Rt(),Gi=/[^\ud800-\udfff]|[\ud800-\udbff][\udc00-\udfff]|[\ud800-\udfff]/g}));function qi(e,t,n){if(t==null||n)return R(e)||(e=Lt(e)),e[zn(e.length-1)];var r=Wi(e),i=M(r);t=Math.max(Math.min(t,i),0);for(var a=i-1,o=0;o<t;o++){var s=zn(o,a),c=r[o];r[o]=r[s],r[s]=c}return r.slice(0,t)}var Ji=e((()=>{xr(),Rt(),it(),Bn(),Ki()}));function Yi(e){return qi(e,1/0)}var Xi=e((()=>{Ji()}));function Zi(e,t,n){var r=0;return t=I(t,n),Ii(gi(e,function(e,n,i){return{value:e,index:r++,criteria:t(e,n,i)}}).sort(function(e,t){var n=e.criteria,r=t.criteria;if(n!==r){if(n>r||n===void 0)return 1;if(n<r||r===void 0)return-1}return e.index-t.index}),`value`)}var Qi=e((()=>{L(),Li(),_i()}));function $i(e,t){return function(n,r,i){var a=t?[[],[]]:{};return r=I(r,i),mi(n,function(t,i){e(a,t,r(t,i,n))}),a}}var ea=e((()=>{L(),hi()})),ta,na=e((()=>{ea(),Ie(),ta=$i(function(e,t,n){Fe(e,n)?e[n].push(t):e[n]=[t]})})),ra,ia=e((()=>{ea(),ra=$i(function(e,t,n){e[n]=t})})),aa,oa=e((()=>{ea(),Ie(),aa=$i(function(e,t,n){Fe(e,n)?e[n]++:e[n]=1})})),sa,ca=e((()=>{ea(),sa=$i(function(e,t,n){e[+!n].push(t)},!0)}));function la(e){return e==null?0:R(e)?e.length:N(e).length}var ua=e((()=>{xr(),P()}));function da(e,t,n){return t in n}var fa=e((()=>{})),pa,ma=e((()=>{C(),Ce(),En(),yt(),fa(),Cr(),pa=S(function(e,t){var n={},r=t[0];if(e==null)return n;j(r)?(t.length>1&&(r=Tn(r,t[1])),t=vt(e)):(r=da,t=Sr(t,!1,!1),e=Object(e));for(var i=0,a=t.length;i<a;i++){var o=t[i],s=e[o];r(s,o,e)&&(n[o]=s)}return n})})),ha,ga=e((()=>{C(),Ce(),zr(),_i(),Cr(),Ni(),ma(),ha=S(function(e,t){var n=t[0],r;return j(n)?(n=Rr(n),t.length>1&&(r=t[1])):(t=gi(Sr(t,!1,!1),String),n=function(e,n){return!Mi(t,n)}),pa(e,n,r)})}));function _a(e,t,n){return l.call(e,0,Math.max(0,e.length-(t==null||n?1:t)))}var va=e((()=>{x()}));function ya(e,t,n){return e==null||e.length<1?t==null||n?void 0:[]:t==null||n?e[0]:_a(e,e.length-t)}var ba=e((()=>{va()}));function xa(e,t,n){return l.call(e,t==null||n?1:t)}var Sa=e((()=>{x()}));function Ca(e,t,n){return e==null||e.length<1?t==null||n?void 0:[]:t==null||n?e[e.length-1]:xa(e,Math.max(0,e.length-t))}var wa=e((()=>{Sa()}));function Ta(e){return wi(e,Boolean)}var Ea=e((()=>{Ti()}));function Da(e,t){return Sr(e,t,!1)}var Oa=e((()=>{Cr()})),ka,Aa=e((()=>{C(),Cr(),Ti(),Ni(),ka=S(function(e,t){return t=Sr(t,!0,!0),wi(e,function(e){return!Mi(t,e)})})})),ja,Ma=e((()=>{C(),Aa(),ja=S(function(e,t){return ka(e,t)})}));function Na(e,t,n,r){ae(t)||(r=n,n=t,t=!1),n!=null&&(n=I(n,r));for(var i=[],a=[],o=0,s=M(e);o<s;o++){var c=e[o],l=n?n(c,o,e):c;t&&!n?((!o||a!==l)&&i.push(c),a=l):n?Mi(a,l)||(a.push(l),i.push(c)):Mi(i,c)||i.push(c)}return i}var Pa=e((()=>{oe(),L(),it(),Ni()})),Fa,Ia=e((()=>{C(),Pa(),Cr(),Fa=S(function(e){return Na(Sr(e,!0,!0))})}));function La(e){for(var t=[],n=arguments.length,r=0,i=M(e);r<i;r++){var a=e[r];if(!Mi(t,a)){var o;for(o=1;o<n&&Mi(arguments[o],a);o++);o===n&&t.push(a)}}return t}var Ra=e((()=>{it(),Ni()}));function za(e){for(var t=e&&Bi(e,M).length||0,n=Array(t),r=0;r<t;r++)n[r]=Ii(e,r);return n}var Ba=e((()=>{Vi(),it(),Li()})),Va,Ha=e((()=>{C(),Ba(),Va=S(za)}));function Ua(e,t){for(var n={},r=0,i=M(e);r<i;r++)t?n[e[r]]=t[r]:n[e[r][0]]=e[r][1];return n}var Wa=e((()=>{it()}));function Ga(e,t,n){t??(t=e||0,e=0),n||=t<e?-1:1;for(var r=Math.max(Math.ceil((t-e)/n),0),i=Array(r),a=0;a<r;a++,e+=n)i[a]=e;return i}var Ka=e((()=>{}));function qa(e,t){if(t==null||t<1)return[];for(var n=[],r=0,i=e.length;r<i;)n.push(l.call(e,r,r+=t));return n}var Ja=e((()=>{x()}));function Ya(e,t){return e._chain?F(t).chain():t}var Xa=e((()=>{ft()}));function Za(e){return mi(Ut(e),function(t){var n=F[t]=e[t];F.prototype[t]=function(){var e=[this._wrapped];return c.apply(e,arguments),Ya(this,n.apply(F,e))}}),F}var Qa=e((()=>{ft(),hi(),Wt(),x(),Xa()})),$a,eo=e((()=>{ft(),hi(),x(),Xa(),mi([`pop`,`push`,`reverse`,`shift`,`sort`,`splice`,`unshift`],function(e){var t=a[e];F.prototype[e]=function(){var n=this._wrapped;return n!=null&&(t.apply(n,arguments),(e===`shift`||e===`splice`)&&n.length===0&&delete n[0]),Ya(this,n)}}),mi([`concat`,`join`,`slice`],function(e){var t=a[e];F.prototype[e]=function(){var e=this._wrapped;return e!=null&&(e=t.apply(e,arguments)),Ya(this,e)}}),$a=F})),to=t({VERSION:()=>r,after:()=>Hr,all:()=>Oi,allKeys:()=>vt,any:()=>Ai,assign:()=>Yt,before:()=>Wr,bind:()=>yr,bindAll:()=>wr,chain:()=>pr,chunk:()=>qa,clone:()=>an,collect:()=>gi,compact:()=>Ta,compose:()=>Br,constant:()=>We,contains:()=>Mi,countBy:()=>aa,create:()=>nn,debounce:()=>Pr,default:()=>$a,defaults:()=>Zt,defer:()=>Ar,delay:()=>Or,detect:()=>ui,difference:()=>ka,drop:()=>xa,each:()=>mi,escape:()=>qn,every:()=>Oi,extend:()=>qt,extendOwn:()=>Yt,filter:()=>wi,find:()=>ui,findIndex:()=>Qr,findKey:()=>Jr,findLastIndex:()=>ei,findWhere:()=>fi,first:()=>ya,flatten:()=>Da,foldl:()=>bi,foldr:()=>Si,forEach:()=>mi,functions:()=>Ut,get:()=>hn,groupBy:()=>ta,has:()=>_n,head:()=>ya,identity:()=>yn,include:()=>Mi,includes:()=>Mi,indexBy:()=>ra,indexOf:()=>oi,initial:()=>_a,inject:()=>bi,intersection:()=>La,invert:()=>Vt,invoke:()=>Pi,isArguments:()=>Re,isArray:()=>Ne,isArrayBuffer:()=>ye,isBoolean:()=>ae,isDataView:()=>je,isDate:()=>A,isElement:()=>se,isEmpty:()=>ct,isEqual:()=>ht,isError:()=>he,isFinite:()=>Be,isFunction:()=>j,isMap:()=>kt,isMatch:()=>ut,isNaN:()=>He,isNull:()=>ne,isNumber:()=>k,isObject:()=>w,isRegExp:()=>pe,isSet:()=>Nt,isString:()=>le,isSymbol:()=>_e,isTypedArray:()=>nt,isUndefined:()=>E,isWeakMap:()=>jt,isWeakSet:()=>Ft,iteratee:()=>kn,keys:()=>N,last:()=>Ca,lastIndexOf:()=>ci,map:()=>gi,mapObject:()=>jn,matcher:()=>xn,matches:()=>xn,max:()=>Bi,memoize:()=>Er,methods:()=>Ut,min:()=>Hi,mixin:()=>Za,negate:()=>Rr,noop:()=>Nn,now:()=>Vn,object:()=>Ua,omit:()=>ha,once:()=>Kr,pairs:()=>zt,partial:()=>_r,partition:()=>sa,pick:()=>pa,pluck:()=>Ii,property:()=>Cn,propertyOf:()=>Fn,random:()=>zn,range:()=>Ga,reduce:()=>bi,reduceRight:()=>Si,reject:()=>Ei,rest:()=>xa,restArguments:()=>S,result:()=>cr,sample:()=>qi,select:()=>wi,shuffle:()=>Yi,size:()=>la,some:()=>Ai,sortBy:()=>Zi,sortedIndex:()=>ni,tail:()=>xa,take:()=>ya,tap:()=>sn,template:()=>nr,templateSettings:()=>$n,throttle:()=>Mr,times:()=>Ln,toArray:()=>Wi,toPath:()=>ln,transpose:()=>za,unescape:()=>Zn,union:()=>Fa,uniq:()=>Na,unique:()=>Na,uniqueId:()=>ur,unzip:()=>za,values:()=>Lt,where:()=>Ri,without:()=>ja,wrap:()=>Ir,zip:()=>Va}),no=e((()=>{x(),C(),T(),re(),ie(),oe(),ce(),ue(),de(),fe(),me(),ge(),ve(),be(),Me(),Pe(),Ce(),ze(),Ve(),Ue(),rt(),lt(),dt(),_t(),At(),Mt(),Pt(),It(),P(),yt(),Rt(),Bt(),Ht(),Wt(),Jt(),Xt(),Qt(),rn(),on(),cn(),gn(),vn(),Mn(),bn(),Ge(),Pn(),un(),wn(),In(),Sn(),Rn(),Bn(),Hn(),Jn(),Qn(),er(),sr(),lr(),fr(),mr(),An(),vr(),br(),Tr(),Dr(),kr(),jr(),Nr(),Fr(),Lr(),zr(),Vr(),Ur(),Gr(),qr(),Yr(),$r(),ti(),ri(),si(),li(),di(),pi(),hi(),_i(),xi(),Ci(),Ti(),Di(),ki(),ji(),Ni(),Fi(),Li(),zi(),Vi(),Ui(),Xi(),Ji(),Qi(),na(),ia(),oa(),ca(),Ki(),ua(),ma(),ga(),ba(),va(),wa(),Sa(),Ea(),Oa(),Ma(),Pa(),Ia(),Ra(),Aa(),Ba(),Ha(),Wa(),Ka(),Ja(),Qa(),eo()})),ro,io=e((()=>{no(),ro=Za(to),ro._=ro})),ao=e((()=>{io(),no()}));function oo(e,t,n,r){if(arguments.length===1&&typeof e==`string`&&!/\d/.test(e)&&(t=e,e=void 0),e=e||e===0?e:new Date,e instanceof Date||(e=new Date(e)),isNaN(e))throw TypeError(`Invalid date`);t=String(uo[t]||t||uo.default);var i=t.slice(0,4);(i===`UTC:`||i===`GMT:`)&&(t=t.slice(4),n=!0,i===`GMT:`&&(r=!0));var a=function(){return n?`getUTC`:`get`},o=function(){return e[a()+`Date`]()},s=function(){return e[a()+`Day`]()},c=function(){return e[a()+`Month`]()},l=function(){return e[a()+`FullYear`]()},u=function(){return e[a()+`Hours`]()},d=function(){return e[a()+`Minutes`]()},f=function(){return e[a()+`Seconds`]()},p=function(){return e[a()+`Milliseconds`]()},m=function(){return n?0:e.getTimezoneOffset()},h=function(){return po(e)},g=function(){return mo(e)},_={d:function(){return o()},dd:function(){return B(o())},ddd:function(){return z.dayNames[s()]},DDD:function(){return fo({y:l(),m:c(),d:o(),_:a(),dayName:z.dayNames[s()],short:!0})},dddd:function(){return z.dayNames[s()+7]},DDDD:function(){return fo({y:l(),m:c(),d:o(),_:a(),dayName:z.dayNames[s()+7]})},m:function(){return c()+1},mm:function(){return B(c()+1)},mmm:function(){return z.monthNames[c()]},mmmm:function(){return z.monthNames[c()+12]},yy:function(){return String(l()).slice(2)},yyyy:function(){return B(l(),4)},h:function(){return u()%12||12},hh:function(){return B(u()%12||12)},H:function(){return u()},HH:function(){return B(u())},M:function(){return d()},MM:function(){return B(d())},s:function(){return f()},ss:function(){return B(f())},l:function(){return B(p(),3)},L:function(){return B(Math.floor(p()/10))},t:function(){return u()<12?z.timeNames[0]:z.timeNames[1]},tt:function(){return u()<12?z.timeNames[2]:z.timeNames[3]},T:function(){return u()<12?z.timeNames[4]:z.timeNames[5]},TT:function(){return u()<12?z.timeNames[6]:z.timeNames[7]},Z:function(){return r?`GMT`:n?`UTC`:ho(e)},o:function(){return(m()>0?`-`:`+`)+B(Math.floor(Math.abs(m())/60)*100+Math.abs(m())%60,4)},p:function(){return(m()>0?`-`:`+`)+B(Math.floor(Math.abs(m())/60),2)+`:`+B(Math.floor(Math.abs(m())%60),2)},S:function(){return[`th`,`st`,`nd`,`rd`][o()%10>3?0:(o()%100-o()%10!=10)*o()%10]},W:function(){return h()},WW:function(){return B(h())},N:function(){return g()}};return t.replace(so,function(e){return e in _?_[e]():e.slice(1,e.length-1)})}var so,co,lo,uo,z,B,fo,po,mo,ho,go=e((()=>{so=/d{1,4}|D{3,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|W{1,2}|[LlopSZN]|"[^"]*"|'[^']*'/g,co=/\b(?:[A-Z]{1,3}[A-Z][TC])(?:[-+]\d{4})?|((?:Australian )?(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time)\b/g,lo=/[^-+\dA-Z]/g,uo={default:`ddd mmm dd yyyy HH:MM:ss`,shortDate:`m/d/yy`,paddedShortDate:`mm/dd/yyyy`,mediumDate:`mmm d, yyyy`,longDate:`mmmm d, yyyy`,fullDate:`dddd, mmmm d, yyyy`,shortTime:`h:MM TT`,mediumTime:`h:MM:ss TT`,longTime:`h:MM:ss TT Z`,isoDate:`yyyy-mm-dd`,isoTime:`HH:MM:ss`,isoDateTime:`yyyy-mm-dd'T'HH:MM:sso`,isoUtcDateTime:`UTC:yyyy-mm-dd'T'HH:MM:ss'Z'`,expiresHeaderFormat:`ddd, dd mmm yyyy HH:MM:ss Z`},z={dayNames:[`Sun`,`Mon`,`Tue`,`Wed`,`Thu`,`Fri`,`Sat`,`Sunday`,`Monday`,`Tuesday`,`Wednesday`,`Thursday`,`Friday`,`Saturday`],monthNames:[`Jan`,`Feb`,`Mar`,`Apr`,`May`,`Jun`,`Jul`,`Aug`,`Sep`,`Oct`,`Nov`,`Dec`,`January`,`February`,`March`,`April`,`May`,`June`,`July`,`August`,`September`,`October`,`November`,`December`],timeNames:[`a`,`p`,`am`,`pm`,`A`,`P`,`AM`,`PM`]},B=function(e){var t=arguments.length>1&&arguments[1]!==void 0?arguments[1]:2;return String(e).padStart(t,`0`)},fo=function(e){var t=e.y,n=e.m,r=e.d,i=e._,a=e.dayName,o=e.short,s=o===void 0?!1:o,c=new Date,l=new Date;l.setDate(l[i+`Date`]()-1);var u=new Date;return u.setDate(u[i+`Date`]()+1),function(){return c[i+`FullYear`]()}()===t&&function(){return c[i+`Month`]()}()===n&&function(){return c[i+`Date`]()}()===r?s?`Tdy`:`Today`:function(){return l[i+`FullYear`]()}()===t&&function(){return l[i+`Month`]()}()===n&&function(){return l[i+`Date`]()}()===r?s?`Ysd`:`Yesterday`:function(){return u[i+`FullYear`]()}()===t&&function(){return u[i+`Month`]()}()===n&&function(){return u[i+`Date`]()}()===r?s?`Tmw`:`Tomorrow`:a},po=function(e){var t=new Date(e.getFullYear(),e.getMonth(),e.getDate());t.setDate(t.getDate()-(t.getDay()+6)%7+3);var n=new Date(t.getFullYear(),0,4);n.setDate(n.getDate()-(n.getDay()+6)%7+3);var r=t.getTimezoneOffset()-n.getTimezoneOffset();t.setHours(t.getHours()-r);var i=(t-n)/(864e5*7);return 1+Math.floor(i)},mo=function(e){var t=e.getDay();return t===0&&(t=7),t},ho=function(e){return(String(e).match(co)||[``]).pop().replace(lo,``).replace(/GMT\+0000/g,`UTC`)}}));function _o(e,t){if(e||={},Rs.call(this,Zo),t)Rs.call(this,[[Io,Ps(e[Ho])],[Ro,Ps(e[Uo])],[X,/\?1/.test(e[qo])],[Y,Ls(e[Jo])],[zo,Ls(e[Yo])],[Bo,Ls(e[Xo])],[J,Ls(e[Wo])],[Lo,Ps(e[Ko])],[Vo,Ls(e[Go])]]);else for(var n in e)this.hasOwnProperty(n)&&typeof e[n]!==V.UNDEFINED&&(this[n]=e[n])}function vo(e,t,n,r){return Rs.call(this,[[`itemType`,e],[`ua`,t],[`uaCH`,r],[`rgxMap`,n],[`data`,Ys(this,e)]]),this}function yo(e,t,n){if(typeof e===V.OBJECT?(Ms(e,!0)?(typeof t===V.OBJECT&&(n=t),t=e):(n=e,t=void 0),e=void 0):typeof e===V.STRING&&!Ms(t,!0)&&(n=t,t=void 0),n)if(typeof n.append===V.FUNCTION){var r={};n.forEach(function(e,t){r[String(t).toLowerCase()]=e}),n=r}else{var i={};for(var a in n)n.hasOwnProperty(a)&&(i[String(a).toLowerCase()]=n[a]);n=i}if(!(this instanceof yo))return new yo(e,t,n).getResult();var o=typeof e===V.STRING?e:n&&n[So]?n[So]:$&&$.userAgent?$.userAgent:Co,s=new _o(n,!0),c=qs,l=function(e){return e==Oo?function(){return new vo(e,o,c,s).set(`ua`,o).set(H,this.getBrowser()).set(To,this.getCPU()).set(Eo,this.getDevice()).set(Do,this.getEngine()).set(U,this.getOS()).get()}:function(){return new vo(e,o,c[e],s).parseUA().get()}};return Rs.call(this,[[`getBrowser`,l(H)],[`getCPU`,l(To)],[`getDevice`,l(Eo)],[`getEngine`,l(Do)],[`getOS`,l(U)],[`getResult`,l(Oo)],[`getUA`,function(){return o}],[`setUA`,function(e){return Ns(e)&&(o=Bs(e,xo)),this}],[`useExtension`,function(e){return e&&(c=ks(c,e)),this}]]).setUA(o).useExtension(t),this}var bo,xo,So,Co,wo,V,H,To,Eo,Do,U,Oo,W,G,K,q,J,ko,Y,Ao,X,Z,Q,jo,Mo,No,Po,Fo,Io,Lo,Ro,zo,Bo,Vo,Ho,Uo,Wo,Go,Ko,qo,Jo,Yo,Xo,Zo,Qo,$o,es,ts,ns,rs,is,as,os,ss,cs,ls,us,ds,fs,ps,ms,hs,gs,_s,vs,ys,bs,xs,Ss,Cs,ws,Ts,Es,Ds,$,Os,ks,As,js,Ms,Ns,Ps,Fs,Is,Ls,Rs,zs,Bs,Vs,Hs,Us,Ws,Gs,Ks,qs,Js,Ys,Xs=e((()=>{bo=`2.0.10`,xo=500,So=`user-agent`,Co=``,wo=`?`,V={FUNCTION:`function`,OBJECT:`object`,STRING:`string`,UNDEFINED:`undefined`},H=`browser`,To=`cpu`,Eo=`device`,Do=`engine`,U=`os`,Oo=`result`,W=`name`,G=`type`,K=`vendor`,q=`version`,J=`architecture`,ko=`major`,Y=`model`,Ao=`console`,X=`mobile`,Z=`tablet`,Q=`smarttv`,jo=`wearable`,Mo=`xr`,No=`embedded`,Po=`fetcher`,Fo=`inapp`,Io=`brands`,Lo=`formFactors`,Ro=`fullVersionList`,zo=`platform`,Bo=`platformVersion`,Vo=`bitness`,Ho=`sec-ch-ua`,Uo=Ho+`-full-version-list`,Wo=Ho+`-arch`,Go=Ho+`-`+Vo,Ko=Ho+`-form-factors`,qo=Ho+`-`+X,Jo=Ho+`-`+Y,Yo=Ho+`-`+zo,Xo=Yo+`-version`,Zo=[Io,Ro,X,Y,zo,Bo,J,Lo,Vo],Qo=`Amazon`,$o=`Apple`,es=`ASUS`,ts=`BlackBerry`,ns=`Google`,rs=`Huawei`,is=`Lenovo`,as=`Honor`,os=`LG`,ss=`Microsoft`,cs=`Motorola`,ls=`Nvidia`,us=`OnePlus`,ds=`OPPO`,fs=`Samsung`,ps=`Sharp`,ms=`Sony`,hs=`Xiaomi`,gs=`Zebra`,_s=`Chrome`,vs=`Chromium`,ys=`Chromecast`,bs=`Edge`,xs=`Firefox`,Ss=`Opera`,Cs=`Facebook`,ws=`Sogou`,Ts=`Mobile `,Es=` Browser`,Ds=`Windows`,$=typeof window!==V.UNDEFINED&&window.navigator?window.navigator:void 0,Os=$&&$.userAgentData?$.userAgentData:void 0,ks=function(e,t){var n={},r=t;if(!Ms(t))for(var i in r={},t)for(var a in t[i])r[a]=t[i][a].concat(r[a]?r[a]:[]);for(var o in e)n[o]=r[o]&&r[o].length%2==0?r[o].concat(e[o]):e[o];return n},As=function(e){for(var t={},n=0;n<e.length;n++)t[e[n].toUpperCase()]=e[n];return t},js=function(e,t){if(typeof e===V.OBJECT&&e.length>0){for(var n in e)if(Fs(t)==Fs(e[n]))return!0;return!1}return Ns(e)?Fs(t)==Fs(e):!1},Ms=function(e,t){for(var n in e)return/^(browser|cpu|device|engine|os)$/.test(n)||(t?Ms(e[n]):!1)},Ns=function(e){return typeof e===V.STRING},Ps=function(e){if(e){for(var t=[],n=Ls(e).split(`,`),r=0;r<n.length;r++)if(n[r].indexOf(`;`)>-1){var i=Bs(n[r]).split(`;v=`);t[r]={brand:i[0],version:i[1]}}else t[r]=Bs(n[r]);return t}},Fs=function(e){return Ns(e)?e.toLowerCase():e},Is=function(e){return Ns(e)?zs(/[^\d\.]/g,e).split(`.`)[0]:void 0},Ls=function(e){return Ns(e)?Bs(zs(/\\?\"/g,e),xo):void 0},Rs=function(e){for(var t in e)if(e.hasOwnProperty(t)){var n=e[t];typeof n==V.OBJECT&&n.length==2?this[n[0]]=n[1]:this[n]=void 0}return this},zs=function(e,t){return Ns(t)?t.replace(e,Co):t},Bs=function(e,t){return e=zs(/^\s\s*/,String(e)),typeof t===V.UNDEFINED?e:e.substring(0,t)},Vs=function(e,t){if(!(!e||!t))for(var n=0,r,i,a,o,s,c;n<t.length&&!s;){var l=t[n],u=t[n+1];for(r=i=0;r<l.length&&!s&&l[r];)if(s=l[r++].exec(e),s)for(a=0;a<u.length;a++)c=s[++i],o=u[a],typeof o===V.OBJECT&&o.length>0?o.length===2?typeof o[1]==V.FUNCTION?this[o[0]]=o[1].call(this,c):this[o[0]]=o[1]:o.length>=3&&(typeof o[1]===V.FUNCTION&&!(o[1].exec&&o[1].test)?o.length>3?this[o[0]]=c?o[1].apply(this,o.slice(2)):void 0:this[o[0]]=c?o[1].call(this,c,o[2]):void 0:o.length==3?this[o[0]]=c?c.replace(o[1],o[2]):void 0:o.length==4?this[o[0]]=c?o[3].call(this,c.replace(o[1],o[2])):void 0:o.length>4&&(this[o[0]]=c?o[3].apply(this,[c.replace(o[1],o[2])].concat(o.slice(4))):void 0)):this[o]=c||void 0;n+=2}},Hs=function(e,t){return t.test.test(e)?t.ifTrue:t.ifFalse},Us=function(e,t){for(var n in t)if(typeof t[n]===V.OBJECT&&t[n].length>0){for(var r=0;r<t[n].length;r++)if(js(t[n][r],e))return n===wo?void 0:n}else if(js(t[n],e))return n===wo?void 0:n;return t.hasOwnProperty(`*`)?t[`*`]:e},Ws={ME:`4.90`,"NT 3.51":`3.51`,"NT 4.0":`4.0`,2e3:[`5.0`,`5.01`],XP:[`5.1`,`5.2`],Vista:`6.0`,7:`6.1`,8:`6.2`,"8.1":`6.3`,10:[`6.4`,`10.0`],NT:``},Gs={embedded:`Automotive`,mobile:`Mobile`,tablet:[`Tablet`,`EInk`],smarttv:`TV`,wearable:`Watch`,xr:[`VR`,`XR`],"?":[`Desktop`,`Unknown`],"*":void 0},Ks={Chrome:`Google Chrome`,Edge:`Microsoft Edge`,"Edge WebView2":`Microsoft Edge WebView2`,"Chrome WebView":`Android WebView`,"Chrome Headless":`HeadlessChrome`,"Huawei Browser":`HuaweiBrowser`,"MIUI Browser":`Miui Browser`,"Opera Mobi":`OperaMobile`,Yandex:`YaBrowser`},qs={browser:[[/\b(?:crmo|crios)\/([\w\.]+)/i],[q,[W,Ts+`Chrome`]],[/webview.+edge\/([\w\.]+)/i],[q,[W,bs+` WebView`],[G,Fo]],[/edg(?:e|ios|a)?\/([\w\.]+)/i],[q,[W,`Edge`]],[/(opera mini)\/([-\w\.]+)/i,/(opera [mobiletab]{3,6})\b.+version\/([-\w\.]+)/i,/(opera)(?:.+version\/|[\/ ]+)([\w\.]+)/i],[W,q],[/opios[\/ ]+([\w\.]+)/i],[q,[W,Ss+` Mini`]],[/\bop(?:rg)?x\/([\w\.]+)/i],[q,[W,Ss+` GX`]],[/\bopr\/([\w\.]+)/i],[q,[W,Ss]],[/\bb[ai]*d(?:uhd|[ub]*[aekoprswx]{5,6})[\/ ]?([\w\.]+)/i],[q,[W,`Baidu`]],[/\b(?:mxbrowser|mxios|myie2)\/?([-\w\.]*)\b/i],[q,[W,`Maxthon`]],[/(kindle)\/([\w\.]+)/i,/(lunascape|maxthon|netfront|jasmine|blazer|sleipnir)[\/ ]?([\w\.]*)/i,/(avant|iemobile|slim(?:browser|boat|jet))[\/ ]?([\d\.]*)/i,/(?:ms|\()(ie) ([\w\.]+)/i,/(atlas|flock|rockmelt|midori|epiphany|silk|skyfire|bolt|iron|vivaldi|iridium|phantomjs|bowser|qupzilla|falkon|rekonq|puffin|whale(?!.+naver)|qqbrowserlite|duckduckgo|klar|helio|(?=comodo_)?dragon|otter|dooble|(?:hi|lg |ovi|qute)browser|palemoon)\/v?([-\w\.]+)/i,/(brave)(?: chrome)?\/([\d\.]+)/i,/(aloha|heytap|ovi|115|surf|qwant)browser\/([\d\.]+)/i,/(qwant)(?:ios|mobile)\/([\d\.]+)/i,/(ecosia|weibo)(?:__| \w+@)([\d\.]+)/i],[W,q],[/quark(?:pc)?\/([-\w\.]+)/i],[q,[W,`Quark`]],[/\bddg\/([\w\.]+)/i],[q,[W,`DuckDuckGo`]],[/(?:\buc? ?browser|(?:juc.+)ucweb| ucpc)[\/ ]?([\w\.]+)/i],[q,[W,`UCBrowser`]],[/microm.+\bqbcore\/([\w\.]+)/i,/\bqbcore\/([\w\.]+).+microm/i,/micromessenger\/([\w\.]+)/i],[q,[W,`WeChat`]],[/konqueror\/([\w\.]+)/i],[q,[W,`Konqueror`]],[/trident.+rv[: ]([\w\.]{1,9})\b.+like gecko/i],[q,[W,`IE`]],[/ya(?:search)?browser\/([\w\.]+)/i],[q,[W,`Yandex`]],[/slbrowser\/([\w\.]+)/i],[q,[W,`Smart `+is+Es]],[/(av(?:ast|g|ira))\/([\w\.]+)/i],[[W,/(.+)/,`$1 Secure`+Es],q],[/norton\/([\w\.]+)/i],[q,[W,`Norton Private`+Es]],[/\bfocus\/([\w\.]+)/i],[q,[W,xs+` Focus`]],[/ mms\/([\w\.]+)$/i],[q,[W,Ss+` Neon`]],[/ opt\/([\w\.]+)$/i],[q,[W,Ss+` Touch`]],[/coc_coc\w+\/([\w\.]+)/i],[q,[W,`Coc Coc`]],[/dolfin\/([\w\.]+)/i],[q,[W,`Dolphin`]],[/coast\/([\w\.]+)/i],[q,[W,Ss+` Coast`]],[/miuibrowser\/([\w\.]+)/i],[q,[W,`MIUI`+Es]],[/fxios\/([\w\.-]+)/i],[q,[W,Ts+xs]],[/\bqihoobrowser\/?([\w\.]*)/i],[q,[W,`360`]],[/\b(qq)\/([\w\.]+)/i],[[W,/(.+)/,`$1Browser`],q],[/(oculus|sailfish|huawei|vivo|pico)browser\/([\w\.]+)/i],[[W,/(.+)/,`$1`+Es],q],[/ HBPC\/([\w\.]+)/],[q,[W,rs+Es]],[/samsungbrowser\/([\w\.]+)/i],[q,[W,fs+` Internet`]],[/metasr[\/ ]?([\d\.]+)/i],[q,[W,ws+` Explorer`]],[/(sogou)mo\w+\/([\d\.]+)/i],[[W,ws+` Mobile`],q],[/(electron)\/([\w\.]+) safari/i,/(tesla)(?: qtcarbrowser|\/(20\d\d\.[-\w\.]+))/i,/m?(qqbrowser|2345(?=browser|chrome|explorer))\w*[\/ ]?v?([\w\.]+)/i],[W,q],[/(lbbrowser|luakit|rekonq|steam(?= (clie|tenf|gameo)))/i],[W],[/ome\/([\w\.]+).+(iron(?= saf)|360(?=[es]e$))/i],[q,W],[/((?:fban\/fbios|fb_iab\/fb4a)(?!.+fbav)|;fbav\/([\w\.]+);)/i],[[W,Cs],q,[G,Fo]],[/(kakao(?:talk|story))[\/ ]([\w\.]+)/i,/(naver)\(.*?(\d+\.[\w\.]+).*\)/i,/(daum)apps[\/ ]([\w\.]+)/i,/safari (line)\/([\w\.]+)/i,/\b(line)\/([\w\.]+)\/iab/i,/(alipay)client\/([\w\.]+)/i,/(twitter)(?:and| f.+e\/([\w\.]+))/i,/(bing)(?:web|sapphire)\/([\w\.]+)/i,/(instagram|snapchat|klarna)[\/ ]([-\w\.]+)/i],[W,q,[G,Fo]],[/\bgsa\/([\w\.]+) .*safari\//i],[q,[W,`GSA`],[G,Fo]],[/(?:musical_ly|trill)(?:.+app_?version\/|_)([\w\.]+)/i],[q,[W,`TikTok`],[G,Fo]],[/\[(linkedin)app\]/i],[W,[G,Fo]],[/(zalo(?:app)?)[\/\sa-z]*([\w\.-]+)/i],[[W,/(.+)/,`Zalo`],q,[G,Fo]],[/(chromium)[\/ ]([-\w\.]+)/i],[W,q],[/ome-(lighthouse)$/i],[W,[G,Po]],[/headlesschrome(?:\/([\w\.]+)| )/i],[q,[W,_s+` Headless`]],[/wv\).+chrome\/([\w\.]+).+edgw\//i],[q,[W,bs+` WebView2`],[G,Fo]],[/; wv\).+(chrome)\/([\w\.]+)/i],[[W,_s+` WebView`],q,[G,Fo]],[/droid.+ version\/([\w\.]+)\b.+(?:mobile safari|safari)/i],[q,[W,`Android`+Es]],[/chrome\/([\w\.]+) mobile/i],[q,[W,Ts+`Chrome`]],[/(chrome|omniweb|arora|[tizenoka]{5} ?browser)\/v?([\w\.]+)/i],[W,q],[/version\/([\w\.\,]+) .*mobile(?:\/\w+ | ?)safari/i],[q,[W,Ts+`Safari`]],[/iphone .*mobile(?:\/\w+ | ?)safari/i],[[W,Ts+`Safari`]],[/version\/([\w\.\,]+) .*(safari)/i],[q,W],[/webkit.+?(mobile ?safari|safari)(\/[\w\.]+)/i],[W,[q,`1`]],[/(webkit|khtml)\/([\w\.]+)/i],[W,q],[/(?:mobile|tablet);.*(firefox)\/([\w\.-]+)/i],[[W,Ts+xs],q],[/(navigator|netscape\d?)\/([-\w\.]+)/i],[[W,`Netscape`],q],[/(wolvic|librewolf)\/([\w\.]+)/i],[W,q],[/mobile vr; rv:([\w\.]+)\).+firefox/i],[q,[W,xs+` Reality`]],[/ekiohf.+(flow)\/([\w\.]+)/i,/(swiftfox)/i,/(icedragon|iceweasel|camino|chimera|fennec|maemo browser|minimo|conkeror)[\/ ]?([\w\.\+]+)/i,/(seamonkey|k-meleon|icecat|iceape|firebird|phoenix|basilisk|waterfox)\/([-\w\.]+)$/i,/(firefox)\/([\w\.]+)/i,/(mozilla)\/([\w\.]+(?= .+rv\:.+gecko\/\d+)|[0-4][\w\.]+(?!.+compatible))/i,/(amaya|dillo|doris|icab|ladybird|lynx|mosaic|netsurf|obigo|polaris|w3m|(?:go|ice|up)[\. ]?browser)[-\/ ]?v?([\w\.]+)/i,/\b(links) \(([\w\.]+)/i],[W,[q,/_/g,`.`]],[/(cobalt)\/([\w\.]+)/i],[W,[q,/[^\d\.]+./,Co]]],cpu:[[/\b((amd|x|x86[-_]?|wow|win)64)\b/i],[[J,`amd64`]],[/(ia32(?=;))/i,/\b((i[346]|x)86)(pc)?\b/i],[[J,`ia32`]],[/\b(aarch64|arm(v?[89]e?l?|_?64))\b/i],[[J,`arm64`]],[/\b(arm(v[67])?ht?n?[fl]p?)\b/i],[[J,`armhf`]],[/( (ce|mobile); ppc;|\/[\w\.]+arm\b)/i],[[J,`arm`]],[/ sun4\w[;\)]/i],[[J,`sparc`]],[/\b(avr32|ia64(?=;)|68k(?=\))|\barm(?=v([1-7]|[5-7]1)l?|;|eabi)|(irix|mips|sparc)(64)?\b|pa-risc)/i,/((ppc|powerpc)(64)?)( mac|;|\))/i,/(?:osf1|[freopnt]{3,4}bsd) (alpha)/i],[[J,/ower/,Co,Fs]],[/mc680.0/i],[[J,`68k`]],[/winnt.+\[axp/i],[[J,`alpha`]]],device:[[/\b(sch-i[89]0\d|shw-m380s|sm-[ptx]\w{2,4}|gt-[pn]\d{2,4}|sgh-t8[56]9|nexus 10)/i],[Y,[K,fs],[G,Z]],[/\b((?:s[cgp]h|gt|sm)-(?![lr])\w+|sc[g-]?[\d]+a?|galaxy nexus)/i,/samsung[- ]((?!sm-[lr]|browser)[-\w]+)/i,/sec-(sgh\w+)/i],[Y,[K,fs],[G,X]],[/(?:\/|\()(ip(?:hone|od)[\w, ]*)[\/\);]/i],[Y,[K,$o],[G,X]],[/\b(?:ios|apple\w+)\/.+[\(\/](ipad)/i,/\b(ipad)[\d,]*[;\] ].+(mac |i(pad)?)os/i],[Y,[K,$o],[G,Z]],[/(macintosh);/i],[Y,[K,$o]],[/\b(sh-?[altvz]?\d\d[a-ekm]?)/i],[Y,[K,ps],[G,X]],[/\b((?:brt|eln|hey2?|gdi|jdn)-a?[lnw]09|(?:ag[rm]3?|jdn2|kob2)-a?[lw]0[09]hn)(?: bui|\)|;)/i],[Y,[K,as],[G,Z]],[/honor([-\w ]+)[;\)]/i],[Y,[K,as],[G,X]],[/\b((?:ag[rs][2356]?k?|bah[234]?|bg[2o]|bt[kv]|cmr|cpn|db[ry]2?|jdn2|got|kob2?k?|mon|pce|scm|sht?|[tw]gr|vrd)-[ad]?[lw][0125][09]b?|605hw|bg2-u03|(?:gem|fdr|m2|ple|t1)-[7a]0[1-4][lu]|t1-a2[13][lw]|mediapad[\w\. ]*(?= bui|\)))\b(?!.+d\/s)/i],[Y,[K,rs],[G,Z]],[/(?:huawei) ?([-\w ]+)[;\)]/i,/\b(nexus 6p|\w{2,4}e?-[atu]?[ln][\dx][\dc][adnt]?)\b(?!.+d\/s)/i],[Y,[K,rs],[G,X]],[/oid[^\)]+; (2[\dbc]{4}(182|283|rp\w{2})[cgl]|m2105k81a?c)(?: bui|\))/i,/\b(?:xiao)?((?:red)?mi[-_ ]?pad[\w- ]*)(?: bui|\))/i],[[Y,/_/g,` `],[K,hs],[G,Z]],[/\b; (\w+) build\/hm\1/i,/\b(hm[-_ ]?note?[_ ]?(?:\d\w)?) bui/i,/oid[^\)]+; (redmi[\-_ ]?(?:note|k)?[\w_ ]+|m?[12]\d[01]\d\w{3,6}|poco[\w ]+|(shark )?\w{3}-[ah]0|qin ?[1-3](s\+|ultra| pro)?)( bui|; wv|\))/i,/\b(mi[-_ ]?(?:a\d|one|one[_ ]plus|note|max|cc)?[_ ]?(?:\d{0,2}\w?)[_ ]?(?:plus|se|lite|pro)?( 5g|lte)?)(?: bui|\))/i,/; ([\w ]+) miui\/v?\d/i],[[Y,/_/g,` `],[K,hs],[G,X]],[/droid.+; (cph2[3-6]\d[13579]|((gm|hd)19|(ac|be|in|kb)20|(d[en]|eb|le|mt)21|ne22)[0-2]\d|p[g-l]\w[1m]10)\b/i,/(?:one)?(?:plus)? (a\d0\d\d)(?: b|\))/i],[Y,[K,us],[G,X]],[/; (\w+) bui.+ oppo/i,/\b(cph[12]\d{3}|p(?:af|c[al]|d\w|e[ar])[mt]\d0|x9007|a101op)\b/i],[Y,[K,ds],[G,X]],[/\b(opd2(\d{3}a?))(?: bui|\))/i],[Y,[K,Us,{OnePlus:[`203`,`304`,`403`,`404`,`413`,`415`],"*":ds}],[G,Z]],[/(vivo (5r?|6|8l?|go|one|s|x[il]?[2-4]?)[\w\+ ]*)(?: bui|\))/i],[Y,[K,`BLU`],[G,X]],[/; vivo (\w+)(?: bui|\))/i,/\b(v[12]\d{3}\w?[at])(?: bui|;)/i],[Y,[K,`Vivo`],[G,X]],[/\b(rmx[1-3]\d{3})(?: bui|;|\))/i],[Y,[K,`Realme`],[G,X]],[/(ideatab[-\w ]+|602lv|d-42a|a101lv|a2109a|a3500-hv|s[56]000|pb-6505[my]|tb-?x?\d{3,4}(?:f[cu]|xu|[av])|yt\d?-[jx]?\d+[lfmx])( bui|;|\)|\/)/i,/lenovo ?(b[68]0[08]0-?[hf]?|tab(?:[\w- ]+?)|tb[\w-]{6,7})( bui|;|\)|\/)/i],[Y,[K,is],[G,Z]],[/lenovo[-_ ]?([-\w ]+?)(?: bui|\)|\/)/i],[Y,[K,is],[G,X]],[/\b(milestone|droid(?:[2-4x]| (?:bionic|x2|pro|razr))?:?( 4g)?)\b[\w ]+build\//i,/\bmot(?:orola)?[- ]([\w\s]+)(\)| bui)/i,/((?:moto(?! 360)[-\w\(\) ]+|xt\d{3,4}[cgkosw\+]?[-\d]*|nexus 6)(?= bui|\)))/i],[Y,[K,cs],[G,X]],[/\b(mz60\d|xoom[2 ]{0,2}) build\//i],[Y,[K,cs],[G,Z]],[/\b(?:lg)?([vl]k\-?\d{3}) bui| 3\.[-\w; ]{10}lg?-([06cv9]{3,4})/i],[Y,[K,os],[G,Z]],[/(lm(?:-?f100[nv]?|-[\w\.]+)(?= bui|\))|nexus [45])/i,/\blg[-e;\/ ]+(?!.*(?:browser|netcast|android tv|watch|webos))(\w+)/i,/\blg-?([\d\w]+) bui/i],[Y,[K,os],[G,X]],[/(nokia) (t[12][01])/i],[K,Y,[G,Z]],[/(?:maemo|nokia).*(n900|lumia \d+|rm-\d+)/i,/nokia[-_ ]?(([-\w\. ]*?))( bui|\)|;|\/)/i],[[Y,/_/g,` `],[G,X],[K,`Nokia`]],[/(pixel (c|tablet))\b/i],[Y,[K,ns],[G,Z]],[/droid.+;(?: google)? (g(01[13]a|020[aem]|025[jn]|1b60|1f8f|2ybb|4s1m|576d|5nz6|8hhn|8vou|a02099|c15s|d1yq|e2ae|ec77|gh2x|kv4x|p4bc|pj41|r83y|tt9q|ur25|wvk6)|pixel[\d ]*a?( pro)?( xl)?( fold)?( \(5g\))?)( bui|\))/i],[Y,[K,ns],[G,X]],[/(google) (pixelbook( go)?)/i],[K,Y],[/droid.+; (a?\d[0-2]{2}so|[c-g]\d{4}|so[-gl]\w+|xq-\w\w\d\d)(?= bui|\).+chrome\/(?![1-6]{0,1}\d\.))/i],[Y,[K,ms],[G,X]],[/sony tablet [ps]/i,/\b(?:sony)?sgp\w+(?: bui|\))/i],[[Y,`Xperia Tablet`],[K,ms],[G,Z]],[/(alexa)webm/i,/(kf[a-z]{2}wi|aeo(?!bc)\w\w)( bui|\))/i,/(kf[a-z]+)( bui|\)).+silk\//i],[Y,[K,Qo],[G,Z]],[/((?:sd|kf)[0349hijorstuw]+)( bui|\)).+silk\//i],[[Y,/(.+)/g,`Fire Phone $1`],[K,Qo],[G,X]],[/(playbook);[-\w\),; ]+(rim)/i],[Y,K,[G,Z]],[/\b((?:bb[a-f]|st[hv])100-\d)/i,/(?:blackberry|\(bb10;) (\w+)/i],[Y,[K,ts],[G,X]],[/(?:\b|asus_)(transfo[prime ]{4,10} \w+|eeepc|slider \w+|nexus 7|padfone|p00[cj])/i],[Y,[K,es],[G,Z]],[/ (z[bes]6[027][012][km][ls]|zenfone \d\w?)\b/i],[Y,[K,es],[G,X]],[/(nexus 9)/i],[Y,[K,`HTC`],[G,Z]],[/(htc)[-;_ ]{1,2}([\w ]+(?=\)| bui)|\w+)/i,/(zte)[- ]([\w ]+?)(?: bui|\/|\))/i,/(alcatel|geeksphone|nexian|panasonic(?!(?:;|\.))|sony(?!-bra))[-_ ]?([-\w]*)/i],[K,[Y,/_/g,` `],[G,X]],[/tcl (xess p17aa)/i,/droid [\w\.]+; ((?:8[14]9[16]|9(?:0(?:48|60|8[01])|1(?:3[27]|66)|2(?:6[69]|9[56])|466))[gqswx])(_\w(\w|\w\w))?(\)| bui)/i],[Y,[K,`TCL`],[G,Z]],[/droid [\w\.]+; (418(?:7d|8v)|5087z|5102l|61(?:02[dh]|25[adfh]|27[ai]|56[dh]|59k|65[ah])|a509dl|t(?:43(?:0w|1[adepqu])|50(?:6d|7[adju])|6(?:09dl|10k|12b|71[efho]|76[hjk])|7(?:66[ahju]|67[hw]|7[045][bh]|71[hk]|73o|76[ho]|79w|81[hks]?|82h|90[bhsy]|99b)|810[hs]))(_\w(\w|\w\w))?(\)| bui)/i],[Y,[K,`TCL`],[G,X]],[/(itel) ((\w+))/i],[[K,Fs],Y,[G,Us,{tablet:[`p10001l`,`w7001`],"*":`mobile`}]],[/droid.+; ([ab][1-7]-?[0178a]\d\d?)/i],[Y,[K,`Acer`],[G,Z]],[/droid.+; (m[1-5] note) bui/i,/\bmz-([-\w]{2,})/i],[Y,[K,`Meizu`],[G,X]],[/; ((?:power )?armor(?:[\w ]{0,8}))(?: bui|\))/i],[Y,[K,`Ulefone`],[G,X]],[/; (energy ?\w+)(?: bui|\))/i,/; energizer ([\w ]+)(?: bui|\))/i],[Y,[K,`Energizer`],[G,X]],[/; cat (b35);/i,/; (b15q?|s22 flip|s48c|s62 pro)(?: bui|\))/i],[Y,[K,`Cat`],[G,X]],[/((?:new )?andromax[\w- ]+)(?: bui|\))/i],[Y,[K,`Smartfren`],[G,X]],[/droid.+; (a(in)?(0(15|59|6[35])|142)p?)/i],[Y,[K,`Nothing`],[G,X]],[/; (x67 5g|tikeasy \w+|ac[1789]\d\w+)( b|\))/i,/archos ?(5|gamepad2?|([\w ]*[t1789]|hello) ?\d+[\w ]*)( b|\))/i],[Y,[K,`Archos`],[G,Z]],[/archos ([\w ]+)( b|\))/i,/; (ac[3-6]\d\w{2,8})( b|\))/i],[Y,[K,`Archos`],[G,X]],[/blackview ([-\w ]+)( b|\))/i,/; (bv\d{4}[-\w ]*)( b|\))/i],[Y,[K,`Blackview`],[G,X]],[/; (n159v)/i],[Y,[K,`HMD`],[G,X]],[/((revvl[ \w\+]+|tm(?:rv|af)\w*[45]g(?:tb)?))( b|\))/i],[Y,[G,Hs,{test:/ta?b/i,ifTrue:Z,ifFalse:X}],[K,`T-Mobile`]],[/(imo) (tab \w+)/i,/(infinix|tecno) (x1101b?|p904|dp(7c|8d|10a)( pro)?|p70[1-3]a?|p904|t1101)/i],[K,Y,[G,Z]],[/(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus(?! zenw)|dell|jolla|meizu|motorola|polytron|tecno|micromax|advan)[-_ ]?([-\w]*)/i,/; (blu|coolpad|cubot|hmd|imo|infinix|lava|oneplus|tcl|wiko)[_ ]([-\w\+ ]+?)(?: bui|\)|; r)/i,/(hp) ([\w ]+\w)/i,/(microsoft); (lumia[\w ]+)/i,/(oppo) ?([\w ]+) bui/i,/(hisense) ([ehv][\w ]+)\)/i,/droid[^;]+; (philips)[_ ]([sv-x][\d]{3,4}[xz]?)/i],[K,Y,[G,X]],[/(kobo)\s(ereader|touch)/i,/(hp).+(touchpad(?!.+tablet)|tablet)/i,/(kindle)\/([\w\.]+)/i],[K,Y,[G,Z]],[/(surface duo)/i],[Y,[K,ss],[G,Z]],[/droid [\d\.]+; (fp\du?)(?: b|\))/i],[Y,[K,`Fairphone`],[G,X]],[/((?:tegranote|shield t(?!.+d tv))[\w- ]*?)(?: b|\))/i],[Y,[K,ls],[G,Z]],[/(sprint) (\w+)/i],[K,Y,[G,X]],[/(kin\.[onetw]{3})/i],[[Y,/\./g,` `],[K,ss],[G,X]],[/droid.+; ([c6]+|et5[16]|mc[239][23]x?|vc8[03]x?)\)/i],[Y,[K,gs],[G,Z]],[/droid.+; (ec30|ps20|tc[2-8]\d[kx])\)/i],[Y,[K,gs],[G,X]],[/(philips)[\w ]+tv/i,/smart-tv.+(samsung)/i],[K,[G,Q]],[/hbbtv.+maple;(\d+)/i],[[Y,/^/,`SmartTV`],[K,fs],[G,Q]],[/(vizio)(?: |.+model\/)(\w+-\w+)/i,/tcast.+(lg)e?. ([-\w]+)/i],[K,Y,[G,Q]],[/(nux; netcast.+smarttv|lg (netcast\.tv-201\d|android tv))/i],[[K,os],[G,Q]],[/(apple) ?tv/i],[K,[Y,$o+` TV`],[G,Q]],[/crkey.*devicetype\/chromecast/i],[[Y,ys+` Third Generation`],[K,ns],[G,Q]],[/crkey.*devicetype\/([^/]*)/i],[[Y,/^/,`Chromecast `],[K,ns],[G,Q]],[/fuchsia.*crkey/i],[[Y,ys+` Nest Hub`],[K,ns],[G,Q]],[/crkey/i],[[Y,ys],[K,ns],[G,Q]],[/(portaltv)/i],[Y,[K,Cs],[G,Q]],[/droid.+aft(\w+)( bui|\))/i],[Y,[K,Qo],[G,Q]],[/(shield \w+ tv)/i],[Y,[K,ls],[G,Q]],[/\(dtv[\);].+(aquos)/i,/(aquos-tv[\w ]+)\)/i],[Y,[K,ps],[G,Q]],[/(bravia[\w ]+)( bui|\))/i],[Y,[K,ms],[G,Q]],[/(mi(tv|box)-?\w+) bui/i],[Y,[K,hs],[G,Q]],[/Hbbtv.*(technisat) (.*);/i],[K,Y,[G,Q]],[/\b(roku)[\dx]*[\)\/]((?:dvp-)?[\d\.]*)/i,/hbbtv\/\d+\.\d+\.\d+ +\([\w\+ ]*; *([\w\d][^;]*);([^;]*)/i],[[K,/.+\/(\w+)/,`$1`,Us,{LG:`lge`}],[Y,Bs],[G,Q]],[/(playstation \w+)/i],[Y,[K,ms],[G,Ao]],[/\b(xbox(?: one)?(?!; xbox))[\); ]/i],[Y,[K,ss],[G,Ao]],[/(ouya)/i,/(nintendo) (\w+)/i,/(retroid) (pocket ([^\)]+))/i,/(valve).+(steam deck)/i,/droid.+; ((shield|rgcube|gr0006))( bui|\))/i],[[K,Us,{Nvidia:`Shield`,Anbernic:`RGCUBE`,Logitech:`GR0006`}],Y,[G,Ao]],[/\b(sm-[lr]\d\d[0156][fnuw]?s?|gear live)\b/i],[Y,[K,fs],[G,jo]],[/((pebble))app/i,/(asus|google|lg|oppo|xiaomi) ((pixel |zen)?watch[\w ]*)( bui|\))/i],[K,Y,[G,jo]],[/(ow(?:19|20)?we?[1-3]{1,3})/i],[Y,[K,ds],[G,jo]],[/(watch)(?: ?os[,\/]|\d,\d\/)[\d\.]+/i],[Y,[K,$o],[G,jo]],[/(opwwe\d{3})/i],[Y,[K,us],[G,jo]],[/(moto 360)/i],[Y,[K,cs],[G,jo]],[/(smartwatch 3)/i],[Y,[K,ms],[G,jo]],[/(g watch r)/i],[Y,[K,os],[G,jo]],[/droid.+; (wt63?0{2,3})\)/i],[Y,[K,gs],[G,jo]],[/droid.+; (glass) \d/i],[Y,[K,ns],[G,Mo]],[/(pico) ([\w ]+) os\d/i],[K,Y,[G,Mo]],[/(quest( \d| pro)?s?).+vr/i],[Y,[K,Cs],[G,Mo]],[/mobile vr; rv.+firefox/i],[[G,Mo]],[/(tesla)(?: qtcarbrowser|\/[-\w\.]+)/i],[K,[G,No]],[/(aeobc)\b/i],[Y,[K,Qo],[G,No]],[/(homepod).+mac os/i],[Y,[K,$o],[G,No]],[/windows iot/i],[[G,No]],[/droid.+; ([\w- ]+) (4k|android|smart|google)[- ]?tv/i],[Y,[G,Q]],[/\b((4k|android|smart|opera)[- ]?tv|tv; rv:|large screen[\w ]+safari)\b/i],[[G,Q]],[/droid .+?; ([^;]+?)(?: bui|; wv\)|\) applew|; hmsc).+?(mobile|vr|\d) safari/i],[Y,[G,Us,{mobile:`Mobile`,xr:`VR`,"*":Z}]],[/\b((tablet|tab)[;\/]|focus\/\d(?!.+mobile))/i],[[G,Z]],[/(phone|mobile(?:[;\/]| [ \w\/\.]*safari)|pda(?=.+windows ce))/i],[[G,X]],[/droid .+?; ([\w\. -]+)( bui|\))/i],[Y,[K,`Generic`]]],engine:[[/windows.+ edge\/([\w\.]+)/i],[q,[W,bs+`HTML`]],[/(arkweb)\/([\w\.]+)/i],[W,q],[/webkit\/537\.36.+chrome\/(?!27)([\w\.]+)/i],[q,[W,`Blink`]],[/(presto)\/([\w\.]+)/i,/(webkit|trident|netfront|netsurf|amaya|lynx|w3m|goanna|servo)\/([\w\.]+)/i,/ekioh(flow)\/([\w\.]+)/i,/(khtml|tasman|links|dillo)[\/ ]\(?([\w\.]+)/i,/(icab)[\/ ]([23]\.[\d\.]+)/i,/\b(libweb)/i],[W,q],[/ladybird\//i],[[W,`LibWeb`]],[/rv\:([\w\.]{1,9})\b.+(gecko)/i],[q,W]],os:[[/(windows nt) (6\.[23]); arm/i],[[W,/N/,`R`],[q,Us,Ws]],[/(windows (?:phone|mobile|iot))(?: os)?[\/ ]?([\d\.]*( se)?)/i,/(windows)[\/ ](1[01]|2000|3\.1|7|8(\.1)?|9[58]|me|server 20\d\d( r2)?|vista|xp)/i],[W,q],[/windows nt ?([\d\.\)]*)(?!.+xbox)/i,/\bwin(?=3| ?9|n)(?:nt| 9x )?([\d\.;]*)/i],[[q,/(;|\))/g,``,Us,Ws],[W,Ds]],[/(windows ce)\/?([\d\.]*)/i],[W,q],[/[adehimnop]{4,7}\b(?:.*os ([\w]+) like mac|; opera)/i,/(?:ios;fbsv|ios(?=.+ip(?:ad|hone)|.+apple ?tv)|ip(?:ad|hone)(?: |.+i(?:pad)?)os|apple ?tv.+ios)[\/ ]([\w\.]+)/i,/\btvos ?([\w\.]+)/i,/cfnetwork\/.+darwin/i],[[q,/_/g,`.`],[W,`iOS`]],[/(mac os x) ?([\w\. ]*)/i,/(macintosh|mac_powerpc\b)(?!.+(haiku|morphos))/i],[[W,`macOS`],[q,/_/g,`.`]],[/android ([\d\.]+).*crkey/i],[q,[W,ys+` Android`]],[/fuchsia.*crkey\/([\d\.]+)/i],[q,[W,ys+` Fuchsia`]],[/crkey\/([\d\.]+).*devicetype\/smartspeaker/i],[q,[W,ys+` SmartSpeaker`]],[/linux.*crkey\/([\d\.]+)/i],[q,[W,ys+` Linux`]],[/crkey\/([\d\.]+)/i],[q,[W,ys]],[/droid ([\w\.]+)\b.+(android[- ]x86)/i],[q,W],[/(ubuntu) ([\w\.]+) like android/i],[[W,/(.+)/,`$1 Touch`],q],[/(harmonyos)[\/ ]?([\d\.]*)/i,/(android|bada|blackberry|kaios|maemo|meego|openharmony|qnx|rim tablet os|sailfish|series40|symbian|tizen)\w*[-\/\.; ]?([\d\.]*)/i],[W,q],[/\(bb(10);/i],[q,[W,ts]],[/(?:symbian ?os|symbos|s60(?=;)|series ?60)[-\/ ]?([\w\.]*)/i],[q,[W,`Symbian`]],[/mozilla\/[\d\.]+ \((?:mobile[;\w ]*|tablet|tv|[^\)]*(?:viera|lg(?:l25|-d300)|alcatel ?o.+|y300-f1)); rv:([\w\.]+)\).+gecko\//i],[q,[W,xs+` OS`]],[/\b(?:hp)?wos(?:browser)?\/([\w\.]+)/i,/webos(?:[ \/]?|\.tv-20(?=2[2-9]))(\d[\d\.]*)/i],[q,[W,`webOS`]],[/web0s;.+?(?:chr[o0]me|safari)\/(\d+)/i],[[q,Us,{25:`120`,24:`108`,23:`94`,22:`87`,6:`79`,5:`68`,4:`53`,3:`38`,2:`538`,1:`537`,"*":`TV`}],[W,`webOS`]],[/watch(?: ?os[,\/ ]|\d,\d\/)([\d\.]+)/i],[q,[W,`watchOS`]],[/cros [\w]+(?:\)| ([\w\.]+)\b)/i],[q,[W,`Chrome OS`]],[/kepler ([\w\.]+); (aft|aeo)/i],[q,[W,`Vega OS`]],[/(netrange)mmh/i,/(nettv)\/(\d+\.[\w\.]+)/i,/(nintendo|playstation) (\w+)/i,/(xbox); +xbox ([^\);]+)/i,/(pico) .+os([\w\.]+)/i,/\b(joli|palm)\b ?(?:os)?\/?([\w\.]*)/i,/linux.+(mint)[\/\(\) ]?([\w\.]*)/i,/(mageia|vectorlinux|fuchsia|arcaos|arch(?= ?linux))[;l ]([\d\.]*)/i,/([kxln]?ubuntu|debian|suse|opensuse|gentoo|slackware|fedora|mandriva|centos|pclinuxos|red ?hat|zenwalk|linpus|raspbian|plan 9|minix|risc os|contiki|deepin|manjaro|elementary os|sabayon|linspire|knoppix)(?: gnu[\/ ]linux)?(?: enterprise)?(?:[- ]linux)?(?:-gnu)?[-\/ ]?(?!chrom|package)([-\w\.]*)/i,/((?:open)?solaris)[-\/ ]?([\w\.]*)/i,/\b(aix)[; ]([1-9\.]{0,4})/i,/(hurd|linux|morphos)(?: (?:arm|x86|ppc)\w*| ?)([\w\.]*)/i,/(gnu) ?([\w\.]*)/i,/\b([-frentopcghs]{0,5}bsd|dragonfly)[\/ ]?(?!amd|[ix346]{1,2}86)([\w\.]*)/i,/(haiku) ?(r\d)?/i],[W,q],[/(sunos) ?([\d\.]*)/i],[[W,`Solaris`],q],[/\b(beos|os\/2|amigaos|openvms|hp-ux|serenityos)/i,/(unix) ?([\w\.]*)/i],[W,q]]},Js=(function(){var e={init:{},isIgnore:{},isIgnoreRgx:{},toString:{}};return Rs.call(e.init,[[H,[W,q,ko,G]],[To,[J]],[Eo,[G,Y,K]],[Do,[W,q]],[U,[W,q]]]),Rs.call(e.isIgnore,[[H,[q,ko]],[Do,[q]],[U,[q]]]),Rs.call(e.isIgnoreRgx,[[H,/ ?browser$/i],[U,/ ?os$/i]]),Rs.call(e.toString,[[H,[W,q]],[To,[J]],[Eo,[K,Y]],[Do,[W,q]],[U,[W,q]]]),e})(),Ys=function(e,t){var n=Js.init[t],r=Js.isIgnore[t]||0,i=Js.isIgnoreRgx[t]||0,a=Js.toString[t]||0;function o(){Rs.call(this,n)}return o.prototype.getItem=function(){return e},o.prototype.withClientHints=function(){return Os?Os.getHighEntropyValues(Zo).then(function(t){return e.setCH(new _o(t,!1)).parseCH().get()}):e.parseCH().get()},o.prototype.withFeatureCheck=function(){return e.detectFeature().get()},t!=Oo&&(o.prototype.is=function(e){var t=!1;for(var n in this)if(this.hasOwnProperty(n)&&!js(r,n)&&Fs(i?zs(i,this[n]):this[n])==Fs(i?zs(i,e):e)){if(t=!0,e!=V.UNDEFINED)break}else if(e==V.UNDEFINED&&t){t=!t;break}return t},o.prototype.toString=function(){var e=Co;for(var t in a)typeof this[a[t]]!==V.UNDEFINED&&(e+=(e?` `:Co)+this[a[t]]);return e||V.UNDEFINED}),o.prototype.then=function(e){var t=this,n=function(){for(var e in t)t.hasOwnProperty(e)&&(this[e]=t[e])};n.prototype={is:o.prototype.is,toString:o.prototype.toString,withClientHints:o.prototype.withClientHints,withFeatureCheck:o.prototype.withFeatureCheck};var r=new n;return e(r),r},new o},vo.prototype.get=function(e){return e?this.data.hasOwnProperty(e)?this.data[e]:void 0:this.data},vo.prototype.set=function(e,t){return this.data[e]=t,this},vo.prototype.setCH=function(e){return this.uaCH=e,this},vo.prototype.detectFeature=function(){if($&&$.userAgent==this.ua)switch(this.itemType){case H:$.brave&&typeof $.brave.isBrave==V.FUNCTION&&this.set(W,`Brave`);break;case Eo:!this.get(G)&&Os&&Os[X]&&this.set(G,X),this.get(Y)==`Macintosh`&&$&&typeof $.standalone!==V.UNDEFINED&&$.maxTouchPoints&&$.maxTouchPoints>2&&this.set(Y,`iPad`).set(G,Z);break;case U:!this.get(W)&&Os&&Os[zo]&&this.set(W,Os[zo]);break;case Oo:var e=this.data,t=function(t){return e[t].getItem().detectFeature().get()};this.set(H,t(H)).set(To,t(To)).set(Eo,t(Eo)).set(Do,t(Do)).set(U,t(U))}return this},vo.prototype.parseUA=function(){switch(this.itemType!=Oo&&Vs.call(this.data,this.ua,this.rgxMap),this.itemType){case H:this.set(ko,Is(this.get(q)));break;case U:if(this.get(W)==`iOS`&&this.get(q)&&/^1[89][^\d]/.exec(this.get(q))){var e=/\) Version\/((\d+)[\d\.]*)/.exec(this.ua);e&&parseInt(e[2],10)>=26&&this.set(q,e[1])}break}return this},vo.prototype.parseCH=function(){var e=this.uaCH,t=this.rgxMap;switch(this.itemType){case H:case Do:var n=e[Ro]||e[Io],r;if(n)for(var i=0;i<n.length;i++){var a=n[i].brand||n[i],o=n[i].version;this.itemType==H&&!/not.a.brand/i.test(a)&&(!r||/Chrom/.test(r)&&a!=vs||r==bs&&/WebView2/.test(a))&&(a=Us(a,Ks),r=this.get(W),r&&!/Chrom/.test(r)&&/Chrom/.test(a)||this.set(W,a).set(q,o).set(ko,Is(o)),r=a),this.itemType==Do&&a==vs&&this.set(q,o)}break;case To:var s=e[J];s&&(s&&e[Vo]==`64`&&(s+=`64`),Vs.call(this.data,s+`;`,t));break;case Eo:if(e[X]&&this.set(G,X),e[Y]&&(this.set(Y,e[Y]),!this.get(G)||!this.get(K))){var c={};Vs.call(c,`droid 9; `+e[Y]+`)`,t),!this.get(G)&&c.type&&this.set(G,c.type),!this.get(K)&&c.vendor&&this.set(K,c.vendor)}if(e[Lo]){var l;if(typeof e[Lo]!=`string`)for(var u=0;!l&&u<e[Lo].length;)l=Us(e[Lo][u++],Gs);else l=Us(e[Lo],Gs);this.set(G,l)}break;case U:var d=e[zo];if(d){var f=e[Bo];d==Ds&&(f=parseInt(Is(f),10)>=13?`11`:`10`),this.set(W,d).set(q,f)}this.get(W)==Ds&&e[Y]==`Xbox`&&this.set(W,`Xbox`).set(q,void 0);break;case Oo:var p=this.data,m=function(t){return p[t].getItem().setCH(e).parseCH().get()};this.set(H,m(H)).set(To,m(To)).set(Eo,m(Eo)).set(Do,m(Do)).set(U,m(U))}return this},yo.VERSION=bo,yo.BROWSER=As([W,q,ko,G]),yo.CPU=As([J]),yo.DEVICE=As([Y,K,G,Ao,X,Q,Z,jo,No]),yo.ENGINE=yo.OS=As([W,q])})),Zs=e((()=>{(function(e,t){function n(e){d[d.length]=e}function r(e){var t=RegExp(` ?\\b`+e+`\\b`);u.className=u.className.replace(t,``)}function i(e,t){for(var n=0,r=e.length;n<r;n++)t.call(e,e[n],n)}function a(){var t,r,a,o;u.className=u.className.replace(/ (w-|eq-|gt-|gte-|lt-|lte-|portrait|no-portrait|landscape|no-landscape)\d+/g,``),t=e.innerWidth||u.clientWidth,r=e.outerWidth||e.screen.width,m.screen.innerWidth=t,m.screen.outerWidth=r,n(`w-`+t),i(f.screens,function(e){t>e?(f.screensCss.gt&&n(`gt-`+e),f.screensCss.gte&&n(`gte-`+e)):t<e?(f.screensCss.lt&&n(`lt-`+e),f.screensCss.lte&&n(`lte-`+e)):t===e&&(f.screensCss.lte&&n(`lte-`+e),f.screensCss.eq&&n(`e-q`+e),f.screensCss.gte&&n(`gte-`+e))}),a=e.innerHeight||u.clientHeight,o=e.outerHeight||e.screen.height,m.screen.innerHeight=a,m.screen.outerHeight=o,m.feature(`portrait`,a>t),m.feature(`landscape`,a<t)}function o(){e.clearTimeout(C),C=e.setTimeout(a,50)}var s=e.document,c=e.navigator,l=e.location,u=s.documentElement,d=[],f={screens:[240,320,480,640,768,800,1024,1280,1440,1680,1920],screensCss:{gt:!0,gte:!1,lt:!0,lte:!1,eq:!1},browsers:[{ie:{min:6,max:11}}],browserCss:{gt:!0,gte:!1,lt:!0,lte:!1,eq:!0},html5:!0,page:`-page`,section:`-section`,head:`head`},p,m,h,g,_,v,y,ee,b,te,x,S,C;if(e.head_conf)for(p in e.head_conf)e.head_conf[p]!==t&&(f[p]=e.head_conf[p]);switch(m=e[f.head]=function(){m.ready.apply(null,arguments)},m.feature=function(e,t,i){return e?(Object.prototype.toString.call(t)===`[object Function]`&&(t=t.call()),n((t?``:`no-`)+e),m[e]=!!t,i||(r(`no-`+e),r(e),m.feature()),m):(u.className+=` `+d.join(` `),d=[],m)},m.feature(`js`,!0),h=c.userAgent.toLowerCase(),g=/mobile|android|kindle|silk|midp|phone|(windows .+arm|touch)/.test(h),m.feature(`mobile`,g,!0),m.feature(`desktop`,!g,!0),h=/(chrome|firefox)[ \/]([\w.]+)/.exec(h)||/(iphone|ipad|ipod)(?:.*version)?[ \/]([\w.]+)/.exec(h)||/(android)(?:.*version)?[ \/]([\w.]+)/.exec(h)||/(webkit|opera)(?:.*version)?[ \/]([\w.]+)/.exec(h)||/(msie) ([\w.]+)/.exec(h)||/(trident).+rv:(\w.)+/.exec(h)||[],_=h[1],v=parseFloat(h[2]),_){case`msie`:case`trident`:_=`ie`,v=s.documentMode||v;break;case`firefox`:_=`ff`;break;case`ipod`:case`ipad`:case`iphone`:_=`ios`;break;case`webkit`:_=`safari`}for(m.browser={name:_,version:v},m.browser[_]=!0,y=0,ee=f.browsers.length;y<ee;y++)for(b in f.browsers[y])if(_===b)for(n(b),te=f.browsers[y][b].min,x=f.browsers[y][b].max,S=te;S<=x;S++)v>S?(f.browserCss.gt&&n(`gt-`+b+S),f.browserCss.gte&&n(`gte-`+b+S)):v<S?(f.browserCss.lt&&n(`lt-`+b+S),f.browserCss.lte&&n(`lte-`+b+S)):v===S&&(f.browserCss.lte&&n(`lte-`+b+S),f.browserCss.eq&&n(`eq-`+b+S),f.browserCss.gte&&n(`gte-`+b+S));else n(`no-`+b);n(_),n(_+parseInt(v,10)),f.html5&&_===`ie`&&v<9&&i(`abbr|article|aside|audio|canvas|details|figcaption|figure|footer|header|hgroup|main|mark|meter|nav|output|progress|section|summary|time|video`.split(`|`),function(e){s.createElement(e)}),i(l.pathname.split(`/`),function(e,r){if(this.length>2&&this[r+1]!==t)r&&n(this.slice(r,r+1).join(`-`).toLowerCase()+f.section);else{var i=e||`index`,a=i.indexOf(`.`);a>0&&(i=i.substring(0,a)),u.id=i.toLowerCase()+f.page,r||n(`root`+f.section)}}),m.screen={height:e.screen.height,width:e.screen.width},a(),C=0,e.addEventListener?e.addEventListener(`resize`,o,!1):e.attachEvent(`onresize`,o)})(window),(function(e,t){function n(e){for(var n in e)if(a[e[n]]!==t)return!0;return!1}function r(e){var t=e.charAt(0).toUpperCase()+e.substr(1);return!!n((e+` `+s.join(t+` `)+t).split(` `))}var i=e.document.createElement(`i`),a=i.style,o=` -o- -moz- -ms- -webkit- -khtml- `.split(` `),s=`Webkit Moz O ms Khtml`.split(` `),c=e[e.head_conf&&e.head_conf.head||`head`],l={gradient:function(){var e=`background-image:`;return a.cssText=(e+o.join(`gradient(linear,left top,right bottom,from(#9f9),to(#fff));`+e)+o.join(`linear-gradient(left top,#eee,#fff);`+e)).slice(0,-e.length),!!a.backgroundImage},rgba:function(){return a.cssText=`background-color:rgba(0,0,0,0.5)`,!!a.backgroundColor},opacity:function(){return i.style.opacity===``},textshadow:function(){return a.textShadow===``},multiplebgs:function(){a.cssText=`background:url(https://),url(https://),red url(https://)`;var e=(a.background||``).match(/url/g);return Object.prototype.toString.call(e)===`[object Array]`&&e.length===3},boxshadow:function(){return r(`boxShadow`)},borderimage:function(){return r(`borderImage`)},borderradius:function(){return r(`borderRadius`)},cssreflections:function(){return r(`boxReflect`)},csstransforms:function(){return r(`transform`)},csstransitions:function(){return r(`transition`)},touch:function(){return`ontouchstart`in e},retina:function(){return e.devicePixelRatio>1},fontface:function(){var e=c.browser.name,t=c.browser.version;switch(e){case`ie`:return t>=9;case`chrome`:return t>=13;case`ff`:return t>=6;case`ios`:return t>=5;case`android`:return!1;case`webkit`:return t>=5.1;case`opera`:return t>=10;default:return!1}}};for(var u in l)l[u]&&c.feature(u,l[u].call(),!0);c.feature()})(window),(function(e,t){function n(){}function r(e,t){if(e){typeof e==`object`&&(e=[].slice.call(e));for(var n=0,r=e.length;n<r;n++)t.call(e,e[n],n)}}function i(e,n){var r=Object.prototype.toString.call(n).slice(8,-1);return n!==t&&n!==null&&r===e}function a(e){return i(`Function`,e)}function o(e){return i(`Array`,e)}function s(e){var t=e.split(`/`),n=t[t.length-1],r=n.indexOf(`?`);return r===-1?n:n.substring(0,r)}function c(e){(e||=n,e._done)||(e(),e._done=1)}function l(e,t,r,i){var a=typeof e==`object`?e:{test:e,success:t?o(t)?t:[t]:!1,failure:r?o(r)?r:[r]:!1,callback:i||n},s=!!a.test;return s&&a.success?(a.success.push(a.callback),E.load.apply(null,a.success)):s||!a.failure?i():(a.failure.push(a.callback),E.load.apply(null,a.failure)),E}function u(e){var t={},n,r;if(typeof e==`object`)for(n in e)!e[n]||(t={name:n,url:e[n]});else t={name:s(e),url:e};return r=w[t.name],r&&r.url===t.url?r:(w[t.name]=t,t)}function d(e){for(var t in e||=w,e)if(e.hasOwnProperty(t)&&e[t].state!==se)return!1;return!0}function f(e){e.state=ae,r(e.onpreload,function(e){e.call()})}function p(e){e.state===t&&(e.state=ie,e.onpreload=[],v({url:e.url,type:`cache`},function(){f(e)}))}function m(){var e=arguments,t=e[e.length-1],n=[].slice.call(e,1),i=n[0];return a(t)||(t=null),o(e[0])?(e[0].push(t),E.load.apply(null,e[0]),E):(i?(r(n,function(e){a(e)||!e||p(u(e))}),g(u(e[0]),a(i)?i:function(){E.load.apply(null,n)})):g(u(e[0])),E)}function h(){var e=arguments,t=e[e.length-1],n={};return a(t)||(t=null),o(e[0])?(e[0].push(t),E.load.apply(null,e[0]),E):(r(e,function(e){e!==t&&(e=u(e),n[e.name]=e)}),r(e,function(e){e!==t&&(e=u(e),g(e,function(){d(n)&&c(t)}))}),E)}function g(e,t){if(t||=n,e.state===se){t();return}if(e.state===oe){E.ready(e.name,t);return}if(e.state===ie){e.onpreload.push(function(){g(e,t)});return}e.state=oe,v(e,function(){e.state=se,t(),r(C[e.name],function(e){c(e)}),ne&&d()&&r(C.ALL,function(e){c(e)})})}function _(e){e||=``;var t=e.split(`?`)[0].split(`.`);return t[t.length-1].toLowerCase()}function v(t,r){function i(t){t||=e.event,s.onload=s.onreadystatechange=s.onerror=null,r()}function a(n){n||=e.event,(n.type===`load`||/loaded|complete/.test(s.readyState)&&(!x.documentMode||x.documentMode<9))&&(e.clearTimeout(t.errorTimeout),e.clearTimeout(t.cssTimeout),s.onload=s.onreadystatechange=s.onerror=null,r())}function o(){if(t.state!==se&&t.cssRetries<=20){for(var n=0,r=x.styleSheets.length;n<r;n++)if(x.styleSheets[n].href===s.href){a({type:`load`});return}t.cssRetries++,t.cssTimeout=e.setTimeout(o,250)}}var s,c,l;r||=n,c=_(t.url),c===`css`?(s=x.createElement(`link`),s.type=`text/`+(t.type||`css`),s.rel=`stylesheet`,s.href=t.url,t.cssRetries=0,t.cssTimeout=e.setTimeout(o,500)):(s=x.createElement(`script`),s.type=`text/`+(t.type||`javascript`),s.src=t.url),s.onload=s.onreadystatechange=a,s.onerror=i,s.async=!1,s.defer=!1,t.errorTimeout=e.setTimeout(function(){i({type:`timeout`})},7e3),l=x.head||x.getElementsByTagName(`head`)[0],l.insertBefore(s,l.lastChild)}function y(){for(var e,t=x.getElementsByTagName(`script`),n=0,r=t.length;n<r;n++)if(e=t[n].getAttribute(`data-headjs-load`),e){E.load(e);return}}function ee(e,t){var n,i,s;return e===x?(ne?c(t):S.push(t),E):(a(e)&&(t=e,e=`ALL`),o(e)?(n={},r(e,function(e){n[e]=w[e],E.ready(e,function(){d(n)&&c(t)})}),E):typeof e!=`string`||!a(t)?E:(i=w[e],i&&i.state===se||e===`ALL`&&d()&&ne?(c(t),E):(s=C[e],s?s.push(t):s=C[e]=[t],E)))}function b(){if(!x.body){e.clearTimeout(E.readyTimeout),E.readyTimeout=e.setTimeout(b,50);return}ne||(ne=!0,y(),r(S,function(e){c(e)}))}function te(){x.addEventListener?(x.removeEventListener(`DOMContentLoaded`,te,!1),b()):x.readyState===`complete`&&(x.detachEvent(`onreadystatechange`,te),b())}var x=e.document,S=[],C={},w={},T=`async`in x.createElement(`script`)||`MozAppearance`in x.documentElement.style||e.opera,ne,re=e.head_conf&&e.head_conf.head||`head`,E=e[re]=e[re]||function(){E.ready.apply(null,arguments)},ie=1,ae=2,oe=3,se=4,ce;if(x.readyState===`complete`)b();else if(x.addEventListener)x.addEventListener(`DOMContentLoaded`,te,!1),e.addEventListener(`load`,b,!1);else{x.attachEvent(`onreadystatechange`,te),e.attachEvent(`onload`,b),ce=!1;try{ce=!e.frameElement&&x.documentElement}catch{}ce&&ce.doScroll&&function t(){if(!ne){try{ce.doScroll(`left`)}catch{e.clearTimeout(E.readyTimeout),E.readyTimeout=e.setTimeout(t,50);return}b()}}()}E.load=E.js=T?h:m,E.test=l,E.ready=ee,E.ready(x,function(){d()&&r(C.ALL,function(e){c(e)}),E.feature&&E.feature(`domloaded`,!0)})})(window)})),Qs=n(((e,t)=>{(function(){var n=typeof define==`function`&&define.amd,r={function:!0,object:!0},i=r[typeof e]&&e&&!e.nodeType&&e,a=r[typeof window]&&window||this,o=i&&r[typeof t]&&t&&!t.nodeType&&typeof global==`object`&&global;o&&(o.global===o||o.window===o||o.self===o)&&(a=o);function s(e,t){e||=a.Object(),t||=a.Object();var n=e.Number||a.Number,i=e.String||a.String,o=e.Object||a.Object,c=e.Date||a.Date,l=e.SyntaxError||a.SyntaxError,u=e.TypeError||a.TypeError,d=e.Math||a.Math,f=e.JSON||a.JSON;typeof f==`object`&&f&&(t.stringify=f.stringify,t.parse=f.parse);var p=o.prototype,m=p.toString,h=p.hasOwnProperty,g;function _(e,t){try{e()}catch{t&&t()}}var v=new c(-0xc782b5b800cec);_(function(){v=v.getUTCFullYear()==-109252&&v.getUTCMonth()===0&&v.getUTCDate()===1&&v.getUTCHours()==10&&v.getUTCMinutes()==37&&v.getUTCSeconds()==6&&v.getUTCMilliseconds()==708});function y(e){if(y[e]!=null)return y[e];var r;if(e==`bug-string-char-index`)r=!1;else if(e==`json`)r=y(`json-stringify`)&&y(`date-serialization`)&&y(`json-parse`);else if(e==`date-serialization`){if(r=y(`json-stringify`)&&v,r){var a=t.stringify;_(function(){r=a(new c(-864e13))==`"-271821-04-20T00:00:00.000Z"`&&a(new c(864e13))==`"+275760-09-13T00:00:00.000Z"`&&a(new c(-621987552e5))==`"-000001-01-01T00:00:00.000Z"`&&a(new c(-1))==`"1969-12-31T23:59:59.999Z"`})}}else{var o,s=`{"a":[1,true,false,null,"\\u0000\\b\\n\\f\\r\\t"]}`;if(e==`json-stringify`){var a=t.stringify,l=typeof a==`function`;l&&((o=function(){return 1}).toJSON=o,_(function(){l=a(0)===`0`&&a(new n)===`0`&&a(new i)==`""`&&a(m)===g&&a(g)===g&&a()===g&&a(o)===`1`&&a([o])==`[1]`&&a([g])==`[null]`&&a(null)==`null`&&a([g,m,null])==`[null,null,null]`&&a({a:[o,!0,!1,null,`\0\b
-\f\r	`]})==s&&a(null,o)===`1`&&a([1,2],null,1)==`[
+import { n as e, r as t, t as n } from './rolldown-runtime-BgaNhQyE.js';
+var r,
+  i,
+  a,
+  o,
+  s,
+  c,
+  l,
+  u,
+  d,
+  f,
+  p,
+  m,
+  h,
+  g,
+  _,
+  v,
+  y,
+  ee,
+  b,
+  te,
+  x = e(() => {
+    ((r = `1.13.8`),
+      (i =
+        (typeof self == `object` && self.self === self && self) ||
+        (typeof global == `object` && global.global === global && global) ||
+        Function(`return this`)() ||
+        {}),
+      (a = Array.prototype),
+      (o = Object.prototype),
+      (s = typeof Symbol < `u` ? Symbol.prototype : null),
+      (c = a.push),
+      (l = a.slice),
+      (u = o.toString),
+      (d = o.hasOwnProperty),
+      (f = typeof ArrayBuffer < `u`),
+      (p = typeof DataView < `u`),
+      (m = Array.isArray),
+      (h = Object.keys),
+      (g = Object.create),
+      (_ = f && ArrayBuffer.isView),
+      (v = isNaN),
+      (y = isFinite),
+      (ee = !{ toString: null }.propertyIsEnumerable(`toString`)),
+      (b = [
+        `valueOf`,
+        `isPrototypeOf`,
+        `toString`,
+        `propertyIsEnumerable`,
+        `hasOwnProperty`,
+        `toLocaleString`,
+      ]),
+      (te = 2 ** 53 - 1));
+  });
+function S(e, t) {
+  return (
+    (t = t == null ? e.length - 1 : +t),
+    function () {
+      for (
+        var n = Math.max(arguments.length - t, 0), r = Array(n), i = 0;
+        i < n;
+        i++
+      )
+        r[i] = arguments[i + t];
+      switch (t) {
+        case 0:
+          return e.call(this, r);
+        case 1:
+          return e.call(this, arguments[0], r);
+        case 2:
+          return e.call(this, arguments[0], arguments[1], r);
+      }
+      var a = Array(t + 1);
+      for (i = 0; i < t; i++) a[i] = arguments[i];
+      return ((a[t] = r), e.apply(this, a));
+    }
+  );
+}
+var C = e(() => {});
+function w(e) {
+  var t = typeof e;
+  return t === `function` || (t === `object` && !!e);
+}
+var T = e(() => {});
+function ne(e) {
+  return e === null;
+}
+var re = e(() => {});
+function E(e) {
+  return e === void 0;
+}
+var ie = e(() => {});
+function ae(e) {
+  return e === !0 || e === !1 || u.call(e) === `[object Boolean]`;
+}
+var oe = e(() => {
+  x();
+});
+function se(e) {
+  return !!(e && e.nodeType === 1);
+}
+var ce = e(() => {});
+function D(e) {
+  var t = `[object ` + e + `]`;
+  return function (e) {
+    return u.call(e) === t;
+  };
+}
+var O = e(() => {
+    x();
+  }),
+  le,
+  ue = e(() => {
+    (O(), (le = D(`String`)));
+  }),
+  k,
+  de = e(() => {
+    (O(), (k = D(`Number`)));
+  }),
+  A,
+  fe = e(() => {
+    (O(), (A = D(`Date`)));
+  }),
+  pe,
+  me = e(() => {
+    (O(), (pe = D(`RegExp`)));
+  }),
+  he,
+  ge = e(() => {
+    (O(), (he = D(`Error`)));
+  }),
+  _e,
+  ve = e(() => {
+    (O(), (_e = D(`Symbol`)));
+  }),
+  ye,
+  be = e(() => {
+    (O(), (ye = D(`ArrayBuffer`)));
+  }),
+  xe,
+  Se,
+  j,
+  Ce = e(() => {
+    (O(),
+      x(),
+      (xe = D(`Function`)),
+      (Se = i.document && i.document.childNodes),
+      typeof /./ != `function` &&
+        typeof Int8Array != `object` &&
+        typeof Se != `function` &&
+        (xe = function (e) {
+          return typeof e == `function` || !1;
+        }),
+      (j = xe));
+  }),
+  we,
+  Te = e(() => {
+    (O(), (we = D(`Object`)));
+  }),
+  Ee,
+  De,
+  Oe = e(() => {
+    (x(),
+      Te(),
+      (Ee =
+        p &&
+        (!/\[native code\]/.test(String(DataView)) ||
+          we(new DataView(new ArrayBuffer(8))))),
+      (De = typeof Map < `u` && we(new Map())));
+  });
+function ke(e) {
+  return e != null && j(e.getInt8) && ye(e.buffer);
+}
+var Ae,
+  je,
+  Me = e(() => {
+    (O(), Ce(), be(), Oe(), (Ae = D(`DataView`)), (je = Ee ? ke : Ae));
+  }),
+  Ne,
+  Pe = e(() => {
+    (x(), O(), (Ne = m || D(`Array`)));
+  });
+function Fe(e, t) {
+  return e != null && d.call(e, t);
+}
+var Ie = e(() => {
+    x();
+  }),
+  Le,
+  Re,
+  ze = e(() => {
+    (O(),
+      Ie(),
+      (Le = D(`Arguments`)),
+      (function () {
+        Le(arguments) ||
+          (Le = function (e) {
+            return Fe(e, `callee`);
+          });
+      })(),
+      (Re = Le));
+  });
+function Be(e) {
+  return !_e(e) && y(e) && !isNaN(parseFloat(e));
+}
+var Ve = e(() => {
+  (x(), ve());
+});
+function He(e) {
+  return k(e) && v(e);
+}
+var Ue = e(() => {
+  (x(), de());
+});
+function We(e) {
+  return function () {
+    return e;
+  };
+}
+var Ge = e(() => {});
+function Ke(e) {
+  return function (t) {
+    var n = e(t);
+    return typeof n == `number` && n >= 0 && n <= te;
+  };
+}
+var qe = e(() => {
+  x();
+});
+function Je(e) {
+  return function (t) {
+    return t?.[e];
+  };
+}
+var Ye = e(() => {}),
+  Xe,
+  Ze = e(() => {
+    (Ye(), (Xe = Je(`byteLength`)));
+  }),
+  Qe,
+  $e = e(() => {
+    (qe(), Ze(), (Qe = Ke(Xe)));
+  });
+function et(e) {
+  return _ ? _(e) && !je(e) : Qe(e) && tt.test(u.call(e));
+}
+var tt,
+  nt,
+  rt = e(() => {
+    (x(),
+      Me(),
+      Ge(),
+      $e(),
+      (tt =
+        /\[object ((I|Ui)nt(8|16|32)|Float(32|64)|Uint8Clamped|Big(I|Ui)nt64)Array\]/),
+      (nt = f ? et : We(!1)));
+  }),
+  M,
+  it = e(() => {
+    (Ye(), (M = Je(`length`)));
+  });
+function at(e) {
+  for (var t = {}, n = e.length, r = 0; r < n; ++r) t[e[r]] = !0;
+  return {
+    contains: function (e) {
+      return t[e] === !0;
+    },
+    push: function (n) {
+      return ((t[n] = !0), e.push(n));
+    },
+  };
+}
+function ot(e, t) {
+  t = at(t);
+  var n = b.length,
+    r = e.constructor,
+    i = (j(r) && r.prototype) || o,
+    a = `constructor`;
+  for (Fe(e, a) && !t.contains(a) && t.push(a); n--; )
+    ((a = b[n]), a in e && e[a] !== i[a] && !t.contains(a) && t.push(a));
+}
+var st = e(() => {
+  (x(), Ce(), Ie());
+});
+function N(e) {
+  if (!w(e)) return [];
+  if (h) return h(e);
+  var t = [];
+  for (var n in e) Fe(e, n) && t.push(n);
+  return (ee && ot(e, t), t);
+}
+var P = e(() => {
+  (T(), x(), Ie(), st());
+});
+function ct(e) {
+  if (e == null) return !0;
+  var t = M(e);
+  return typeof t == `number` && (Ne(e) || le(e) || Re(e))
+    ? t === 0
+    : M(N(e)) === 0;
+}
+var lt = e(() => {
+  (it(), Pe(), ue(), ze(), P());
+});
+function ut(e, t) {
+  var n = N(t),
+    r = n.length;
+  if (e == null) return !r;
+  for (var i = Object(e), a = 0; a < r; a++) {
+    var o = n[a];
+    if (t[o] !== i[o] || !(o in i)) return !1;
+  }
+  return !0;
+}
+var dt = e(() => {
+  P();
+});
+function F(e) {
+  if (e instanceof F) return e;
+  if (!(this instanceof F)) return new F(e);
+  this._wrapped = e;
+}
+var ft = e(() => {
+  (x(),
+    (F.VERSION = r),
+    (F.prototype.value = function () {
+      return this._wrapped;
+    }),
+    (F.prototype.valueOf = F.prototype.toJSON = F.prototype.value),
+    (F.prototype.toString = function () {
+      return String(this._wrapped);
+    }));
+});
+function pt(e) {
+  return new Uint8Array(e.buffer || e, e.byteOffset || 0, Xe(e));
+}
+var mt = e(() => {
+  Ze();
+});
+function ht(e, t) {
+  for (var n = [{ a: e, b: t }], r = [], i = []; n.length; ) {
+    var a = n.pop();
+    if (a === !0) {
+      (r.pop(), i.pop());
+      continue;
+    }
+    if (((e = a.a), (t = a.b), e === t)) {
+      if (e !== 0 || 1 / e == 1 / t) continue;
+      return !1;
+    }
+    if (e == null || t == null) return !1;
+    if (e !== e) {
+      if (t !== t) continue;
+      return !1;
+    }
+    var o = typeof e;
+    if (o !== `function` && o !== `object` && typeof t != `object`) return !1;
+    (e instanceof F && (e = e._wrapped), t instanceof F && (t = t._wrapped));
+    var c = u.call(e);
+    if (c !== u.call(t)) return !1;
+    if (Ee && c == `[object Object]` && je(e)) {
+      if (!je(t)) return !1;
+      c = gt;
+    }
+    switch (c) {
+      case `[object RegExp]`:
+      case `[object String]`:
+        if (`` + e == `` + t) continue;
+        return !1;
+      case `[object Number]`:
+        n.push({ a: +e, b: +t });
+        continue;
+      case `[object Date]`:
+      case `[object Boolean]`:
+        if (+e == +t) continue;
+        return !1;
+      case `[object Symbol]`:
+        if (s.valueOf.call(e) === s.valueOf.call(t)) continue;
+        return !1;
+      case `[object ArrayBuffer]`:
+      case gt:
+        n.push({ a: pt(e), b: pt(t) });
+        continue;
+    }
+    var l = c === `[object Array]`;
+    if (!l && nt(e)) {
+      if (Xe(e) !== Xe(t)) return !1;
+      if (e.buffer === t.buffer && e.byteOffset === t.byteOffset) continue;
+      l = !0;
+    }
+    if (!l) {
+      if (typeof e != `object` || typeof t != `object`) return !1;
+      var d = e.constructor,
+        f = t.constructor;
+      if (
+        d !== f &&
+        !(j(d) && d instanceof d && j(f) && f instanceof f) &&
+        `constructor` in e &&
+        `constructor` in t
+      )
+        return !1;
+    }
+    for (var p = r.length; p--; )
+      if (r[p] === e) {
+        if (i[p] === t) break;
+        return !1;
+      }
+    if (!(p >= 0))
+      if ((r.push(e), i.push(t), n.push(!0), l)) {
+        if (((p = e.length), p !== t.length)) return !1;
+        for (; p--; ) n.push({ a: e[p], b: t[p] });
+      } else {
+        var m = N(e),
+          h;
+        if (((p = m.length), N(t).length !== p)) return !1;
+        for (; p--; ) {
+          if (((h = m[p]), !Fe(t, h))) return !1;
+          n.push({ a: e[h], b: t[h] });
+        }
+      }
+  }
+  return !0;
+}
+var gt,
+  _t = e(() => {
+    (ft(),
+      x(),
+      Ze(),
+      rt(),
+      Ce(),
+      Oe(),
+      Me(),
+      P(),
+      Ie(),
+      mt(),
+      (gt = `[object DataView]`));
+  });
+function vt(e) {
+  if (!w(e)) return [];
+  var t = [];
+  for (var n in e) t.push(n);
+  return (ee && ot(e, t), t);
+}
+var yt = e(() => {
+  (T(), x(), st());
+});
+function bt(e) {
+  var t = M(e);
+  return function (n) {
+    if (n == null || M(vt(n))) return !1;
+    for (var r = 0; r < t; r++) if (!j(n[e[r]])) return !1;
+    return e !== Et || !j(n[xt]);
+  };
+}
+var xt,
+  St,
+  Ct,
+  wt,
+  Tt,
+  Et,
+  Dt,
+  Ot = e(() => {
+    (it(),
+      Ce(),
+      yt(),
+      (xt = `forEach`),
+      (St = `has`),
+      (Ct = [`clear`, `delete`]),
+      (wt = [`get`, St, `set`]),
+      (Tt = Ct.concat(xt, wt)),
+      (Et = Ct.concat(wt)),
+      (Dt = [`add`].concat(Ct, xt, St)));
+  }),
+  kt,
+  At = e(() => {
+    (O(), Oe(), Ot(), (kt = De ? bt(Tt) : D(`Map`)));
+  }),
+  jt,
+  Mt = e(() => {
+    (O(), Oe(), Ot(), (jt = De ? bt(Et) : D(`WeakMap`)));
+  }),
+  Nt,
+  Pt = e(() => {
+    (O(), Oe(), Ot(), (Nt = De ? bt(Dt) : D(`Set`)));
+  }),
+  Ft,
+  It = e(() => {
+    (O(), (Ft = D(`WeakSet`)));
+  });
+function Lt(e) {
+  for (var t = N(e), n = t.length, r = Array(n), i = 0; i < n; i++)
+    r[i] = e[t[i]];
+  return r;
+}
+var Rt = e(() => {
+  P();
+});
+function zt(e) {
+  for (var t = N(e), n = t.length, r = Array(n), i = 0; i < n; i++)
+    r[i] = [t[i], e[t[i]]];
+  return r;
+}
+var Bt = e(() => {
+  P();
+});
+function Vt(e) {
+  for (var t = {}, n = N(e), r = 0, i = n.length; r < i; r++) t[e[n[r]]] = n[r];
+  return t;
+}
+var Ht = e(() => {
+  P();
+});
+function Ut(e) {
+  var t = [];
+  for (var n in e) j(e[n]) && t.push(n);
+  return t.sort();
+}
+var Wt = e(() => {
+  Ce();
+});
+function Gt(e, t) {
+  return function (n) {
+    var r = arguments.length;
+    if ((t && (n = Object(n)), r < 2 || n == null)) return n;
+    for (var i = 1; i < r; i++)
+      for (var a = arguments[i], o = e(a), s = o.length, c = 0; c < s; c++) {
+        var l = o[c];
+        (!t || n[l] === void 0) && (n[l] = a[l]);
+      }
+    return n;
+  };
+}
+var Kt = e(() => {}),
+  qt,
+  Jt = e(() => {
+    (Kt(), yt(), (qt = Gt(vt)));
+  }),
+  Yt,
+  Xt = e(() => {
+    (Kt(), P(), (Yt = Gt(N)));
+  }),
+  Zt,
+  Qt = e(() => {
+    (Kt(), yt(), (Zt = Gt(vt, !0)));
+  });
+function $t() {
+  return function () {};
+}
+function en(e) {
+  if (!w(e)) return {};
+  if (g) return g(e);
+  var t = $t();
+  t.prototype = e;
+  var n = new t();
+  return ((t.prototype = null), n);
+}
+var tn = e(() => {
+  (T(), x());
+});
+function nn(e, t) {
+  var n = en(e);
+  return (t && Yt(n, t), n);
+}
+var rn = e(() => {
+  (tn(), Xt());
+});
+function an(e) {
+  return w(e) ? (Ne(e) ? e.slice() : qt({}, e)) : e;
+}
+var on = e(() => {
+  (T(), Pe(), Jt());
+});
+function sn(e, t) {
+  return (t(e), e);
+}
+var cn = e(() => {});
+function ln(e) {
+  return Ne(e) ? e : [e];
+}
+var un = e(() => {
+  (ft(), Pe(), (F.toPath = ln));
+});
+function dn(e) {
+  return F.toPath(e);
+}
+var fn = e(() => {
+  (ft(), un());
+});
+function pn(e, t) {
+  for (var n = t.length, r = 0; r < n; r++) {
+    if (e == null) return;
+    e = e[t[r]];
+  }
+  return n ? e : void 0;
+}
+var mn = e(() => {});
+function hn(e, t, n) {
+  var r = pn(e, dn(t));
+  return E(r) ? n : r;
+}
+var gn = e(() => {
+  (fn(), mn(), ie());
+});
+function _n(e, t) {
+  t = dn(t);
+  for (var n = t.length, r = 0; r < n; r++) {
+    var i = t[r];
+    if (!Fe(e, i)) return !1;
+    e = e[i];
+  }
+  return !!n;
+}
+var vn = e(() => {
+  (Ie(), fn());
+});
+function yn(e) {
+  return e;
+}
+var bn = e(() => {});
+function xn(e) {
+  return (
+    (e = Yt({}, e)),
+    function (t) {
+      return ut(t, e);
+    }
+  );
+}
+var Sn = e(() => {
+  (Xt(), dt());
+});
+function Cn(e) {
+  return (
+    (e = dn(e)),
+    function (t) {
+      return pn(t, e);
+    }
+  );
+}
+var wn = e(() => {
+  (mn(), fn());
+});
+function Tn(e, t, n) {
+  if (t === void 0) return e;
+  switch (n ?? 3) {
+    case 1:
+      return function (n) {
+        return e.call(t, n);
+      };
+    case 3:
+      return function (n, r, i) {
+        return e.call(t, n, r, i);
+      };
+    case 4:
+      return function (n, r, i, a) {
+        return e.call(t, n, r, i, a);
+      };
+  }
+  return function () {
+    return e.apply(t, arguments);
+  };
+}
+var En = e(() => {});
+function Dn(e, t, n) {
+  return e == null ? yn : j(e) ? Tn(e, t, n) : w(e) && !Ne(e) ? xn(e) : Cn(e);
+}
+var On = e(() => {
+  (bn(), Ce(), T(), Pe(), Sn(), wn(), En());
+});
+function kn(e, t) {
+  return Dn(e, t, 1 / 0);
+}
+var An = e(() => {
+  (ft(), On(), (F.iteratee = kn));
+});
+function I(e, t, n) {
+  return F.iteratee === kn ? Dn(e, t, n) : F.iteratee(e, t);
+}
+var L = e(() => {
+  (ft(), On(), An());
+});
+function jn(e, t, n) {
+  t = I(t, n);
+  for (var r = N(e), i = r.length, a = {}, o = 0; o < i; o++) {
+    var s = r[o];
+    a[s] = t(e[s], s, e);
+  }
+  return a;
+}
+var Mn = e(() => {
+  (L(), P());
+});
+function Nn() {}
+var Pn = e(() => {});
+function Fn(e) {
+  return e == null
+    ? Nn
+    : function (t) {
+        return hn(e, t);
+      };
+}
+var In = e(() => {
+  (Pn(), gn());
+});
+function Ln(e, t, n) {
+  var r = Array(Math.max(0, e));
+  t = Tn(t, n, 1);
+  for (var i = 0; i < e; i++) r[i] = t(i);
+  return r;
+}
+var Rn = e(() => {
+  En();
+});
+function zn(e, t) {
+  return (t ?? ((t = e), (e = 0)), e + Math.floor(Math.random() * (t - e + 1)));
+}
+var Bn = e(() => {}),
+  Vn,
+  Hn = e(() => {
+    Vn =
+      Date.now ||
+      function () {
+        return new Date().getTime();
+      };
+  });
+function Un(e) {
+  var t = function (t) {
+      return e[t];
+    },
+    n = `(?:` + N(e).join(`|`) + `)`,
+    r = RegExp(n),
+    i = RegExp(n, `g`);
+  return function (e) {
+    return ((e = e == null ? `` : `` + e), r.test(e) ? e.replace(i, t) : e);
+  };
+}
+var Wn = e(() => {
+    P();
+  }),
+  Gn,
+  Kn = e(() => {
+    Gn = {
+      '&': `&amp;`,
+      '<': `&lt;`,
+      '>': `&gt;`,
+      '"': `&quot;`,
+      "'": `&#x27;`,
+      '`': `&#x60;`,
+    };
+  }),
+  qn,
+  Jn = e(() => {
+    (Wn(), Kn(), (qn = Un(Gn)));
+  }),
+  Yn,
+  Xn = e(() => {
+    (Ht(), Kn(), (Yn = Vt(Gn)));
+  }),
+  Zn,
+  Qn = e(() => {
+    (Wn(), Xn(), (Zn = Un(Yn)));
+  }),
+  $n,
+  er = e(() => {
+    (ft(),
+      ($n = F.templateSettings =
+        {
+          evaluate: /<%([\s\S]+?)%>/g,
+          interpolate: /<%=([\s\S]+?)%>/g,
+          escape: /<%-([\s\S]+?)%>/g,
+        }));
+  });
+function tr(e) {
+  return `\\` + ir[e];
+}
+function nr(e, t, n) {
+  (!t && n && (t = n), (t = Zt({}, t, F.templateSettings)));
+  var r = RegExp(
+      [
+        (t.escape || rr).source,
+        (t.interpolate || rr).source,
+        (t.evaluate || rr).source,
+      ].join(`|`) + `|$`,
+      `g`
+    ),
+    i = 0,
+    a = `__p+='`;
+  (e.replace(r, function (t, n, r, o, s) {
+    return (
+      (a += e.slice(i, s).replace(ar, tr)),
+      (i = s + t.length),
+      n
+        ? (a +=
+            `'+
+((__t=(` +
+            n +
+            `))==null?'':_.escape(__t))+
+'`)
+        : r
+          ? (a +=
+              `'+
+((__t=(` +
+              r +
+              `))==null?'':__t)+
+'`)
+          : o &&
+            (a +=
+              `';
+` +
+              o +
+              `
+__p+='`),
+      t
+    );
+  }),
+    (a += `';
+`));
+  var o = t.variable;
+  if (o) {
+    if (!or.test(o)) throw Error(`variable is not a bare identifier: ` + o);
+  } else
+    ((a =
+      `with(obj||{}){
+` +
+      a +
+      `}
+`),
+      (o = `obj`));
+  a =
+    `var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+` +
+    a +
+    `return __p;
+`;
+  var s;
+  try {
+    s = Function(o, `_`, a);
+  } catch (e) {
+    throw ((e.source = a), e);
+  }
+  var c = function (e) {
+    return s.call(this, e, F);
+  };
+  return (
+    (c.source =
+      `function(` +
+      o +
+      `){
+` +
+      a +
+      `}`),
+    c
+  );
+}
+var rr,
+  ir,
+  ar,
+  or,
+  sr = e(() => {
+    (Qt(),
+      ft(),
+      er(),
+      (rr = /(.)^/),
+      (ir = {
+        "'": `'`,
+        '\\': `\\`,
+        '\r': `r`,
+        '\n': `n`,
+        '\u2028': `u2028`,
+        '\u2029': `u2029`,
+      }),
+      (ar = /\\|'|\r|\n|\u2028|\u2029/g),
+      (or = /^\s*(\w|\$)+\s*$/));
+  });
+function cr(e, t, n) {
+  t = dn(t);
+  var r = t.length;
+  if (!r) return j(n) ? n.call(e) : n;
+  for (var i = 0; i < r; i++) {
+    var a = e?.[t[i]];
+    (a === void 0 && ((a = n), (i = r)), (e = j(a) ? a.call(e) : a));
+  }
+  return e;
+}
+var lr = e(() => {
+  (Ce(), fn());
+});
+function ur(e) {
+  var t = ++dr + ``;
+  return e ? e + t : t;
+}
+var dr,
+  fr = e(() => {
+    dr = 0;
+  });
+function pr(e) {
+  var t = F(e);
+  return ((t._chain = !0), t);
+}
+var mr = e(() => {
+  ft();
+});
+function hr(e, t, n, r, i) {
+  if (!(r instanceof t)) return e.apply(n, i);
+  var a = en(e.prototype),
+    o = e.apply(a, i);
+  return w(o) ? o : a;
+}
+var gr = e(() => {
+    (tn(), T());
+  }),
+  _r,
+  vr = e(() => {
+    (C(),
+      gr(),
+      ft(),
+      (_r = S(function (e, t) {
+        var n = _r.placeholder,
+          r = function () {
+            for (var i = 0, a = t.length, o = Array(a), s = 0; s < a; s++)
+              o[s] = t[s] === n ? arguments[i++] : t[s];
+            for (; i < arguments.length; ) o.push(arguments[i++]);
+            return hr(e, r, this, this, o);
+          };
+        return r;
+      })),
+      (_r.placeholder = F));
+  }),
+  yr,
+  br = e(() => {
+    (C(),
+      Ce(),
+      gr(),
+      (yr = S(function (e, t, n) {
+        if (!j(e)) throw TypeError(`Bind must be called on a function`);
+        var r = S(function (i) {
+          return hr(e, r, t, this, n.concat(i));
+        });
+        return r;
+      })));
+  }),
+  R,
+  xr = e(() => {
+    (qe(), it(), (R = Ke(M)));
+  });
+function Sr(e, t, n) {
+  !t && t !== 0 && (t = 1 / 0);
+  for (var r = [], i = 0, a = 0, o = M(e) || 0, s = []; ; ) {
+    if (a >= o) {
+      if (!s.length) break;
+      var c = s.pop();
+      ((a = c.i), (e = c.v), (o = M(e)));
+      continue;
+    }
+    var l = e[a++];
+    s.length >= t
+      ? (r[i++] = l)
+      : R(l) && (Ne(l) || Re(l))
+        ? (s.push({ i: a, v: e }), (a = 0), (e = l), (o = M(e)))
+        : n || (r[i++] = l);
+  }
+  return r;
+}
+var Cr = e(() => {
+    (it(), xr(), Pe(), ze());
+  }),
+  wr,
+  Tr = e(() => {
+    (C(),
+      Cr(),
+      br(),
+      (wr = S(function (e, t) {
+        t = Sr(t, !1, !1);
+        var n = t.length;
+        if (n < 1) throw Error(`bindAll must be passed function names`);
+        for (; n--; ) {
+          var r = t[n];
+          e[r] = yr(e[r], e);
+        }
+        return e;
+      })));
+  });
+function Er(e, t) {
+  var n = function (r) {
+    var i = n.cache,
+      a = `` + (t ? t.apply(this, arguments) : r);
+    return (Fe(i, a) || (i[a] = e.apply(this, arguments)), i[a]);
+  };
+  return ((n.cache = {}), n);
+}
+var Dr = e(() => {
+    Ie();
+  }),
+  Or,
+  kr = e(() => {
+    (C(),
+      (Or = S(function (e, t, n) {
+        return setTimeout(function () {
+          return e.apply(null, n);
+        }, t);
+      })));
+  }),
+  Ar,
+  jr = e(() => {
+    (vr(), kr(), ft(), (Ar = _r(Or, F, 1)));
+  });
+function Mr(e, t, n) {
+  var r,
+    i,
+    a,
+    o,
+    s = 0;
+  n ||= {};
+  var c = function () {
+      ((s = n.leading === !1 ? 0 : Vn()),
+        (r = null),
+        (o = e.apply(i, a)),
+        r || (i = a = null));
+    },
+    l = function () {
+      var l = Vn();
+      !s && n.leading === !1 && (s = l);
+      var u = t - (l - s);
+      return (
+        (i = this),
+        (a = arguments),
+        u <= 0 || u > t
+          ? ((r &&= (clearTimeout(r), null)),
+            (s = l),
+            (o = e.apply(i, a)),
+            r || (i = a = null))
+          : !r && n.trailing !== !1 && (r = setTimeout(c, u)),
+        o
+      );
+    };
+  return (
+    (l.cancel = function () {
+      (clearTimeout(r), (s = 0), (r = i = a = null));
+    }),
+    l
+  );
+}
+var Nr = e(() => {
+  Hn();
+});
+function Pr(e, t, n) {
+  var r,
+    i,
+    a,
+    o,
+    s,
+    c = function () {
+      var l = Vn() - i;
+      t > l
+        ? (r = setTimeout(c, t - l))
+        : ((r = null), n || (o = e.apply(s, a)), r || (a = s = null));
+    },
+    l = S(function (l) {
+      return (
+        (s = this),
+        (a = l),
+        (i = Vn()),
+        r || ((r = setTimeout(c, t)), n && (o = e.apply(s, a))),
+        o
+      );
+    });
+  return (
+    (l.cancel = function () {
+      (clearTimeout(r), (r = a = s = null));
+    }),
+    l
+  );
+}
+var Fr = e(() => {
+  (C(), Hn());
+});
+function Ir(e, t) {
+  return _r(t, e);
+}
+var Lr = e(() => {
+  vr();
+});
+function Rr(e) {
+  return function () {
+    return !e.apply(this, arguments);
+  };
+}
+var zr = e(() => {});
+function Br() {
+  var e = arguments,
+    t = e.length - 1;
+  return function () {
+    for (var n = t, r = e[t].apply(this, arguments); n--; )
+      r = e[n].call(this, r);
+    return r;
+  };
+}
+var Vr = e(() => {});
+function Hr(e, t) {
+  return function () {
+    if (--e < 1) return t.apply(this, arguments);
+  };
+}
+var Ur = e(() => {});
+function Wr(e, t) {
+  var n;
+  return function () {
+    return (--e > 0 && (n = t.apply(this, arguments)), e <= 1 && (t = null), n);
+  };
+}
+var Gr = e(() => {}),
+  Kr,
+  qr = e(() => {
+    (vr(), Gr(), (Kr = _r(Wr, 2)));
+  });
+function Jr(e, t, n) {
+  t = I(t, n);
+  for (var r = N(e), i, a = 0, o = r.length; a < o; a++)
+    if (((i = r[a]), t(e[i], i, e))) return i;
+}
+var Yr = e(() => {
+  (L(), P());
+});
+function Xr(e) {
+  return function (t, n, r) {
+    n = I(n, r);
+    for (var i = M(t), a = e > 0 ? 0 : i - 1; a >= 0 && a < i; a += e)
+      if (n(t[a], a, t)) return a;
+    return -1;
+  };
+}
+var Zr = e(() => {
+    (L(), it());
+  }),
+  Qr,
+  $r = e(() => {
+    (Zr(), (Qr = Xr(1)));
+  }),
+  ei,
+  ti = e(() => {
+    (Zr(), (ei = Xr(-1)));
+  });
+function ni(e, t, n, r) {
+  n = I(n, r, 1);
+  for (var i = n(t), a = 0, o = M(e); a < o; ) {
+    var s = Math.floor((a + o) / 2);
+    n(e[s]) < i ? (a = s + 1) : (o = s);
+  }
+  return a;
+}
+var ri = e(() => {
+  (L(), it());
+});
+function ii(e, t, n) {
+  return function (r, i, a) {
+    var o = 0,
+      s = M(r);
+    if (typeof a == `number`)
+      e > 0
+        ? (o = a >= 0 ? a : Math.max(a + s, o))
+        : (s = a >= 0 ? Math.min(a + 1, s) : a + s + 1);
+    else if (n && a && s) return ((a = n(r, i)), r[a] === i ? a : -1);
+    if (i !== i) return ((a = t(l.call(r, o, s), He)), a >= 0 ? a + o : -1);
+    for (a = e > 0 ? o : s - 1; a >= 0 && a < s; a += e)
+      if (r[a] === i) return a;
+    return -1;
+  };
+}
+var ai = e(() => {
+    (it(), x(), Ue());
+  }),
+  oi,
+  si = e(() => {
+    (ri(), $r(), ai(), (oi = ii(1, Qr, ni)));
+  }),
+  ci,
+  li = e(() => {
+    (ti(), ai(), (ci = ii(-1, ei)));
+  });
+function ui(e, t, n) {
+  var r = (R(e) ? Qr : Jr)(e, t, n);
+  if (r !== void 0 && r !== -1) return e[r];
+}
+var di = e(() => {
+  (xr(), $r(), Yr());
+});
+function fi(e, t) {
+  return ui(e, xn(t));
+}
+var pi = e(() => {
+  (di(), Sn());
+});
+function mi(e, t, n) {
+  t = Tn(t, n);
+  var r, i;
+  if (R(e)) for (r = 0, i = e.length; r < i; r++) t(e[r], r, e);
+  else {
+    var a = N(e);
+    for (r = 0, i = a.length; r < i; r++) t(e[a[r]], a[r], e);
+  }
+  return e;
+}
+var hi = e(() => {
+  (En(), xr(), P());
+});
+function gi(e, t, n) {
+  t = I(t, n);
+  for (
+    var r = !R(e) && N(e), i = (r || e).length, a = Array(i), o = 0;
+    o < i;
+    o++
+  ) {
+    var s = r ? r[o] : o;
+    a[o] = t(e[s], s, e);
+  }
+  return a;
+}
+var _i = e(() => {
+  (L(), xr(), P());
+});
+function vi(e) {
+  var t = function (t, n, r, i) {
+    var a = !R(t) && N(t),
+      o = (a || t).length,
+      s = e > 0 ? 0 : o - 1;
+    for (i || ((r = t[a ? a[s] : s]), (s += e)); s >= 0 && s < o; s += e) {
+      var c = a ? a[s] : s;
+      r = n(r, t[c], c, t);
+    }
+    return r;
+  };
+  return function (e, n, r, i) {
+    var a = arguments.length >= 3;
+    return t(e, Tn(n, i, 4), r, a);
+  };
+}
+var yi = e(() => {
+    (xr(), P(), En());
+  }),
+  bi,
+  xi = e(() => {
+    (yi(), (bi = vi(1)));
+  }),
+  Si,
+  Ci = e(() => {
+    (yi(), (Si = vi(-1)));
+  });
+function wi(e, t, n) {
+  var r = [];
+  return (
+    (t = I(t, n)),
+    mi(e, function (e, n, i) {
+      t(e, n, i) && r.push(e);
+    }),
+    r
+  );
+}
+var Ti = e(() => {
+  (L(), hi());
+});
+function Ei(e, t, n) {
+  return wi(e, Rr(I(t)), n);
+}
+var Di = e(() => {
+  (Ti(), zr(), L());
+});
+function Oi(e, t, n) {
+  t = I(t, n);
+  for (var r = !R(e) && N(e), i = (r || e).length, a = 0; a < i; a++) {
+    var o = r ? r[a] : a;
+    if (!t(e[o], o, e)) return !1;
+  }
+  return !0;
+}
+var ki = e(() => {
+  (L(), xr(), P());
+});
+function Ai(e, t, n) {
+  t = I(t, n);
+  for (var r = !R(e) && N(e), i = (r || e).length, a = 0; a < i; a++) {
+    var o = r ? r[a] : a;
+    if (t(e[o], o, e)) return !0;
+  }
+  return !1;
+}
+var ji = e(() => {
+  (L(), xr(), P());
+});
+function Mi(e, t, n, r) {
+  return (
+    R(e) || (e = Lt(e)),
+    (typeof n != `number` || r) && (n = 0),
+    oi(e, t, n) >= 0
+  );
+}
+var Ni = e(() => {
+    (xr(), Rt(), si());
+  }),
+  Pi,
+  Fi = e(() => {
+    (C(),
+      Ce(),
+      _i(),
+      mn(),
+      fn(),
+      (Pi = S(function (e, t, n) {
+        var r, i;
+        return (
+          j(t)
+            ? (i = t)
+            : ((t = dn(t)), (r = t.slice(0, -1)), (t = t[t.length - 1])),
+          gi(e, function (e) {
+            var a = i;
+            if (!a) {
+              if ((r && r.length && (e = pn(e, r)), e == null)) return;
+              a = e[t];
+            }
+            return a == null ? a : a.apply(e, n);
+          })
+        );
+      })));
+  });
+function Ii(e, t) {
+  return gi(e, Cn(t));
+}
+var Li = e(() => {
+  (_i(), wn());
+});
+function Ri(e, t) {
+  return wi(e, xn(t));
+}
+var zi = e(() => {
+  (Ti(), Sn());
+});
+function Bi(e, t, n) {
+  var r = -1 / 0,
+    i = -1 / 0,
+    a,
+    o;
+  if (
+    t == null ||
+    (typeof t == `number` && typeof e[0] != `object` && e != null)
+  ) {
+    e = R(e) ? e : Lt(e);
+    for (var s = 0, c = e.length; s < c; s++)
+      ((a = e[s]), a != null && a > r && (r = a));
+  } else
+    ((t = I(t, n)),
+      mi(e, function (e, n, a) {
+        ((o = t(e, n, a)),
+          (o > i || (o === -1 / 0 && r === -1 / 0)) && ((r = e), (i = o)));
+      }));
+  return r;
+}
+var Vi = e(() => {
+  (xr(), Rt(), L(), hi());
+});
+function Hi(e, t, n) {
+  var r = 1 / 0,
+    i = 1 / 0,
+    a,
+    o;
+  if (
+    t == null ||
+    (typeof t == `number` && typeof e[0] != `object` && e != null)
+  ) {
+    e = R(e) ? e : Lt(e);
+    for (var s = 0, c = e.length; s < c; s++)
+      ((a = e[s]), a != null && a < r && (r = a));
+  } else
+    ((t = I(t, n)),
+      mi(e, function (e, n, a) {
+        ((o = t(e, n, a)),
+          (o < i || (o === 1 / 0 && r === 1 / 0)) && ((r = e), (i = o)));
+      }));
+  return r;
+}
+var Ui = e(() => {
+  (xr(), Rt(), L(), hi());
+});
+function Wi(e) {
+  return e
+    ? Ne(e)
+      ? l.call(e)
+      : le(e)
+        ? e.match(Gi)
+        : R(e)
+          ? gi(e, yn)
+          : Lt(e)
+    : [];
+}
+var Gi,
+  Ki = e(() => {
+    (Pe(),
+      x(),
+      ue(),
+      xr(),
+      _i(),
+      bn(),
+      Rt(),
+      (Gi =
+        /[^\ud800-\udfff]|[\ud800-\udbff][\udc00-\udfff]|[\ud800-\udfff]/g));
+  });
+function qi(e, t, n) {
+  if (t == null || n) return (R(e) || (e = Lt(e)), e[zn(e.length - 1)]);
+  var r = Wi(e),
+    i = M(r);
+  t = Math.max(Math.min(t, i), 0);
+  for (var a = i - 1, o = 0; o < t; o++) {
+    var s = zn(o, a),
+      c = r[o];
+    ((r[o] = r[s]), (r[s] = c));
+  }
+  return r.slice(0, t);
+}
+var Ji = e(() => {
+  (xr(), Rt(), it(), Bn(), Ki());
+});
+function Yi(e) {
+  return qi(e, 1 / 0);
+}
+var Xi = e(() => {
+  Ji();
+});
+function Zi(e, t, n) {
+  var r = 0;
+  return (
+    (t = I(t, n)),
+    Ii(
+      gi(e, function (e, n, i) {
+        return { value: e, index: r++, criteria: t(e, n, i) };
+      }).sort(function (e, t) {
+        var n = e.criteria,
+          r = t.criteria;
+        if (n !== r) {
+          if (n > r || n === void 0) return 1;
+          if (n < r || r === void 0) return -1;
+        }
+        return e.index - t.index;
+      }),
+      `value`
+    )
+  );
+}
+var Qi = e(() => {
+  (L(), Li(), _i());
+});
+function $i(e, t) {
+  return function (n, r, i) {
+    var a = t ? [[], []] : {};
+    return (
+      (r = I(r, i)),
+      mi(n, function (t, i) {
+        e(a, t, r(t, i, n));
+      }),
+      a
+    );
+  };
+}
+var ea = e(() => {
+    (L(), hi());
+  }),
+  ta,
+  na = e(() => {
+    (ea(),
+      Ie(),
+      (ta = $i(function (e, t, n) {
+        Fe(e, n) ? e[n].push(t) : (e[n] = [t]);
+      })));
+  }),
+  ra,
+  ia = e(() => {
+    (ea(),
+      (ra = $i(function (e, t, n) {
+        e[n] = t;
+      })));
+  }),
+  aa,
+  oa = e(() => {
+    (ea(),
+      Ie(),
+      (aa = $i(function (e, t, n) {
+        Fe(e, n) ? e[n]++ : (e[n] = 1);
+      })));
+  }),
+  sa,
+  ca = e(() => {
+    (ea(),
+      (sa = $i(function (e, t, n) {
+        e[+!n].push(t);
+      }, !0)));
+  });
+function la(e) {
+  return e == null ? 0 : R(e) ? e.length : N(e).length;
+}
+var ua = e(() => {
+  (xr(), P());
+});
+function da(e, t, n) {
+  return t in n;
+}
+var fa = e(() => {}),
+  pa,
+  ma = e(() => {
+    (C(),
+      Ce(),
+      En(),
+      yt(),
+      fa(),
+      Cr(),
+      (pa = S(function (e, t) {
+        var n = {},
+          r = t[0];
+        if (e == null) return n;
+        j(r)
+          ? (t.length > 1 && (r = Tn(r, t[1])), (t = vt(e)))
+          : ((r = da), (t = Sr(t, !1, !1)), (e = Object(e)));
+        for (var i = 0, a = t.length; i < a; i++) {
+          var o = t[i],
+            s = e[o];
+          r(s, o, e) && (n[o] = s);
+        }
+        return n;
+      })));
+  }),
+  ha,
+  ga = e(() => {
+    (C(),
+      Ce(),
+      zr(),
+      _i(),
+      Cr(),
+      Ni(),
+      ma(),
+      (ha = S(function (e, t) {
+        var n = t[0],
+          r;
+        return (
+          j(n)
+            ? ((n = Rr(n)), t.length > 1 && (r = t[1]))
+            : ((t = gi(Sr(t, !1, !1), String)),
+              (n = function (e, n) {
+                return !Mi(t, n);
+              })),
+          pa(e, n, r)
+        );
+      })));
+  });
+function _a(e, t, n) {
+  return l.call(e, 0, Math.max(0, e.length - (t == null || n ? 1 : t)));
+}
+var va = e(() => {
+  x();
+});
+function ya(e, t, n) {
+  return e == null || e.length < 1
+    ? t == null || n
+      ? void 0
+      : []
+    : t == null || n
+      ? e[0]
+      : _a(e, e.length - t);
+}
+var ba = e(() => {
+  va();
+});
+function xa(e, t, n) {
+  return l.call(e, t == null || n ? 1 : t);
+}
+var Sa = e(() => {
+  x();
+});
+function Ca(e, t, n) {
+  return e == null || e.length < 1
+    ? t == null || n
+      ? void 0
+      : []
+    : t == null || n
+      ? e[e.length - 1]
+      : xa(e, Math.max(0, e.length - t));
+}
+var wa = e(() => {
+  Sa();
+});
+function Ta(e) {
+  return wi(e, Boolean);
+}
+var Ea = e(() => {
+  Ti();
+});
+function Da(e, t) {
+  return Sr(e, t, !1);
+}
+var Oa = e(() => {
+    Cr();
+  }),
+  ka,
+  Aa = e(() => {
+    (C(),
+      Cr(),
+      Ti(),
+      Ni(),
+      (ka = S(function (e, t) {
+        return (
+          (t = Sr(t, !0, !0)),
+          wi(e, function (e) {
+            return !Mi(t, e);
+          })
+        );
+      })));
+  }),
+  ja,
+  Ma = e(() => {
+    (C(),
+      Aa(),
+      (ja = S(function (e, t) {
+        return ka(e, t);
+      })));
+  });
+function Na(e, t, n, r) {
+  (ae(t) || ((r = n), (n = t), (t = !1)), n != null && (n = I(n, r)));
+  for (var i = [], a = [], o = 0, s = M(e); o < s; o++) {
+    var c = e[o],
+      l = n ? n(c, o, e) : c;
+    t && !n
+      ? ((!o || a !== l) && i.push(c), (a = l))
+      : n
+        ? Mi(a, l) || (a.push(l), i.push(c))
+        : Mi(i, c) || i.push(c);
+  }
+  return i;
+}
+var Pa = e(() => {
+    (oe(), L(), it(), Ni());
+  }),
+  Fa,
+  Ia = e(() => {
+    (C(),
+      Pa(),
+      Cr(),
+      (Fa = S(function (e) {
+        return Na(Sr(e, !0, !0));
+      })));
+  });
+function La(e) {
+  for (var t = [], n = arguments.length, r = 0, i = M(e); r < i; r++) {
+    var a = e[r];
+    if (!Mi(t, a)) {
+      var o;
+      for (o = 1; o < n && Mi(arguments[o], a); o++);
+      o === n && t.push(a);
+    }
+  }
+  return t;
+}
+var Ra = e(() => {
+  (it(), Ni());
+});
+function za(e) {
+  for (var t = (e && Bi(e, M).length) || 0, n = Array(t), r = 0; r < t; r++)
+    n[r] = Ii(e, r);
+  return n;
+}
+var Ba = e(() => {
+    (Vi(), it(), Li());
+  }),
+  Va,
+  Ha = e(() => {
+    (C(), Ba(), (Va = S(za)));
+  });
+function Ua(e, t) {
+  for (var n = {}, r = 0, i = M(e); r < i; r++)
+    t ? (n[e[r]] = t[r]) : (n[e[r][0]] = e[r][1]);
+  return n;
+}
+var Wa = e(() => {
+  it();
+});
+function Ga(e, t, n) {
+  (t ?? ((t = e || 0), (e = 0)), (n ||= t < e ? -1 : 1));
+  for (
+    var r = Math.max(Math.ceil((t - e) / n), 0), i = Array(r), a = 0;
+    a < r;
+    a++, e += n
+  )
+    i[a] = e;
+  return i;
+}
+var Ka = e(() => {});
+function qa(e, t) {
+  if (t == null || t < 1) return [];
+  for (var n = [], r = 0, i = e.length; r < i; ) n.push(l.call(e, r, (r += t)));
+  return n;
+}
+var Ja = e(() => {
+  x();
+});
+function Ya(e, t) {
+  return e._chain ? F(t).chain() : t;
+}
+var Xa = e(() => {
+  ft();
+});
+function Za(e) {
+  return (
+    mi(Ut(e), function (t) {
+      var n = (F[t] = e[t]);
+      F.prototype[t] = function () {
+        var e = [this._wrapped];
+        return (c.apply(e, arguments), Ya(this, n.apply(F, e)));
+      };
+    }),
+    F
+  );
+}
+var Qa = e(() => {
+    (ft(), hi(), Wt(), x(), Xa());
+  }),
+  $a,
+  eo = e(() => {
+    (ft(),
+      hi(),
+      x(),
+      Xa(),
+      mi(
+        [`pop`, `push`, `reverse`, `shift`, `sort`, `splice`, `unshift`],
+        function (e) {
+          var t = a[e];
+          F.prototype[e] = function () {
+            var n = this._wrapped;
+            return (
+              n != null &&
+                (t.apply(n, arguments),
+                (e === `shift` || e === `splice`) &&
+                  n.length === 0 &&
+                  delete n[0]),
+              Ya(this, n)
+            );
+          };
+        }
+      ),
+      mi([`concat`, `join`, `slice`], function (e) {
+        var t = a[e];
+        F.prototype[e] = function () {
+          var e = this._wrapped;
+          return (e != null && (e = t.apply(e, arguments)), Ya(this, e));
+        };
+      }),
+      ($a = F));
+  }),
+  to = t({
+    VERSION: () => r,
+    after: () => Hr,
+    all: () => Oi,
+    allKeys: () => vt,
+    any: () => Ai,
+    assign: () => Yt,
+    before: () => Wr,
+    bind: () => yr,
+    bindAll: () => wr,
+    chain: () => pr,
+    chunk: () => qa,
+    clone: () => an,
+    collect: () => gi,
+    compact: () => Ta,
+    compose: () => Br,
+    constant: () => We,
+    contains: () => Mi,
+    countBy: () => aa,
+    create: () => nn,
+    debounce: () => Pr,
+    default: () => $a,
+    defaults: () => Zt,
+    defer: () => Ar,
+    delay: () => Or,
+    detect: () => ui,
+    difference: () => ka,
+    drop: () => xa,
+    each: () => mi,
+    escape: () => qn,
+    every: () => Oi,
+    extend: () => qt,
+    extendOwn: () => Yt,
+    filter: () => wi,
+    find: () => ui,
+    findIndex: () => Qr,
+    findKey: () => Jr,
+    findLastIndex: () => ei,
+    findWhere: () => fi,
+    first: () => ya,
+    flatten: () => Da,
+    foldl: () => bi,
+    foldr: () => Si,
+    forEach: () => mi,
+    functions: () => Ut,
+    get: () => hn,
+    groupBy: () => ta,
+    has: () => _n,
+    head: () => ya,
+    identity: () => yn,
+    include: () => Mi,
+    includes: () => Mi,
+    indexBy: () => ra,
+    indexOf: () => oi,
+    initial: () => _a,
+    inject: () => bi,
+    intersection: () => La,
+    invert: () => Vt,
+    invoke: () => Pi,
+    isArguments: () => Re,
+    isArray: () => Ne,
+    isArrayBuffer: () => ye,
+    isBoolean: () => ae,
+    isDataView: () => je,
+    isDate: () => A,
+    isElement: () => se,
+    isEmpty: () => ct,
+    isEqual: () => ht,
+    isError: () => he,
+    isFinite: () => Be,
+    isFunction: () => j,
+    isMap: () => kt,
+    isMatch: () => ut,
+    isNaN: () => He,
+    isNull: () => ne,
+    isNumber: () => k,
+    isObject: () => w,
+    isRegExp: () => pe,
+    isSet: () => Nt,
+    isString: () => le,
+    isSymbol: () => _e,
+    isTypedArray: () => nt,
+    isUndefined: () => E,
+    isWeakMap: () => jt,
+    isWeakSet: () => Ft,
+    iteratee: () => kn,
+    keys: () => N,
+    last: () => Ca,
+    lastIndexOf: () => ci,
+    map: () => gi,
+    mapObject: () => jn,
+    matcher: () => xn,
+    matches: () => xn,
+    max: () => Bi,
+    memoize: () => Er,
+    methods: () => Ut,
+    min: () => Hi,
+    mixin: () => Za,
+    negate: () => Rr,
+    noop: () => Nn,
+    now: () => Vn,
+    object: () => Ua,
+    omit: () => ha,
+    once: () => Kr,
+    pairs: () => zt,
+    partial: () => _r,
+    partition: () => sa,
+    pick: () => pa,
+    pluck: () => Ii,
+    property: () => Cn,
+    propertyOf: () => Fn,
+    random: () => zn,
+    range: () => Ga,
+    reduce: () => bi,
+    reduceRight: () => Si,
+    reject: () => Ei,
+    rest: () => xa,
+    restArguments: () => S,
+    result: () => cr,
+    sample: () => qi,
+    select: () => wi,
+    shuffle: () => Yi,
+    size: () => la,
+    some: () => Ai,
+    sortBy: () => Zi,
+    sortedIndex: () => ni,
+    tail: () => xa,
+    take: () => ya,
+    tap: () => sn,
+    template: () => nr,
+    templateSettings: () => $n,
+    throttle: () => Mr,
+    times: () => Ln,
+    toArray: () => Wi,
+    toPath: () => ln,
+    transpose: () => za,
+    unescape: () => Zn,
+    union: () => Fa,
+    uniq: () => Na,
+    unique: () => Na,
+    uniqueId: () => ur,
+    unzip: () => za,
+    values: () => Lt,
+    where: () => Ri,
+    without: () => ja,
+    wrap: () => Ir,
+    zip: () => Va,
+  }),
+  no = e(() => {
+    (x(),
+      C(),
+      T(),
+      re(),
+      ie(),
+      oe(),
+      ce(),
+      ue(),
+      de(),
+      fe(),
+      me(),
+      ge(),
+      ve(),
+      be(),
+      Me(),
+      Pe(),
+      Ce(),
+      ze(),
+      Ve(),
+      Ue(),
+      rt(),
+      lt(),
+      dt(),
+      _t(),
+      At(),
+      Mt(),
+      Pt(),
+      It(),
+      P(),
+      yt(),
+      Rt(),
+      Bt(),
+      Ht(),
+      Wt(),
+      Jt(),
+      Xt(),
+      Qt(),
+      rn(),
+      on(),
+      cn(),
+      gn(),
+      vn(),
+      Mn(),
+      bn(),
+      Ge(),
+      Pn(),
+      un(),
+      wn(),
+      In(),
+      Sn(),
+      Rn(),
+      Bn(),
+      Hn(),
+      Jn(),
+      Qn(),
+      er(),
+      sr(),
+      lr(),
+      fr(),
+      mr(),
+      An(),
+      vr(),
+      br(),
+      Tr(),
+      Dr(),
+      kr(),
+      jr(),
+      Nr(),
+      Fr(),
+      Lr(),
+      zr(),
+      Vr(),
+      Ur(),
+      Gr(),
+      qr(),
+      Yr(),
+      $r(),
+      ti(),
+      ri(),
+      si(),
+      li(),
+      di(),
+      pi(),
+      hi(),
+      _i(),
+      xi(),
+      Ci(),
+      Ti(),
+      Di(),
+      ki(),
+      ji(),
+      Ni(),
+      Fi(),
+      Li(),
+      zi(),
+      Vi(),
+      Ui(),
+      Xi(),
+      Ji(),
+      Qi(),
+      na(),
+      ia(),
+      oa(),
+      ca(),
+      Ki(),
+      ua(),
+      ma(),
+      ga(),
+      ba(),
+      va(),
+      wa(),
+      Sa(),
+      Ea(),
+      Oa(),
+      Ma(),
+      Pa(),
+      Ia(),
+      Ra(),
+      Aa(),
+      Ba(),
+      Ha(),
+      Wa(),
+      Ka(),
+      Ja(),
+      Qa(),
+      eo());
+  }),
+  ro,
+  io = e(() => {
+    (no(), (ro = Za(to)), (ro._ = ro));
+  }),
+  ao = e(() => {
+    (io(), no());
+  });
+function oo(e, t, n, r) {
+  if (
+    (arguments.length === 1 &&
+      typeof e == `string` &&
+      !/\d/.test(e) &&
+      ((t = e), (e = void 0)),
+    (e = e || e === 0 ? e : new Date()),
+    e instanceof Date || (e = new Date(e)),
+    isNaN(e))
+  )
+    throw TypeError(`Invalid date`);
+  t = String(uo[t] || t || uo.default);
+  var i = t.slice(0, 4);
+  (i === `UTC:` || i === `GMT:`) &&
+    ((t = t.slice(4)), (n = !0), i === `GMT:` && (r = !0));
+  var a = function () {
+      return n ? `getUTC` : `get`;
+    },
+    o = function () {
+      return e[a() + `Date`]();
+    },
+    s = function () {
+      return e[a() + `Day`]();
+    },
+    c = function () {
+      return e[a() + `Month`]();
+    },
+    l = function () {
+      return e[a() + `FullYear`]();
+    },
+    u = function () {
+      return e[a() + `Hours`]();
+    },
+    d = function () {
+      return e[a() + `Minutes`]();
+    },
+    f = function () {
+      return e[a() + `Seconds`]();
+    },
+    p = function () {
+      return e[a() + `Milliseconds`]();
+    },
+    m = function () {
+      return n ? 0 : e.getTimezoneOffset();
+    },
+    h = function () {
+      return po(e);
+    },
+    g = function () {
+      return mo(e);
+    },
+    _ = {
+      d: function () {
+        return o();
+      },
+      dd: function () {
+        return B(o());
+      },
+      ddd: function () {
+        return z.dayNames[s()];
+      },
+      DDD: function () {
+        return fo({
+          y: l(),
+          m: c(),
+          d: o(),
+          _: a(),
+          dayName: z.dayNames[s()],
+          short: !0,
+        });
+      },
+      dddd: function () {
+        return z.dayNames[s() + 7];
+      },
+      DDDD: function () {
+        return fo({
+          y: l(),
+          m: c(),
+          d: o(),
+          _: a(),
+          dayName: z.dayNames[s() + 7],
+        });
+      },
+      m: function () {
+        return c() + 1;
+      },
+      mm: function () {
+        return B(c() + 1);
+      },
+      mmm: function () {
+        return z.monthNames[c()];
+      },
+      mmmm: function () {
+        return z.monthNames[c() + 12];
+      },
+      yy: function () {
+        return String(l()).slice(2);
+      },
+      yyyy: function () {
+        return B(l(), 4);
+      },
+      h: function () {
+        return u() % 12 || 12;
+      },
+      hh: function () {
+        return B(u() % 12 || 12);
+      },
+      H: function () {
+        return u();
+      },
+      HH: function () {
+        return B(u());
+      },
+      M: function () {
+        return d();
+      },
+      MM: function () {
+        return B(d());
+      },
+      s: function () {
+        return f();
+      },
+      ss: function () {
+        return B(f());
+      },
+      l: function () {
+        return B(p(), 3);
+      },
+      L: function () {
+        return B(Math.floor(p() / 10));
+      },
+      t: function () {
+        return u() < 12 ? z.timeNames[0] : z.timeNames[1];
+      },
+      tt: function () {
+        return u() < 12 ? z.timeNames[2] : z.timeNames[3];
+      },
+      T: function () {
+        return u() < 12 ? z.timeNames[4] : z.timeNames[5];
+      },
+      TT: function () {
+        return u() < 12 ? z.timeNames[6] : z.timeNames[7];
+      },
+      Z: function () {
+        return r ? `GMT` : n ? `UTC` : ho(e);
+      },
+      o: function () {
+        return (
+          (m() > 0 ? `-` : `+`) +
+          B(Math.floor(Math.abs(m()) / 60) * 100 + (Math.abs(m()) % 60), 4)
+        );
+      },
+      p: function () {
+        return (
+          (m() > 0 ? `-` : `+`) +
+          B(Math.floor(Math.abs(m()) / 60), 2) +
+          `:` +
+          B(Math.floor(Math.abs(m()) % 60), 2)
+        );
+      },
+      S: function () {
+        return [`th`, `st`, `nd`, `rd`][
+          o() % 10 > 3 ? 0 : (((o() % 100) - (o() % 10) != 10) * o()) % 10
+        ];
+      },
+      W: function () {
+        return h();
+      },
+      WW: function () {
+        return B(h());
+      },
+      N: function () {
+        return g();
+      },
+    };
+  return t.replace(so, function (e) {
+    return e in _ ? _[e]() : e.slice(1, e.length - 1);
+  });
+}
+var so,
+  co,
+  lo,
+  uo,
+  z,
+  B,
+  fo,
+  po,
+  mo,
+  ho,
+  go = e(() => {
+    ((so =
+      /d{1,4}|D{3,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|W{1,2}|[LlopSZN]|"[^"]*"|'[^']*'/g),
+      (co =
+        /\b(?:[A-Z]{1,3}[A-Z][TC])(?:[-+]\d{4})?|((?:Australian )?(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time)\b/g),
+      (lo = /[^-+\dA-Z]/g),
+      (uo = {
+        default: `ddd mmm dd yyyy HH:MM:ss`,
+        shortDate: `m/d/yy`,
+        paddedShortDate: `mm/dd/yyyy`,
+        mediumDate: `mmm d, yyyy`,
+        longDate: `mmmm d, yyyy`,
+        fullDate: `dddd, mmmm d, yyyy`,
+        shortTime: `h:MM TT`,
+        mediumTime: `h:MM:ss TT`,
+        longTime: `h:MM:ss TT Z`,
+        isoDate: `yyyy-mm-dd`,
+        isoTime: `HH:MM:ss`,
+        isoDateTime: `yyyy-mm-dd'T'HH:MM:sso`,
+        isoUtcDateTime: `UTC:yyyy-mm-dd'T'HH:MM:ss'Z'`,
+        expiresHeaderFormat: `ddd, dd mmm yyyy HH:MM:ss Z`,
+      }),
+      (z = {
+        dayNames: [
+          `Sun`,
+          `Mon`,
+          `Tue`,
+          `Wed`,
+          `Thu`,
+          `Fri`,
+          `Sat`,
+          `Sunday`,
+          `Monday`,
+          `Tuesday`,
+          `Wednesday`,
+          `Thursday`,
+          `Friday`,
+          `Saturday`,
+        ],
+        monthNames: [
+          `Jan`,
+          `Feb`,
+          `Mar`,
+          `Apr`,
+          `May`,
+          `Jun`,
+          `Jul`,
+          `Aug`,
+          `Sep`,
+          `Oct`,
+          `Nov`,
+          `Dec`,
+          `January`,
+          `February`,
+          `March`,
+          `April`,
+          `May`,
+          `June`,
+          `July`,
+          `August`,
+          `September`,
+          `October`,
+          `November`,
+          `December`,
+        ],
+        timeNames: [`a`, `p`, `am`, `pm`, `A`, `P`, `AM`, `PM`],
+      }),
+      (B = function (e) {
+        var t =
+          arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 2;
+        return String(e).padStart(t, `0`);
+      }),
+      (fo = function (e) {
+        var t = e.y,
+          n = e.m,
+          r = e.d,
+          i = e._,
+          a = e.dayName,
+          o = e.short,
+          s = o === void 0 ? !1 : o,
+          c = new Date(),
+          l = new Date();
+        l.setDate(l[i + `Date`]() - 1);
+        var u = new Date();
+        return (
+          u.setDate(u[i + `Date`]() + 1),
+          (function () {
+            return c[i + `FullYear`]();
+          })() === t &&
+          (function () {
+            return c[i + `Month`]();
+          })() === n &&
+          (function () {
+            return c[i + `Date`]();
+          })() === r
+            ? s
+              ? `Tdy`
+              : `Today`
+            : (function () {
+                  return l[i + `FullYear`]();
+                })() === t &&
+                (function () {
+                  return l[i + `Month`]();
+                })() === n &&
+                (function () {
+                  return l[i + `Date`]();
+                })() === r
+              ? s
+                ? `Ysd`
+                : `Yesterday`
+              : (function () {
+                    return u[i + `FullYear`]();
+                  })() === t &&
+                  (function () {
+                    return u[i + `Month`]();
+                  })() === n &&
+                  (function () {
+                    return u[i + `Date`]();
+                  })() === r
+                ? s
+                  ? `Tmw`
+                  : `Tomorrow`
+                : a
+        );
+      }),
+      (po = function (e) {
+        var t = new Date(e.getFullYear(), e.getMonth(), e.getDate());
+        t.setDate(t.getDate() - ((t.getDay() + 6) % 7) + 3);
+        var n = new Date(t.getFullYear(), 0, 4);
+        n.setDate(n.getDate() - ((n.getDay() + 6) % 7) + 3);
+        var r = t.getTimezoneOffset() - n.getTimezoneOffset();
+        t.setHours(t.getHours() - r);
+        var i = (t - n) / (864e5 * 7);
+        return 1 + Math.floor(i);
+      }),
+      (mo = function (e) {
+        var t = e.getDay();
+        return (t === 0 && (t = 7), t);
+      }),
+      (ho = function (e) {
+        return (String(e).match(co) || [``])
+          .pop()
+          .replace(lo, ``)
+          .replace(/GMT\+0000/g, `UTC`);
+      }));
+  });
+function _o(e, t) {
+  if (((e ||= {}), Rs.call(this, Zo), t))
+    Rs.call(this, [
+      [Io, Ps(e[Ho])],
+      [Ro, Ps(e[Uo])],
+      [X, /\?1/.test(e[qo])],
+      [Y, Ls(e[Jo])],
+      [zo, Ls(e[Yo])],
+      [Bo, Ls(e[Xo])],
+      [J, Ls(e[Wo])],
+      [Lo, Ps(e[Ko])],
+      [Vo, Ls(e[Go])],
+    ]);
+  else
+    for (var n in e)
+      this.hasOwnProperty(n) && typeof e[n] !== V.UNDEFINED && (this[n] = e[n]);
+}
+function vo(e, t, n, r) {
+  return (
+    Rs.call(this, [
+      [`itemType`, e],
+      [`ua`, t],
+      [`uaCH`, r],
+      [`rgxMap`, n],
+      [`data`, Ys(this, e)],
+    ]),
+    this
+  );
+}
+function yo(e, t, n) {
+  if (
+    (typeof e === V.OBJECT
+      ? (Ms(e, !0)
+          ? (typeof t === V.OBJECT && (n = t), (t = e))
+          : ((n = e), (t = void 0)),
+        (e = void 0))
+      : typeof e === V.STRING && !Ms(t, !0) && ((n = t), (t = void 0)),
+    n)
+  )
+    if (typeof n.append === V.FUNCTION) {
+      var r = {};
+      (n.forEach(function (e, t) {
+        r[String(t).toLowerCase()] = e;
+      }),
+        (n = r));
+    } else {
+      var i = {};
+      for (var a in n)
+        n.hasOwnProperty(a) && (i[String(a).toLowerCase()] = n[a]);
+      n = i;
+    }
+  if (!(this instanceof yo)) return new yo(e, t, n).getResult();
+  var o =
+      typeof e === V.STRING
+        ? e
+        : n && n[So]
+          ? n[So]
+          : $ && $.userAgent
+            ? $.userAgent
+            : Co,
+    s = new _o(n, !0),
+    c = qs,
+    l = function (e) {
+      return e == Oo
+        ? function () {
+            return new vo(e, o, c, s)
+              .set(`ua`, o)
+              .set(H, this.getBrowser())
+              .set(To, this.getCPU())
+              .set(Eo, this.getDevice())
+              .set(Do, this.getEngine())
+              .set(U, this.getOS())
+              .get();
+          }
+        : function () {
+            return new vo(e, o, c[e], s).parseUA().get();
+          };
+    };
+  return (
+    Rs.call(this, [
+      [`getBrowser`, l(H)],
+      [`getCPU`, l(To)],
+      [`getDevice`, l(Eo)],
+      [`getEngine`, l(Do)],
+      [`getOS`, l(U)],
+      [`getResult`, l(Oo)],
+      [
+        `getUA`,
+        function () {
+          return o;
+        },
+      ],
+      [
+        `setUA`,
+        function (e) {
+          return (Ns(e) && (o = Bs(e, xo)), this);
+        },
+      ],
+      [
+        `useExtension`,
+        function (e) {
+          return (e && (c = ks(c, e)), this);
+        },
+      ],
+    ])
+      .setUA(o)
+      .useExtension(t),
+    this
+  );
+}
+var bo,
+  xo,
+  So,
+  Co,
+  wo,
+  V,
+  H,
+  To,
+  Eo,
+  Do,
+  U,
+  Oo,
+  W,
+  G,
+  K,
+  q,
+  J,
+  ko,
+  Y,
+  Ao,
+  X,
+  Z,
+  Q,
+  jo,
+  Mo,
+  No,
+  Po,
+  Fo,
+  Io,
+  Lo,
+  Ro,
+  zo,
+  Bo,
+  Vo,
+  Ho,
+  Uo,
+  Wo,
+  Go,
+  Ko,
+  qo,
+  Jo,
+  Yo,
+  Xo,
+  Zo,
+  Qo,
+  $o,
+  es,
+  ts,
+  ns,
+  rs,
+  is,
+  as,
+  os,
+  ss,
+  cs,
+  ls,
+  us,
+  ds,
+  fs,
+  ps,
+  ms,
+  hs,
+  gs,
+  _s,
+  vs,
+  ys,
+  bs,
+  xs,
+  Ss,
+  Cs,
+  ws,
+  Ts,
+  Es,
+  Ds,
+  $,
+  Os,
+  ks,
+  As,
+  js,
+  Ms,
+  Ns,
+  Ps,
+  Fs,
+  Is,
+  Ls,
+  Rs,
+  zs,
+  Bs,
+  Vs,
+  Hs,
+  Us,
+  Ws,
+  Gs,
+  Ks,
+  qs,
+  Js,
+  Ys,
+  Xs = e(() => {
+    ((bo = `2.0.10`),
+      (xo = 500),
+      (So = `user-agent`),
+      (Co = ``),
+      (wo = `?`),
+      (V = {
+        FUNCTION: `function`,
+        OBJECT: `object`,
+        STRING: `string`,
+        UNDEFINED: `undefined`,
+      }),
+      (H = `browser`),
+      (To = `cpu`),
+      (Eo = `device`),
+      (Do = `engine`),
+      (U = `os`),
+      (Oo = `result`),
+      (W = `name`),
+      (G = `type`),
+      (K = `vendor`),
+      (q = `version`),
+      (J = `architecture`),
+      (ko = `major`),
+      (Y = `model`),
+      (Ao = `console`),
+      (X = `mobile`),
+      (Z = `tablet`),
+      (Q = `smarttv`),
+      (jo = `wearable`),
+      (Mo = `xr`),
+      (No = `embedded`),
+      (Po = `fetcher`),
+      (Fo = `inapp`),
+      (Io = `brands`),
+      (Lo = `formFactors`),
+      (Ro = `fullVersionList`),
+      (zo = `platform`),
+      (Bo = `platformVersion`),
+      (Vo = `bitness`),
+      (Ho = `sec-ch-ua`),
+      (Uo = Ho + `-full-version-list`),
+      (Wo = Ho + `-arch`),
+      (Go = Ho + `-` + Vo),
+      (Ko = Ho + `-form-factors`),
+      (qo = Ho + `-` + X),
+      (Jo = Ho + `-` + Y),
+      (Yo = Ho + `-` + zo),
+      (Xo = Yo + `-version`),
+      (Zo = [Io, Ro, X, Y, zo, Bo, J, Lo, Vo]),
+      (Qo = `Amazon`),
+      ($o = `Apple`),
+      (es = `ASUS`),
+      (ts = `BlackBerry`),
+      (ns = `Google`),
+      (rs = `Huawei`),
+      (is = `Lenovo`),
+      (as = `Honor`),
+      (os = `LG`),
+      (ss = `Microsoft`),
+      (cs = `Motorola`),
+      (ls = `Nvidia`),
+      (us = `OnePlus`),
+      (ds = `OPPO`),
+      (fs = `Samsung`),
+      (ps = `Sharp`),
+      (ms = `Sony`),
+      (hs = `Xiaomi`),
+      (gs = `Zebra`),
+      (_s = `Chrome`),
+      (vs = `Chromium`),
+      (ys = `Chromecast`),
+      (bs = `Edge`),
+      (xs = `Firefox`),
+      (Ss = `Opera`),
+      (Cs = `Facebook`),
+      (ws = `Sogou`),
+      (Ts = `Mobile `),
+      (Es = ` Browser`),
+      (Ds = `Windows`),
+      ($ =
+        typeof window !== V.UNDEFINED && window.navigator
+          ? window.navigator
+          : void 0),
+      (Os = $ && $.userAgentData ? $.userAgentData : void 0),
+      (ks = function (e, t) {
+        var n = {},
+          r = t;
+        if (!Ms(t))
+          for (var i in ((r = {}), t))
+            for (var a in t[i]) r[a] = t[i][a].concat(r[a] ? r[a] : []);
+        for (var o in e)
+          n[o] = r[o] && r[o].length % 2 == 0 ? r[o].concat(e[o]) : e[o];
+        return n;
+      }),
+      (As = function (e) {
+        for (var t = {}, n = 0; n < e.length; n++) t[e[n].toUpperCase()] = e[n];
+        return t;
+      }),
+      (js = function (e, t) {
+        if (typeof e === V.OBJECT && e.length > 0) {
+          for (var n in e) if (Fs(t) == Fs(e[n])) return !0;
+          return !1;
+        }
+        return Ns(e) ? Fs(t) == Fs(e) : !1;
+      }),
+      (Ms = function (e, t) {
+        for (var n in e)
+          return (
+            /^(browser|cpu|device|engine|os)$/.test(n) || (t ? Ms(e[n]) : !1)
+          );
+      }),
+      (Ns = function (e) {
+        return typeof e === V.STRING;
+      }),
+      (Ps = function (e) {
+        if (e) {
+          for (var t = [], n = Ls(e).split(`,`), r = 0; r < n.length; r++)
+            if (n[r].indexOf(`;`) > -1) {
+              var i = Bs(n[r]).split(`;v=`);
+              t[r] = { brand: i[0], version: i[1] };
+            } else t[r] = Bs(n[r]);
+          return t;
+        }
+      }),
+      (Fs = function (e) {
+        return Ns(e) ? e.toLowerCase() : e;
+      }),
+      (Is = function (e) {
+        return Ns(e) ? zs(/[^\d\.]/g, e).split(`.`)[0] : void 0;
+      }),
+      (Ls = function (e) {
+        return Ns(e) ? Bs(zs(/\\?\"/g, e), xo) : void 0;
+      }),
+      (Rs = function (e) {
+        for (var t in e)
+          if (e.hasOwnProperty(t)) {
+            var n = e[t];
+            typeof n == V.OBJECT && n.length == 2
+              ? (this[n[0]] = n[1])
+              : (this[n] = void 0);
+          }
+        return this;
+      }),
+      (zs = function (e, t) {
+        return Ns(t) ? t.replace(e, Co) : t;
+      }),
+      (Bs = function (e, t) {
+        return (
+          (e = zs(/^\s\s*/, String(e))),
+          typeof t === V.UNDEFINED ? e : e.substring(0, t)
+        );
+      }),
+      (Vs = function (e, t) {
+        if (!(!e || !t))
+          for (var n = 0, r, i, a, o, s, c; n < t.length && !s; ) {
+            var l = t[n],
+              u = t[n + 1];
+            for (r = i = 0; r < l.length && !s && l[r]; )
+              if (((s = l[r++].exec(e)), s))
+                for (a = 0; a < u.length; a++)
+                  ((c = s[++i]),
+                    (o = u[a]),
+                    typeof o === V.OBJECT && o.length > 0
+                      ? o.length === 2
+                        ? typeof o[1] == V.FUNCTION
+                          ? (this[o[0]] = o[1].call(this, c))
+                          : (this[o[0]] = o[1])
+                        : o.length >= 3 &&
+                          (typeof o[1] === V.FUNCTION &&
+                          !(o[1].exec && o[1].test)
+                            ? o.length > 3
+                              ? (this[o[0]] = c
+                                  ? o[1].apply(this, o.slice(2))
+                                  : void 0)
+                              : (this[o[0]] = c
+                                  ? o[1].call(this, c, o[2])
+                                  : void 0)
+                            : o.length == 3
+                              ? (this[o[0]] = c
+                                  ? c.replace(o[1], o[2])
+                                  : void 0)
+                              : o.length == 4
+                                ? (this[o[0]] = c
+                                    ? o[3].call(this, c.replace(o[1], o[2]))
+                                    : void 0)
+                                : o.length > 4 &&
+                                  (this[o[0]] = c
+                                    ? o[3].apply(
+                                        this,
+                                        [c.replace(o[1], o[2])].concat(
+                                          o.slice(4)
+                                        )
+                                      )
+                                    : void 0))
+                      : (this[o] = c || void 0));
+            n += 2;
+          }
+      }),
+      (Hs = function (e, t) {
+        return t.test.test(e) ? t.ifTrue : t.ifFalse;
+      }),
+      (Us = function (e, t) {
+        for (var n in t)
+          if (typeof t[n] === V.OBJECT && t[n].length > 0) {
+            for (var r = 0; r < t[n].length; r++)
+              if (js(t[n][r], e)) return n === wo ? void 0 : n;
+          } else if (js(t[n], e)) return n === wo ? void 0 : n;
+        return t.hasOwnProperty(`*`) ? t[`*`] : e;
+      }),
+      (Ws = {
+        ME: `4.90`,
+        'NT 3.51': `3.51`,
+        'NT 4.0': `4.0`,
+        2e3: [`5.0`, `5.01`],
+        XP: [`5.1`, `5.2`],
+        Vista: `6.0`,
+        7: `6.1`,
+        8: `6.2`,
+        8.1: `6.3`,
+        10: [`6.4`, `10.0`],
+        NT: ``,
+      }),
+      (Gs = {
+        embedded: `Automotive`,
+        mobile: `Mobile`,
+        tablet: [`Tablet`, `EInk`],
+        smarttv: `TV`,
+        wearable: `Watch`,
+        xr: [`VR`, `XR`],
+        '?': [`Desktop`, `Unknown`],
+        '*': void 0,
+      }),
+      (Ks = {
+        Chrome: `Google Chrome`,
+        Edge: `Microsoft Edge`,
+        'Edge WebView2': `Microsoft Edge WebView2`,
+        'Chrome WebView': `Android WebView`,
+        'Chrome Headless': `HeadlessChrome`,
+        'Huawei Browser': `HuaweiBrowser`,
+        'MIUI Browser': `Miui Browser`,
+        'Opera Mobi': `OperaMobile`,
+        Yandex: `YaBrowser`,
+      }),
+      (qs = {
+        browser: [
+          [/\b(?:crmo|crios)\/([\w\.]+)/i],
+          [q, [W, Ts + `Chrome`]],
+          [/webview.+edge\/([\w\.]+)/i],
+          [q, [W, bs + ` WebView`], [G, Fo]],
+          [/edg(?:e|ios|a)?\/([\w\.]+)/i],
+          [q, [W, `Edge`]],
+          [
+            /(opera mini)\/([-\w\.]+)/i,
+            /(opera [mobiletab]{3,6})\b.+version\/([-\w\.]+)/i,
+            /(opera)(?:.+version\/|[\/ ]+)([\w\.]+)/i,
+          ],
+          [W, q],
+          [/opios[\/ ]+([\w\.]+)/i],
+          [q, [W, Ss + ` Mini`]],
+          [/\bop(?:rg)?x\/([\w\.]+)/i],
+          [q, [W, Ss + ` GX`]],
+          [/\bopr\/([\w\.]+)/i],
+          [q, [W, Ss]],
+          [/\bb[ai]*d(?:uhd|[ub]*[aekoprswx]{5,6})[\/ ]?([\w\.]+)/i],
+          [q, [W, `Baidu`]],
+          [/\b(?:mxbrowser|mxios|myie2)\/?([-\w\.]*)\b/i],
+          [q, [W, `Maxthon`]],
+          [
+            /(kindle)\/([\w\.]+)/i,
+            /(lunascape|maxthon|netfront|jasmine|blazer|sleipnir)[\/ ]?([\w\.]*)/i,
+            /(avant|iemobile|slim(?:browser|boat|jet))[\/ ]?([\d\.]*)/i,
+            /(?:ms|\()(ie) ([\w\.]+)/i,
+            /(atlas|flock|rockmelt|midori|epiphany|silk|skyfire|bolt|iron|vivaldi|iridium|phantomjs|bowser|qupzilla|falkon|rekonq|puffin|whale(?!.+naver)|qqbrowserlite|duckduckgo|klar|helio|(?=comodo_)?dragon|otter|dooble|(?:hi|lg |ovi|qute)browser|palemoon)\/v?([-\w\.]+)/i,
+            /(brave)(?: chrome)?\/([\d\.]+)/i,
+            /(aloha|heytap|ovi|115|surf|qwant)browser\/([\d\.]+)/i,
+            /(qwant)(?:ios|mobile)\/([\d\.]+)/i,
+            /(ecosia|weibo)(?:__| \w+@)([\d\.]+)/i,
+          ],
+          [W, q],
+          [/quark(?:pc)?\/([-\w\.]+)/i],
+          [q, [W, `Quark`]],
+          [/\bddg\/([\w\.]+)/i],
+          [q, [W, `DuckDuckGo`]],
+          [/(?:\buc? ?browser|(?:juc.+)ucweb| ucpc)[\/ ]?([\w\.]+)/i],
+          [q, [W, `UCBrowser`]],
+          [
+            /microm.+\bqbcore\/([\w\.]+)/i,
+            /\bqbcore\/([\w\.]+).+microm/i,
+            /micromessenger\/([\w\.]+)/i,
+          ],
+          [q, [W, `WeChat`]],
+          [/konqueror\/([\w\.]+)/i],
+          [q, [W, `Konqueror`]],
+          [/trident.+rv[: ]([\w\.]{1,9})\b.+like gecko/i],
+          [q, [W, `IE`]],
+          [/ya(?:search)?browser\/([\w\.]+)/i],
+          [q, [W, `Yandex`]],
+          [/slbrowser\/([\w\.]+)/i],
+          [q, [W, `Smart ` + is + Es]],
+          [/(av(?:ast|g|ira))\/([\w\.]+)/i],
+          [[W, /(.+)/, `$1 Secure` + Es], q],
+          [/norton\/([\w\.]+)/i],
+          [q, [W, `Norton Private` + Es]],
+          [/\bfocus\/([\w\.]+)/i],
+          [q, [W, xs + ` Focus`]],
+          [/ mms\/([\w\.]+)$/i],
+          [q, [W, Ss + ` Neon`]],
+          [/ opt\/([\w\.]+)$/i],
+          [q, [W, Ss + ` Touch`]],
+          [/coc_coc\w+\/([\w\.]+)/i],
+          [q, [W, `Coc Coc`]],
+          [/dolfin\/([\w\.]+)/i],
+          [q, [W, `Dolphin`]],
+          [/coast\/([\w\.]+)/i],
+          [q, [W, Ss + ` Coast`]],
+          [/miuibrowser\/([\w\.]+)/i],
+          [q, [W, `MIUI` + Es]],
+          [/fxios\/([\w\.-]+)/i],
+          [q, [W, Ts + xs]],
+          [/\bqihoobrowser\/?([\w\.]*)/i],
+          [q, [W, `360`]],
+          [/\b(qq)\/([\w\.]+)/i],
+          [[W, /(.+)/, `$1Browser`], q],
+          [/(oculus|sailfish|huawei|vivo|pico)browser\/([\w\.]+)/i],
+          [[W, /(.+)/, `$1` + Es], q],
+          [/ HBPC\/([\w\.]+)/],
+          [q, [W, rs + Es]],
+          [/samsungbrowser\/([\w\.]+)/i],
+          [q, [W, fs + ` Internet`]],
+          [/metasr[\/ ]?([\d\.]+)/i],
+          [q, [W, ws + ` Explorer`]],
+          [/(sogou)mo\w+\/([\d\.]+)/i],
+          [[W, ws + ` Mobile`], q],
+          [
+            /(electron)\/([\w\.]+) safari/i,
+            /(tesla)(?: qtcarbrowser|\/(20\d\d\.[-\w\.]+))/i,
+            /m?(qqbrowser|2345(?=browser|chrome|explorer))\w*[\/ ]?v?([\w\.]+)/i,
+          ],
+          [W, q],
+          [/(lbbrowser|luakit|rekonq|steam(?= (clie|tenf|gameo)))/i],
+          [W],
+          [/ome\/([\w\.]+).+(iron(?= saf)|360(?=[es]e$))/i],
+          [q, W],
+          [/((?:fban\/fbios|fb_iab\/fb4a)(?!.+fbav)|;fbav\/([\w\.]+);)/i],
+          [[W, Cs], q, [G, Fo]],
+          [
+            /(kakao(?:talk|story))[\/ ]([\w\.]+)/i,
+            /(naver)\(.*?(\d+\.[\w\.]+).*\)/i,
+            /(daum)apps[\/ ]([\w\.]+)/i,
+            /safari (line)\/([\w\.]+)/i,
+            /\b(line)\/([\w\.]+)\/iab/i,
+            /(alipay)client\/([\w\.]+)/i,
+            /(twitter)(?:and| f.+e\/([\w\.]+))/i,
+            /(bing)(?:web|sapphire)\/([\w\.]+)/i,
+            /(instagram|snapchat|klarna)[\/ ]([-\w\.]+)/i,
+          ],
+          [W, q, [G, Fo]],
+          [/\bgsa\/([\w\.]+) .*safari\//i],
+          [q, [W, `GSA`], [G, Fo]],
+          [/(?:musical_ly|trill)(?:.+app_?version\/|_)([\w\.]+)/i],
+          [q, [W, `TikTok`], [G, Fo]],
+          [/\[(linkedin)app\]/i],
+          [W, [G, Fo]],
+          [/(zalo(?:app)?)[\/\sa-z]*([\w\.-]+)/i],
+          [[W, /(.+)/, `Zalo`], q, [G, Fo]],
+          [/(chromium)[\/ ]([-\w\.]+)/i],
+          [W, q],
+          [/ome-(lighthouse)$/i],
+          [W, [G, Po]],
+          [/headlesschrome(?:\/([\w\.]+)| )/i],
+          [q, [W, _s + ` Headless`]],
+          [/wv\).+chrome\/([\w\.]+).+edgw\//i],
+          [q, [W, bs + ` WebView2`], [G, Fo]],
+          [/; wv\).+(chrome)\/([\w\.]+)/i],
+          [[W, _s + ` WebView`], q, [G, Fo]],
+          [/droid.+ version\/([\w\.]+)\b.+(?:mobile safari|safari)/i],
+          [q, [W, `Android` + Es]],
+          [/chrome\/([\w\.]+) mobile/i],
+          [q, [W, Ts + `Chrome`]],
+          [/(chrome|omniweb|arora|[tizenoka]{5} ?browser)\/v?([\w\.]+)/i],
+          [W, q],
+          [/version\/([\w\.\,]+) .*mobile(?:\/\w+ | ?)safari/i],
+          [q, [W, Ts + `Safari`]],
+          [/iphone .*mobile(?:\/\w+ | ?)safari/i],
+          [[W, Ts + `Safari`]],
+          [/version\/([\w\.\,]+) .*(safari)/i],
+          [q, W],
+          [/webkit.+?(mobile ?safari|safari)(\/[\w\.]+)/i],
+          [W, [q, `1`]],
+          [/(webkit|khtml)\/([\w\.]+)/i],
+          [W, q],
+          [/(?:mobile|tablet);.*(firefox)\/([\w\.-]+)/i],
+          [[W, Ts + xs], q],
+          [/(navigator|netscape\d?)\/([-\w\.]+)/i],
+          [[W, `Netscape`], q],
+          [/(wolvic|librewolf)\/([\w\.]+)/i],
+          [W, q],
+          [/mobile vr; rv:([\w\.]+)\).+firefox/i],
+          [q, [W, xs + ` Reality`]],
+          [
+            /ekiohf.+(flow)\/([\w\.]+)/i,
+            /(swiftfox)/i,
+            /(icedragon|iceweasel|camino|chimera|fennec|maemo browser|minimo|conkeror)[\/ ]?([\w\.\+]+)/i,
+            /(seamonkey|k-meleon|icecat|iceape|firebird|phoenix|basilisk|waterfox)\/([-\w\.]+)$/i,
+            /(firefox)\/([\w\.]+)/i,
+            /(mozilla)\/([\w\.]+(?= .+rv\:.+gecko\/\d+)|[0-4][\w\.]+(?!.+compatible))/i,
+            /(amaya|dillo|doris|icab|ladybird|lynx|mosaic|netsurf|obigo|polaris|w3m|(?:go|ice|up)[\. ]?browser)[-\/ ]?v?([\w\.]+)/i,
+            /\b(links) \(([\w\.]+)/i,
+          ],
+          [W, [q, /_/g, `.`]],
+          [/(cobalt)\/([\w\.]+)/i],
+          [W, [q, /[^\d\.]+./, Co]],
+        ],
+        cpu: [
+          [/\b((amd|x|x86[-_]?|wow|win)64)\b/i],
+          [[J, `amd64`]],
+          [/(ia32(?=;))/i, /\b((i[346]|x)86)(pc)?\b/i],
+          [[J, `ia32`]],
+          [/\b(aarch64|arm(v?[89]e?l?|_?64))\b/i],
+          [[J, `arm64`]],
+          [/\b(arm(v[67])?ht?n?[fl]p?)\b/i],
+          [[J, `armhf`]],
+          [/( (ce|mobile); ppc;|\/[\w\.]+arm\b)/i],
+          [[J, `arm`]],
+          [/ sun4\w[;\)]/i],
+          [[J, `sparc`]],
+          [
+            /\b(avr32|ia64(?=;)|68k(?=\))|\barm(?=v([1-7]|[5-7]1)l?|;|eabi)|(irix|mips|sparc)(64)?\b|pa-risc)/i,
+            /((ppc|powerpc)(64)?)( mac|;|\))/i,
+            /(?:osf1|[freopnt]{3,4}bsd) (alpha)/i,
+          ],
+          [[J, /ower/, Co, Fs]],
+          [/mc680.0/i],
+          [[J, `68k`]],
+          [/winnt.+\[axp/i],
+          [[J, `alpha`]],
+        ],
+        device: [
+          [
+            /\b(sch-i[89]0\d|shw-m380s|sm-[ptx]\w{2,4}|gt-[pn]\d{2,4}|sgh-t8[56]9|nexus 10)/i,
+          ],
+          [Y, [K, fs], [G, Z]],
+          [
+            /\b((?:s[cgp]h|gt|sm)-(?![lr])\w+|sc[g-]?[\d]+a?|galaxy nexus)/i,
+            /samsung[- ]((?!sm-[lr]|browser)[-\w]+)/i,
+            /sec-(sgh\w+)/i,
+          ],
+          [Y, [K, fs], [G, X]],
+          [/(?:\/|\()(ip(?:hone|od)[\w, ]*)[\/\);]/i],
+          [Y, [K, $o], [G, X]],
+          [
+            /\b(?:ios|apple\w+)\/.+[\(\/](ipad)/i,
+            /\b(ipad)[\d,]*[;\] ].+(mac |i(pad)?)os/i,
+          ],
+          [Y, [K, $o], [G, Z]],
+          [/(macintosh);/i],
+          [Y, [K, $o]],
+          [/\b(sh-?[altvz]?\d\d[a-ekm]?)/i],
+          [Y, [K, ps], [G, X]],
+          [
+            /\b((?:brt|eln|hey2?|gdi|jdn)-a?[lnw]09|(?:ag[rm]3?|jdn2|kob2)-a?[lw]0[09]hn)(?: bui|\)|;)/i,
+          ],
+          [Y, [K, as], [G, Z]],
+          [/honor([-\w ]+)[;\)]/i],
+          [Y, [K, as], [G, X]],
+          [
+            /\b((?:ag[rs][2356]?k?|bah[234]?|bg[2o]|bt[kv]|cmr|cpn|db[ry]2?|jdn2|got|kob2?k?|mon|pce|scm|sht?|[tw]gr|vrd)-[ad]?[lw][0125][09]b?|605hw|bg2-u03|(?:gem|fdr|m2|ple|t1)-[7a]0[1-4][lu]|t1-a2[13][lw]|mediapad[\w\. ]*(?= bui|\)))\b(?!.+d\/s)/i,
+          ],
+          [Y, [K, rs], [G, Z]],
+          [
+            /(?:huawei) ?([-\w ]+)[;\)]/i,
+            /\b(nexus 6p|\w{2,4}e?-[atu]?[ln][\dx][\dc][adnt]?)\b(?!.+d\/s)/i,
+          ],
+          [Y, [K, rs], [G, X]],
+          [
+            /oid[^\)]+; (2[\dbc]{4}(182|283|rp\w{2})[cgl]|m2105k81a?c)(?: bui|\))/i,
+            /\b(?:xiao)?((?:red)?mi[-_ ]?pad[\w- ]*)(?: bui|\))/i,
+          ],
+          [
+            [Y, /_/g, ` `],
+            [K, hs],
+            [G, Z],
+          ],
+          [
+            /\b; (\w+) build\/hm\1/i,
+            /\b(hm[-_ ]?note?[_ ]?(?:\d\w)?) bui/i,
+            /oid[^\)]+; (redmi[\-_ ]?(?:note|k)?[\w_ ]+|m?[12]\d[01]\d\w{3,6}|poco[\w ]+|(shark )?\w{3}-[ah]0|qin ?[1-3](s\+|ultra| pro)?)( bui|; wv|\))/i,
+            /\b(mi[-_ ]?(?:a\d|one|one[_ ]plus|note|max|cc)?[_ ]?(?:\d{0,2}\w?)[_ ]?(?:plus|se|lite|pro)?( 5g|lte)?)(?: bui|\))/i,
+            /; ([\w ]+) miui\/v?\d/i,
+          ],
+          [
+            [Y, /_/g, ` `],
+            [K, hs],
+            [G, X],
+          ],
+          [
+            /droid.+; (cph2[3-6]\d[13579]|((gm|hd)19|(ac|be|in|kb)20|(d[en]|eb|le|mt)21|ne22)[0-2]\d|p[g-l]\w[1m]10)\b/i,
+            /(?:one)?(?:plus)? (a\d0\d\d)(?: b|\))/i,
+          ],
+          [Y, [K, us], [G, X]],
+          [
+            /; (\w+) bui.+ oppo/i,
+            /\b(cph[12]\d{3}|p(?:af|c[al]|d\w|e[ar])[mt]\d0|x9007|a101op)\b/i,
+          ],
+          [Y, [K, ds], [G, X]],
+          [/\b(opd2(\d{3}a?))(?: bui|\))/i],
+          [
+            Y,
+            [
+              K,
+              Us,
+              { OnePlus: [`203`, `304`, `403`, `404`, `413`, `415`], '*': ds },
+            ],
+            [G, Z],
+          ],
+          [/(vivo (5r?|6|8l?|go|one|s|x[il]?[2-4]?)[\w\+ ]*)(?: bui|\))/i],
+          [Y, [K, `BLU`], [G, X]],
+          [/; vivo (\w+)(?: bui|\))/i, /\b(v[12]\d{3}\w?[at])(?: bui|;)/i],
+          [Y, [K, `Vivo`], [G, X]],
+          [/\b(rmx[1-3]\d{3})(?: bui|;|\))/i],
+          [Y, [K, `Realme`], [G, X]],
+          [
+            /(ideatab[-\w ]+|602lv|d-42a|a101lv|a2109a|a3500-hv|s[56]000|pb-6505[my]|tb-?x?\d{3,4}(?:f[cu]|xu|[av])|yt\d?-[jx]?\d+[lfmx])( bui|;|\)|\/)/i,
+            /lenovo ?(b[68]0[08]0-?[hf]?|tab(?:[\w- ]+?)|tb[\w-]{6,7})( bui|;|\)|\/)/i,
+          ],
+          [Y, [K, is], [G, Z]],
+          [/lenovo[-_ ]?([-\w ]+?)(?: bui|\)|\/)/i],
+          [Y, [K, is], [G, X]],
+          [
+            /\b(milestone|droid(?:[2-4x]| (?:bionic|x2|pro|razr))?:?( 4g)?)\b[\w ]+build\//i,
+            /\bmot(?:orola)?[- ]([\w\s]+)(\)| bui)/i,
+            /((?:moto(?! 360)[-\w\(\) ]+|xt\d{3,4}[cgkosw\+]?[-\d]*|nexus 6)(?= bui|\)))/i,
+          ],
+          [Y, [K, cs], [G, X]],
+          [/\b(mz60\d|xoom[2 ]{0,2}) build\//i],
+          [Y, [K, cs], [G, Z]],
+          [/\b(?:lg)?([vl]k\-?\d{3}) bui| 3\.[-\w; ]{10}lg?-([06cv9]{3,4})/i],
+          [Y, [K, os], [G, Z]],
+          [
+            /(lm(?:-?f100[nv]?|-[\w\.]+)(?= bui|\))|nexus [45])/i,
+            /\blg[-e;\/ ]+(?!.*(?:browser|netcast|android tv|watch|webos))(\w+)/i,
+            /\blg-?([\d\w]+) bui/i,
+          ],
+          [Y, [K, os], [G, X]],
+          [/(nokia) (t[12][01])/i],
+          [K, Y, [G, Z]],
+          [
+            /(?:maemo|nokia).*(n900|lumia \d+|rm-\d+)/i,
+            /nokia[-_ ]?(([-\w\. ]*?))( bui|\)|;|\/)/i,
+          ],
+          [
+            [Y, /_/g, ` `],
+            [G, X],
+            [K, `Nokia`],
+          ],
+          [/(pixel (c|tablet))\b/i],
+          [Y, [K, ns], [G, Z]],
+          [
+            /droid.+;(?: google)? (g(01[13]a|020[aem]|025[jn]|1b60|1f8f|2ybb|4s1m|576d|5nz6|8hhn|8vou|a02099|c15s|d1yq|e2ae|ec77|gh2x|kv4x|p4bc|pj41|r83y|tt9q|ur25|wvk6)|pixel[\d ]*a?( pro)?( xl)?( fold)?( \(5g\))?)( bui|\))/i,
+          ],
+          [Y, [K, ns], [G, X]],
+          [/(google) (pixelbook( go)?)/i],
+          [K, Y],
+          [
+            /droid.+; (a?\d[0-2]{2}so|[c-g]\d{4}|so[-gl]\w+|xq-\w\w\d\d)(?= bui|\).+chrome\/(?![1-6]{0,1}\d\.))/i,
+          ],
+          [Y, [K, ms], [G, X]],
+          [/sony tablet [ps]/i, /\b(?:sony)?sgp\w+(?: bui|\))/i],
+          [
+            [Y, `Xperia Tablet`],
+            [K, ms],
+            [G, Z],
+          ],
+          [
+            /(alexa)webm/i,
+            /(kf[a-z]{2}wi|aeo(?!bc)\w\w)( bui|\))/i,
+            /(kf[a-z]+)( bui|\)).+silk\//i,
+          ],
+          [Y, [K, Qo], [G, Z]],
+          [/((?:sd|kf)[0349hijorstuw]+)( bui|\)).+silk\//i],
+          [
+            [Y, /(.+)/g, `Fire Phone $1`],
+            [K, Qo],
+            [G, X],
+          ],
+          [/(playbook);[-\w\),; ]+(rim)/i],
+          [Y, K, [G, Z]],
+          [/\b((?:bb[a-f]|st[hv])100-\d)/i, /(?:blackberry|\(bb10;) (\w+)/i],
+          [Y, [K, ts], [G, X]],
+          [
+            /(?:\b|asus_)(transfo[prime ]{4,10} \w+|eeepc|slider \w+|nexus 7|padfone|p00[cj])/i,
+          ],
+          [Y, [K, es], [G, Z]],
+          [/ (z[bes]6[027][012][km][ls]|zenfone \d\w?)\b/i],
+          [Y, [K, es], [G, X]],
+          [/(nexus 9)/i],
+          [Y, [K, `HTC`], [G, Z]],
+          [
+            /(htc)[-;_ ]{1,2}([\w ]+(?=\)| bui)|\w+)/i,
+            /(zte)[- ]([\w ]+?)(?: bui|\/|\))/i,
+            /(alcatel|geeksphone|nexian|panasonic(?!(?:;|\.))|sony(?!-bra))[-_ ]?([-\w]*)/i,
+          ],
+          [K, [Y, /_/g, ` `], [G, X]],
+          [
+            /tcl (xess p17aa)/i,
+            /droid [\w\.]+; ((?:8[14]9[16]|9(?:0(?:48|60|8[01])|1(?:3[27]|66)|2(?:6[69]|9[56])|466))[gqswx])(_\w(\w|\w\w))?(\)| bui)/i,
+          ],
+          [Y, [K, `TCL`], [G, Z]],
+          [
+            /droid [\w\.]+; (418(?:7d|8v)|5087z|5102l|61(?:02[dh]|25[adfh]|27[ai]|56[dh]|59k|65[ah])|a509dl|t(?:43(?:0w|1[adepqu])|50(?:6d|7[adju])|6(?:09dl|10k|12b|71[efho]|76[hjk])|7(?:66[ahju]|67[hw]|7[045][bh]|71[hk]|73o|76[ho]|79w|81[hks]?|82h|90[bhsy]|99b)|810[hs]))(_\w(\w|\w\w))?(\)| bui)/i,
+          ],
+          [Y, [K, `TCL`], [G, X]],
+          [/(itel) ((\w+))/i],
+          [
+            [K, Fs],
+            Y,
+            [G, Us, { tablet: [`p10001l`, `w7001`], '*': `mobile` }],
+          ],
+          [/droid.+; ([ab][1-7]-?[0178a]\d\d?)/i],
+          [Y, [K, `Acer`], [G, Z]],
+          [/droid.+; (m[1-5] note) bui/i, /\bmz-([-\w]{2,})/i],
+          [Y, [K, `Meizu`], [G, X]],
+          [/; ((?:power )?armor(?:[\w ]{0,8}))(?: bui|\))/i],
+          [Y, [K, `Ulefone`], [G, X]],
+          [/; (energy ?\w+)(?: bui|\))/i, /; energizer ([\w ]+)(?: bui|\))/i],
+          [Y, [K, `Energizer`], [G, X]],
+          [/; cat (b35);/i, /; (b15q?|s22 flip|s48c|s62 pro)(?: bui|\))/i],
+          [Y, [K, `Cat`], [G, X]],
+          [/((?:new )?andromax[\w- ]+)(?: bui|\))/i],
+          [Y, [K, `Smartfren`], [G, X]],
+          [/droid.+; (a(in)?(0(15|59|6[35])|142)p?)/i],
+          [Y, [K, `Nothing`], [G, X]],
+          [
+            /; (x67 5g|tikeasy \w+|ac[1789]\d\w+)( b|\))/i,
+            /archos ?(5|gamepad2?|([\w ]*[t1789]|hello) ?\d+[\w ]*)( b|\))/i,
+          ],
+          [Y, [K, `Archos`], [G, Z]],
+          [/archos ([\w ]+)( b|\))/i, /; (ac[3-6]\d\w{2,8})( b|\))/i],
+          [Y, [K, `Archos`], [G, X]],
+          [/blackview ([-\w ]+)( b|\))/i, /; (bv\d{4}[-\w ]*)( b|\))/i],
+          [Y, [K, `Blackview`], [G, X]],
+          [/; (n159v)/i],
+          [Y, [K, `HMD`], [G, X]],
+          [/((revvl[ \w\+]+|tm(?:rv|af)\w*[45]g(?:tb)?))( b|\))/i],
+          [
+            Y,
+            [G, Hs, { test: /ta?b/i, ifTrue: Z, ifFalse: X }],
+            [K, `T-Mobile`],
+          ],
+          [
+            /(imo) (tab \w+)/i,
+            /(infinix|tecno) (x1101b?|p904|dp(7c|8d|10a)( pro)?|p70[1-3]a?|p904|t1101)/i,
+          ],
+          [K, Y, [G, Z]],
+          [
+            /(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus(?! zenw)|dell|jolla|meizu|motorola|polytron|tecno|micromax|advan)[-_ ]?([-\w]*)/i,
+            /; (blu|coolpad|cubot|hmd|imo|infinix|lava|oneplus|tcl|wiko)[_ ]([-\w\+ ]+?)(?: bui|\)|; r)/i,
+            /(hp) ([\w ]+\w)/i,
+            /(microsoft); (lumia[\w ]+)/i,
+            /(oppo) ?([\w ]+) bui/i,
+            /(hisense) ([ehv][\w ]+)\)/i,
+            /droid[^;]+; (philips)[_ ]([sv-x][\d]{3,4}[xz]?)/i,
+          ],
+          [K, Y, [G, X]],
+          [
+            /(kobo)\s(ereader|touch)/i,
+            /(hp).+(touchpad(?!.+tablet)|tablet)/i,
+            /(kindle)\/([\w\.]+)/i,
+          ],
+          [K, Y, [G, Z]],
+          [/(surface duo)/i],
+          [Y, [K, ss], [G, Z]],
+          [/droid [\d\.]+; (fp\du?)(?: b|\))/i],
+          [Y, [K, `Fairphone`], [G, X]],
+          [/((?:tegranote|shield t(?!.+d tv))[\w- ]*?)(?: b|\))/i],
+          [Y, [K, ls], [G, Z]],
+          [/(sprint) (\w+)/i],
+          [K, Y, [G, X]],
+          [/(kin\.[onetw]{3})/i],
+          [
+            [Y, /\./g, ` `],
+            [K, ss],
+            [G, X],
+          ],
+          [/droid.+; ([c6]+|et5[16]|mc[239][23]x?|vc8[03]x?)\)/i],
+          [Y, [K, gs], [G, Z]],
+          [/droid.+; (ec30|ps20|tc[2-8]\d[kx])\)/i],
+          [Y, [K, gs], [G, X]],
+          [/(philips)[\w ]+tv/i, /smart-tv.+(samsung)/i],
+          [K, [G, Q]],
+          [/hbbtv.+maple;(\d+)/i],
+          [
+            [Y, /^/, `SmartTV`],
+            [K, fs],
+            [G, Q],
+          ],
+          [/(vizio)(?: |.+model\/)(\w+-\w+)/i, /tcast.+(lg)e?. ([-\w]+)/i],
+          [K, Y, [G, Q]],
+          [/(nux; netcast.+smarttv|lg (netcast\.tv-201\d|android tv))/i],
+          [
+            [K, os],
+            [G, Q],
+          ],
+          [/(apple) ?tv/i],
+          [K, [Y, $o + ` TV`], [G, Q]],
+          [/crkey.*devicetype\/chromecast/i],
+          [
+            [Y, ys + ` Third Generation`],
+            [K, ns],
+            [G, Q],
+          ],
+          [/crkey.*devicetype\/([^/]*)/i],
+          [
+            [Y, /^/, `Chromecast `],
+            [K, ns],
+            [G, Q],
+          ],
+          [/fuchsia.*crkey/i],
+          [
+            [Y, ys + ` Nest Hub`],
+            [K, ns],
+            [G, Q],
+          ],
+          [/crkey/i],
+          [
+            [Y, ys],
+            [K, ns],
+            [G, Q],
+          ],
+          [/(portaltv)/i],
+          [Y, [K, Cs], [G, Q]],
+          [/droid.+aft(\w+)( bui|\))/i],
+          [Y, [K, Qo], [G, Q]],
+          [/(shield \w+ tv)/i],
+          [Y, [K, ls], [G, Q]],
+          [/\(dtv[\);].+(aquos)/i, /(aquos-tv[\w ]+)\)/i],
+          [Y, [K, ps], [G, Q]],
+          [/(bravia[\w ]+)( bui|\))/i],
+          [Y, [K, ms], [G, Q]],
+          [/(mi(tv|box)-?\w+) bui/i],
+          [Y, [K, hs], [G, Q]],
+          [/Hbbtv.*(technisat) (.*);/i],
+          [K, Y, [G, Q]],
+          [
+            /\b(roku)[\dx]*[\)\/]((?:dvp-)?[\d\.]*)/i,
+            /hbbtv\/\d+\.\d+\.\d+ +\([\w\+ ]*; *([\w\d][^;]*);([^;]*)/i,
+          ],
+          [
+            [K, /.+\/(\w+)/, `$1`, Us, { LG: `lge` }],
+            [Y, Bs],
+            [G, Q],
+          ],
+          [/(playstation \w+)/i],
+          [Y, [K, ms], [G, Ao]],
+          [/\b(xbox(?: one)?(?!; xbox))[\); ]/i],
+          [Y, [K, ss], [G, Ao]],
+          [
+            /(ouya)/i,
+            /(nintendo) (\w+)/i,
+            /(retroid) (pocket ([^\)]+))/i,
+            /(valve).+(steam deck)/i,
+            /droid.+; ((shield|rgcube|gr0006))( bui|\))/i,
+          ],
+          [
+            [
+              K,
+              Us,
+              { Nvidia: `Shield`, Anbernic: `RGCUBE`, Logitech: `GR0006` },
+            ],
+            Y,
+            [G, Ao],
+          ],
+          [/\b(sm-[lr]\d\d[0156][fnuw]?s?|gear live)\b/i],
+          [Y, [K, fs], [G, jo]],
+          [
+            /((pebble))app/i,
+            /(asus|google|lg|oppo|xiaomi) ((pixel |zen)?watch[\w ]*)( bui|\))/i,
+          ],
+          [K, Y, [G, jo]],
+          [/(ow(?:19|20)?we?[1-3]{1,3})/i],
+          [Y, [K, ds], [G, jo]],
+          [/(watch)(?: ?os[,\/]|\d,\d\/)[\d\.]+/i],
+          [Y, [K, $o], [G, jo]],
+          [/(opwwe\d{3})/i],
+          [Y, [K, us], [G, jo]],
+          [/(moto 360)/i],
+          [Y, [K, cs], [G, jo]],
+          [/(smartwatch 3)/i],
+          [Y, [K, ms], [G, jo]],
+          [/(g watch r)/i],
+          [Y, [K, os], [G, jo]],
+          [/droid.+; (wt63?0{2,3})\)/i],
+          [Y, [K, gs], [G, jo]],
+          [/droid.+; (glass) \d/i],
+          [Y, [K, ns], [G, Mo]],
+          [/(pico) ([\w ]+) os\d/i],
+          [K, Y, [G, Mo]],
+          [/(quest( \d| pro)?s?).+vr/i],
+          [Y, [K, Cs], [G, Mo]],
+          [/mobile vr; rv.+firefox/i],
+          [[G, Mo]],
+          [/(tesla)(?: qtcarbrowser|\/[-\w\.]+)/i],
+          [K, [G, No]],
+          [/(aeobc)\b/i],
+          [Y, [K, Qo], [G, No]],
+          [/(homepod).+mac os/i],
+          [Y, [K, $o], [G, No]],
+          [/windows iot/i],
+          [[G, No]],
+          [/droid.+; ([\w- ]+) (4k|android|smart|google)[- ]?tv/i],
+          [Y, [G, Q]],
+          [
+            /\b((4k|android|smart|opera)[- ]?tv|tv; rv:|large screen[\w ]+safari)\b/i,
+          ],
+          [[G, Q]],
+          [
+            /droid .+?; ([^;]+?)(?: bui|; wv\)|\) applew|; hmsc).+?(mobile|vr|\d) safari/i,
+          ],
+          [Y, [G, Us, { mobile: `Mobile`, xr: `VR`, '*': Z }]],
+          [/\b((tablet|tab)[;\/]|focus\/\d(?!.+mobile))/i],
+          [[G, Z]],
+          [/(phone|mobile(?:[;\/]| [ \w\/\.]*safari)|pda(?=.+windows ce))/i],
+          [[G, X]],
+          [/droid .+?; ([\w\. -]+)( bui|\))/i],
+          [Y, [K, `Generic`]],
+        ],
+        engine: [
+          [/windows.+ edge\/([\w\.]+)/i],
+          [q, [W, bs + `HTML`]],
+          [/(arkweb)\/([\w\.]+)/i],
+          [W, q],
+          [/webkit\/537\.36.+chrome\/(?!27)([\w\.]+)/i],
+          [q, [W, `Blink`]],
+          [
+            /(presto)\/([\w\.]+)/i,
+            /(webkit|trident|netfront|netsurf|amaya|lynx|w3m|goanna|servo)\/([\w\.]+)/i,
+            /ekioh(flow)\/([\w\.]+)/i,
+            /(khtml|tasman|links|dillo)[\/ ]\(?([\w\.]+)/i,
+            /(icab)[\/ ]([23]\.[\d\.]+)/i,
+            /\b(libweb)/i,
+          ],
+          [W, q],
+          [/ladybird\//i],
+          [[W, `LibWeb`]],
+          [/rv\:([\w\.]{1,9})\b.+(gecko)/i],
+          [q, W],
+        ],
+        os: [
+          [/(windows nt) (6\.[23]); arm/i],
+          [
+            [W, /N/, `R`],
+            [q, Us, Ws],
+          ],
+          [
+            /(windows (?:phone|mobile|iot))(?: os)?[\/ ]?([\d\.]*( se)?)/i,
+            /(windows)[\/ ](1[01]|2000|3\.1|7|8(\.1)?|9[58]|me|server 20\d\d( r2)?|vista|xp)/i,
+          ],
+          [W, q],
+          [
+            /windows nt ?([\d\.\)]*)(?!.+xbox)/i,
+            /\bwin(?=3| ?9|n)(?:nt| 9x )?([\d\.;]*)/i,
+          ],
+          [
+            [q, /(;|\))/g, ``, Us, Ws],
+            [W, Ds],
+          ],
+          [/(windows ce)\/?([\d\.]*)/i],
+          [W, q],
+          [
+            /[adehimnop]{4,7}\b(?:.*os ([\w]+) like mac|; opera)/i,
+            /(?:ios;fbsv|ios(?=.+ip(?:ad|hone)|.+apple ?tv)|ip(?:ad|hone)(?: |.+i(?:pad)?)os|apple ?tv.+ios)[\/ ]([\w\.]+)/i,
+            /\btvos ?([\w\.]+)/i,
+            /cfnetwork\/.+darwin/i,
+          ],
+          [
+            [q, /_/g, `.`],
+            [W, `iOS`],
+          ],
+          [
+            /(mac os x) ?([\w\. ]*)/i,
+            /(macintosh|mac_powerpc\b)(?!.+(haiku|morphos))/i,
+          ],
+          [
+            [W, `macOS`],
+            [q, /_/g, `.`],
+          ],
+          [/android ([\d\.]+).*crkey/i],
+          [q, [W, ys + ` Android`]],
+          [/fuchsia.*crkey\/([\d\.]+)/i],
+          [q, [W, ys + ` Fuchsia`]],
+          [/crkey\/([\d\.]+).*devicetype\/smartspeaker/i],
+          [q, [W, ys + ` SmartSpeaker`]],
+          [/linux.*crkey\/([\d\.]+)/i],
+          [q, [W, ys + ` Linux`]],
+          [/crkey\/([\d\.]+)/i],
+          [q, [W, ys]],
+          [/droid ([\w\.]+)\b.+(android[- ]x86)/i],
+          [q, W],
+          [/(ubuntu) ([\w\.]+) like android/i],
+          [[W, /(.+)/, `$1 Touch`], q],
+          [
+            /(harmonyos)[\/ ]?([\d\.]*)/i,
+            /(android|bada|blackberry|kaios|maemo|meego|openharmony|qnx|rim tablet os|sailfish|series40|symbian|tizen)\w*[-\/\.; ]?([\d\.]*)/i,
+          ],
+          [W, q],
+          [/\(bb(10);/i],
+          [q, [W, ts]],
+          [/(?:symbian ?os|symbos|s60(?=;)|series ?60)[-\/ ]?([\w\.]*)/i],
+          [q, [W, `Symbian`]],
+          [
+            /mozilla\/[\d\.]+ \((?:mobile[;\w ]*|tablet|tv|[^\)]*(?:viera|lg(?:l25|-d300)|alcatel ?o.+|y300-f1)); rv:([\w\.]+)\).+gecko\//i,
+          ],
+          [q, [W, xs + ` OS`]],
+          [
+            /\b(?:hp)?wos(?:browser)?\/([\w\.]+)/i,
+            /webos(?:[ \/]?|\.tv-20(?=2[2-9]))(\d[\d\.]*)/i,
+          ],
+          [q, [W, `webOS`]],
+          [/web0s;.+?(?:chr[o0]me|safari)\/(\d+)/i],
+          [
+            [
+              q,
+              Us,
+              {
+                25: `120`,
+                24: `108`,
+                23: `94`,
+                22: `87`,
+                6: `79`,
+                5: `68`,
+                4: `53`,
+                3: `38`,
+                2: `538`,
+                1: `537`,
+                '*': `TV`,
+              },
+            ],
+            [W, `webOS`],
+          ],
+          [/watch(?: ?os[,\/ ]|\d,\d\/)([\d\.]+)/i],
+          [q, [W, `watchOS`]],
+          [/cros [\w]+(?:\)| ([\w\.]+)\b)/i],
+          [q, [W, `Chrome OS`]],
+          [/kepler ([\w\.]+); (aft|aeo)/i],
+          [q, [W, `Vega OS`]],
+          [
+            /(netrange)mmh/i,
+            /(nettv)\/(\d+\.[\w\.]+)/i,
+            /(nintendo|playstation) (\w+)/i,
+            /(xbox); +xbox ([^\);]+)/i,
+            /(pico) .+os([\w\.]+)/i,
+            /\b(joli|palm)\b ?(?:os)?\/?([\w\.]*)/i,
+            /linux.+(mint)[\/\(\) ]?([\w\.]*)/i,
+            /(mageia|vectorlinux|fuchsia|arcaos|arch(?= ?linux))[;l ]([\d\.]*)/i,
+            /([kxln]?ubuntu|debian|suse|opensuse|gentoo|slackware|fedora|mandriva|centos|pclinuxos|red ?hat|zenwalk|linpus|raspbian|plan 9|minix|risc os|contiki|deepin|manjaro|elementary os|sabayon|linspire|knoppix)(?: gnu[\/ ]linux)?(?: enterprise)?(?:[- ]linux)?(?:-gnu)?[-\/ ]?(?!chrom|package)([-\w\.]*)/i,
+            /((?:open)?solaris)[-\/ ]?([\w\.]*)/i,
+            /\b(aix)[; ]([1-9\.]{0,4})/i,
+            /(hurd|linux|morphos)(?: (?:arm|x86|ppc)\w*| ?)([\w\.]*)/i,
+            /(gnu) ?([\w\.]*)/i,
+            /\b([-frentopcghs]{0,5}bsd|dragonfly)[\/ ]?(?!amd|[ix346]{1,2}86)([\w\.]*)/i,
+            /(haiku) ?(r\d)?/i,
+          ],
+          [W, q],
+          [/(sunos) ?([\d\.]*)/i],
+          [[W, `Solaris`], q],
+          [
+            /\b(beos|os\/2|amigaos|openvms|hp-ux|serenityos)/i,
+            /(unix) ?([\w\.]*)/i,
+          ],
+          [W, q],
+        ],
+      }),
+      (Js = (function () {
+        var e = { init: {}, isIgnore: {}, isIgnoreRgx: {}, toString: {} };
+        return (
+          Rs.call(e.init, [
+            [H, [W, q, ko, G]],
+            [To, [J]],
+            [Eo, [G, Y, K]],
+            [Do, [W, q]],
+            [U, [W, q]],
+          ]),
+          Rs.call(e.isIgnore, [
+            [H, [q, ko]],
+            [Do, [q]],
+            [U, [q]],
+          ]),
+          Rs.call(e.isIgnoreRgx, [
+            [H, / ?browser$/i],
+            [U, / ?os$/i],
+          ]),
+          Rs.call(e.toString, [
+            [H, [W, q]],
+            [To, [J]],
+            [Eo, [K, Y]],
+            [Do, [W, q]],
+            [U, [W, q]],
+          ]),
+          e
+        );
+      })()),
+      (Ys = function (e, t) {
+        var n = Js.init[t],
+          r = Js.isIgnore[t] || 0,
+          i = Js.isIgnoreRgx[t] || 0,
+          a = Js.toString[t] || 0;
+        function o() {
+          Rs.call(this, n);
+        }
+        return (
+          (o.prototype.getItem = function () {
+            return e;
+          }),
+          (o.prototype.withClientHints = function () {
+            return Os
+              ? Os.getHighEntropyValues(Zo).then(function (t) {
+                  return e.setCH(new _o(t, !1)).parseCH().get();
+                })
+              : e.parseCH().get();
+          }),
+          (o.prototype.withFeatureCheck = function () {
+            return e.detectFeature().get();
+          }),
+          t != Oo &&
+            ((o.prototype.is = function (e) {
+              var t = !1;
+              for (var n in this)
+                if (
+                  this.hasOwnProperty(n) &&
+                  !js(r, n) &&
+                  Fs(i ? zs(i, this[n]) : this[n]) == Fs(i ? zs(i, e) : e)
+                ) {
+                  if (((t = !0), e != V.UNDEFINED)) break;
+                } else if (e == V.UNDEFINED && t) {
+                  t = !t;
+                  break;
+                }
+              return t;
+            }),
+            (o.prototype.toString = function () {
+              var e = Co;
+              for (var t in a)
+                typeof this[a[t]] !== V.UNDEFINED &&
+                  (e += (e ? ` ` : Co) + this[a[t]]);
+              return e || V.UNDEFINED;
+            })),
+          (o.prototype.then = function (e) {
+            var t = this,
+              n = function () {
+                for (var e in t) t.hasOwnProperty(e) && (this[e] = t[e]);
+              };
+            n.prototype = {
+              is: o.prototype.is,
+              toString: o.prototype.toString,
+              withClientHints: o.prototype.withClientHints,
+              withFeatureCheck: o.prototype.withFeatureCheck,
+            };
+            var r = new n();
+            return (e(r), r);
+          }),
+          new o()
+        );
+      }),
+      (vo.prototype.get = function (e) {
+        return e
+          ? this.data.hasOwnProperty(e)
+            ? this.data[e]
+            : void 0
+          : this.data;
+      }),
+      (vo.prototype.set = function (e, t) {
+        return ((this.data[e] = t), this);
+      }),
+      (vo.prototype.setCH = function (e) {
+        return ((this.uaCH = e), this);
+      }),
+      (vo.prototype.detectFeature = function () {
+        if ($ && $.userAgent == this.ua)
+          switch (this.itemType) {
+            case H:
+              $.brave &&
+                typeof $.brave.isBrave == V.FUNCTION &&
+                this.set(W, `Brave`);
+              break;
+            case Eo:
+              (!this.get(G) && Os && Os[X] && this.set(G, X),
+                this.get(Y) == `Macintosh` &&
+                  $ &&
+                  typeof $.standalone !== V.UNDEFINED &&
+                  $.maxTouchPoints &&
+                  $.maxTouchPoints > 2 &&
+                  this.set(Y, `iPad`).set(G, Z));
+              break;
+            case U:
+              !this.get(W) && Os && Os[zo] && this.set(W, Os[zo]);
+              break;
+            case Oo:
+              var e = this.data,
+                t = function (t) {
+                  return e[t].getItem().detectFeature().get();
+                };
+              this.set(H, t(H))
+                .set(To, t(To))
+                .set(Eo, t(Eo))
+                .set(Do, t(Do))
+                .set(U, t(U));
+          }
+        return this;
+      }),
+      (vo.prototype.parseUA = function () {
+        switch (
+          (this.itemType != Oo && Vs.call(this.data, this.ua, this.rgxMap),
+          this.itemType)
+        ) {
+          case H:
+            this.set(ko, Is(this.get(q)));
+            break;
+          case U:
+            if (
+              this.get(W) == `iOS` &&
+              this.get(q) &&
+              /^1[89][^\d]/.exec(this.get(q))
+            ) {
+              var e = /\) Version\/((\d+)[\d\.]*)/.exec(this.ua);
+              e && parseInt(e[2], 10) >= 26 && this.set(q, e[1]);
+            }
+            break;
+        }
+        return this;
+      }),
+      (vo.prototype.parseCH = function () {
+        var e = this.uaCH,
+          t = this.rgxMap;
+        switch (this.itemType) {
+          case H:
+          case Do:
+            var n = e[Ro] || e[Io],
+              r;
+            if (n)
+              for (var i = 0; i < n.length; i++) {
+                var a = n[i].brand || n[i],
+                  o = n[i].version;
+                (this.itemType == H &&
+                  !/not.a.brand/i.test(a) &&
+                  (!r ||
+                    (/Chrom/.test(r) && a != vs) ||
+                    (r == bs && /WebView2/.test(a))) &&
+                  ((a = Us(a, Ks)),
+                  (r = this.get(W)),
+                  (r && !/Chrom/.test(r) && /Chrom/.test(a)) ||
+                    this.set(W, a).set(q, o).set(ko, Is(o)),
+                  (r = a)),
+                  this.itemType == Do && a == vs && this.set(q, o));
+              }
+            break;
+          case To:
+            var s = e[J];
+            s &&
+              (s && e[Vo] == `64` && (s += `64`),
+              Vs.call(this.data, s + `;`, t));
+            break;
+          case Eo:
+            if (
+              (e[X] && this.set(G, X),
+              e[Y] && (this.set(Y, e[Y]), !this.get(G) || !this.get(K)))
+            ) {
+              var c = {};
+              (Vs.call(c, `droid 9; ` + e[Y] + `)`, t),
+                !this.get(G) && c.type && this.set(G, c.type),
+                !this.get(K) && c.vendor && this.set(K, c.vendor));
+            }
+            if (e[Lo]) {
+              var l;
+              if (typeof e[Lo] != `string`)
+                for (var u = 0; !l && u < e[Lo].length; )
+                  l = Us(e[Lo][u++], Gs);
+              else l = Us(e[Lo], Gs);
+              this.set(G, l);
+            }
+            break;
+          case U:
+            var d = e[zo];
+            if (d) {
+              var f = e[Bo];
+              (d == Ds && (f = parseInt(Is(f), 10) >= 13 ? `11` : `10`),
+                this.set(W, d).set(q, f));
+            }
+            this.get(W) == Ds &&
+              e[Y] == `Xbox` &&
+              this.set(W, `Xbox`).set(q, void 0);
+            break;
+          case Oo:
+            var p = this.data,
+              m = function (t) {
+                return p[t].getItem().setCH(e).parseCH().get();
+              };
+            this.set(H, m(H))
+              .set(To, m(To))
+              .set(Eo, m(Eo))
+              .set(Do, m(Do))
+              .set(U, m(U));
+        }
+        return this;
+      }),
+      (yo.VERSION = bo),
+      (yo.BROWSER = As([W, q, ko, G])),
+      (yo.CPU = As([J])),
+      (yo.DEVICE = As([Y, K, G, Ao, X, Q, Z, jo, No])),
+      (yo.ENGINE = yo.OS = As([W, q])));
+  }),
+  Zs = e(() => {
+    ((function (e, t) {
+      function n(e) {
+        d[d.length] = e;
+      }
+      function r(e) {
+        var t = RegExp(` ?\\b` + e + `\\b`);
+        u.className = u.className.replace(t, ``);
+      }
+      function i(e, t) {
+        for (var n = 0, r = e.length; n < r; n++) t.call(e, e[n], n);
+      }
+      function a() {
+        var t, r, a, o;
+        ((u.className = u.className.replace(
+          / (w-|eq-|gt-|gte-|lt-|lte-|portrait|no-portrait|landscape|no-landscape)\d+/g,
+          ``
+        )),
+          (t = e.innerWidth || u.clientWidth),
+          (r = e.outerWidth || e.screen.width),
+          (m.screen.innerWidth = t),
+          (m.screen.outerWidth = r),
+          n(`w-` + t),
+          i(f.screens, function (e) {
+            t > e
+              ? (f.screensCss.gt && n(`gt-` + e),
+                f.screensCss.gte && n(`gte-` + e))
+              : t < e
+                ? (f.screensCss.lt && n(`lt-` + e),
+                  f.screensCss.lte && n(`lte-` + e))
+                : t === e &&
+                  (f.screensCss.lte && n(`lte-` + e),
+                  f.screensCss.eq && n(`e-q` + e),
+                  f.screensCss.gte && n(`gte-` + e));
+          }),
+          (a = e.innerHeight || u.clientHeight),
+          (o = e.outerHeight || e.screen.height),
+          (m.screen.innerHeight = a),
+          (m.screen.outerHeight = o),
+          m.feature(`portrait`, a > t),
+          m.feature(`landscape`, a < t));
+      }
+      function o() {
+        (e.clearTimeout(C), (C = e.setTimeout(a, 50)));
+      }
+      var s = e.document,
+        c = e.navigator,
+        l = e.location,
+        u = s.documentElement,
+        d = [],
+        f = {
+          screens: [240, 320, 480, 640, 768, 800, 1024, 1280, 1440, 1680, 1920],
+          screensCss: { gt: !0, gte: !1, lt: !0, lte: !1, eq: !1 },
+          browsers: [{ ie: { min: 6, max: 11 } }],
+          browserCss: { gt: !0, gte: !1, lt: !0, lte: !1, eq: !0 },
+          html5: !0,
+          page: `-page`,
+          section: `-section`,
+          head: `head`,
+        },
+        p,
+        m,
+        h,
+        g,
+        _,
+        v,
+        y,
+        ee,
+        b,
+        te,
+        x,
+        S,
+        C;
+      if (e.head_conf)
+        for (p in e.head_conf) e.head_conf[p] !== t && (f[p] = e.head_conf[p]);
+      switch (
+        ((m = e[f.head] =
+          function () {
+            m.ready.apply(null, arguments);
+          }),
+        (m.feature = function (e, t, i) {
+          return e
+            ? (Object.prototype.toString.call(t) === `[object Function]` &&
+                (t = t.call()),
+              n((t ? `` : `no-`) + e),
+              (m[e] = !!t),
+              i || (r(`no-` + e), r(e), m.feature()),
+              m)
+            : ((u.className += ` ` + d.join(` `)), (d = []), m);
+        }),
+        m.feature(`js`, !0),
+        (h = c.userAgent.toLowerCase()),
+        (g = /mobile|android|kindle|silk|midp|phone|(windows .+arm|touch)/.test(
+          h
+        )),
+        m.feature(`mobile`, g, !0),
+        m.feature(`desktop`, !g, !0),
+        (h =
+          /(chrome|firefox)[ \/]([\w.]+)/.exec(h) ||
+          /(iphone|ipad|ipod)(?:.*version)?[ \/]([\w.]+)/.exec(h) ||
+          /(android)(?:.*version)?[ \/]([\w.]+)/.exec(h) ||
+          /(webkit|opera)(?:.*version)?[ \/]([\w.]+)/.exec(h) ||
+          /(msie) ([\w.]+)/.exec(h) ||
+          /(trident).+rv:(\w.)+/.exec(h) ||
+          []),
+        (_ = h[1]),
+        (v = parseFloat(h[2])),
+        _)
+      ) {
+        case `msie`:
+        case `trident`:
+          ((_ = `ie`), (v = s.documentMode || v));
+          break;
+        case `firefox`:
+          _ = `ff`;
+          break;
+        case `ipod`:
+        case `ipad`:
+        case `iphone`:
+          _ = `ios`;
+          break;
+        case `webkit`:
+          _ = `safari`;
+      }
+      for (
+        m.browser = { name: _, version: v },
+          m.browser[_] = !0,
+          y = 0,
+          ee = f.browsers.length;
+        y < ee;
+        y++
+      )
+        for (b in f.browsers[y])
+          if (_ === b)
+            for (
+              n(b), te = f.browsers[y][b].min, x = f.browsers[y][b].max, S = te;
+              S <= x;
+              S++
+            )
+              v > S
+                ? (f.browserCss.gt && n(`gt-` + b + S),
+                  f.browserCss.gte && n(`gte-` + b + S))
+                : v < S
+                  ? (f.browserCss.lt && n(`lt-` + b + S),
+                    f.browserCss.lte && n(`lte-` + b + S))
+                  : v === S &&
+                    (f.browserCss.lte && n(`lte-` + b + S),
+                    f.browserCss.eq && n(`eq-` + b + S),
+                    f.browserCss.gte && n(`gte-` + b + S));
+          else n(`no-` + b);
+      (n(_),
+        n(_ + parseInt(v, 10)),
+        f.html5 &&
+          _ === `ie` &&
+          v < 9 &&
+          i(
+            `abbr|article|aside|audio|canvas|details|figcaption|figure|footer|header|hgroup|main|mark|meter|nav|output|progress|section|summary|time|video`.split(
+              `|`
+            ),
+            function (e) {
+              s.createElement(e);
+            }
+          ),
+        i(l.pathname.split(`/`), function (e, r) {
+          if (this.length > 2 && this[r + 1] !== t)
+            r &&
+              n(
+                this.slice(r, r + 1)
+                  .join(`-`)
+                  .toLowerCase() + f.section
+              );
+          else {
+            var i = e || `index`,
+              a = i.indexOf(`.`);
+            (a > 0 && (i = i.substring(0, a)),
+              (u.id = i.toLowerCase() + f.page),
+              r || n(`root` + f.section));
+          }
+        }),
+        (m.screen = { height: e.screen.height, width: e.screen.width }),
+        a(),
+        (C = 0),
+        e.addEventListener
+          ? e.addEventListener(`resize`, o, !1)
+          : e.attachEvent(`onresize`, o));
+    })(window),
+      (function (e, t) {
+        function n(e) {
+          for (var n in e) if (a[e[n]] !== t) return !0;
+          return !1;
+        }
+        function r(e) {
+          var t = e.charAt(0).toUpperCase() + e.substr(1);
+          return !!n((e + ` ` + s.join(t + ` `) + t).split(` `));
+        }
+        var i = e.document.createElement(`i`),
+          a = i.style,
+          o = ` -o- -moz- -ms- -webkit- -khtml- `.split(` `),
+          s = `Webkit Moz O ms Khtml`.split(` `),
+          c = e[(e.head_conf && e.head_conf.head) || `head`],
+          l = {
+            gradient: function () {
+              var e = `background-image:`;
+              return (
+                (a.cssText = (
+                  e +
+                  o.join(
+                    `gradient(linear,left top,right bottom,from(#9f9),to(#fff));` +
+                      e
+                  ) +
+                  o.join(`linear-gradient(left top,#eee,#fff);` + e)
+                ).slice(0, -e.length)),
+                !!a.backgroundImage
+              );
+            },
+            rgba: function () {
+              return (
+                (a.cssText = `background-color:rgba(0,0,0,0.5)`),
+                !!a.backgroundColor
+              );
+            },
+            opacity: function () {
+              return i.style.opacity === ``;
+            },
+            textshadow: function () {
+              return a.textShadow === ``;
+            },
+            multiplebgs: function () {
+              a.cssText = `background:url(https://),url(https://),red url(https://)`;
+              var e = (a.background || ``).match(/url/g);
+              return (
+                Object.prototype.toString.call(e) === `[object Array]` &&
+                e.length === 3
+              );
+            },
+            boxshadow: function () {
+              return r(`boxShadow`);
+            },
+            borderimage: function () {
+              return r(`borderImage`);
+            },
+            borderradius: function () {
+              return r(`borderRadius`);
+            },
+            cssreflections: function () {
+              return r(`boxReflect`);
+            },
+            csstransforms: function () {
+              return r(`transform`);
+            },
+            csstransitions: function () {
+              return r(`transition`);
+            },
+            touch: function () {
+              return `ontouchstart` in e;
+            },
+            retina: function () {
+              return e.devicePixelRatio > 1;
+            },
+            fontface: function () {
+              var e = c.browser.name,
+                t = c.browser.version;
+              switch (e) {
+                case `ie`:
+                  return t >= 9;
+                case `chrome`:
+                  return t >= 13;
+                case `ff`:
+                  return t >= 6;
+                case `ios`:
+                  return t >= 5;
+                case `android`:
+                  return !1;
+                case `webkit`:
+                  return t >= 5.1;
+                case `opera`:
+                  return t >= 10;
+                default:
+                  return !1;
+              }
+            },
+          };
+        for (var u in l) l[u] && c.feature(u, l[u].call(), !0);
+        c.feature();
+      })(window),
+      (function (e, t) {
+        function n() {}
+        function r(e, t) {
+          if (e) {
+            typeof e == `object` && (e = [].slice.call(e));
+            for (var n = 0, r = e.length; n < r; n++) t.call(e, e[n], n);
+          }
+        }
+        function i(e, n) {
+          var r = Object.prototype.toString.call(n).slice(8, -1);
+          return n !== t && n !== null && r === e;
+        }
+        function a(e) {
+          return i(`Function`, e);
+        }
+        function o(e) {
+          return i(`Array`, e);
+        }
+        function s(e) {
+          var t = e.split(`/`),
+            n = t[t.length - 1],
+            r = n.indexOf(`?`);
+          return r === -1 ? n : n.substring(0, r);
+        }
+        function c(e) {
+          ((e ||= n), e._done) || (e(), (e._done = 1));
+        }
+        function l(e, t, r, i) {
+          var a =
+              typeof e == `object`
+                ? e
+                : {
+                    test: e,
+                    success: t ? (o(t) ? t : [t]) : !1,
+                    failure: r ? (o(r) ? r : [r]) : !1,
+                    callback: i || n,
+                  },
+            s = !!a.test;
+          return (
+            s && a.success
+              ? (a.success.push(a.callback), E.load.apply(null, a.success))
+              : s || !a.failure
+                ? i()
+                : (a.failure.push(a.callback), E.load.apply(null, a.failure)),
+            E
+          );
+        }
+        function u(e) {
+          var t = {},
+            n,
+            r;
+          if (typeof e == `object`)
+            for (n in e) !e[n] || (t = { name: n, url: e[n] });
+          else t = { name: s(e), url: e };
+          return (
+            (r = w[t.name]),
+            r && r.url === t.url ? r : ((w[t.name] = t), t)
+          );
+        }
+        function d(e) {
+          for (var t in ((e ||= w), e))
+            if (e.hasOwnProperty(t) && e[t].state !== se) return !1;
+          return !0;
+        }
+        function f(e) {
+          ((e.state = ae),
+            r(e.onpreload, function (e) {
+              e.call();
+            }));
+        }
+        function p(e) {
+          e.state === t &&
+            ((e.state = ie),
+            (e.onpreload = []),
+            v({ url: e.url, type: `cache` }, function () {
+              f(e);
+            }));
+        }
+        function m() {
+          var e = arguments,
+            t = e[e.length - 1],
+            n = [].slice.call(e, 1),
+            i = n[0];
+          return (
+            a(t) || (t = null),
+            o(e[0])
+              ? (e[0].push(t), E.load.apply(null, e[0]), E)
+              : (i
+                  ? (r(n, function (e) {
+                      a(e) || !e || p(u(e));
+                    }),
+                    g(
+                      u(e[0]),
+                      a(i)
+                        ? i
+                        : function () {
+                            E.load.apply(null, n);
+                          }
+                    ))
+                  : g(u(e[0])),
+                E)
+          );
+        }
+        function h() {
+          var e = arguments,
+            t = e[e.length - 1],
+            n = {};
+          return (
+            a(t) || (t = null),
+            o(e[0])
+              ? (e[0].push(t), E.load.apply(null, e[0]), E)
+              : (r(e, function (e) {
+                  e !== t && ((e = u(e)), (n[e.name] = e));
+                }),
+                r(e, function (e) {
+                  e !== t &&
+                    ((e = u(e)),
+                    g(e, function () {
+                      d(n) && c(t);
+                    }));
+                }),
+                E)
+          );
+        }
+        function g(e, t) {
+          if (((t ||= n), e.state === se)) {
+            t();
+            return;
+          }
+          if (e.state === oe) {
+            E.ready(e.name, t);
+            return;
+          }
+          if (e.state === ie) {
+            e.onpreload.push(function () {
+              g(e, t);
+            });
+            return;
+          }
+          ((e.state = oe),
+            v(e, function () {
+              ((e.state = se),
+                t(),
+                r(C[e.name], function (e) {
+                  c(e);
+                }),
+                ne &&
+                  d() &&
+                  r(C.ALL, function (e) {
+                    c(e);
+                  }));
+            }));
+        }
+        function _(e) {
+          e ||= ``;
+          var t = e.split(`?`)[0].split(`.`);
+          return t[t.length - 1].toLowerCase();
+        }
+        function v(t, r) {
+          function i(t) {
+            ((t ||= e.event),
+              (s.onload = s.onreadystatechange = s.onerror = null),
+              r());
+          }
+          function a(n) {
+            ((n ||= e.event),
+              (n.type === `load` ||
+                (/loaded|complete/.test(s.readyState) &&
+                  (!x.documentMode || x.documentMode < 9))) &&
+                (e.clearTimeout(t.errorTimeout),
+                e.clearTimeout(t.cssTimeout),
+                (s.onload = s.onreadystatechange = s.onerror = null),
+                r()));
+          }
+          function o() {
+            if (t.state !== se && t.cssRetries <= 20) {
+              for (var n = 0, r = x.styleSheets.length; n < r; n++)
+                if (x.styleSheets[n].href === s.href) {
+                  a({ type: `load` });
+                  return;
+                }
+              (t.cssRetries++, (t.cssTimeout = e.setTimeout(o, 250)));
+            }
+          }
+          var s, c, l;
+          ((r ||= n),
+            (c = _(t.url)),
+            c === `css`
+              ? ((s = x.createElement(`link`)),
+                (s.type = `text/` + (t.type || `css`)),
+                (s.rel = `stylesheet`),
+                (s.href = t.url),
+                (t.cssRetries = 0),
+                (t.cssTimeout = e.setTimeout(o, 500)))
+              : ((s = x.createElement(`script`)),
+                (s.type = `text/` + (t.type || `javascript`)),
+                (s.src = t.url)),
+            (s.onload = s.onreadystatechange = a),
+            (s.onerror = i),
+            (s.async = !1),
+            (s.defer = !1),
+            (t.errorTimeout = e.setTimeout(function () {
+              i({ type: `timeout` });
+            }, 7e3)),
+            (l = x.head || x.getElementsByTagName(`head`)[0]),
+            l.insertBefore(s, l.lastChild));
+        }
+        function y() {
+          for (
+            var e, t = x.getElementsByTagName(`script`), n = 0, r = t.length;
+            n < r;
+            n++
+          )
+            if (((e = t[n].getAttribute(`data-headjs-load`)), e)) {
+              E.load(e);
+              return;
+            }
+        }
+        function ee(e, t) {
+          var n, i, s;
+          return e === x
+            ? (ne ? c(t) : S.push(t), E)
+            : (a(e) && ((t = e), (e = `ALL`)),
+              o(e)
+                ? ((n = {}),
+                  r(e, function (e) {
+                    ((n[e] = w[e]),
+                      E.ready(e, function () {
+                        d(n) && c(t);
+                      }));
+                  }),
+                  E)
+                : typeof e != `string` || !a(t)
+                  ? E
+                  : ((i = w[e]),
+                    (i && i.state === se) || (e === `ALL` && d() && ne)
+                      ? (c(t), E)
+                      : ((s = C[e]), s ? s.push(t) : (s = C[e] = [t]), E)));
+        }
+        function b() {
+          if (!x.body) {
+            (e.clearTimeout(E.readyTimeout),
+              (E.readyTimeout = e.setTimeout(b, 50)));
+            return;
+          }
+          ne ||
+            ((ne = !0),
+            y(),
+            r(S, function (e) {
+              c(e);
+            }));
+        }
+        function te() {
+          x.addEventListener
+            ? (x.removeEventListener(`DOMContentLoaded`, te, !1), b())
+            : x.readyState === `complete` &&
+              (x.detachEvent(`onreadystatechange`, te), b());
+        }
+        var x = e.document,
+          S = [],
+          C = {},
+          w = {},
+          T =
+            `async` in x.createElement(`script`) ||
+            `MozAppearance` in x.documentElement.style ||
+            e.opera,
+          ne,
+          re = (e.head_conf && e.head_conf.head) || `head`,
+          E = (e[re] =
+            e[re] ||
+            function () {
+              E.ready.apply(null, arguments);
+            }),
+          ie = 1,
+          ae = 2,
+          oe = 3,
+          se = 4,
+          ce;
+        if (x.readyState === `complete`) b();
+        else if (x.addEventListener)
+          (x.addEventListener(`DOMContentLoaded`, te, !1),
+            e.addEventListener(`load`, b, !1));
+        else {
+          (x.attachEvent(`onreadystatechange`, te),
+            e.attachEvent(`onload`, b),
+            (ce = !1));
+          try {
+            ce = !e.frameElement && x.documentElement;
+          } catch {}
+          ce &&
+            ce.doScroll &&
+            (function t() {
+              if (!ne) {
+                try {
+                  ce.doScroll(`left`);
+                } catch {
+                  (e.clearTimeout(E.readyTimeout),
+                    (E.readyTimeout = e.setTimeout(t, 50)));
+                  return;
+                }
+                b();
+              }
+            })();
+        }
+        ((E.load = E.js = T ? h : m),
+          (E.test = l),
+          (E.ready = ee),
+          E.ready(x, function () {
+            (d() &&
+              r(C.ALL, function (e) {
+                c(e);
+              }),
+              E.feature && E.feature(`domloaded`, !0));
+          }));
+      })(window));
+  }),
+  Qs = n((e, t) => {
+    (function () {
+      var n = typeof define == `function` && define.amd,
+        r = { function: !0, object: !0 },
+        i = r[typeof e] && e && !e.nodeType && e,
+        a = (r[typeof window] && window) || this,
+        o =
+          i &&
+          r[typeof t] &&
+          t &&
+          !t.nodeType &&
+          typeof global == `object` &&
+          global;
+      o && (o.global === o || o.window === o || o.self === o) && (a = o);
+      function s(e, t) {
+        ((e ||= a.Object()), (t ||= a.Object()));
+        var n = e.Number || a.Number,
+          i = e.String || a.String,
+          o = e.Object || a.Object,
+          c = e.Date || a.Date,
+          l = e.SyntaxError || a.SyntaxError,
+          u = e.TypeError || a.TypeError,
+          d = e.Math || a.Math,
+          f = e.JSON || a.JSON;
+        typeof f == `object` &&
+          f &&
+          ((t.stringify = f.stringify), (t.parse = f.parse));
+        var p = o.prototype,
+          m = p.toString,
+          h = p.hasOwnProperty,
+          g;
+        function _(e, t) {
+          try {
+            e();
+          } catch {
+            t && t();
+          }
+        }
+        var v = new c(-0xc782b5b800cec);
+        _(function () {
+          v =
+            v.getUTCFullYear() == -109252 &&
+            v.getUTCMonth() === 0 &&
+            v.getUTCDate() === 1 &&
+            v.getUTCHours() == 10 &&
+            v.getUTCMinutes() == 37 &&
+            v.getUTCSeconds() == 6 &&
+            v.getUTCMilliseconds() == 708;
+        });
+        function y(e) {
+          if (y[e] != null) return y[e];
+          var r;
+          if (e == `bug-string-char-index`) r = !1;
+          else if (e == `json`)
+            r =
+              y(`json-stringify`) && y(`date-serialization`) && y(`json-parse`);
+          else if (e == `date-serialization`) {
+            if (((r = y(`json-stringify`) && v), r)) {
+              var a = t.stringify;
+              _(function () {
+                r =
+                  a(new c(-864e13)) == `"-271821-04-20T00:00:00.000Z"` &&
+                  a(new c(864e13)) == `"+275760-09-13T00:00:00.000Z"` &&
+                  a(new c(-621987552e5)) == `"-000001-01-01T00:00:00.000Z"` &&
+                  a(new c(-1)) == `"1969-12-31T23:59:59.999Z"`;
+              });
+            }
+          } else {
+            var o,
+              s = `{"a":[1,true,false,null,"\\u0000\\b\\n\\f\\r\\t"]}`;
+            if (e == `json-stringify`) {
+              var a = t.stringify,
+                l = typeof a == `function`;
+              (l &&
+                (((o = function () {
+                  return 1;
+                }).toJSON = o),
+                _(
+                  function () {
+                    l =
+                      a(0) === `0` &&
+                      a(new n()) === `0` &&
+                      a(new i()) == `""` &&
+                      a(m) === g &&
+                      a(g) === g &&
+                      a() === g &&
+                      a(o) === `1` &&
+                      a([o]) == `[1]` &&
+                      a([g]) == `[null]` &&
+                      a(null) == `null` &&
+                      a([g, m, null]) == `[null,null,null]` &&
+                      a({
+                        a: [
+                          o,
+                          !0,
+                          !1,
+                          null,
+                          `\0\b
+\f\r	`,
+                        ],
+                      }) == s &&
+                      a(null, o) === `1` &&
+                      a([1, 2], null, 1) ==
+                        `[
  1,
  2
-]`},function(){l=!1})),r=l}if(e==`json-parse`){var u=t.parse,d;typeof u==`function`&&_(function(){u(`0`)===0&&!u(!1)&&(o=u(s),d=o.a.length==5&&o.a[0]===1,d&&(_(function(){d=!u(`"	"`)}),d&&_(function(){d=u(`01`)!==1}),d&&_(function(){d=u(`1.`)!==1})))},function(){d=!1}),r=d}}return y[e]=!!r}if(y[`bug-string-char-index`]=y[`date-serialization`]=y.json=y[`json-stringify`]=y[`json-parse`]=null,!y(`json`)){var ee=`[object Function]`,b=`[object Date]`,te=`[object Number]`,x=`[object String]`,S=`[object Array]`,C=`[object Boolean]`,w=y(`bug-string-char-index`),T=function(e,t){var n=0,i,a,o;for(o in(i=function(){this.valueOf=0}).prototype.valueOf=0,a=new i,a)h.call(a,o)&&n++;return i=a=null,n?T=function(e,t){var n=m.call(e)==ee,r,i;for(r in e)!(n&&r==`prototype`)&&h.call(e,r)&&!(i=r===`constructor`)&&t(r);(i||h.call(e,r=`constructor`))&&t(r)}:(a=[`valueOf`,`toString`,`toLocaleString`,`propertyIsEnumerable`,`isPrototypeOf`,`hasOwnProperty`,`constructor`],T=function(e,t){var n=m.call(e)==ee,i,o,s=!n&&typeof e.constructor!=`function`&&r[typeof e.hasOwnProperty]&&e.hasOwnProperty||h;for(i in e)!(n&&i==`prototype`)&&s.call(e,i)&&t(i);for(o=a.length;i=a[--o];)s.call(e,i)&&t(i)}),T(e,t)};if(!y(`json-stringify`)&&!y(`date-serialization`)){var ne={92:`\\\\`,34:`\\"`,8:`\\b`,12:`\\f`,10:`\\n`,13:`\\r`,9:`\\t`},re=`000000`,E=function(e,t){return(re+(t||0)).slice(-e)},ie=function(e){var t,n,r,i,a,o,s,c,l;if(v)t=function(e){n=e.getUTCFullYear(),r=e.getUTCMonth(),i=e.getUTCDate(),o=e.getUTCHours(),s=e.getUTCMinutes(),c=e.getUTCSeconds(),l=e.getUTCMilliseconds()};else{var u=d.floor,f=[0,31,59,90,120,151,181,212,243,273,304,334],p=function(e,t){return f[t]+365*(e-1970)+u((e-1969+(t=+(t>1)))/4)-u((e-1901+t)/100)+u((e-1601+t)/400)};t=function(e){for(i=u(e/864e5),n=u(i/365.2425)+1970-1;p(n+1,0)<=i;n++);for(r=u((i-p(n,0))/30.42);p(n,r+1)<=i;r++);i=1+i-p(n,r),a=(e%864e5+864e5)%864e5,o=u(a/36e5)%24,s=u(a/6e4)%60,c=u(a/1e3)%60,l=a%1e3}}return ie=function(e){return e>-1/0&&e<1/0?(t(e),e=(n<=0||n>=1e4?(n<0?`-`:`+`)+E(6,n<0?-n:n):E(4,n))+`-`+E(2,r+1)+`-`+E(2,i)+`T`+E(2,o)+`:`+E(2,s)+`:`+E(2,c)+`.`+E(3,l)+`Z`,n=r=i=o=s=c=l=null):e=null,e},ie(e)};if(y(`json-stringify`)&&!y(`date-serialization`)){function e(e){return ie(this)}var ae=t.stringify;t.stringify=function(t,n,r){var i=c.prototype.toJSON;c.prototype.toJSON=e;var a=ae(t,n,r);return c.prototype.toJSON=i,a}}else{var oe=`\\u00`,se=function(e){var t=e.charCodeAt(0);return ne[t]||oe+E(2,t.toString(16))},ce=/[\x00-\x1f\x22\x5c]/g,D=function(e){return ce.lastIndex=0,`"`+(ce.test(e)?e.replace(ce,se):e)+`"`},O=function(e,t,n,r,i,a,o){var s,l,d,f,p,h,v,y,ee;if(_(function(){s=t[e]}),typeof s==`object`&&s&&(s.getUTCFullYear&&m.call(s)==b&&s.toJSON===c.prototype.toJSON?s=ie(s):typeof s.toJSON==`function`&&(s=s.toJSON(e))),n&&(s=n.call(t,e,s)),s==g)return s===g?s:`null`;switch(l=typeof s,l==`object`&&(d=m.call(s)),d||l){case`boolean`:case C:return``+s;case`number`:case te:return s>-1/0&&s<1/0?``+s:`null`;case`string`:case x:return D(``+s)}if(typeof s==`object`){for(v=o.length;v--;)if(o[v]===s)throw u();if(o.push(s),f=[],y=a,a+=i,d==S){for(h=0,v=s.length;h<v;h++)p=O(h,s,n,r,i,a,o),f.push(p===g?`null`:p);ee=f.length?i?`[
-`+a+f.join(`,
-`+a)+`
-`+y+`]`:`[`+f.join(`,`)+`]`:`[]`}else T(r||s,function(e){var t=O(e,s,n,r,i,a,o);t!==g&&f.push(D(e)+`:`+(i?` `:``)+t)}),ee=f.length?i?`{
-`+a+f.join(`,
-`+a)+`
-`+y+`}`:`{`+f.join(`,`)+`}`:`{}`;return o.pop(),ee}};t.stringify=function(e,t,n){var i,a,o,s;if(r[typeof t]&&t){if(s=m.call(t),s==ee)a=t;else if(s==S){o={};for(var c=0,l=t.length,u;c<l;)u=t[c++],s=m.call(u),(s==`[object String]`||s==`[object Number]`)&&(o[u]=1)}}if(n)if(s=m.call(n),s==te){if((n-=n%1)>0)for(n>10&&(n=10),i=``;i.length<n;)i+=` `}else s==x&&(i=n.length<=10?n:n.slice(0,10));return O(``,(u={},u[``]=e,u),a,o,i,``,[])}}}if(!y(`json-parse`)){var le=i.fromCharCode,ue={92:`\\`,34:`"`,47:`/`,98:`\b`,116:`	`,110:`
-`,102:`\f`,114:`\r`},k,de,A=function(){throw k=de=null,l()},fe=function(){for(var e=de,t=e.length,n,r,i,a,o;k<t;)switch(o=e.charCodeAt(k),o){case 9:case 10:case 13:case 32:k++;break;case 123:case 125:case 91:case 93:case 58:case 44:return n=w?e.charAt(k):e[k],k++,n;case 34:for(n=`@`,k++;k<t;)if(o=e.charCodeAt(k),o<32)A();else if(o==92)switch(o=e.charCodeAt(++k),o){case 92:case 34:case 47:case 98:case 116:case 110:case 102:case 114:n+=ue[o],k++;break;case 117:for(r=++k,i=k+4;k<i;k++)o=e.charCodeAt(k),o>=48&&o<=57||o>=97&&o<=102||o>=65&&o<=70||A();n+=le(`0x`+e.slice(r,k));break;default:A()}else{if(o==34)break;for(o=e.charCodeAt(k),r=k;o>=32&&o!=92&&o!=34;)o=e.charCodeAt(++k);n+=e.slice(r,k)}if(e.charCodeAt(k)==34)return k++,n;A();default:if(r=k,o==45&&(a=!0,o=e.charCodeAt(++k)),o>=48&&o<=57){for(o==48&&(o=e.charCodeAt(k+1),o>=48&&o<=57)&&A(),a=!1;k<t&&(o=e.charCodeAt(k),o>=48&&o<=57);k++);if(e.charCodeAt(k)==46){for(i=++k;i<t&&(o=e.charCodeAt(i),!(o<48||o>57));i++);i==k&&A(),k=i}if(o=e.charCodeAt(k),o==101||o==69){for(o=e.charCodeAt(++k),(o==43||o==45)&&k++,i=k;i<t&&(o=e.charCodeAt(i),!(o<48||o>57));i++);i==k&&A(),k=i}return+e.slice(r,k)}a&&A();var s=e.slice(k,k+4);if(s==`true`)return k+=4,!0;if(s==`fals`&&e.charCodeAt(k+4)==101)return k+=5,!1;if(s==`null`)return k+=4,null;A()}return`$`},pe=function(e){var t,n;if(e==`$`&&A(),typeof e==`string`){if((w?e.charAt(0):e[0])==`@`)return e.slice(1);if(e==`[`){for(t=[];e=fe(),e!=`]`;)n?e==`,`?(e=fe(),e==`]`&&A()):A():n=!0,e==`,`&&A(),t.push(pe(e));return t}else if(e==`{`){for(t={};e=fe(),e!=`}`;)n?e==`,`?(e=fe(),e==`}`&&A()):A():n=!0,(e==`,`||typeof e!=`string`||(w?e.charAt(0):e[0])!=`@`||fe()!=`:`)&&A(),t[e.slice(1)]=pe(fe());return t}A()}return e},me=function(e,t,n){var r=he(e,t,n);r===g?delete e[t]:e[t]=r},he=function(e,t,n){var r=e[t],i;if(typeof r==`object`&&r)if(m.call(r)==S)for(i=r.length;i--;)me(m,T,r,i,n);else T(r,function(e){me(r,e,n)});return n.call(e,t,r)};t.parse=function(e,t){var n,r;return k=0,de=``+e,n=pe(fe()),fe()!=`$`&&A(),k=de=null,t&&m.call(t)==ee?he((r={},r[``]=n,r),``,t):n}}}return t.runInContext=s,t}if(i&&!n)s(a,i);else{var c=a.JSON,l=a.JSON3,u=!1,d=s(a,a.JSON3={noConflict:function(){return u||(u=!0,a.JSON=c,a.JSON3=l,c=l=null),d}});a.JSON={parse:d.parse,stringify:d.stringify}}n&&define(function(){return d})}).call(e)}));export{oo as a,ro as c,Xs as i,io as l,Zs as n,go as o,yo as r,ao as s,Qs as t};
+]`;
+                  },
+                  function () {
+                    l = !1;
+                  }
+                )),
+                (r = l));
+            }
+            if (e == `json-parse`) {
+              var u = t.parse,
+                d;
+              (typeof u == `function` &&
+                _(
+                  function () {
+                    u(`0`) === 0 &&
+                      !u(!1) &&
+                      ((o = u(s)),
+                      (d = o.a.length == 5 && o.a[0] === 1),
+                      d &&
+                        (_(function () {
+                          d = !u(`"	"`);
+                        }),
+                        d &&
+                          _(function () {
+                            d = u(`01`) !== 1;
+                          }),
+                        d &&
+                          _(function () {
+                            d = u(`1.`) !== 1;
+                          })));
+                  },
+                  function () {
+                    d = !1;
+                  }
+                ),
+                (r = d));
+            }
+          }
+          return (y[e] = !!r);
+        }
+        if (
+          ((y[`bug-string-char-index`] =
+            y[`date-serialization`] =
+            y.json =
+            y[`json-stringify`] =
+            y[`json-parse`] =
+              null),
+          !y(`json`))
+        ) {
+          var ee = `[object Function]`,
+            b = `[object Date]`,
+            te = `[object Number]`,
+            x = `[object String]`,
+            S = `[object Array]`,
+            C = `[object Boolean]`,
+            w = y(`bug-string-char-index`),
+            T = function (e, t) {
+              var n = 0,
+                i,
+                a,
+                o;
+              for (o in (((i = function () {
+                this.valueOf = 0;
+              }).prototype.valueOf = 0),
+              (a = new i()),
+              a))
+                h.call(a, o) && n++;
+              return (
+                (i = a = null),
+                n
+                  ? (T = function (e, t) {
+                      var n = m.call(e) == ee,
+                        r,
+                        i;
+                      for (r in e)
+                        !(n && r == `prototype`) &&
+                          h.call(e, r) &&
+                          !(i = r === `constructor`) &&
+                          t(r);
+                      (i || h.call(e, (r = `constructor`))) && t(r);
+                    })
+                  : ((a = [
+                      `valueOf`,
+                      `toString`,
+                      `toLocaleString`,
+                      `propertyIsEnumerable`,
+                      `isPrototypeOf`,
+                      `hasOwnProperty`,
+                      `constructor`,
+                    ]),
+                    (T = function (e, t) {
+                      var n = m.call(e) == ee,
+                        i,
+                        o,
+                        s =
+                          (!n &&
+                            typeof e.constructor != `function` &&
+                            r[typeof e.hasOwnProperty] &&
+                            e.hasOwnProperty) ||
+                          h;
+                      for (i in e)
+                        !(n && i == `prototype`) && s.call(e, i) && t(i);
+                      for (o = a.length; (i = a[--o]); ) s.call(e, i) && t(i);
+                    })),
+                T(e, t)
+              );
+            };
+          if (!y(`json-stringify`) && !y(`date-serialization`)) {
+            var ne = {
+                92: `\\\\`,
+                34: `\\"`,
+                8: `\\b`,
+                12: `\\f`,
+                10: `\\n`,
+                13: `\\r`,
+                9: `\\t`,
+              },
+              re = `000000`,
+              E = function (e, t) {
+                return (re + (t || 0)).slice(-e);
+              },
+              ie = function (e) {
+                var t, n, r, i, a, o, s, c, l;
+                if (v)
+                  t = function (e) {
+                    ((n = e.getUTCFullYear()),
+                      (r = e.getUTCMonth()),
+                      (i = e.getUTCDate()),
+                      (o = e.getUTCHours()),
+                      (s = e.getUTCMinutes()),
+                      (c = e.getUTCSeconds()),
+                      (l = e.getUTCMilliseconds()));
+                  };
+                else {
+                  var u = d.floor,
+                    f = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334],
+                    p = function (e, t) {
+                      return (
+                        f[t] +
+                        365 * (e - 1970) +
+                        u((e - 1969 + (t = +(t > 1))) / 4) -
+                        u((e - 1901 + t) / 100) +
+                        u((e - 1601 + t) / 400)
+                      );
+                    };
+                  t = function (e) {
+                    for (
+                      i = u(e / 864e5), n = u(i / 365.2425) + 1970 - 1;
+                      p(n + 1, 0) <= i;
+                      n++
+                    );
+                    for (r = u((i - p(n, 0)) / 30.42); p(n, r + 1) <= i; r++);
+                    ((i = 1 + i - p(n, r)),
+                      (a = ((e % 864e5) + 864e5) % 864e5),
+                      (o = u(a / 36e5) % 24),
+                      (s = u(a / 6e4) % 60),
+                      (c = u(a / 1e3) % 60),
+                      (l = a % 1e3));
+                  };
+                }
+                return (
+                  (ie = function (e) {
+                    return (
+                      e > -1 / 0 && e < 1 / 0
+                        ? (t(e),
+                          (e =
+                            (n <= 0 || n >= 1e4
+                              ? (n < 0 ? `-` : `+`) + E(6, n < 0 ? -n : n)
+                              : E(4, n)) +
+                            `-` +
+                            E(2, r + 1) +
+                            `-` +
+                            E(2, i) +
+                            `T` +
+                            E(2, o) +
+                            `:` +
+                            E(2, s) +
+                            `:` +
+                            E(2, c) +
+                            `.` +
+                            E(3, l) +
+                            `Z`),
+                          (n = r = i = o = s = c = l = null))
+                        : (e = null),
+                      e
+                    );
+                  }),
+                  ie(e)
+                );
+              };
+            if (y(`json-stringify`) && !y(`date-serialization`)) {
+              function e(e) {
+                return ie(this);
+              }
+              var ae = t.stringify;
+              t.stringify = function (t, n, r) {
+                var i = c.prototype.toJSON;
+                c.prototype.toJSON = e;
+                var a = ae(t, n, r);
+                return ((c.prototype.toJSON = i), a);
+              };
+            } else {
+              var oe = `\\u00`,
+                se = function (e) {
+                  var t = e.charCodeAt(0);
+                  return ne[t] || oe + E(2, t.toString(16));
+                },
+                ce = /[\x00-\x1f\x22\x5c]/g,
+                D = function (e) {
+                  return (
+                    (ce.lastIndex = 0),
+                    `"` + (ce.test(e) ? e.replace(ce, se) : e) + `"`
+                  );
+                },
+                O = function (e, t, n, r, i, a, o) {
+                  var s, l, d, f, p, h, v, y, ee;
+                  if (
+                    (_(function () {
+                      s = t[e];
+                    }),
+                    typeof s == `object` &&
+                      s &&
+                      (s.getUTCFullYear &&
+                      m.call(s) == b &&
+                      s.toJSON === c.prototype.toJSON
+                        ? (s = ie(s))
+                        : typeof s.toJSON == `function` && (s = s.toJSON(e))),
+                    n && (s = n.call(t, e, s)),
+                    s == g)
+                  )
+                    return s === g ? s : `null`;
+                  switch (
+                    ((l = typeof s), l == `object` && (d = m.call(s)), d || l)
+                  ) {
+                    case `boolean`:
+                    case C:
+                      return `` + s;
+                    case `number`:
+                    case te:
+                      return s > -1 / 0 && s < 1 / 0 ? `` + s : `null`;
+                    case `string`:
+                    case x:
+                      return D(`` + s);
+                  }
+                  if (typeof s == `object`) {
+                    for (v = o.length; v--; ) if (o[v] === s) throw u();
+                    if ((o.push(s), (f = []), (y = a), (a += i), d == S)) {
+                      for (h = 0, v = s.length; h < v; h++)
+                        ((p = O(h, s, n, r, i, a, o)),
+                          f.push(p === g ? `null` : p));
+                      ee = f.length
+                        ? i
+                          ? `[
+` +
+                            a +
+                            f.join(
+                              `,
+` + a
+                            ) +
+                            `
+` +
+                            y +
+                            `]`
+                          : `[` + f.join(`,`) + `]`
+                        : `[]`;
+                    } else
+                      (T(r || s, function (e) {
+                        var t = O(e, s, n, r, i, a, o);
+                        t !== g && f.push(D(e) + `:` + (i ? ` ` : ``) + t);
+                      }),
+                        (ee = f.length
+                          ? i
+                            ? `{
+` +
+                              a +
+                              f.join(
+                                `,
+` + a
+                              ) +
+                              `
+` +
+                              y +
+                              `}`
+                            : `{` + f.join(`,`) + `}`
+                          : `{}`));
+                    return (o.pop(), ee);
+                  }
+                };
+              t.stringify = function (e, t, n) {
+                var i, a, o, s;
+                if (r[typeof t] && t) {
+                  if (((s = m.call(t)), s == ee)) a = t;
+                  else if (s == S) {
+                    o = {};
+                    for (var c = 0, l = t.length, u; c < l; )
+                      ((u = t[c++]),
+                        (s = m.call(u)),
+                        (s == `[object String]` || s == `[object Number]`) &&
+                          (o[u] = 1));
+                  }
+                }
+                if (n)
+                  if (((s = m.call(n)), s == te)) {
+                    if ((n -= n % 1) > 0)
+                      for (n > 10 && (n = 10), i = ``; i.length < n; ) i += ` `;
+                  } else s == x && (i = n.length <= 10 ? n : n.slice(0, 10));
+                return O(``, ((u = {}), (u[``] = e), u), a, o, i, ``, []);
+              };
+            }
+          }
+          if (!y(`json-parse`)) {
+            var le = i.fromCharCode,
+              ue = {
+                92: `\\`,
+                34: `"`,
+                47: `/`,
+                98: `\b`,
+                116: `	`,
+                110: `
+`,
+                102: `\f`,
+                114: `\r`,
+              },
+              k,
+              de,
+              A = function () {
+                throw ((k = de = null), l());
+              },
+              fe = function () {
+                for (var e = de, t = e.length, n, r, i, a, o; k < t; )
+                  switch (((o = e.charCodeAt(k)), o)) {
+                    case 9:
+                    case 10:
+                    case 13:
+                    case 32:
+                      k++;
+                      break;
+                    case 123:
+                    case 125:
+                    case 91:
+                    case 93:
+                    case 58:
+                    case 44:
+                      return ((n = w ? e.charAt(k) : e[k]), k++, n);
+                    case 34:
+                      for (n = `@`, k++; k < t; )
+                        if (((o = e.charCodeAt(k)), o < 32)) A();
+                        else if (o == 92)
+                          switch (((o = e.charCodeAt(++k)), o)) {
+                            case 92:
+                            case 34:
+                            case 47:
+                            case 98:
+                            case 116:
+                            case 110:
+                            case 102:
+                            case 114:
+                              ((n += ue[o]), k++);
+                              break;
+                            case 117:
+                              for (r = ++k, i = k + 4; k < i; k++)
+                                ((o = e.charCodeAt(k)),
+                                  (o >= 48 && o <= 57) ||
+                                    (o >= 97 && o <= 102) ||
+                                    (o >= 65 && o <= 70) ||
+                                    A());
+                              n += le(`0x` + e.slice(r, k));
+                              break;
+                            default:
+                              A();
+                          }
+                        else {
+                          if (o == 34) break;
+                          for (
+                            o = e.charCodeAt(k), r = k;
+                            o >= 32 && o != 92 && o != 34;
+                          )
+                            o = e.charCodeAt(++k);
+                          n += e.slice(r, k);
+                        }
+                      if (e.charCodeAt(k) == 34) return (k++, n);
+                      A();
+                    default:
+                      if (
+                        ((r = k),
+                        o == 45 && ((a = !0), (o = e.charCodeAt(++k))),
+                        o >= 48 && o <= 57)
+                      ) {
+                        for (
+                          o == 48 &&
+                            ((o = e.charCodeAt(k + 1)), o >= 48 && o <= 57) &&
+                            A(),
+                            a = !1;
+                          k < t && ((o = e.charCodeAt(k)), o >= 48 && o <= 57);
+                          k++
+                        );
+                        if (e.charCodeAt(k) == 46) {
+                          for (
+                            i = ++k;
+                            i < t &&
+                            ((o = e.charCodeAt(i)), !(o < 48 || o > 57));
+                            i++
+                          );
+                          (i == k && A(), (k = i));
+                        }
+                        if (((o = e.charCodeAt(k)), o == 101 || o == 69)) {
+                          for (
+                            o = e.charCodeAt(++k),
+                              (o == 43 || o == 45) && k++,
+                              i = k;
+                            i < t &&
+                            ((o = e.charCodeAt(i)), !(o < 48 || o > 57));
+                            i++
+                          );
+                          (i == k && A(), (k = i));
+                        }
+                        return +e.slice(r, k);
+                      }
+                      a && A();
+                      var s = e.slice(k, k + 4);
+                      if (s == `true`) return ((k += 4), !0);
+                      if (s == `fals` && e.charCodeAt(k + 4) == 101)
+                        return ((k += 5), !1);
+                      if (s == `null`) return ((k += 4), null);
+                      A();
+                  }
+                return `$`;
+              },
+              pe = function (e) {
+                var t, n;
+                if ((e == `$` && A(), typeof e == `string`)) {
+                  if ((w ? e.charAt(0) : e[0]) == `@`) return e.slice(1);
+                  if (e == `[`) {
+                    for (t = []; (e = fe()), e != `]`; )
+                      (n
+                        ? e == `,`
+                          ? ((e = fe()), e == `]` && A())
+                          : A()
+                        : (n = !0),
+                        e == `,` && A(),
+                        t.push(pe(e)));
+                    return t;
+                  } else if (e == `{`) {
+                    for (t = {}; (e = fe()), e != `}`; )
+                      (n
+                        ? e == `,`
+                          ? ((e = fe()), e == `}` && A())
+                          : A()
+                        : (n = !0),
+                        (e == `,` ||
+                          typeof e != `string` ||
+                          (w ? e.charAt(0) : e[0]) != `@` ||
+                          fe() != `:`) &&
+                          A(),
+                        (t[e.slice(1)] = pe(fe())));
+                    return t;
+                  }
+                  A();
+                }
+                return e;
+              },
+              me = function (e, t, n) {
+                var r = he(e, t, n);
+                r === g ? delete e[t] : (e[t] = r);
+              },
+              he = function (e, t, n) {
+                var r = e[t],
+                  i;
+                if (typeof r == `object` && r)
+                  if (m.call(r) == S)
+                    for (i = r.length; i--; ) me(m, T, r, i, n);
+                  else
+                    T(r, function (e) {
+                      me(r, e, n);
+                    });
+                return n.call(e, t, r);
+              };
+            t.parse = function (e, t) {
+              var n, r;
+              return (
+                (k = 0),
+                (de = `` + e),
+                (n = pe(fe())),
+                fe() != `$` && A(),
+                (k = de = null),
+                t && m.call(t) == ee ? he(((r = {}), (r[``] = n), r), ``, t) : n
+              );
+            };
+          }
+        }
+        return ((t.runInContext = s), t);
+      }
+      if (i && !n) s(a, i);
+      else {
+        var c = a.JSON,
+          l = a.JSON3,
+          u = !1,
+          d = s(
+            a,
+            (a.JSON3 = {
+              noConflict: function () {
+                return (
+                  u || ((u = !0), (a.JSON = c), (a.JSON3 = l), (c = l = null)),
+                  d
+                );
+              },
+            })
+          );
+        a.JSON = { parse: d.parse, stringify: d.stringify };
+      }
+      n &&
+        define(function () {
+          return d;
+        });
+    }).call(e);
+  });
+export {
+  oo as a,
+  ro as c,
+  Xs as i,
+  io as l,
+  Zs as n,
+  go as o,
+  yo as r,
+  ao as s,
+  Qs as t,
+};
