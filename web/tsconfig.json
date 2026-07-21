@@ -3,7 +3,5 @@
     "allowJs": true,
     "jsx": "preserve"
   },
-  "include": [
-    "src/main/webapp/js/**/*"
-  ]
+  "include": ["src/main/webapp/js/**/*"]
 }

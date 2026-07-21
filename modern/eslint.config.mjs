@@ -1,42 +1,42 @@
-import js from "@eslint/js";
-import reactPlugin from "eslint-plugin-react";
-import jsxA11yPlugin from "eslint-plugin-jsx-a11y";
-import globals from "globals";
+import js from '@eslint/js';
+import reactPlugin from 'eslint-plugin-react';
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import globals from 'globals';
 
 export default [
   js.configs.recommended,
   {
-    ignores: ["node_modules/**", "**/target/**", "**/dist/**"]
+    ignores: ['node_modules/**', '**/target/**', '**/dist/**'],
   },
   {
-    files: ["**/*.js", "**/*.jsx"],
+    files: ['**/*.js', '**/*.jsx'],
     languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       parserOptions: {
         ecmaFeatures: {
-          jsx: true
-        }
+          jsx: true,
+        },
       },
       globals: {
         ...globals.browser,
-        ...globals.node
-      }
+        ...globals.node,
+      },
     },
     plugins: {
       react: reactPlugin,
-      "jsx-a11y": jsxA11yPlugin
+      'jsx-a11y': jsxA11yPlugin,
     },
     rules: {
       ...reactPlugin.configs.recommended.rules,
       ...jsxA11yPlugin.configs.recommended.rules,
-      "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off"
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
     },
     settings: {
       react: {
-        version: "18.3.1"
-      }
-    }
-  }
+        version: '18.3.1',
+      },
+    },
+  },
 ];
