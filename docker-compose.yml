@@ -51,7 +51,7 @@ services:
       context: .
       dockerfile: Dockerfile.modern
     ports:
-    - 8081:8080
+    - 8081:8081
     depends_on:
     - db
     environment:
@@ -59,8 +59,9 @@ services:
     - spring.datasource.username=clinica
     - spring.datasource.password=clinica
     - SPRING_QUARTZ_AUTO_STARTUP=false
+    - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,metrics
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
