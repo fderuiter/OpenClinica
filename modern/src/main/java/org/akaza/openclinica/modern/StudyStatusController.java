@@ -57,6 +57,11 @@ public class StudyStatusController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "Forbidden: Insufficient privileges."));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
+        } catch (org.akaza.openclinica.service.clinical.exception.ClinicalWorkflowException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "error", "Status Update Blocked",
+                "details", e.getMessage()
+            ));
         }
         
         Map<String, String> response = new HashMap<>();
