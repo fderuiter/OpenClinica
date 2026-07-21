@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*
 tip_centerwindow.js  v. 1.21
 

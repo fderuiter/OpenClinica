@@ -1,9 +1,23 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "jsx": "preserve"
+    "checkJs": true,
+    "jsx": "react",
+    "noEmit": true,
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "lib": ["dom", "dom.iterable", "esnext"]
   },
   "include": [
-    "src/main/webapp/js/**/*"
+    "src/main/webapp/js/**/*",
+    "src/types/**/*"
+  ],
+  "exclude": [
+    "src/main/webapp/js/vendor/**/*",
+    "src/main/webapp/includes/**/*",
+    "src/main/webapp/js/util.js",
+    "src/main/webapp/js/load_scripts.js"
   ]
 }

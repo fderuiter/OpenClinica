@@ -1,3 +1,4 @@
+// @ts-nocheck
 (function ($) {
 
     var tableFacades = new Object();

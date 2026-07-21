@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*
 tip_followscroll.js	v. 1.11
 

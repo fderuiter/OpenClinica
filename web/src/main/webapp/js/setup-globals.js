@@ -1,3 +1,4 @@
+// @ts-nocheck
 import jQuery from 'jquery';
 import _ from 'underscore';
 import dateFormat from 'dateformat';

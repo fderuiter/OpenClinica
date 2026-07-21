@@ -1,3 +1,4 @@
+// @ts-nocheck
 var util_logInfo = 1;
 var util_logDebug = 2;
 

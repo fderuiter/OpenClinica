@@ -1,3 +1,4 @@
+// @ts-nocheck
 head.js(
   app_contextPath + '/includes/jmesa/jquery-3.5.1.min.js',
   app_contextPath + '/js/lib/jquery.tmpl.js',

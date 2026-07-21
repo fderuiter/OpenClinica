@@ -69,7 +69,8 @@ const getFieldDiscrepancy = (fieldId, value) => {
   return null;
 };
 
-const FormField = React.memo(function FormField({ field, fieldId, value, groupOID, index }) {
+/** @param {{field: any, fieldId: string, value: any, groupOID: string, index: number}} props */
+const FormField = function FormField({ field, fieldId, value, groupOID, index }) {
   const [localValue, setLocalValue] = useState(value || '');
   const { announce } = useAccessibility();
 
@@ -161,10 +162,11 @@ const FormField = React.memo(function FormField({ field, fieldId, value, groupOI
       )}
     </div>
   );
-});
+};
 FormField.displayName = 'FormField';
 
-const FormRow = React.memo(function FormRow({ group, row, index, totalRemaining, setRowRef, setFocusAction }) {
+/** @param {{group: any, row: any, index: number, totalRemaining: number, setRowRef: any, setFocusAction: any}} props */
+const FormRow = function FormRow({ group, row, index, totalRemaining, setRowRef, setFocusAction }) {
   const { announce } = useAccessibility();
 
   return (
@@ -208,10 +210,11 @@ const FormRow = React.memo(function FormRow({ group, row, index, totalRemaining,
       )}
     </div>
   );
-});
+};
 FormRow.displayName = 'FormRow';
 
-const FormGroup = React.memo(function FormGroup({ group, rows, setRowRef, setAddBtnRef, setFocusAction }) {
+/** @param {{group: any, rows: any[], setRowRef: any, setAddBtnRef: any, setFocusAction: any}} props */
+const FormGroup = function FormGroup({ group, rows, setRowRef, setAddBtnRef, setFocusAction }) {
   const { announce } = useAccessibility();
 
   return (
@@ -245,7 +248,7 @@ const FormGroup = React.memo(function FormGroup({ group, rows, setRowRef, setAdd
       )}
     </div>
   );
-});
+};
 FormGroup.displayName = 'FormGroup';
 
 export default function CRFRenderer() {
