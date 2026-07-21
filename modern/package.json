@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "build": "vite build",
-    "postinstall": "node security-audit.js"
+    "postinstall": "node security-audit.js",
+    "lint": "eslint .",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "vite": "^8.1.4"
