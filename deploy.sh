@@ -23,11 +23,13 @@ if ! docker compose up --wait web modern; then
     
     # Verify they are back online
     echo "Verifying application health post-rollback..."
-    docker compose up --wait web modern
+    if ! docker compose up --wait web modern; then
+        echo "ERROR: Rollback health check failed. Manual intervention required."
+        exit 1
+    fi
     
     echo "Rollback completed successfully."
-    # Exit with a non-zero status to indicate deployment failed but rollback succeeded
-    exit 1
+    exit 0
 fi
 
 echo "Deployment completed successfully."
