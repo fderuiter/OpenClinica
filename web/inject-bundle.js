@@ -45,7 +45,7 @@ function processTemplate(content, mainScript) {
   let directives = '';
   let remaining = content;
   let match;
-  while ((match = remaining.match(directiveRegex))) {
+  while ((match = remaining.match(directiveRegex)) !== null) {
     directives += match[0];
     remaining = remaining.substring(match[0].length);
   }

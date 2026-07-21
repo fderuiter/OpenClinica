@@ -308,8 +308,7 @@ public class ImportSpringJob extends QuartzJobBean {
         ApplicationContext appContext = (ApplicationContext) context.getScheduler().getContext().get("applicationContext");
         Jaxb2Marshaller jaxb2Marshaller = (Jaxb2Marshaller) appContext.getBean("jaxb2Marshaller");
 
-        String propertiesPath = CoreResources.PROPERTIES_DIR;
-        File xsdFile2 = new File(propertiesPath + File.separator + "ODM1-2-1.xsd");
+        java.io.InputStream xsdFile2 = getClass().getClassLoader().getResourceAsStream("properties/ODM1-2-1.xsd");
 
         ODMContainer odmContainer = new ODMContainer();
         for (File f : dest) {

@@ -1603,7 +1603,7 @@ Calendar.prototype._dragStart = function (ev) {
 Date._MD = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
 /** Constants used for time computations */
-Date.SECOND = 1000 /* milliseconds */;
+Date.SECOND = 1000; /* milliseconds */
 Date.MINUTE = 60 * Date.SECOND;
 Date.HOUR = 60 * Date.MINUTE;
 Date.DAY = 24 * Date.HOUR;
