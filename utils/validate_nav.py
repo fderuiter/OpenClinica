@@ -74,7 +74,7 @@ def main():
                 if is_restricted(filepath):
                     continue
                 # Get path relative to docs directory
-                rel_path = os.path.relpath(filepath, docs_dir)
+                rel_path = os.path.relpath(filepath, docs_dir).replace('\\', '/')
                 physical_md_files.add(rel_path)
 
     orphaned_files = physical_md_files - nav_paths
