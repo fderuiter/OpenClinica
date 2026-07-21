@@ -69,7 +69,7 @@ const getFieldDiscrepancy = (fieldId, value) => {
   return null;
 };
 
-const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
+const FormField = React.memo(function FormField({ field, fieldId, value, groupOID, index }) {
   const [localValue, setLocalValue] = useState(value || '');
   const { announce } = useAccessibility();
 
@@ -128,6 +128,7 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
           onChange={handleChange}
           onBlur={handleBlur}
           aria-describedby={discrepancyId}
+          aria-invalid={discrepancy ? 'true' : 'false'}
         >
           <option value="">--Select--</option>
           {field.options.map((opt) => (
@@ -146,13 +147,14 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
           onChange={handleChange}
           onBlur={handleBlur}
           aria-describedby={discrepancyId}
+          aria-invalid={discrepancy ? 'true' : 'false'}
         />
       )}
 
       {discrepancy && (
         <div 
           id={discrepancyId} 
-          className={styles.discrepancyText}
+          className={`sr-only ${styles.discrepancyText}`}
         >
           {discrepancy.text}
         </div>
@@ -162,7 +164,7 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
 });
 FormField.displayName = 'FormField';
 
-const FormRow = React.memo(({ group, row, index, totalRemaining, setRowRef, setFocusAction }) => {
+const FormRow = React.memo(function FormRow({ group, row, index, totalRemaining, setRowRef, setFocusAction }) {
   const { announce } = useAccessibility();
 
   return (
@@ -209,7 +211,7 @@ const FormRow = React.memo(({ group, row, index, totalRemaining, setRowRef, setF
 });
 FormRow.displayName = 'FormRow';
 
-const FormGroup = React.memo(({ group, rows, setRowRef, setAddBtnRef, setFocusAction }) => {
+const FormGroup = React.memo(function FormGroup({ group, rows, setRowRef, setAddBtnRef, setFocusAction }) {
   const { announce } = useAccessibility();
 
   return (
