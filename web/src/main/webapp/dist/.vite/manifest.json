@@ -32,7 +32,7 @@
     ]
   },
   "src/main/webapp/js/components/AccessibilityProvider.jsx": {
-    "file": "assets/AccessibilityProvider-BbdRFqr9.js",
+    "file": "assets/AccessibilityProvider-q8xbnXKE.js",
     "name": "AccessibilityProvider",
     "src": "src/main/webapp/js/components/AccessibilityProvider.jsx",
     "isDynamicEntry": true,
@@ -42,7 +42,7 @@
     ]
   },
   "src/main/webapp/js/components/CRFRenderer.jsx": {
-    "file": "assets/CRFRenderer-CRNutoMC.js",
+    "file": "assets/CRFRenderer-B1XdDTrN.js",
     "name": "CRFRenderer",
     "src": "src/main/webapp/js/components/CRFRenderer.jsx",
     "isDynamicEntry": true,
@@ -54,8 +54,19 @@
       "_theme-BYmZ4jGd.js"
     ]
   },
+  "src/main/webapp/js/components/ErrorBoundary.jsx": {
+    "file": "assets/ErrorBoundary-DrOESDiV.js",
+    "name": "ErrorBoundary",
+    "src": "src/main/webapp/js/components/ErrorBoundary.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-BgaNhQyE.js",
+      "src/main/webapp/js/main.js",
+      "_react-vendor-CT9J5WVz.js"
+    ]
+  },
   "src/main/webapp/js/components/Navigation.jsx": {
-    "file": "assets/Navigation-CagxJvbl.js",
+    "file": "assets/Navigation-BdnaUwJa.js",
     "name": "Navigation",
     "src": "src/main/webapp/js/components/Navigation.jsx",
     "isDynamicEntry": true,
@@ -67,7 +78,7 @@
     ]
   },
   "src/main/webapp/js/main.js": {
-    "file": "assets/main-B4QlTMEu.js",
+    "file": "assets/main-BWiNynSA.js",
     "name": "main",
     "src": "src/main/webapp/js/main.js",
     "isEntry": true,
@@ -79,6 +90,7 @@
     "dynamicImports": [
       "_react-vendor-CT9J5WVz.js",
       "src/main/webapp/js/components/AccessibilityProvider.jsx",
+      "src/main/webapp/js/components/ErrorBoundary.jsx",
       "src/main/webapp/js/components/CRFRenderer.jsx",
       "src/main/webapp/js/components/Navigation.jsx"
     ]

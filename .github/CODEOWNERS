@@ -1,1 +1,4 @@
 * @fderuiter
+/docs/ @docs-reviewer
+/core/ @core-reviewer
+/core/src/main/resources/migration/ @database-reviewer

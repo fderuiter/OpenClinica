@@ -5,6 +5,9 @@ import java.util.Locale;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.bean.core.Status;
 import org.akaza.openclinica.dao.managestudy.StudyDAO;
@@ -15,6 +18,8 @@ import org.akaza.openclinica.dao.hibernate.MeasurementUnitDao;
 import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
 
 public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigration {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClinicalTemplateSeederMigration.class);
 
     @Override
     protected void doMigration() throws Exception {
@@ -33,7 +38,7 @@ public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigr
 
         java.io.File templateFile = new java.io.File(templatePath);
         if (templateFile.exists() && templateFile.length() == 0) {
-            System.out.println("WARNING: Clinical data seeding was skipped due to an empty template file.");
+            logger.warn("Clinical data seeding was skipped due to an empty template file.");
             return;
         }
         

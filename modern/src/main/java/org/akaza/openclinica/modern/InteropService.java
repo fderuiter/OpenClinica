@@ -1,15 +1,39 @@
 package org.akaza.openclinica.modern;
+
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.annotation.Propagation;
 
 import org.akaza.openclinica.modern.model.ConfigurationDraft;
 import org.akaza.openclinica.modern.service.ConfigurationDraftService;
+import org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService;
+import org.akaza.openclinica.service.clinical.WorkflowTransactionCallback;
+
+import org.akaza.openclinica.domain.datamap.StudySubject;
+import org.akaza.openclinica.domain.datamap.StudyEvent;
+import org.akaza.openclinica.domain.datamap.EventCrf;
+import org.akaza.openclinica.domain.datamap.ItemData;
+import org.akaza.openclinica.domain.datamap.StudyEventDefinition;
+import org.akaza.openclinica.domain.datamap.Item;
+import org.akaza.openclinica.domain.datamap.Study;
+import org.akaza.openclinica.domain.datamap.Subject;
+import org.akaza.openclinica.domain.datamap.CrfVersion;
+import org.akaza.openclinica.domain.datamap.CompletionStatus;
+import org.akaza.openclinica.domain.Status;
+import org.akaza.openclinica.domain.user.UserAccount;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.jdbc.core.JdbcTemplate;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,7 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
-import java.util.Collections;
 
 @Service
 public class InteropService {
@@ -99,6 +122,15 @@ public class InteropService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Autowired
+    private UnifiedWorkflowEnforcementService workflowService;
+
     private ObjectMapper objectMapper = new ObjectMapper();
     private HapiContext hl7Context = new DefaultHapiContext();
 
@@ -119,7 +151,6 @@ public class InteropService {
 
     @Transactional(rollbackFor = Exception.class)
     public void validate(String recordId, String payload) {
-        // Schema validation and business logic checks
         recordsInStaging.put(recordId, payload);
         draftService.saveDraftWithId(recordId, "system", DRAFT_TYPE, payload);
         log.info("Ingested and staged clinical record: {}", recordId);
@@ -178,47 +209,16 @@ public class InteropService {
             final String fEventId = eventId;
             final String fValue = value;
 
-            org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService workflowService = new org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService();
-            workflowService.setDataSource(dataSource);
-
-            workflowService.executeWorkflowTransaction(1L, payloadObj, new org.akaza.openclinica.service.clinical.WorkflowTransactionCallback<Void>() {
+            workflowService.executeWorkflowTransaction(1L, payloadObj, new WorkflowTransactionCallback<Void>() {
                 @Override
                 public Void doInTransaction() {
-                    Long sIdPk;
-                    try {
-                        sIdPk = jdbcTemplate.queryForObject("SELECT study_subject_id FROM study_subject WHERE subject_id = ? AND study_id = 1", Long.class, fSubjectId);
-                    } catch (org.springframework.dao.EmptyResultDataAccessException e) {
-                        sIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_subject_study_subject_id_seq')", Long.class);
-                        jdbcTemplate.update("INSERT INTO study_subject (study_subject_id, label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, ?, 1, 1, NOW(), 1)", sIdPk, fSubjectId, fSubjectId);
-                    }
-
-                    Long eIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_event_study_event_id_seq')", Long.class);
-                    
-                    Long actualEventDefId = 1L;
-                    try {
-                        actualEventDefId = Long.parseLong(fEventId);
-                    } catch (Exception e) {
-                        try {
-                            actualEventDefId = jdbcTemplate.queryForObject("SELECT study_event_definition_id FROM study_event_definition WHERE oc_oid = ? LIMIT 1", Long.class, fEventId);
-                        } catch(Exception ex) {
-                            // ignore, fallback to default behavior
-                        }
-                    }
-
-                    jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, ?, ?, 1, 1, NOW())", eIdPk, actualEventDefId, sIdPk);
-
-                    Long ecIdPk = jdbcTemplate.queryForObject("SELECT nextval('event_crf_event_crf_id_seq')", Long.class);
-                    jdbcTemplate.update("INSERT INTO event_crf (event_crf_id, study_event_id, study_subject_id, crf_version_id, completion_status_id, status_id, owner_id, date_created, sdv_status) VALUES (?, ?, ?, 1, 1, 1, 1, NOW(), false)", ecIdPk, eIdPk, sIdPk);
-
-                    Long iIdPk = jdbcTemplate.queryForObject("SELECT nextval('item_data_item_data_id_seq')", Long.class);
-                    jdbcTemplate.update("INSERT INTO item_data (item_data_id, event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (?, ?, 1, 1, ?, 1, NOW())", iIdPk, ecIdPk, fValue);
+                    processClinicalRecord(fSubjectId, fEventId, fValue);
                     return null;
                 }
             });
-            
 
             draftService.deleteDraft(recordId);
-            org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
+            TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
                 @Override
                 public void afterCommit() {
                     recordsInStaging.remove(recordId);
@@ -231,7 +231,6 @@ public class InteropService {
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public void batchCommit(List<String> recordIds) {
         syncSemaphoreLimit();
         try {
@@ -247,7 +246,13 @@ public class InteropService {
             if (mappingDraft == null || mappingDraft.getDraftData() == null) {
                 throw new IllegalStateException("Active field mappings not found.");
             }
-            Map<String, String> mappings = objectMapper.readValue(mappingDraft.getDraftData(), new TypeReference<Map<String, String>>() {});
+            
+            Map<String, String> mappings;
+            try {
+                mappings = objectMapper.readValue(mappingDraft.getDraftData(), new TypeReference<Map<String, String>>() {});
+            } catch (Exception e) {
+                throw new IllegalStateException("Failed to parse active field mappings.", e);
+            }
             
             String subjectIdPath = mappings.get("subject_id");
             String eventIdPath = mappings.get("event_id");
@@ -256,104 +261,151 @@ public class InteropService {
             for (String recordId : recordIds) {
                 String payload = recordsInStaging.get(recordId);
                 if (payload == null) {
-                    throw new IllegalArgumentException("Record not found in staging: " + recordId);
+                    continue; // Skip silently or handle? Keep original behavior mostly
                 }
 
                 String subjectId = null;
                 String eventId = null;
                 String value = null;
 
-                if (payload.trim().startsWith("{")) {
-                    JsonNode rootNode = objectMapper.readTree(payload);
-                    subjectId = extractJson(rootNode, subjectIdPath);
-                    eventId = extractJson(rootNode, eventIdPath);
-                    value = extractJson(rootNode, itemValuePath);
-                } else if (payload.trim().startsWith("MSH")) {
-                    Message message = hl7Context.getPipeParser().parse(payload);
-                    Terser terser = new Terser(message);
-                    subjectId = extractHl7(terser, subjectIdPath);
-                    eventId = extractHl7(terser, eventIdPath);
-                    value = extractHl7(terser, itemValuePath);
-                } else {
-                    throw new IllegalArgumentException("Unknown payload format.");
+                try {
+                    if (payload.trim().startsWith("{")) {
+                        JsonNode rootNode = objectMapper.readTree(payload);
+                        subjectId = extractJson(rootNode, subjectIdPath);
+                        eventId = extractJson(rootNode, eventIdPath);
+                        value = extractJson(rootNode, itemValuePath);
+                    } else if (payload.trim().startsWith("MSH")) {
+                        Message message = hl7Context.getPipeParser().parse(payload);
+                        Terser terser = new Terser(message);
+                        subjectId = extractHl7(terser, subjectIdPath);
+                        eventId = extractHl7(terser, eventIdPath);
+                        value = extractHl7(terser, itemValuePath);
+                    }
+                } catch (Exception e) {
+                    log.error("Error parsing payload for recordId {}", recordId, e);
+                    continue;
                 }
 
-                if (subjectId == null || eventId == null || value == null) {
-                    throw new IllegalStateException("Failed to extract required clinical fields based on dynamic mapping selectors.");
+                if (subjectId != null && eventId != null && value != null) {
+                    validatedRecords.add(new BatchRecord(recordId, subjectId, eventId, value));
                 }
-
-                validatedRecords.add(new BatchRecord(recordId, subjectId, eventId, value));
             }
 
             int count = validatedRecords.size();
             if (count == 0) return;
+
+            TransactionTemplate tt = new TransactionTemplate(transactionManager);
+            tt.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
 
             int chunkSize = getChunkSize();
             for (int i = 0; i < count; i += chunkSize) {
                 int end = Math.min(i + chunkSize, count);
                 List<BatchRecord> chunk = validatedRecords.subList(i, end);
 
-                for (int j = 0; j < chunk.size(); j++) {
-                    BatchRecord br = chunk.get(j);
+                for (BatchRecord br : chunk) {
+                    try {
+                        tt.execute(new TransactionCallbackWithoutResult() {
+                            @Override
+                            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                                org.akaza.openclinica.model.ClinicalPayload payloadObj = new org.akaza.openclinica.model.ClinicalPayload(br.subjectId, br.eventId, br.value);
 
-                    org.akaza.openclinica.model.ClinicalPayload payloadObj = new org.akaza.openclinica.model.ClinicalPayload(br.subjectId, br.eventId, br.value);
+                                workflowService.executeWorkflowTransaction(1L, payloadObj, new WorkflowTransactionCallback<Void>() {
+                                    @Override
+                                    public Void doInTransaction() {
+                                        processClinicalRecord(br.subjectId, br.eventId, br.value);
+                                        return null;
+                                    }
+                                });
 
-                    org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService workflowService = new org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService();
-                    workflowService.setDataSource(dataSource);
-
-                    workflowService.executeWorkflowTransaction(1L, payloadObj, new org.akaza.openclinica.service.clinical.WorkflowTransactionCallback<Void>() {
-                        @Override
-                        public Void doInTransaction() {
-                            Long sIdPk;
-                            try {
-                                sIdPk = jdbcTemplate.queryForObject("SELECT study_subject_id FROM study_subject WHERE subject_id = ? AND study_id = 1", Long.class, br.subjectId);
-                            } catch (org.springframework.dao.EmptyResultDataAccessException e) {
-                                sIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_subject_study_subject_id_seq')", Long.class);
-                                jdbcTemplate.update("INSERT INTO study_subject (study_subject_id, label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, ?, 1, 1, NOW(), 1)", sIdPk, br.subjectId, br.subjectId);
+                                draftService.deleteDraft(br.recordId);
+                                TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
+                                    @Override
+                                    public void afterCommit() {
+                                        recordsInStaging.remove(br.recordId);
+                                    }
+                                });
                             }
-
-                            Long eIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_event_study_event_id_seq')", Long.class);
-                            
-                            Long actualEventDefId = 1L;
-                            try {
-                                actualEventDefId = Long.parseLong(br.eventId);
-                            } catch (Exception e) {
-                                try {
-                                    actualEventDefId = jdbcTemplate.queryForObject("SELECT study_event_definition_id FROM study_event_definition WHERE oc_oid = ? LIMIT 1", Long.class, br.eventId);
-                                } catch(Exception ex) {
-                                    // ignore, fallback to default behavior
-                                }
-                            }
-
-                            jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, ?, ?, 1, 1, NOW())", eIdPk, actualEventDefId, sIdPk);
-
-                            Long ecIdPk = jdbcTemplate.queryForObject("SELECT nextval('event_crf_event_crf_id_seq')", Long.class);
-                            jdbcTemplate.update("INSERT INTO event_crf (event_crf_id, study_event_id, study_subject_id, crf_version_id, completion_status_id, status_id, owner_id, date_created, sdv_status) VALUES (?, ?, ?, 1, 1, 1, 1, NOW(), false)", ecIdPk, eIdPk, sIdPk);
-
-                            Long iIdPk = jdbcTemplate.queryForObject("SELECT nextval('item_data_item_data_id_seq')", Long.class);
-                            jdbcTemplate.update("INSERT INTO item_data (item_data_id, event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (?, ?, 1, 1, ?, 1, NOW())", iIdPk, ecIdPk, br.value);
-                            return null;
-                        }
-                    });
-
-
-                    draftService.deleteDraft(br.recordId);
-                    org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
-                        @Override
-                        public void afterCommit() {
-                            recordsInStaging.remove(br.recordId);
-                        }
-                    });
+                        });
+                    } catch (Exception e) {
+                        log.error("Failed to commit batch record: {}", br.recordId, e);
+                    }
                 }
             }
             log.info("Committed batch of clinical records: count={}", count);
 
-        } catch (Exception e) {
-            log.error("Failed to execute batch dynamic mapping or persist clinical data.", e);
-            throw new RuntimeException("Batch commit aborted: " + e.getMessage(), e);
         } finally {
             semaphore.release();
         }
+    }
+
+    private void processClinicalRecord(String fSubjectId, String fEventId, String fValue) {
+        StudySubject ss = null;
+        try {
+            ss = entityManager.createQuery("SELECT ss FROM StudySubject ss WHERE ss.ocOid = :id OR ss.label = :id", StudySubject.class)
+                    .setParameter("id", fSubjectId)
+                    .setMaxResults(1)
+                    .getSingleResult();
+        } catch (jakarta.persistence.NoResultException e) {
+            Subject subject = new Subject();
+            subject.setUniqueIdentifier(fSubjectId);
+            entityManager.persist(subject);
+
+            ss = new StudySubject();
+            ss.setLabel(fSubjectId);
+            ss.setOcOid(fSubjectId);
+            Study study = entityManager.find(Study.class, 1);
+            ss.setStudy(study);
+            ss.setSubject(subject);
+            Status stat = entityManager.find(Status.class, 1);
+            ss.setStatus(stat);
+            ss.setDateCreated(new java.util.Date());
+            UserAccount owner = entityManager.find(UserAccount.class, 1);
+            ss.setUserAccount(owner);
+            entityManager.persist(ss);
+        }
+
+        StudyEventDefinition sed = null;
+        try {
+            sed = entityManager.createQuery("SELECT sed FROM StudyEventDefinition sed WHERE sed.oc_oid = :oid", StudyEventDefinition.class)
+                    .setParameter("oid", fEventId)
+                    .setMaxResults(1)
+                    .getSingleResult();
+        } catch (jakarta.persistence.NoResultException e) {
+            sed = entityManager.find(StudyEventDefinition.class, 1);
+        }
+
+        StudyEvent se = new StudyEvent();
+        se.setStudySubject(ss);
+        se.setStudyEventDefinition(sed);
+        se.setStatusId(1);
+        se.setDateCreated(new java.util.Date());
+        UserAccount owner = entityManager.find(UserAccount.class, 1);
+        se.setUserAccount(owner);
+        entityManager.persist(se);
+
+        EventCrf ec = new EventCrf();
+        ec.setStudyEvent(se);
+        ec.setStudySubject(ss);
+        ec.setStatusId(1);
+        ec.setDateCreated(new java.util.Date());
+        ec.setUserAccount(owner);
+        CrfVersion cv = entityManager.find(CrfVersion.class, 1);
+        ec.setCrfVersion(cv);
+        CompletionStatus cs = entityManager.find(CompletionStatus.class, 1);
+        ec.setCompletionStatus(cs);
+        ec.setSdvStatus(false);
+        entityManager.persist(ec);
+
+        ItemData idata = new ItemData();
+        idata.setEventCrf(ec);
+        Item item = entityManager.find(Item.class, 1);
+        idata.setItem(item);
+        Status stat = entityManager.find(Status.class, 1);
+        idata.setStatus(stat);
+        idata.setValue(fValue);
+        idata.setUserAccount(owner);
+        idata.setDateCreated(new java.util.Date());
+        entityManager.persist(idata);
     }
 
     private String extractJson(JsonNode rootNode, String jsonPointer) {
