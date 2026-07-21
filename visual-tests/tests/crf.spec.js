@@ -5,16 +5,21 @@ const { AxeBuilder } = require('@axe-core/playwright');
 
 test.describe('Printable CRF', () => {
   test('should display investigator signature and labels', async ({ page }) => {
-    page.on('console', msg => console.log('BROWSER LOG:', msg.text()));
-    page.on('pageerror', err => console.log('PAGE ERROR:', err.stack || err.message));
-    
+    page.on('console', (msg) => console.log('BROWSER LOG:', msg.text()));
+    page.on('pageerror', (err) =>
+      console.log('PAGE ERROR:', err.stack || err.message)
+    );
+
     // Read Vite manifest to get the correct bundle file name
-    const manifestPath = path.join(__dirname, '../../web/src/main/webapp/dist/.vite/manifest.json');
+    const manifestPath = path.join(
+      __dirname,
+      '../../web/src/main/webapp/dist/.vite/manifest.json'
+    );
     let mainScript = 'assets/main.js'; // fallback
     try {
       const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
       mainScript = manifest['src/main/webapp/js/main.js'].file;
-    } catch(e) { }
+    } catch (e) {}
 
     await page.route('**/clinicaldata/html/print/**', async (route) => {
       const mockHtml = `
@@ -50,7 +55,7 @@ test.describe('Printable CRF', () => {
       const url = new URL(route.request().url());
       const fileName = path.basename(url.pathname);
       const assetsDir = '/app/web/src/main/webapp/dist/assets';
-      
+
       try {
         const bundle = fs.readFileSync(path.join(assetsDir, fileName), 'utf8');
         route.fulfill({ contentType: 'application/javascript', body: bundle });
@@ -59,11 +64,13 @@ test.describe('Printable CRF', () => {
       }
     });
 
-    await page.goto('http://localhost:8080/OpenClinica-web/rest/clinicaldata/html/print/STUDY-123/SUBJ-1/EVENT-1/FORM-1');
+    await page.goto(
+      'http://localhost:8080/OpenClinica-web/rest/clinicaldata/html/print/STUDY-123/SUBJ-1/EVENT-1/FORM-1'
+    );
 
     // Wait for React to render the component
     await expect(page.locator('.crf-renderer')).toBeVisible({ timeout: 10000 });
-    
+
     // The investigator signature must be visible
     const signatureBlock = page.locator('.investigator-signature');
     await expect(signatureBlock).toBeVisible();
@@ -96,6 +103,8 @@ test.describe('Printable CRF', () => {
     }
 
     // Take a snapshot
-    await expect(page).toHaveScreenshot('crf-printable-view.png', { maxDiffPixelRatio: 0.01 });
+    await expect(page).toHaveScreenshot('crf-printable-view.png', {
+      maxDiffPixelRatio: 0.01,
+    });
   });
 });
