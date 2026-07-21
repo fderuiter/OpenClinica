@@ -1,4 +1,6 @@
 package org.akaza.openclinica.modern;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionSynchronization;
 
 import org.akaza.openclinica.modern.model.ConfigurationDraft;
 import org.akaza.openclinica.modern.service.ConfigurationDraftService;
@@ -172,6 +174,7 @@ public class InteropService {
 
             org.akaza.openclinica.model.ClinicalPayload payloadObj = new org.akaza.openclinica.model.ClinicalPayload(subjectId, eventId, value);
             final String fSubjectId = subjectId;
+            final String fEventId = eventId;
             final String fValue = value;
 
             org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService workflowService = new org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService();
@@ -180,14 +183,36 @@ public class InteropService {
             workflowService.executeWorkflowTransaction(1L, payloadObj, new org.akaza.openclinica.service.clinical.WorkflowTransactionCallback<Void>() {
                 @Override
                 public Void doInTransaction() {
-                    jdbcTemplate.update("INSERT INTO study_subject (label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, 1, 1, NOW(), 1) ON CONFLICT DO NOTHING", fSubjectId, fSubjectId);
-                    jdbcTemplate.update("INSERT INTO study_event (study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (1, 1, 1, 1, NOW()) ON CONFLICT DO NOTHING");
-                    jdbcTemplate.update("INSERT INTO item_data (event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (1, 1, 1, ?, 1, NOW())", fValue);
+                    Long sIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_subject_study_subject_id_seq')", Long.class);
+                    jdbcTemplate.update("INSERT INTO study_subject (study_subject_id, label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, ?, 1, 1, NOW(), 1) ON CONFLICT DO NOTHING", sIdPk, fSubjectId, fSubjectId);
+                    
+                    Long actualSubjectId = jdbcTemplate.queryForObject("SELECT study_subject_id FROM study_subject WHERE subject_id = ? LIMIT 1", Long.class, fSubjectId);
+                    
+                    Long eIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_event_study_event_id_seq')", Long.class);
+                    
+                    Long actualEventDefId = 1L;
+                    try {
+                        actualEventDefId = Long.parseLong(fEventId);
+                    } catch (Exception e) {
+                        try {
+                            actualEventDefId = jdbcTemplate.queryForObject("SELECT study_event_definition_id FROM study_event_definition WHERE oc_oid = ? LIMIT 1", Long.class, fEventId);
+                        } catch(Exception ex) {}
+                    }
+
+                    jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, ?, ?, 1, 1, NOW()) ON CONFLICT DO NOTHING", eIdPk, actualEventDefId, actualSubjectId);
+                    
+                    Long iIdPk = jdbcTemplate.queryForObject("SELECT nextval('item_data_item_data_id_seq')", Long.class);
+                    jdbcTemplate.update("INSERT INTO item_data (item_data_id, event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (?, 1, 1, 1, ?, 1, NOW())", iIdPk, fValue);
                     return null;
                 }
             });
             
-            recordsInStaging.remove(recordId);
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    recordsInStaging.remove(recordId);
+                }
+            });
             draftService.deleteDraft(recordId);
             log.info("Committed clinical record: {}", recordId);
         } catch (Exception e) {
@@ -280,13 +305,31 @@ public class InteropService {
                         @Override
                         public Void doInTransaction() {
                             jdbcTemplate.update("INSERT INTO study_subject (study_subject_id, label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, ?, 1, 1, NOW(), 1) ON CONFLICT DO NOTHING", sIdPk, br.subjectId, br.subjectId);
-                            jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, 1, 1, 1, 1, NOW()) ON CONFLICT DO NOTHING", eIdPk);
+                            
+                            Long actualSubjectId = jdbcTemplate.queryForObject("SELECT study_subject_id FROM study_subject WHERE subject_id = ? LIMIT 1", Long.class, br.subjectId);
+                            
+                            Long actualEventDefId = 1L;
+                            try {
+                                actualEventDefId = Long.parseLong(br.eventId);
+                            } catch (Exception e) {
+                                try {
+                                    actualEventDefId = jdbcTemplate.queryForObject("SELECT study_event_definition_id FROM study_event_definition WHERE oc_oid = ? LIMIT 1", Long.class, br.eventId);
+                                } catch(Exception ex) {}
+                            }
+
+                            jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, ?, ?, 1, 1, NOW()) ON CONFLICT DO NOTHING", eIdPk, actualEventDefId, actualSubjectId);
+                            
                             jdbcTemplate.update("INSERT INTO item_data (item_data_id, event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (?, 1, 1, 1, ?, 1, NOW())", iIdPk, br.value);
                             return null;
                         }
                     });
 
-                    recordsInStaging.remove(br.recordId);
+                    TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                        @Override
+                        public void afterCommit() {
+                            recordsInStaging.remove(br.recordId);
+                        }
+                    });
                     draftService.deleteDraft(br.recordId);
                 }
             }
