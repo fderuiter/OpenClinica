@@ -45,7 +45,21 @@ public class LegacyModernContextBridgeFilter extends OncePerRequestFilter {
             if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
                 String username = authentication.getName();
                 
-                UserAccountBean userBean = unifiedRepository.getUserAccountBeanByUserName(username);
+                UserAccountBean userBean = null;
+                if (authentication instanceof org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken) {
+                    org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken jwtAuth = (org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken) authentication;
+                    Map<String, Object> claims = jwtAuth.getTokenAttributes();
+                    userBean = new UserAccountBean();
+                    userBean.setName(username);
+                    if (claims.containsKey("user_id")) {
+                        userBean.setId(((Long) claims.get("user_id")).intValue());
+                    }
+                    if (claims.containsKey("active_study_id")) {
+                        userBean.setActiveStudyId(((Long) claims.get("active_study_id")).intValue());
+                    }
+                } else {
+                    userBean = unifiedRepository.getUserAccountBeanByUserName(username);
+                }
                 
                 if (userBean != null && userBean.getId() > 0) {
                     requestToChain = new StatelessSessionRequestWrapper(request);
