@@ -44,3 +44,25 @@ CREATE TABLE IF NOT EXISTS configuration_drafts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     expires_at TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS audit_log_event_type (
+    audit_log_event_type_id SERIAL PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS audit_log_event (
+    audit_id SERIAL PRIMARY KEY,
+    audit_date TIMESTAMP,
+    audit_table VARCHAR(500),
+    user_id INT,
+    entity_id INT,
+    entity_name VARCHAR(500),
+    reason_for_change VARCHAR(1000),
+    audit_log_event_type_id INT,
+    old_value VARCHAR(4000),
+    new_value VARCHAR(4000),
+    event_crf_id INT,
+    study_event_id INT,
+    event_crf_version_id INT
+);
+

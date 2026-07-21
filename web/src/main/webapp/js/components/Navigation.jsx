@@ -15,12 +15,12 @@ export default function Navigation() {
     <nav className={`modern-navigation ${styles.nav}`}>
       <ul className={styles.list}>
         <li>
-          <a href="#" className={styles.link}>
+          <a href="/" className={styles.link}>
             Home
           </a>
         </li>
         <li>
-          <a href="#" className={styles.link}>
+          <a href="/manage" className={styles.link}>
             Manage Study
           </a>
         </li>

@@ -28,6 +28,9 @@ public class ExportStudyEventDataBean extends StudyEventDataBean {
     private String locked;
     private String signed;
     private String stopped;
+    private String signerName;
+    private String signatureDate;
+    private String signatureReason;
 
     public ExportStudyEventDataBean() {
         super();
@@ -101,6 +104,13 @@ public class ExportStudyEventDataBean extends StudyEventDataBean {
     public String getStopped() {
         return stopped;
     }
+
+    public String getSignerName() { return signerName; }
+    public void setSignerName(String signerName) { this.signerName = signerName; }
+    public String getSignatureDate() { return signatureDate; }
+    public void setSignatureDate(String signatureDate) { this.signatureDate = signatureDate; }
+    public String getSignatureReason() { return signatureReason; }
+    public void setSignatureReason(String signatureReason) { this.signatureReason = signatureReason; }
 
     public void setStopped(String stopped) {
         this.stopped = stopped;

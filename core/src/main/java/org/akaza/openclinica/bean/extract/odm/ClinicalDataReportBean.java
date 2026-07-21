@@ -130,6 +130,15 @@ public class ClinicalDataReportBean extends OdmXmlReportBean {
                     if ("Yes".equalsIgnoreCase(se.getSigned())) {
                         xml.append("\" OpenClinica:Signed=\"Yes");
                     }
+                    if (se.getSignerName() != null) {
+                        xml.append("\" OpenClinica:SignerName=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(se.getSignerName()));
+                    }
+                    if (se.getSignatureDate() != null) {
+                        xml.append("\" OpenClinica:SignatureDate=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(se.getSignatureDate()));
+                    }
+                    if (se.getSignatureReason() != null) {
+                        xml.append("\" OpenClinica:SignatureReason=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(se.getSignatureReason()));
+                    }
                     if ("Yes".equalsIgnoreCase(se.getStopped())) {
                         xml.append("\" OpenClinica:Stopped=\"Yes");
                     }
@@ -140,6 +149,13 @@ public class ClinicalDataReportBean extends OdmXmlReportBean {
                 }
                 xml.append(">");
                 xml.append(nls);
+                
+                if ("Yes".equalsIgnoreCase(se.getSigned())) {
+                    AuditLogBean sigAudit = findSignatureAudit(se.getAuditLogs());
+                    if (sigAudit != null) {
+                        writeSignature(sigAudit, xml, indent + indent + indent + indent, se.getLocation());
+                    }
+                }
                 //
                 ArrayList<ExportFormDataBean> forms = se.getExportFormData();
                 for (ExportFormDataBean form : forms) {
@@ -166,12 +182,32 @@ public class ClinicalDataReportBean extends OdmXmlReportBean {
                         if ("Yes".equalsIgnoreCase(form.getSigned())) {
                             xml.append("\" OpenClinica:Signed=\"Yes");
                         }
+                        if (form.getSignerName() != null) {
+                            xml.append("\" OpenClinica:SignerName=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(form.getSignerName()));
+                        }
+                        if (form.getSignatureDate() != null) {
+                            xml.append("\" OpenClinica:SignatureDate=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(form.getSignatureDate()));
+                        }
+                        if (form.getSignatureReason() != null) {
+                            xml.append("\" OpenClinica:SignatureReason=\"" + org.apache.commons.lang.StringEscapeUtils.escapeXml(form.getSignatureReason()));
+                        }
                         if ("Yes".equalsIgnoreCase(form.getStopped())) {
                             xml.append("\" OpenClinica:Stopped=\"Yes");
                         }
                     }
                     xml.append("\">");
                     xml.append(nls);
+                    
+                    if ("Yes".equalsIgnoreCase(form.getSigned())) {
+                        AuditLogBean sigAudit = findSignatureAudit(form.getAuditLogs());
+                        // Fallback to event audit log if form does not have it, since form signature is triggered by event signature
+                        if (sigAudit == null) {
+                            sigAudit = findSignatureAudit(se.getAuditLogs());
+                        }
+                        if (sigAudit != null) {
+                            writeSignature(sigAudit, xml, indent + indent + indent + indent + indent, se.getLocation());
+                        }
+                    }
                     //
                     ArrayList<ImportItemGroupDataBean> igs = form.getItemGroupData();                   
                     sortImportItemGroupDataBeanList(igs);               
@@ -318,6 +354,33 @@ public class ClinicalDataReportBean extends OdmXmlReportBean {
         }
     }
     
+    private AuditLogBean findSignatureAudit(AuditLogsBean auditLogs) {
+        if (auditLogs == null) return null;
+        ArrayList<AuditLogBean> audits = auditLogs.getAuditLogs();
+        if (audits == null) return null;
+        AuditLogBean sigAudit = null;
+        for (AuditLogBean audit : audits) {
+            Integer typeId = audit.getAuditLogEventTypeId();
+            if (typeId != null && (typeId == 31 || typeId == 14 || typeId == 15 || typeId == 16)) {
+                if (sigAudit == null || audit.getDatetimeStamp().after(sigAudit.getDatetimeStamp())) {
+                    sigAudit = audit;
+                }
+            }
+        }
+        return sigAudit;
+    }
+
+    private void writeSignature(AuditLogBean sigAudit, StringBuffer xml, String indent, String location) {
+        String nls = System.getProperty("line.separator");
+        if (location == null || location.trim().length() == 0) location = "Unknown";
+        xml.append(indent + "<Signature>" + nls);
+        xml.append(indent + "  <UserRef UserOID=\"" + StringEscapeUtils.escapeXml(sigAudit.getUserId()) + "\"/>" + nls);
+        xml.append(indent + "  <LocationRef LocationOID=\"" + StringEscapeUtils.escapeXml(location) + "\"/>" + nls);
+        xml.append(indent + "  <SignatureRef SignatureOID=\"SIG_01\"/>" + nls);
+        xml.append(indent + "  <DateTimeStamp>" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(sigAudit.getDatetimeStamp()) + "</DateTimeStamp>" + nls);
+        xml.append(indent + "</Signature>" + nls);
+    }
+
     protected void addAuditLogs(AuditLogsBean auditLogs, String currentIndent ,String entity) {
       int count=0;
     	if (auditLogs != null) {

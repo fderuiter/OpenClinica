@@ -21,10 +21,38 @@
           <fo:block font-size="12pt" space-after="5mm"><xsl:value-of select="$protocolNameStudy"/>
           </fo:block>
           <fo:block font-size="10pt">
-           
+             <xsl:apply-templates select="//odm:StudyEventData[@OpenClinica:Signed='Yes'] | //odm:FormData[@OpenClinica:Signed='Yes']" mode="signature"/>
           </fo:block>
         </fo:flow>
       </fo:page-sequence>
     </fo:root>
     </xsl:template>
+
+    <xsl:template match="*" mode="signature">
+        <fo:block margin-top="10pt" margin-bottom="10pt" border="1pt solid black" padding="5pt">
+            <fo:table table-layout="fixed" width="100%">
+                <fo:table-column column-width="30%"/>
+                <fo:table-column column-width="70%"/>
+                <fo:table-body>
+                    <fo:table-row>
+                        <fo:table-cell><fo:block font-weight="bold">Electronic Signature:</fo:block></fo:table-cell>
+                        <fo:table-cell><fo:block></fo:block></fo:table-cell>
+                    </fo:table-row>
+                    <fo:table-row>
+                        <fo:table-cell><fo:block font-weight="bold">Signer Name:</fo:block></fo:table-cell>
+                        <fo:table-cell><fo:block><xsl:value-of select="@OpenClinica:SignerName"/></fo:block></fo:table-cell>
+                    </fo:table-row>
+                    <fo:table-row>
+                        <fo:table-cell><fo:block font-weight="bold">Signature Date:</fo:block></fo:table-cell>
+                        <fo:table-cell><fo:block><xsl:value-of select="@OpenClinica:SignatureDate"/></fo:block></fo:table-cell>
+                    </fo:table-row>
+                    <fo:table-row>
+                        <fo:table-cell><fo:block font-weight="bold">Reason:</fo:block></fo:table-cell>
+                        <fo:table-cell><fo:block><xsl:value-of select="@OpenClinica:SignatureReason"/></fo:block></fo:table-cell>
+                    </fo:table-row>
+                </fo:table-body>
+            </fo:table>
+        </fo:block>
+    </xsl:template>
+
 </xsl:stylesheet>

@@ -2047,6 +2047,22 @@ private void fetchItemGroupMetaData(MetaDataVersionBean metadata,String cvIds, S
             user.setOrganization(organization);
             data.getUsers().add(user);
         }
+
+        String sigSql = "SELECT distinct sed.oc_oid as sed_oid, crf.oc_oid as crf_oid FROM event_definition_crf edc JOIN crf on crf.crf_id=edc.crf_id JOIN study_event_definition sed on sed.study_event_definition_id=edc.study_event_definition_id WHERE edc.electronic_signature=true AND sed.study_id=" + study.getId();
+        ArrayList sigRows = this.select(sigSql);
+        Iterator sigIt = sigRows.iterator();
+        while(sigIt.hasNext()) {
+            HashMap row = (HashMap) sigIt.next();
+            String sedOid = (String) row.get("sed_oid");
+            String crfOid = (String) row.get("crf_oid");
+            org.akaza.openclinica.bean.odmbeans.SignatureDefBean s = new org.akaza.openclinica.bean.odmbeans.SignatureDefBean();
+            s.setOid("SIG_" + sedOid + "_" + crfOid);
+            s.setMethodology("electronic");
+            s.setMeaning("Investigator Signature");
+            s.setLegalReason("As the investigator or designated member of the investigator's staff, I confirm that the electronic case report forms for this subject are a full, accurate, and complete record of the observations recorded. I intend for this electronic signature to be the legally binding equivalent of my written signature.");
+            data.getSignatureDefs().add(s);
+        }
+        
         // LocationBean loc = new LocationBean();
         // loc.setOid("LOC_"+study.getOid());
         // loc.setName(study.getName());
@@ -2427,6 +2443,7 @@ private void fetchItemGroupMetaData(MetaDataVersionBean metadata,String cvIds, S
                 logger.debug("datatime=" + auditDate + " or " + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(auditDate));
                 auditLog.setDatetimeStamp(auditDate);
                 auditLog.setType(type);
+                auditLog.setAuditLogEventTypeId(typeId);
                 auditLog.setReasonForChange(auditReason);
                 if (typeId == 3 || typeId == 6) {
                     if ("0".equals(newValue)) {
@@ -2481,6 +2498,7 @@ private void fetchItemGroupMetaData(MetaDataVersionBean metadata,String cvIds, S
                 auditLog.setUserId("USR_" + userId);
                 auditLog.setDatetimeStamp(auditDate);
                 auditLog.setType(type);
+                auditLog.setAuditLogEventTypeId(typeId);
                 auditLog.setReasonForChange(auditReason);
                 if (typeId == 17 || typeId == 18 || typeId == 19 || typeId == 20 || typeId == 21 || typeId == 22 || typeId == 23 || typeId == 31) {
                     if ("0".equals(newValue)) {
@@ -2537,6 +2555,7 @@ private void fetchItemGroupMetaData(MetaDataVersionBean metadata,String cvIds, S
                 auditLog.setUserId("USR_" + userId);
                 auditLog.setDatetimeStamp(auditDate);
                 auditLog.setType(type);
+                auditLog.setAuditLogEventTypeId(typeId);
                 auditLog.setReasonForChange(auditReason);
                 if (typeId == 8 || typeId == 10 || typeId == 11 || typeId == 14 || typeId == 15 || typeId == 16) {
                     if ("0".equals(newValue)) {
@@ -2607,6 +2626,7 @@ private void fetchItemGroupMetaData(MetaDataVersionBean metadata,String cvIds, S
                 auditLog.setUserId("USR_" + userId);
                 auditLog.setDatetimeStamp(auditDate);
                 auditLog.setType(type);
+                auditLog.setAuditLogEventTypeId(typeId);
                 auditLog.setReasonForChange(auditReason);
                 if (typeId == 12) {
                     if ("0".equals(newValue)) {
