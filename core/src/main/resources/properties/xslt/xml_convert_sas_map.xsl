@@ -63,6 +63,16 @@
             <TYPE>numeric</TYPE>
             <DATATYPE>integer</DATATYPE>
         </row>
+        <row name="EventSignature">
+            <TYPE>character</TYPE>
+            <DATATYPE>string</DATATYPE>
+            <LENGTH>255</LENGTH>
+        </row>
+        <row name="CRFSignature">
+            <TYPE>character</TYPE>
+            <DATATYPE>string</DATATYPE>
+            <LENGTH>255</LENGTH>
+        </row>
     </xsl:variable>
     <!-- Return the ItemGroup TABLE map elements. -->
     <xsl:template match="odm:ItemGroupDef" mode="map">

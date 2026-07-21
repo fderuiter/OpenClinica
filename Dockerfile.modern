@@ -4,19 +4,13 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y maven openjdk-17-jdk
 WORKDIR /app
 COPY . .
-RUN mvn clean package -DskipTests \
-    -DdbHost=db \
-    -DdbType=postgres \
-    -DdbUser=clinica \
-    -DdbPass=clinica \
-    -Ddb=clinica \
-    -DdbPort=5432
+RUN mvn clean package -DskipTests
 
 # Stage 2: Run Modern
 FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y openjdk-17-jre
+RUN apt-get update && apt-get install -y openjdk-17-jre curl
 WORKDIR /app
 COPY --from=build /app/modern/target/OpenClinica-modern-*.jar /app/modern.jar
-EXPOSE 8080
+EXPOSE 8081
 CMD ["java", "-jar", "modern.jar"]
