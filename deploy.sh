@@ -5,6 +5,27 @@ cd /app
 
 echo "Starting automated deployment lifecycle..."
 
+# 0. Tagging Phase
+echo "[0/4] Tagging active images as stable..."
+WEB_CONTAINER=$(docker compose ps -q web | head -n 1)
+MODERN_CONTAINER=$(docker compose ps -q modern | head -n 1)
+
+if [ -n "$WEB_CONTAINER" ]; then
+    WEB_CONFIG_IMAGE=$(docker inspect --format='{{.Config.Image}}' "$WEB_CONTAINER")
+    WEB_REPO=$(echo "$WEB_CONFIG_IMAGE" | cut -d: -f1)
+    WEB_IMAGE_ID=$(docker inspect --format='{{.Image}}' "$WEB_CONTAINER")
+    docker tag "$WEB_IMAGE_ID" "$WEB_REPO:stable"
+    echo "Tagged $WEB_IMAGE_ID as $WEB_REPO:stable"
+fi
+
+if [ -n "$MODERN_CONTAINER" ]; then
+    MODERN_CONFIG_IMAGE=$(docker inspect --format='{{.Config.Image}}' "$MODERN_CONTAINER")
+    MODERN_REPO=$(echo "$MODERN_CONFIG_IMAGE" | cut -d: -f1)
+    MODERN_IMAGE_ID=$(docker inspect --format='{{.Image}}' "$MODERN_CONTAINER")
+    docker tag "$MODERN_IMAGE_ID" "$MODERN_REPO:stable"
+    echo "Tagged $MODERN_IMAGE_ID as $MODERN_REPO:stable"
+fi
+
 # 1. Backup Phase
 echo "[1/4] Executing admin-based backup..."
 
@@ -74,6 +95,14 @@ else
     
     echo "Automated Database Recovery scripts executed."
     
+    echo "Restoring stable images..."
+    if [ -n "$WEB_REPO" ]; then
+        docker tag "$WEB_REPO:stable" "$WEB_CONFIG_IMAGE"
+    fi
+    if [ -n "$MODERN_REPO" ]; then
+        docker tag "$MODERN_REPO:stable" "$MODERN_CONFIG_IMAGE"
+    fi
+
     echo "Restarting application containers..."
     docker compose up -d web modern
     
@@ -95,7 +124,7 @@ else
     
     if [ "$ROLLBACK_HEALTH_PASSED" = true ]; then
         echo "Rollback complete. System restored to previous functional version."
-        exit 0
+        exit 1
     else
         echo "Rollback health check failed. Manual intervention required."
         exit 1

@@ -4,18 +4,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y maven openjdk-17-jdk
 WORKDIR /app
 COPY . .
-RUN mvn clean package -DskipTests \
-    -DdbHost=db \
-    -DdbType=postgres \
-    -DdbUser=clinica \
-    -DdbPass=clinica \
-    -Ddb=clinica \
-    -DdbPort=5432
+RUN mvn clean package -DskipTests
 
 # Stage 2: Run Tomcat
 FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y openjdk-17-jre wget tar
+RUN apt-get update && apt-get install -y openjdk-17-jre wget tar curl
 RUN wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.83/bin/apache-tomcat-9.0.83.tar.gz && \
     tar xzf apache-tomcat-9.0.83.tar.gz && \
     mv apache-tomcat-9.0.83 /usr/local/tomcat && \

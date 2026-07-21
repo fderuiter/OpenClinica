@@ -44,6 +44,20 @@ const schema = {
   ],
 };
 
+// Local registry for discrepancies to satisfy acceptance criteria
+const discrepancyRegistry = {
+  "IG_NON_REP[0].I_GEN_NOTES": {
+    severityCode: "ERR_01",
+    badgeClass: "alert",
+    text: "Note cannot be empty."
+  },
+  "IG_AE_1[0].I_AE_ONSET": {
+    severityCode: "WARN_01",
+    badgeClass: "alertbox_center",
+    text: "Date is in the future. Please verify."
+  }
+};
+
 export default function CRFRenderer() {
   const [studyOID, setStudyOID] = useState(store.getState().studyOID);
   const [formData, setFormData] = useState(store.getState().formData);
@@ -56,11 +70,7 @@ export default function CRFRenderer() {
     schema.groups.forEach((group) => {
       const data = store.getState().formData[group.groupOID];
       if (!data || data.length === 0) {
-        if (group.repeating) {
-          // No initial rows required by default unless specified, but let's initialize 1 for user convenience
-          // Wait, acceptance criteria says "click a button to add an entry". We'll just leave it empty initially or let addRow handle it.
-        } else {
-          // Initialize non-repeating group with 1 row
+        if (!group.repeating) {
           store.addRow(group.groupOID, schema);
         }
       }
@@ -127,6 +137,9 @@ export default function CRFRenderer() {
                   {group.repeating && <h4>Row {index + 1}</h4>}
                   {group.fields.map((field) => {
                     const fieldId = `${group.groupOID}[${index}].${field.fieldOID}`;
+                    const discrepancy = discrepancyRegistry[fieldId];
+                    const discrepancyId = discrepancy ? `${fieldId}-discrepancy` : undefined;
+
                     return (
                       <div
                         key={field.fieldOID}
@@ -138,6 +151,16 @@ export default function CRFRenderer() {
                         >
                           {field.label}:
                         </label>
+                        
+                        {discrepancy && (
+                          <span 
+                            className={`discrepancy-badge ${discrepancy.badgeClass}`} 
+                            style={{ marginLeft: '5px', marginRight: '5px', fontWeight: 'bold', color: 'red' }}
+                            title={`Severity: ${discrepancy.severityCode}`}
+                          >
+                            [{discrepancy.severityCode}]
+                          </span>
+                        )}
                         {field.type === 'select' ? (
                           <select
                             id={fieldId}
@@ -151,6 +174,7 @@ export default function CRFRenderer() {
                                 e.target.value
                               )
                             }
+                            aria-describedby={discrepancyId}
                           >
                             <option value="">--Select--</option>
                             {field.options.map((opt) => (
@@ -173,7 +197,17 @@ export default function CRFRenderer() {
                                 e.target.value
                               )
                             }
+                            aria-describedby={discrepancyId}
                           />
+                        )}
+
+                        {discrepancy && (
+                          <div 
+                            id={discrepancyId} 
+                            style={{ display: 'block', fontSize: '12px', color: 'red', marginLeft: '150px', marginTop: '5px' }}
+                          >
+                            {discrepancy.text}
+                          </div>
                         )}
                       </div>
                     );

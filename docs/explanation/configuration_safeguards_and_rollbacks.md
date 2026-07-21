@@ -58,3 +58,15 @@
 - [ ] Administrators can revert the system configuration to any previous snapshot from the administration panel UI [cite:source9].
 - [ ] Users can browse, filter, and view records in a read-only state during simulated database network drops [cite:source10].
 - [ ] Command-line management commands fail unless the administrator answers 'yes' to safety prompts or sets the override environment variable [cite:source8].
+## References
+
+- [cite:source1]: Placeholder descriptive title for source 1
+- [cite:source2]: Placeholder descriptive title for source 2
+- [cite:source3]: Placeholder descriptive title for source 3
+- [cite:source4]: Placeholder descriptive title for source 4
+- [cite:source5]: Placeholder descriptive title for source 5
+- [cite:source6]: Placeholder descriptive title for source 6
+- [cite:source7]: Placeholder descriptive title for source 7
+- [cite:source8]: Placeholder descriptive title for source 8
+- [cite:source9]: Placeholder descriptive title for source 9
+- [cite:source10]: Placeholder descriptive title for source 10

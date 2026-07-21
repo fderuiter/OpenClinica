@@ -7,9 +7,9 @@
     "dev": "vite",
     "test": "vitest run --environment jsdom",
     "build": "vite build && node inject-bundle.js",
-    "docs": "typedoc --plugin typedoc-plugin-markdown src/main/webapp/js/components/*.jsx --out ../docs/reference/frontend-api",
+    "docs": "typedoc --plugin typedoc-plugin-markdown --readme none --entryFileName modules.md src/main/webapp/js/components/*.jsx --out ../docs/reference/frontend-api",
     "postinstall": "node security-audit.js",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=0",
     "format:check": "prettier --check .",
     "format": "prettier --write ."
   },
@@ -33,7 +33,12 @@
     "underscore": "^1.13.8"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@vitejs/plugin-react": "^6.0.3",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^17.7.0",
     "jsdom": "^29.1.1",
     "typedoc": "^0.28.19",
     "typedoc-plugin-markdown": "^4.12.0",
