@@ -9,8 +9,6 @@
     
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
         p:locations="classpath:test.properties"
-        p:placeholderPrefix="s["
-        p:placeholderSuffix="]"
      />
 
 </beans>
