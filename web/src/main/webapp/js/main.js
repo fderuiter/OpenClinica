@@ -21,7 +21,8 @@ import './vendor/calendarpopup/CalendarPopup.js';
 
 async function mountReactApp() {
   const isPrintableMode =
-    (window.app_studyOID !== undefined && document.title.includes('Printable Forms')) ||
+    (window.app_studyOID !== undefined &&
+      document.title.includes('Printable Forms')) ||
     window.location.pathname.includes('printcrf');
 
   const crfContainer = document.getElementById('printCRFContainer');
@@ -39,17 +40,19 @@ async function mountReactApp() {
     { default: React },
     { createRoot },
     { AccessibilityProvider },
-    { default: ErrorBoundary }
+    { default: ErrorBoundary },
   ] = await Promise.all([
     import('react'),
     import('react-dom/client'),
     import('./components/AccessibilityProvider.jsx'),
-    import('./components/ErrorBoundary.jsx')
+    import('./components/ErrorBoundary.jsx'),
   ]);
 
   if (needsCRF) {
     // If this is the print CRF page, replace the body or specific element with the new renderer
-    const CRFRenderer = React.lazy(() => import('./components/CRFRenderer.jsx'));
+    const CRFRenderer = React.lazy(
+      () => import('./components/CRFRenderer.jsx')
+    );
     const crfRoot = createRoot(crfContainer);
     crfRoot.render(
       React.createElement(
@@ -79,7 +82,13 @@ async function mountReactApp() {
           null,
           React.createElement(
             React.Suspense,
-            { fallback: React.createElement('div', null, 'Loading Navigation...') },
+            {
+              fallback: React.createElement(
+                'div',
+                null,
+                'Loading Navigation...'
+              ),
+            },
             React.createElement(Navigation, null)
           )
         )
@@ -99,8 +108,10 @@ if (document.readyState === 'loading') {
 }
 
 function clearHardcodedTabIndex() {
-  const formElements = document.querySelectorAll('input[tabindex], select[tabindex], textarea[tabindex], button[tabindex]');
-  formElements.forEach(el => {
+  const formElements = document.querySelectorAll(
+    'input[tabindex], select[tabindex], textarea[tabindex], button[tabindex]'
+  );
+  formElements.forEach((el) => {
     const tabIndex = parseInt(el.getAttribute('tabindex'), 10);
     // Only clear if it's explicitly set to break visual flow (positive tab index)
     if (tabIndex > 0) {
