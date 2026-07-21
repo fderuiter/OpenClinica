@@ -2,6 +2,7 @@ site_name: OpenClinica Documentation Portal
 theme:
   name: material
 nav:
+  - Home: index.md
   - Tutorials:
     - Build Study: tutorials/build_study.md
     - Participate Setup: tutorials/participate_setup.md
