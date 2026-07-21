@@ -211,18 +211,19 @@ public class CoreResources implements ResourceLoaderAware {
     }
 
     private static String replaceWebapp(String value) {
+        String safeWebapp = (webapp != null) ? webapp : "openclinica";
 
         if (value.contains("${WEBAPP}")) {
-            value = value.replace("${WEBAPP}", webapp);
+            value = value.replace("${WEBAPP}", safeWebapp);
         }
 
         else if (value.contains("${WEBAPP.lower}")) {
-            value = value.replace("${WEBAPP.lower}", webapp.toLowerCase());
+            value = value.replace("${WEBAPP.lower}", safeWebapp.toLowerCase());
         }
         if (value.contains("$WEBAPP.lower")) {
-            value = value.replace("$WEBAPP.lower", webapp.toLowerCase());
+            value = value.replace("$WEBAPP.lower", safeWebapp.toLowerCase());
         } else if (value.contains("$WEBAPP")) {
-            value = value.replace("$WEBAPP", webapp);
+            value = value.replace("$WEBAPP", safeWebapp);
         }
 
         return value;
