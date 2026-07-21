@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Run Checksum Duplication Guard
-      run: ./scripts/check_duplicates.sh
+      run: ./utils/check_duplicates.sh
 
   build:
     runs-on: ubuntu-latest

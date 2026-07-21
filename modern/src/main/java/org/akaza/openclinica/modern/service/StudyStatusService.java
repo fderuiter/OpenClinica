@@ -107,9 +107,8 @@ public class StudyStatusService {
             }
         }
         
-        // Wait, does the legacy audit listener catch all these changes? Yes, the interceptor/listeners are mapped to hibernate.
-        // Wait, what about the manual audit_event insertion that used to be there?
-        // The original code did: INSERT INTO audit_event (audit_id, audit_date, audit_table, user_id, entity_id, reason_for_change, action_message) VALUES (nextval('audit_event_audit_id_seq'), NOW(), 'study', ?, ?, 'Status Update', ?)
+        // TODO: Wait, does the legacy audit listener catch all these changes? Yes, the interceptor/listeners are mapped to hibernate.
+        // TODO: Wait, what about the manual audit_event insertion that used to be there?
         // But the context says: "All database modifications initiated by modern services must trigger the standard entity-level audit logging listeners... Using Hibernate domain entities/DAOs directly will naturally trigger these listeners, fulfilling the audit requirements."
         // Because we update the Study entity and merge it, Hibernate triggers the audit listener. Thus we no longer need the explicit audit_event manual insert!
     }
