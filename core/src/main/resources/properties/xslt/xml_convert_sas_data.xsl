@@ -36,6 +36,12 @@
 					<xsl:element name="ItemGroupRepeatKey">
 						<xsl:value-of select="@ItemGroupRepeatKey"/>
 					</xsl:element>
+					<xsl:element name="EventSignature">
+						<xsl:value-of select="../../@OpenClinica:Signed"/>
+					</xsl:element>
+					<xsl:element name="CRFSignature">
+						<xsl:value-of select="../@OpenClinica:Signed"/>
+					</xsl:element>
 					<xsl:for-each select="odm:ItemData">
 						<xsl:element name="{@ItemOID}">
 							<xsl:value-of select="@Value"/>
