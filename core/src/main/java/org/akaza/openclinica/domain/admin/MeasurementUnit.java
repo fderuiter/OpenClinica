@@ -14,15 +14,16 @@ import org.hibernate.annotations.Parameter;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 
 /**
  * 
  * @author ywang (May, 2009)
  * 
  */
-@Entity
+@Entity(name = "AdminMeasurementUnit")
 @Table(name = "measurement_unit")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "measurement_unit_measurement_unit_id") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "measurement_unit_measurement_unit_id"), @Parameter(name = "increment_size", value = "1") })
 public class MeasurementUnit extends AbstractMutableDomainObject {
     private String name;
     private String description;
@@ -44,6 +45,7 @@ public class MeasurementUnit extends AbstractMutableDomainObject {
         this.description = description;
     }
 
+    @Column(name = "oc_oid")
     public String getOcOid() {
         return ocOid;
     }

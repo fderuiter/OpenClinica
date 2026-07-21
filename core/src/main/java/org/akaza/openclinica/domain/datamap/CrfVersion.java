@@ -34,7 +34,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = "crf_version", uniqueConstraints = @UniqueConstraint(columnNames = "oc_oid"))
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "crf_version_crf_version_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "crf_version_crf_version_id_seq"), @Parameter(name = "increment_size", value = "1") })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CrfVersion extends DataMapDomainObject {
 

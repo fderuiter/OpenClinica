@@ -27,7 +27,7 @@ import org.hibernate.annotations.Parameter;
  */
 @Entity
 @Table(name = "discrepancy_note")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "discrepancy_note_discrepancy_note_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "discrepancy_note_discrepancy_note_id_seq"), @Parameter(name = "increment_size", value = "1") })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DiscrepancyNote  extends DataMapDomainObject {
 

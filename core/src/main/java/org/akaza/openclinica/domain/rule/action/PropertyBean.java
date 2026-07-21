@@ -18,7 +18,7 @@ import org.hibernate.annotations.Parameter;
 
 @Entity
 @Table(name = "rule_action_property")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_action_property_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_action_property_id_seq"), @Parameter(name = "increment_size", value = "1") })
 @XmlRootElement(name="None")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PropertyBean extends AbstractMutableDomainObject implements Serializable {

@@ -35,6 +35,9 @@ public class RandomizationRegistrar {
 
     public RandomizationRegistrar() {
         cacheManager = CacheManager.getInstance();
+        if (cacheManager.getCache(CACHE_KEY) == null) {
+            cacheManager.addCache(CACHE_KEY);
+        }
         this.cache = cacheManager.getCache(CACHE_KEY);
 
     }

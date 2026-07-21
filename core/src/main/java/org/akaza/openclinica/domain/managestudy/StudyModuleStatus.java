@@ -7,6 +7,7 @@ import org.akaza.openclinica.domain.AbstractAuditableMutableDomainObject;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.persistence.Column;
 import java.util.Date;
 
 /**
@@ -16,9 +17,9 @@ import java.util.Date;
  * There will be a single instance of this class which will maintain completion status of
  * different entities of study module.
  */
-@Entity
+@Entity(name = "ManageStudyModuleStatus")
 @Table(name = "study_module_status")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "study_module_status_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "study_module_status_id_seq"), @Parameter(name = "increment_size", value = "1") })
 public class StudyModuleStatus extends AbstractAuditableMutableDomainObject {
     public static final int NOT_STARTED = 1;
     public static final int IN_PROGRESS = 2;
@@ -35,6 +36,7 @@ public class StudyModuleStatus extends AbstractAuditableMutableDomainObject {
 
     private transient int studyStatus;
 
+    @Column(name = "study_id")
     public int getStudyId() {
         return studyId;
     }
@@ -59,6 +61,7 @@ public class StudyModuleStatus extends AbstractAuditableMutableDomainObject {
         this.crf = crf;
     }
 
+    @Column(name = "event_definition")
     public int getEventDefinition() {
         return eventDefinition;
     }
@@ -67,6 +70,7 @@ public class StudyModuleStatus extends AbstractAuditableMutableDomainObject {
         this.eventDefinition = eventDefinition;
     }
 
+    @Column(name = "subject_group")
     public int getSubjectGroup() {
         return subjectGroup;
     }

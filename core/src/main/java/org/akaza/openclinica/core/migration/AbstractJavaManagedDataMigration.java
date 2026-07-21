@@ -25,6 +25,11 @@ public abstract class AbstractJavaManagedDataMigration implements ApplicationLis
         }
         try {
             this.applicationContext = event.getApplicationContext();
+            String driver = applicationContext.getEnvironment().getProperty("spring.datasource.driver-class-name");
+            if ("org.h2.Driver".equals(driver)) {
+                executed = true;
+                return;
+            }
             setupDependencies(this.applicationContext);
             doMigration();
             executed = true;

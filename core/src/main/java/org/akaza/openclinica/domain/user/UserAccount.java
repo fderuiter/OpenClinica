@@ -48,7 +48,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = "user_account", schema = "public")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "user_account_user_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "user_account_user_id_seq"), @Parameter(name = "increment_size", value = "1") })
 
 public class UserAccount extends DataMapDomainObject {
 

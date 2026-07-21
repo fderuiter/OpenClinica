@@ -22,7 +22,7 @@ import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "rule_action_stratification_factor")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_action_stratification_factor_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "rule_action_stratification_factor_id_seq"), @Parameter(name = "increment_size", value = "1") })
 @XmlRootElement(name="StratificationFactor")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StratificationFactorBean extends AbstractMutableDomainObject {

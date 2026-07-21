@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 import org.akaza.openclinica.domain.AbstractMutableDomainObject;
 import org.akaza.openclinica.domain.DataMapDomainObject;
@@ -26,7 +27,7 @@ public class StudyType  extends DataMapDomainObject {
 	private int studyTypeId;
 	private String name;
 	private String description;
-	private Set studies = new HashSet(0);
+	private Set<Study> studies = new HashSet<Study>(0);
 
 	public StudyType() {
 	}
@@ -36,7 +37,7 @@ public class StudyType  extends DataMapDomainObject {
 	}
 
 	public StudyType(int studyTypeId, String name, String description,
-			Set studies) {
+			Set<Study> studies) {
 		this.studyTypeId = studyTypeId;
 		this.name = name;
 		this.description = description;
@@ -71,12 +72,12 @@ public class StudyType  extends DataMapDomainObject {
 		this.description = description;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "studyType")
-	public Set getStudies() {
+	@Transient
+	public Set<Study> getStudies() {
 		return this.studies;
 	}
 
-	public void setStudies(Set studies) {
+	public void setStudies(Set<Study> studies) {
 		this.studies = studies;
 	}
 

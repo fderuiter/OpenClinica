@@ -22,7 +22,7 @@ import org.hibernate.annotations.Parameter;
  */
 @Entity
 @Table(name = "discrepancy_note_type")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "discrepancy_note_type_discrepancy_note_type_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "discrepancy_note_type_discrepancy_note_type_id_seq"), @Parameter(name = "increment_size", value = "1") })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DiscrepancyNoteType  extends DataMapDomainObject {
 

@@ -22,7 +22,7 @@ import org.hibernate.annotations.Parameter;
  */
 @Entity
 @Table(name = "item_data_type")
-@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "item_data_type_item_data_type_id_seq") })
+@GenericGenerator(name = "id-generator", strategy = "native", parameters = { @Parameter(name = "sequence", value = "item_data_type_item_data_type_id_seq"), @Parameter(name = "increment_size", value = "1") })
 public class ItemDataType extends DataMapDomainObject {
 
     private int itemDataTypeId;

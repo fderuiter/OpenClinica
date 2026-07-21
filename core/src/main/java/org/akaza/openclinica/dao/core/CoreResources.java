@@ -378,7 +378,7 @@ public class CoreResources implements ResourceLoaderAware {
 
         String designerURL = DATAINFO.getProperty("designerURL");
         if (designerURL == null || designerURL.isEmpty()) {
-            DATAINFO.setProperty("designer.url", designerURL);
+            DATAINFO.setProperty("designer.url", "");
         }
 
         String xformEnabled = DATAINFO.getProperty("xformEnabled");
@@ -406,41 +406,42 @@ public class CoreResources implements ResourceLoaderAware {
 
     private void setMailProps() {
 
-        DATAINFO.setProperty("mail.host", DATAINFO.getProperty("mailHost"));
-        DATAINFO.setProperty("mail.port", DATAINFO.getProperty("mailPort"));
-        DATAINFO.setProperty("mail.protocol", DATAINFO.getProperty("mailProtocol"));
-        DATAINFO.setProperty("mail.username", DATAINFO.getProperty("mailUsername"));
-        DATAINFO.setProperty("mail.password", DATAINFO.getProperty("mailPassword"));
-        DATAINFO.setProperty("mail.smtp.auth", DATAINFO.getProperty("mailSmtpAuth"));
-        DATAINFO.setProperty("mail.smtp.starttls.enable", DATAINFO.getProperty("mailSmtpStarttls.enable"));
-        DATAINFO.setProperty("mail.smtps.auth", DATAINFO.getProperty("mailSmtpsAuth"));
-        DATAINFO.setProperty("mail.smtps.starttls.enable", DATAINFO.getProperty("mailSmtpsStarttls.enable"));
-        DATAINFO.setProperty("mail.smtp.connectiontimeout", DATAINFO.getProperty("mailSmtpConnectionTimeout"));
+        setIfNotNull("mail.host", "mailHost");
+        setIfNotNull("mail.port", "mailPort");
+        setIfNotNull("mail.protocol", "mailProtocol");
+        setIfNotNull("mail.username", "mailUsername");
+        setIfNotNull("mail.password", "mailPassword");
+        setIfNotNull("mail.smtp.auth", "mailSmtpAuth");
+        setIfNotNull("mail.smtp.starttls.enable", "mailSmtpStarttls.enable");
+        setIfNotNull("mail.smtps.auth", "mailSmtpsAuth");
+        setIfNotNull("mail.smtps.starttls.enable", "mailSmtpsStarttls.enable");
+        setIfNotNull("mail.smtp.connectiontimeout", "mailSmtpConnectionTimeout");
         /**
          * As Microsoft are currently deprecating TLS versions 1.0 and 1.1
          * set default value
          */
-        if(DATAINFO.getProperty("mailSmtpStarttls.required") != null) {
-        	DATAINFO.setProperty("mail.smtp.starttls.required", DATAINFO.getProperty("mailSmtpStarttls.required"));
-        }
-        
-        if(DATAINFO.getProperty("mailSmtpSslProtocols") != null) {
-        	DATAINFO.setProperty("mail.smtp.ssl.protocols", DATAINFO.getProperty("mailSmtpSslProtocols"));
-        }
-        
-        DATAINFO.setProperty("mail.errormsg", DATAINFO.getProperty("mailErrorMsg"));
+        setIfNotNull("mail.smtp.starttls.required", "mailSmtpStarttls.required");
+        setIfNotNull("mail.smtp.ssl.protocols", "mailSmtpSslProtocols");
+        setIfNotNull("mail.errormsg", "mailErrorMsg");
 
+    }
+
+    private void setIfNotNull(String targetKey, String sourceKey) {
+        String value = DATAINFO.getProperty(sourceKey);
+        if (value != null) {
+            DATAINFO.setProperty(targetKey, value);
+        }
     }
 
     private void setRuleDesignerProps() {
 
-        DATAINFO.setProperty("designer.url", DATAINFO.getProperty("designerURL"));
+        setIfNotNull("designer.url", "designerURL");
     }
 
     private void setDatabaseProperties(String database) {
 
-        DATAINFO.setProperty("username", DATAINFO.getProperty("dbUser"));
-        DATAINFO.setProperty("password", DATAINFO.getProperty("dbPass"));
+        setIfNotNull("username", "dbUser");
+        setIfNotNull("password", "dbPass");
         String url = null, driver = null, hibernateDialect = null;
         if (database.equalsIgnoreCase("postgres")) {
             url = "jdbc:postgresql:" + "//" + DATAINFO.getProperty("dbHost") + ":" + DATAINFO.getProperty("dbPort") + "/" + DATAINFO.getProperty("db") + "?stringtype=unspecified&convertBooleanToNumeric=true";

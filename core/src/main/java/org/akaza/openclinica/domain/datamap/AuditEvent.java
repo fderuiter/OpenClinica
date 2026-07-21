@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 
 import org.akaza.openclinica.domain.AbstractMutableDomainObject;
 
@@ -120,7 +121,7 @@ public class AuditEvent extends AbstractMutableDomainObject {
 		this.actionMessage = actionMessage;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "auditEvent")
+	@Transient
 	public Set getAuditEventValueses() {
 		return this.auditEventValueses;
 	}
@@ -129,7 +130,7 @@ public class AuditEvent extends AbstractMutableDomainObject {
 		this.auditEventValueses = auditEventValueses;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "auditEvent")
+	@Transient
 	public Set getAuditEventContexts() {
 		return this.auditEventContexts;
 	}

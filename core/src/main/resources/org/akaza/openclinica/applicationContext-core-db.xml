@@ -27,6 +27,7 @@
     <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase" depends-on="coreResources">
       <property name="dataSource" ref="dataSource" />
       <property name="changeLog" value="classpath:migration/master.xml" />
+      <property name="shouldRun" value="${liquibase.should.run:true}" />
       <property name="changeLogParameters">
           <map>
               <entry key="dbUser" value="${username:clinica}"/>
