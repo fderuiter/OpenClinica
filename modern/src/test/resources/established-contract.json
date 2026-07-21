@@ -1,1 +1,239 @@
-{"openapi":"3.0.1","info":{"title":"OpenAPI definition","version":"v0"},"servers":[{"url":"http://localhost:8080","description":"Generated server url"}],"paths":{"/api/config/draft/{id}":{"get":{"tags":["configuration-draft-controller"],"operationId":"getDraft","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ConfigurationDraft"}}}}}},"put":{"tags":["configuration-draft-controller"],"operationId":"updateDraft","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}},"required":true},"responses":{"200":{"description":"OK"}}}},"/interop/pipeline/commit":{"post":{"tags":["interop-controller"],"operationId":"pipelineCommit","parameters":[{"name":"recordId","in":"query","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"string"}}}}}}},"/interop/mapping/data":{"get":{"tags":["interop-controller"],"operationId":"getMappingInterface","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}},"post":{"tags":["interop-controller"],"operationId":"saveMapping","requestBody":{"content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"string"}}}}}}},"/interop/hl7":{"post":{"tags":["interop-controller"],"operationId":"ingestHl7","requestBody":{"content":{"application/json":{"schema":{"type":"string"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"string"}}}}}}},"/interop/fhir":{"post":{"tags":["interop-controller"],"operationId":"ingestFhir","requestBody":{"content":{"application/json":{"schema":{"type":"string"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"string"}}}}}}},"/api/config/draft":{"post":{"tags":["configuration-draft-controller"],"operationId":"createDraft","requestBody":{"content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ConfigurationDraft"}}}}}}},"/api/config/draft/{id}/commit":{"post":{"tags":["configuration-draft-controller"],"operationId":"commitDraft","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"string"}}}}}}},"/interop/pipeline/review":{"get":{"tags":["interop-controller"],"operationId":"pipelineReview","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"array","items":{"type":"string"}}}}}}}},"/DataEntry":{"get":{"tags":["data-entry-controller"],"operationId":"dataEntry","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"object"}}}}}}}},"components":{"schemas":{"ConfigurationDraft":{"type":"object","properties":{"id":{"type":"string"},"userName":{"type":"string"},"draftType":{"type":"string"},"draftData":{"type":"string"},"createdAt":{"type":"string","format":"date-time"},"expiresAt":{"type":"string","format":"date-time"}}}}}}
+{
+  "openapi": "3.0.1",
+  "info": { "title": "OpenAPI definition", "version": "v0" },
+  "servers": [
+    { "url": "http://localhost:8080", "description": "Generated server url" }
+  ],
+  "paths": {
+    "/api/config/draft/{id}": {
+      "get": {
+        "tags": ["configuration-draft-controller"],
+        "operationId": "getDraft",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ConfigurationDraft" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["configuration-draft-controller"],
+        "operationId": "updateDraft",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": { "type": "string" }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/interop/pipeline/commit": {
+      "post": {
+        "tags": ["interop-controller"],
+        "operationId": "pipelineCommit",
+        "parameters": [
+          {
+            "name": "recordId",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/interop/mapping/data": {
+      "get": {
+        "tags": ["interop-controller"],
+        "operationId": "getMappingInterface",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["interop-controller"],
+        "operationId": "saveMapping",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": { "type": "string" }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/interop/hl7": {
+      "post": {
+        "tags": ["interop-controller"],
+        "operationId": "ingestHl7",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "string" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/interop/fhir": {
+      "post": {
+        "tags": ["interop-controller"],
+        "operationId": "ingestFhir",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "string" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/api/config/draft": {
+      "post": {
+        "tags": ["configuration-draft-controller"],
+        "operationId": "createDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": { "type": "string" }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ConfigurationDraft" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/config/draft/{id}/commit": {
+      "post": {
+        "tags": ["configuration-draft-controller"],
+        "operationId": "commitDraft",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/interop/pipeline/review": {
+      "get": {
+        "tags": ["interop-controller"],
+        "operationId": "pipelineReview",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/DataEntry": {
+      "get": {
+        "tags": ["data-entry-controller"],
+        "operationId": "dataEntry",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ConfigurationDraft": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "userName": { "type": "string" },
+          "draftType": { "type": "string" },
+          "draftData": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "expiresAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

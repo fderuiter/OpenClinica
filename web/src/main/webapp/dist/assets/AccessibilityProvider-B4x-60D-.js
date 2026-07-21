@@ -1,1 +1,51 @@
-import{i as e,n as t}from"./rolldown-runtime-BgaNhQyE.js";import{r as n,t as r}from"./react-vendor-CT9J5WVz.js";function i({children:e}){let[t,n]=(0,a.useState)(``),r=(0,a.useRef)([]),i=(0,a.useRef)(!1),c=(0,a.useRef)(!1),l=(0,a.useCallback)(()=>{if(r.current.length===0){i.current=!1;return}i.current=!0;let e=r.current.shift();c.current=!c.current,n(e+(c.current?`​`:``)),setTimeout(()=>{l()},200)},[]),u=(0,a.useCallback)(e=>{r.current.push(e),i.current||l()},[l]);return(0,o.jsxs)(s.Provider,{value:{announce:u},children:[e,(0,o.jsx)(`div`,{"aria-live":`polite`,"aria-atomic":`true`,className:`sr-only`,children:t})]})}var a,o,s,c,l=t((()=>{a=e(n()),o=r(),s=(0,a.createContext)({announce:e=>{}}),c=()=>(0,a.useContext)(s)}));l();export{i as AccessibilityProvider,l as t,c as useAccessibility};
+import { i as e, n as t } from './rolldown-runtime-BgaNhQyE.js';
+import { r as n, t as r } from './react-vendor-CT9J5WVz.js';
+function i({ children: e }) {
+  let [t, n] = (0, a.useState)(``),
+    r = (0, a.useRef)([]),
+    i = (0, a.useRef)(!1),
+    c = (0, a.useRef)(!1),
+    l = (0, a.useCallback)(() => {
+      if (r.current.length === 0) {
+        i.current = !1;
+        return;
+      }
+      i.current = !0;
+      let e = r.current.shift();
+      ((c.current = !c.current),
+        n(e + (c.current ? `​` : ``)),
+        setTimeout(() => {
+          l();
+        }, 200));
+    }, []),
+    u = (0, a.useCallback)(
+      (e) => {
+        (r.current.push(e), i.current || l());
+      },
+      [l]
+    );
+  return (0, o.jsxs)(s.Provider, {
+    value: { announce: u },
+    children: [
+      e,
+      (0, o.jsx)(`div`, {
+        'aria-live': `polite`,
+        'aria-atomic': `true`,
+        className: `sr-only`,
+        children: t,
+      }),
+    ],
+  });
+}
+var a,
+  o,
+  s,
+  c,
+  l = t(() => {
+    ((a = e(n())),
+      (o = r()),
+      (s = (0, a.createContext)({ announce: (e) => {} })),
+      (c = () => (0, a.useContext)(s)));
+  });
+l();
+export { i as AccessibilityProvider, l as t, c as useAccessibility };
