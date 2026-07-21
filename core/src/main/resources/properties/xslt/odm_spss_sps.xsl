@@ -315,22 +315,6 @@
 				</xsl:choose>-->
 				<xsl:text>&#xa;</xsl:text>
 			</xsl:if>
-<xsl:if test="$eventSignedExist">-->
-			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:Signed]) &gt; 0">
-				<xsl:text>EventSignature_</xsl:text>
-				<xsl:value-of select="$E" />
-				<xsl:value-of select="$eventPosition" />
-				<xsl:text>_</xsl:text>
-				<xsl:value-of select="$eventRepeatCnt" />
-				<xsl:text> A</xsl:text>
-				<!--<xsl:choose>
-					<xsl:when test="number($eventSignedLen) &gt; 8">
-						<xsl:text>8</xsl:text>
-					</xsl:when>
-					<xsl:otherwise>-->
-						<xsl:value-of select="$eventSignedLen" />
-					<!--sl:otherwise>
-				</xsl:choose>-->
 				<xsl:text>&#xa;</xsl:text>
 			</xsl:if>
 
@@ -446,22 +430,6 @@
 					<xsl:text>&#xa;</xsl:text>
 				</xsl:if>
 <xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Signed]) &gt; 0">
-					<xsl:text>EventSignature_</xsl:text>
-					<xsl:value-of select="$E" />
-					<xsl:value-of select="$eventPosition" />
-					<xsl:text> A</xsl:text>
-					<!--<xsl:choose>
-						<xsl:when test="number($eventSignedLen) &gt; 8">
-							<xsl:text>8</xsl:text>
-						</xsl:when>
-						<xsl:otherwise>-->
-							<xsl:value-of select="$eventSignedLen" />
-						<!--</xsl:otherwise>
-					</xsl:choose>-->
-					<xsl:text>&#xa;</xsl:text>
-				</xsl:if>
-<xsl:if test="$eventSignedExist">-->
-				<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Signed]) &gt; 0">
 					<xsl:text>EventSignature_</xsl:text>
 					<xsl:value-of select="$E" />
 					<xsl:value-of select="$eventPosition" />
@@ -663,24 +631,6 @@
 				<xsl:text> /</xsl:text>
 				<xsl:text>&#xa;</xsl:text>
 			</xsl:if>
-<xsl:if test="$eventSignedExist">-->
-			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:Signed]) &gt; 0">
-			<!-- @pgawade 14-Mar-2012 #13052 Removed the unwanted space within value label for event signed -->
-				<xsl:text>EventSignature_</xsl:text>
-				<xsl:value-of select="$E" />
-				<xsl:value-of select="$eventPosition" />
-				<xsl:text>_</xsl:text>
-				<xsl:value-of select="$eventRepeatCnt" />
-				<xsl:text> "Event Signature For </xsl:text>
-				<xsl:value-of select="$eventName" />
-				<xsl:text>(</xsl:text>
-				<xsl:value-of select="$E" />
-				<xsl:value-of select="$eventPosition" />
-				<xsl:text>_</xsl:text>
-				<xsl:value-of select="$eventRepeatCnt" />
-				<xsl:text>)"</xsl:text>
-				<xsl:text> /</xsl:text>
-				<xsl:text>&#xa;</xsl:text>
 			</xsl:if>
 
 			<!-- @pgawade 15-May-2012 fix for issue 14279 consider the presense of event attribute specific to ordinal -->
@@ -798,23 +748,6 @@
 					<xsl:text> /</xsl:text>
 					<xsl:text>&#xa;</xsl:text>
 				</xsl:if>
-<xsl:if test="$eventSignedExist">-->
-			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Signed]) &gt; 0">
-					<!-- @pgawade 14-Mar-2012 #13052 Removed the unwanted space within value label for event signed -->
-				<xsl:text>EventSignature_</xsl:text>
-					<xsl:value-of select="$E" />
-					<xsl:value-of select="$eventPosition" />
-					<xsl:text> "Event Signature For </xsl:text>
-					<xsl:value-of select="$eventName" />
-					<xsl:text>(</xsl:text>
-					<xsl:value-of select="$E" />
-					<xsl:value-of select="$eventPosition" />
-					<xsl:text>)"</xsl:text>
-					<xsl:text> /</xsl:text>
-					<xsl:text>&#xa;</xsl:text>
-				</xsl:if>
-
-			<!--	<xsl:if test="$ageExist">-->
 			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:SubjectAgeAtEvent]) &gt; 0">
 					<xsl:text>Age_</xsl:text>
 					<xsl:value-of select="$E" />
