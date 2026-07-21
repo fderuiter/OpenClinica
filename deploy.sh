@@ -1,6 +1,17 @@
 #!/bin/bash
 # Enterprise Automated Deployment and Rollback Script
 
+WEB_IMG=$(docker compose images -q web 2>/dev/null)
+MODERN_IMG=$(docker compose images -q modern 2>/dev/null)
+if [ -n "$WEB_IMG" ]; then
+    echo "Tagging current web image ($WEB_IMG) as stable..."
+    docker tag "$WEB_IMG" app-web:stable
+fi
+if [ -n "$MODERN_IMG" ]; then
+    echo "Tagging current modern image ($MODERN_IMG) as stable..."
+    docker tag "$MODERN_IMG" app-modern:stable
+fi
+
 echo "Starting deployment..."
 docker compose up -d web modern
 
@@ -19,17 +30,17 @@ if ! docker compose up --wait web modern; then
     
     # Restart applications
     echo "Restarting application containers..."
-    docker compose up -d --scale web=1 --scale modern=1 web modern
+    IMAGE_TAG=stable docker compose up -d --scale web=1 --scale modern=1 web modern
     
     # Verify they are back online
     echo "Verifying application health post-rollback..."
-    if ! docker compose up --wait web modern; then
+    if ! IMAGE_TAG=stable docker compose up --wait web modern; then
         echo "ERROR: Rollback health check failed. Manual intervention required."
         exit 1
     fi
     
     echo "Rollback completed successfully."
-    exit 0
+    exit 1
 fi
 
 echo "Deployment completed successfully."
