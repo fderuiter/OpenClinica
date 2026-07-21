@@ -48,8 +48,99 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/app-modern:latest
             ghcr.io/${{ github.repository_owner }}/app-modern:${{ github.sha }}
 
-  deploy:
+  validate:
     needs: build-and-publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull published images
+        run: |
+          docker pull ghcr.io/${{ github.repository_owner }}/app-web:${{ github.sha }}
+          docker pull ghcr.io/${{ github.repository_owner }}/app-modern:${{ github.sha }}
+          docker tag ghcr.io/${{ github.repository_owner }}/app-web:${{ github.sha }} app-web:latest
+          docker tag ghcr.io/${{ github.repository_owner }}/app-modern:${{ github.sha }} app-modern:latest
+
+      - name: Setup environment
+        run: |
+          cp .env.example .env
+          sed -i 's/DB_HOST=localhost/DB_HOST=db/' .env
+          sed -i 's/HOST_CLINICAL_TEMPLATE_PATH=dummy_template.xlsx/HOST_CLINICAL_TEMPLATE_PATH=.\/dummy_template.xlsx/' .env
+
+      - name: Start isolated application instance
+        run: docker compose up -d
+
+      - name: Wait for services to be ready
+        run: |
+          echo "Waiting up to 180 seconds for application initialization..."
+          for i in {1..36}; do
+              ALL_HEALTHY=true
+              CONTAINERS=$(docker compose ps -q web modern)
+              if [ -z "$CONTAINERS" ]; then
+                  ALL_HEALTHY=false
+              else
+                  for container_id in $CONTAINERS; do
+                      status=$(docker inspect --format='{{.State.Health.Status}}' "$container_id" 2>/dev/null)
+                      if [ "$status" != "healthy" ]; then
+                          ALL_HEALTHY=false
+                          break
+                      fi
+                  done
+              fi
+              if [ "$ALL_HEALTHY" = true ]; then
+                  echo "All services healthy!"
+                  exit 0
+              fi
+              sleep 5
+          done
+          echo "Services failed to become healthy in time"
+          docker compose logs
+          exit 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        working-directory: visual-tests
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: visual-tests
+        run: npx playwright install --with-deps
+
+      - name: Run visual and accessibility tests
+        working-directory: visual-tests
+        run: npm run test
+        env:
+          BASE_URL: http://localhost:8080/
+
+      - name: Upload Test Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: visual-tests/playwright-report/
+          retention-days: 7
+
+      - name: Teardown application instance
+        if: always()
+        run: docker compose down -v
+
+  deploy:
+    needs: validate
     runs-on: ubuntu-latest
     steps:
       - name: Execute deployment over SSH
