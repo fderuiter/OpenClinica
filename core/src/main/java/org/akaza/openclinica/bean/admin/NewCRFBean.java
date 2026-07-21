@@ -462,6 +462,7 @@ public class NewCRFBean extends Object implements java.io.Serializable {
             se.printStackTrace();
             try {
                 con.rollback();
+                clearHibernateCache();
                 logger.debug("Error detected, rollback " + se.getMessage());
                 String msg2 = "The following error was returned from the database: " + se.getMessage() + " using the following query: " + queries.get(count);
                 error.add(msg2);
@@ -480,6 +481,7 @@ public class NewCRFBean extends Object implements java.io.Serializable {
             pe.printStackTrace();
             try {
                 con.rollback();
+                clearHibernateCache();
                 logger.debug("OpenClinica Error detected, rollback " + pe.getMessage());
                 String msg2 = "The following error was returned from the application: " + pe.getMessage();
                 error.add(msg2);
@@ -567,6 +569,7 @@ public class NewCRFBean extends Object implements java.io.Serializable {
             se.printStackTrace();
             try {
                 con.rollback();
+                clearHibernateCache();
                 logger.debug("Error detected, rollback " + se.getMessage());
                 String msg2 = "The following error was returned from the database: " + se.getMessage() + " using the following query: "
                         + deleteQueries.get(count);
@@ -586,6 +589,7 @@ public class NewCRFBean extends Object implements java.io.Serializable {
             pe.printStackTrace();
             try {
                 con.rollback();
+                clearHibernateCache();
                 logger.debug("OpenClinica Error detected, rollback " + pe.getMessage());
                 String msg2 = "The following error was returned from the application: " + pe.getMessage();
                 error.add(msg2);
@@ -757,6 +761,7 @@ public class NewCRFBean extends Object implements java.io.Serializable {
             logger.error(se.getMessage());
             try {
                 con.rollback();
+                clearHibernateCache();
                 logger.error("Error detected, rollback " + se.getMessage());
                 String msg2 = "The following error was returned from the database: " + se.getMessage() + " using the following query: " + cur_query;
                 error.add(msg2);
@@ -772,6 +777,7 @@ public class NewCRFBean extends Object implements java.io.Serializable {
             try {
                 error.add("The following error was returned from the application: " + pe.getMessage());
                 con.rollback();
+                clearHibernateCache();
                 logger.error("OpenClinica Error detected, rollback " + pe.getMessage());
                 throw new OpenClinicaException("", "");
             } catch (SQLException seq) {
@@ -829,5 +835,22 @@ public class NewCRFBean extends Object implements java.io.Serializable {
     		    System.out.println("setPreparedStatementParameter ERROR:" +parameterIndex+ ":" + sp);
 				e.printStackTrace();
 			}
+    }
+    
+    private void clearHibernateCache() {
+        try {
+            org.springframework.context.ApplicationContext context = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext();
+            if (context != null) {
+                org.hibernate.SessionFactory sessionFactory = (org.hibernate.SessionFactory) context.getBean("sessionFactory");
+                if (sessionFactory != null) {
+                    org.hibernate.Session session = sessionFactory.getCurrentSession();
+                    if (session != null) {
+                        session.clear();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            logger.debug("Failed to clear Hibernate cache during rollback: " + ex.getMessage());
+        }
     }
 }
