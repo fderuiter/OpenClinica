@@ -21,6 +21,7 @@ import org.akaza.openclinica.bean.odmbeans.LocationBean;
 import org.akaza.openclinica.bean.odmbeans.MetaDataVersionRefBean;
 import org.akaza.openclinica.bean.odmbeans.OdmAdminDataBean;
 import org.akaza.openclinica.bean.odmbeans.OdmStudyBean;
+import org.akaza.openclinica.bean.odmbeans.SignatureDefBean;
 import org.akaza.openclinica.bean.odmbeans.UserBean;
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -66,42 +67,59 @@ public class AdminDataReportBean extends OdmXmlReportBean {
     }
     
     public void addNodeAdminData(OdmAdminDataBean a) {
-        StringBuffer xml = this.getXmlOutput();
-        String indent = this.getIndent();
-        xml.append(indent + "<AdminData StudyOID=\"" + StringEscapeUtils.escapeXml(a.getStudyOID()) + "\">");
-        xml.append(nls);
-        for(UserBean u : a.getUsers()) {
-            addOneUser(u, indent+indent);
+        if(a.getUsers().size()>0 || (a.getSignatureDefs() != null && a.getSignatureDefs().size() > 0)) {
+            StringBuffer xml = this.getXmlOutput();
+            String indent = this.getIndent();
+            xml.append(indent + "<AdminData StudyOID=\"" + StringEscapeUtils.escapeXml(a.getStudyOID()) + "\">");
+            xml.append(nls);
+            for(UserBean u : a.getUsers()) {
+                addOneUser(u, indent+indent);
+            }
+            //for(LocationBean l : this.adminData.getLocations()) {
+            //    addOneLocation(l, indent+indent);
+            //}
+            if(a.getSignatureDefs() != null) {
+                for(SignatureDefBean s : a.getSignatureDefs()) {
+                    addOneSignatureDef(s, indent+indent);
+                }
+            }
+            xml.append(indent + "</AdminData>");
+            xml.append(nls);
         }
-        xml.append(indent + indent + "<SignatureDef OID=\"SIG_01\" Methodology=\"Electronic\">");
-        xml.append(nls);
-        xml.append(indent + indent + indent + "<Meaning>Electronic Signature</Meaning>");
-        xml.append(nls);
-        xml.append(indent + indent + indent + "<LegalReason>I confirm that the electronic case report forms for this subject are a full, accurate, and complete record of the observations recorded. I intend for this electronic signature to be the legally binding equivalent of my written signature.</LegalReason>");
-        xml.append(nls);
-        xml.append(indent + indent + "</SignatureDef>");
-        xml.append(nls);
-        xml.append(indent + "</AdminData>");
-        xml.append(nls);
     }
     
     public void addNodeAdminData() {
+        if(this.adminData.getUsers().size()>0 || (this.adminData.getSignatureDefs() != null && this.adminData.getSignatureDefs().size() > 0)) {
+            StringBuffer xml = this.getXmlOutput();
+            String indent = this.getIndent();
+            xml.append(indent + "<AdminData StudyOID=\"" + StringEscapeUtils.escapeXml(adminData.getStudyOID()) + "\">");
+            xml.append(nls);
+            for(UserBean u : this.adminData.getUsers()) {
+                addOneUser(u, indent+indent);
+            }
+            //for(LocationBean l : this.adminData.getLocations()) {
+            //    addOneLocation(l, indent+indent);
+            //}
+            if(this.adminData.getSignatureDefs() != null) {
+                for(SignatureDefBean s : this.adminData.getSignatureDefs()) {
+                    addOneSignatureDef(s, indent+indent);
+                }
+            }
+            xml.append(indent + "</AdminData>");
+            xml.append(nls);
+        }
+    }
+    
+    public void addOneSignatureDef(SignatureDefBean s, String currentIndent) {
         StringBuffer xml = this.getXmlOutput();
         String indent = this.getIndent();
-        xml.append(indent + "<AdminData StudyOID=\"" + StringEscapeUtils.escapeXml(adminData.getStudyOID()) + "\">");
+        xml.append(currentIndent + "<SignatureDef OID=\"" + StringEscapeUtils.escapeXml(s.getOid()) + "\" Methodology=\"" + StringEscapeUtils.escapeXml(s.getMethodology()) + "\">");
         xml.append(nls);
-        for(UserBean u : this.adminData.getUsers()) {
-            addOneUser(u, indent+indent);
-        }
-        xml.append(indent + indent + "<SignatureDef OID=\"SIG_01\" Methodology=\"Electronic\">");
+        xml.append(currentIndent + indent + "<Meaning>" + StringEscapeUtils.escapeXml(s.getMeaning()) + "</Meaning>");
         xml.append(nls);
-        xml.append(indent + indent + indent + "<Meaning>Electronic Signature</Meaning>");
+        xml.append(currentIndent + indent + "<LegalReason>" + StringEscapeUtils.escapeXml(s.getLegalReason()) + "</LegalReason>");
         xml.append(nls);
-        xml.append(indent + indent + indent + "<LegalReason>I confirm that the electronic case report forms for this subject are a full, accurate, and complete record of the observations recorded. I intend for this electronic signature to be the legally binding equivalent of my written signature.</LegalReason>");
-        xml.append(nls);
-        xml.append(indent + indent + "</SignatureDef>");
-        xml.append(nls);
-        xml.append(indent + "</AdminData>");
+        xml.append(currentIndent + "</SignatureDef>");
         xml.append(nls);
     }
     

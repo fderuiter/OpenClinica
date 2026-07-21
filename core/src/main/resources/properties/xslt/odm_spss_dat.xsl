@@ -721,7 +721,7 @@
 				<xsl:text>_</xsl:text>
 				<xsl:value-of select="$eventRepeatCnt" />																				
 				<xsl:value-of select="$delimiter" />
-			<!--</xsl:if>-->
+			</xsl:if>
 			</xsl:if>
 			<!--<xsl:if test="$eventStartDateExist">					-->
 			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:StartDate]) &gt; 0">
@@ -731,7 +731,7 @@
 				<xsl:text>_</xsl:text>
 				<xsl:value-of select="$eventRepeatCnt" />
 				<xsl:value-of select="$delimiter" />
-			<!--</xsl:if>-->
+			</xsl:if>
 			</xsl:if>
 			<!--<xsl:if test="$eventEndDateExist">-->
 			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:EndDate]) &gt; 0">
@@ -750,7 +750,7 @@
 				<xsl:text>_</xsl:text>
 				<xsl:value-of select="$eventRepeatCnt" />
 				<xsl:value-of select="$delimiter" />
-			<!--</xsl:if>
+			</xsl:if>
 <xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:Signed]) &gt; 0">
 				<xsl:text>EventSignature_</xsl:text>
 				<xsl:value-of select="$E" />
@@ -758,16 +758,8 @@
 				<xsl:text>_</xsl:text>
 				<xsl:value-of select="$eventRepeatCnt" />
 				<xsl:value-of select="$delimiter" />
-			<!--</xsl:if>
-<xsl:if test="$eventSignedExist">					-->
-			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:Signed]) &gt; 0">
-				<xsl:text>EventSignature_</xsl:text>
-				<xsl:value-of select="$E" />
-				<xsl:value-of select="$eventPosition" />							
-				<xsl:text>_</xsl:text>
-				<xsl:value-of select="$eventRepeatCnt" />
-				<xsl:value-of select="$delimiter" />
-			<!--</xsl:if>-->
+			</xsl:if>
+			</xsl:if>
 			</xsl:if>
 			<!--<xsl:if test="$ageExist">-->
 			<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = $eventRepeatCnt and @OpenClinica:SubjectAgeAtEvent]) &gt; 0">
@@ -777,7 +769,7 @@
 				<xsl:text>_</xsl:text>
 				<xsl:value-of select="$eventRepeatCnt" />	
 				<xsl:value-of select="$delimiter" />							
-			<!--</xsl:if>-->
+			</xsl:if>
 			</xsl:if>
 			
 			<!--<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @StudyEventRepeatKey = 
@@ -836,13 +828,6 @@
 			<xsl:value-of select="$delimiter" />
 		</xsl:if>
 <xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Signed]) &gt; 0">
-			<xsl:text>EventSignature_</xsl:text>
-			<xsl:value-of select="$E" />
-			<xsl:value-of select="$eventPosition" />
-			<xsl:value-of select="$delimiter" />
-		</xsl:if>
-<xsl:if test="$eventSignedExist">			-->
-		<xsl:if test="count($allStudyEventDataElements[@StudyEventOID = $eventOID and @OpenClinica:Signed]) &gt; 0">
 			<xsl:text>EventSignature_</xsl:text>
 			<xsl:value-of select="$E" />
 			<xsl:value-of select="$eventPosition" />

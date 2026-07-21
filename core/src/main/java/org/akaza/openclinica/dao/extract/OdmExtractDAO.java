@@ -2047,6 +2047,22 @@ private void fetchItemGroupMetaData(MetaDataVersionBean metadata,String cvIds, S
             user.setOrganization(organization);
             data.getUsers().add(user);
         }
+
+        String sigSql = "SELECT distinct sed.oc_oid as sed_oid, crf.oc_oid as crf_oid FROM event_definition_crf edc JOIN crf on crf.crf_id=edc.crf_id JOIN study_event_definition sed on sed.study_event_definition_id=edc.study_event_definition_id WHERE edc.electronic_signature=true AND sed.study_id=" + study.getId();
+        ArrayList sigRows = this.select(sigSql);
+        Iterator sigIt = sigRows.iterator();
+        while(sigIt.hasNext()) {
+            HashMap row = (HashMap) sigIt.next();
+            String sedOid = (String) row.get("sed_oid");
+            String crfOid = (String) row.get("crf_oid");
+            org.akaza.openclinica.bean.odmbeans.SignatureDefBean s = new org.akaza.openclinica.bean.odmbeans.SignatureDefBean();
+            s.setOid("SIG_" + sedOid + "_" + crfOid);
+            s.setMethodology("electronic");
+            s.setMeaning("Investigator Signature");
+            s.setLegalReason("As the investigator or designated member of the investigator's staff, I confirm that the electronic case report forms for this subject are a full, accurate, and complete record of the observations recorded. I intend for this electronic signature to be the legally binding equivalent of my written signature.");
+            data.getSignatureDefs().add(s);
+        }
+        
         // LocationBean loc = new LocationBean();
         // loc.setOid("LOC_"+study.getOid());
         // loc.setName(study.getName());
