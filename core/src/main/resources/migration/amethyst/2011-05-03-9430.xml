@@ -19,6 +19,9 @@
 		SELECT  ADD_CONSTRAINTS_ITEM_DATA_WHEN_EMPTY();
 		 DROP FUNCTION ADD_CONSTRAINTS_ITEM_DATA_WHEN_EMPTY();
  	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
   </changeSet>
 <changeSet author="jnyayapathi" id="2011-05-03-9430-2" dbms="oracle">
     <comment>Add a constraint when no item data rows are present</comment>
@@ -38,6 +41,9 @@
      return;
 	END;
  	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
   </changeSet>
 
 

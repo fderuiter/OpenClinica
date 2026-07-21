@@ -4,7 +4,7 @@ Welcome to the centralized OpenClinica Documentation Portal.
 
 ## Quick Links
 
-- [Installation Guide](reference/installation-upgrade.md)
+- [Installation Guide](tutorials/installation.md)
 - [Configuration Guide](tutorials/build_study.md)
 - [Subdomain Setup Guide](tutorials/participate_setup.md)
 - [Randomization Setup Guide](tutorials/randomize_setup.md)

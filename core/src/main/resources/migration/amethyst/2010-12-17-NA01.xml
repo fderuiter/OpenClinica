@@ -72,6 +72,9 @@
         END;'
             LANGUAGE plpgsql;
      </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet> 
     <changeSet author="pgawade (generated)" id="2010-12-17-NA01-2">
         <preConditions onFail="MARK_RAN">
@@ -681,6 +684,9 @@
           /* show errors; */
 
     </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="2010-12-17-NA01-3" runOnChange="true">
         <preConditions onFail="MARK_RAN">
@@ -732,6 +738,9 @@
         '
             LANGUAGE plpgsql;
          </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>      
     
 </databaseChangeLog>

@@ -33,6 +33,9 @@
         '
             LANGUAGE plpgsql;
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="sshamim" id="2009-03-03-4768-2">
     	<preConditions onFail="MARK_RAN">
@@ -44,5 +47,8 @@
 		    FOR EACH ROW
 		    EXECUTE PROCEDURE event_definition_crf_trigger();
     	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 </databaseChangeLog>

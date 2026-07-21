@@ -37,6 +37,9 @@
 						end if;
 					end;
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="ywang" id="2011-02-07-7181-4">
 		<comment>Add foreign key for scd_item_metadata</comment>
