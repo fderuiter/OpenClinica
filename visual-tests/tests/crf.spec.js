@@ -33,7 +33,7 @@ test.describe('Printable CRF', () => {
           window.app_investigatorSignatureLabel = 'Investigator Signature';
           window.app_meaning_of_signatureLabel = 'Meaning of Signature';
         </script>
-        <script src="http://localhost:8080/OpenClinica-web/dist/${mainScript}"></script>
+        <script src="/OpenClinica-web/dist/${mainScript}"></script>
         <style>
           .spinner { display: none; }
           .sr-only {
@@ -65,7 +65,7 @@ test.describe('Printable CRF', () => {
     await page.route('**/dist/assets/*.js', async (route) => {
       const url = new URL(route.request().url());
       const fileName = path.basename(url.pathname);
-      const assetsDir = '/app/web/src/main/webapp/dist/assets';
+      const assetsDir = path.join(__dirname, '../../web/src/main/webapp/dist/assets');
 
       try {
         const bundle = fs.readFileSync(path.join(assetsDir, fileName), 'utf8');
@@ -76,7 +76,7 @@ test.describe('Printable CRF', () => {
     });
 
     await page.goto(
-      'http://localhost:8080/OpenClinica-web/rest/clinicaldata/html/print/STUDY-123/SUBJ-1/EVENT-1/FORM-1'
+      '/OpenClinica-web/rest/clinicaldata/html/print/STUDY-123/SUBJ-1/EVENT-1/FORM-1'
     );
 
     // Wait for React to render the component
@@ -89,29 +89,27 @@ test.describe('Printable CRF', () => {
     await expect(signatureBlock).toContainText('Investigator Signature:');
     await expect(signatureBlock).toContainText('Meaning of Signature:');
 
-    if (!process.env.CI) {
-      const accessibilityScanResults = await new AxeBuilder({ page })
-        .withTags(['wcag21a', 'wcag21aa'])
-        .analyze();
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['wcag21a', 'wcag21aa'])
+      .analyze();
 
-      if (accessibilityScanResults.violations.length > 0) {
-        console.log('Accessibility Violations:');
-        accessibilityScanResults.violations.forEach((violation) => {
-          console.log(`\nRule: ${violation.id} (${violation.impact})`);
-          console.log(`Description: ${violation.description}`);
-          console.log(`Help: ${violation.help}`);
-          console.log(`Help URL: ${violation.helpUrl}`);
-          violation.nodes.forEach((node) => {
-            console.log(`- Element: ${node.html}`);
-            console.log(`  Target: ${node.target.join(', ')}`);
-            console.log(`  Failure Summary: ${node.failureSummary}`);
-          });
+    if (accessibilityScanResults.violations.length > 0) {
+      console.log('Accessibility Violations:');
+      accessibilityScanResults.violations.forEach((violation) => {
+        console.log(`\nRule: ${violation.id} (${violation.impact})`);
+        console.log(`Description: ${violation.description}`);
+        console.log(`Help: ${violation.help}`);
+        console.log(`Help URL: ${violation.helpUrl}`);
+        violation.nodes.forEach((node) => {
+          console.log(`- Element: ${node.html}`);
+          console.log(`  Target: ${node.target.join(', ')}`);
+          console.log(`  Failure Summary: ${node.failureSummary}`);
         });
-      } else {
-        console.log('No accessibility violations found.');
-      }
-      expect(accessibilityScanResults.violations).toEqual([]);
+      });
+    } else {
+      console.log('No accessibility violations found.');
     }
+    expect(accessibilityScanResults.violations).toEqual([]);
 
     // Take a snapshot
     await expect(page).toHaveScreenshot('crf-printable-view.png', {
