@@ -8,7 +8,7 @@
 
 > **useAccessibility**(): `any`
 
-Defined in: [AccessibilityProvider.jsx:7](https://github.com/fderuiter/OpenClinica/blob/906d6afcde4a2b33edfc48c6e93639bf79d83477/web/src/main/webapp/js/components/AccessibilityProvider.jsx#L7)
+Defined in: [AccessibilityProvider.jsx:7](https://github.com/fderuiter/OpenClinica/blob/0105669566235d36dfdbeafc915bc47ed4a06356/web/src/main/webapp/js/components/AccessibilityProvider.jsx#L7)
 
 ## Returns
 

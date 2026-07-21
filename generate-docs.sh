@@ -104,6 +104,14 @@ for file in $(find docs -name '*.md'); do
     fi
 done
 
+# Validate citation formats
+MALFORMED_CITATIONS=$(grep -rnEo '\[cite:[^]]+\]' docs/ | grep -vE ':\[cite:[a-zA-Z0-9_-]+(,\s*cite:[a-zA-Z0-9_-]+)*\]$' || true)
+if [ ! -z "$MALFORMED_CITATIONS" ]; then
+    echo "Error: Malformed citations found:"
+    echo "$MALFORMED_CITATIONS"
+    exit 1
+fi
+
 # Validate Diátaxis structural definition for tutorials
 VIOLATING_TUTORIALS=$(grep -ilE '\btasks?\b' docs/tutorials/*.md || true)
 if [ ! -z "$VIOLATING_TUTORIALS" ]; then
