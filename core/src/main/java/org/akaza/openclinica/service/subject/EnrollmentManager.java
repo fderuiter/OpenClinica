@@ -28,7 +28,6 @@ public class EnrollmentManager {
     private final StudyParameterValueDAO studyParameterValueDAO;
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public EnrollmentManager(DataSource dataSource) {
         this(dataSource, null);
     }

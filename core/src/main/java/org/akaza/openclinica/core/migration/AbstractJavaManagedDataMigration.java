@@ -9,7 +9,6 @@ import liquibase.exception.SetupException;
 
 import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.core.ApplicationContextProvider;
-import org.akaza.openclinica.dao.login.UserAccountDAO;
 
 import javax.sql.DataSource;
 
@@ -38,11 +37,20 @@ public abstract class AbstractJavaManagedDataMigration implements CustomTaskChan
         
         this.dataSource = ApplicationContextProvider.getApplicationContext().getBean("dataSource", DataSource.class);
         
-        UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
-        systemUser = (UserAccountBean) userAccountDAO.findByUserName("root");
-        if (systemUser == null || systemUser.getId() <= 0) {
-            systemUser = new UserAccountBean();
-            systemUser.setId(1);
+        systemUser = new UserAccountBean();
+        systemUser.setId(1); // default
+        systemUser.setName("root");
+        
+        try (java.sql.Connection conn = dataSource.getConnection();
+             java.sql.PreparedStatement pstmt = conn.prepareStatement("SELECT user_id, user_name FROM user_account WHERE user_name = 'root'")) {
+            try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    systemUser.setId(rs.getInt("user_id"));
+                    systemUser.setName(rs.getString("user_name"));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to fetch root user, defaulting to ID 1: " + e.getMessage());
         }
     }
 
