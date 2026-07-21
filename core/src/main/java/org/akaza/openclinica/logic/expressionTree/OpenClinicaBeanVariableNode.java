@@ -70,19 +70,6 @@ public class OpenClinicaBeanVariableNode extends ExpressionNode {
      * @param var the default test value
      * @return the Value
      */
-    private String theTest(String var) {
-        if (getTestValues() == null) {
-            return var;
-        } else if (getTestValues().get(number) == null) {
-            getTestValues().put(number, var);
-            getResponseTestValues().put(number, var);
-            return var;
-        } else {
-            getResponseTestValues().put(number, getTestValues().get(number));
-            return getTestValues().get(number);
-        }
-
-    }
 
     @Override
     String testCalculate() throws OpenClinicaSystemException {
@@ -123,20 +110,6 @@ public class OpenClinicaBeanVariableNode extends ExpressionNode {
         if (number.equals("_CURRENT_DATE")) {
         	String ssTimeZone= getExpressionBeanService().getSSTimeZone();
         if (ssTimeZone.equals("") || ssTimeZone == null) 	
-        	ssTimeZone = TimeZone.getDefault().getID();
-      
-            DateTimeZone ssZone = DateTimeZone.forID(ssTimeZone);
-            DateMidnight dm = new DateMidnight(ssZone);
-            DateTimeFormatter fmt = ISODateTimeFormat.date();
-            return fmt.print(dm);
-        }
-        return null;
-    }
-
-    private String testCalculateVariable() {
-        if (number.equals("_CURRENT_DATE")) {
-        	String ssTimeZone= getExpressionBeanService().getSSTimeZone();
-            if (ssTimeZone.equals("") || ssTimeZone == null) 	
         	ssTimeZone = TimeZone.getDefault().getID();
       
             DateTimeZone ssZone = DateTimeZone.forID(ssTimeZone);
