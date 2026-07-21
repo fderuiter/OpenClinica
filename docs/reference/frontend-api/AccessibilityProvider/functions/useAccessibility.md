@@ -1,14 +1,14 @@
-[**web**](../../README.md)
+[**web**](../../modules.md)
 
 ***
 
-[web](../../modules.md) / [AccessibilityProvider](../README.md) / useAccessibility
+[web](../../modules.md) / [AccessibilityProvider](../modules.md) / useAccessibility
 
 # Function: useAccessibility()
 
 > **useAccessibility**(): `any`
 
-Defined in: [AccessibilityProvider.jsx:7](https://github.com/fderuiter/OpenClinica/blob/bc2de4d57c28678104b584c4e5b0b0061422cbcb/web/src/main/webapp/js/components/AccessibilityProvider.jsx#L7)
+Defined in: [AccessibilityProvider.jsx:7](https://github.com/fderuiter/OpenClinica/blob/e3827b32b5e501d4cdb30f47e5074e3060a6e018/web/src/main/webapp/js/components/AccessibilityProvider.jsx#L7)
 
 ## Returns
 
