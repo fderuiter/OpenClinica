@@ -2,6 +2,15 @@ import os
 import sys
 import yaml
 
+def env_constructor(loader, node):
+    if isinstance(node, yaml.ScalarNode):
+        return loader.construct_scalar(node)
+    elif isinstance(node, yaml.SequenceNode):
+        return [loader.construct_object(child) for child in node.value]
+    return None
+
+yaml.SafeLoader.add_constructor("!ENV", env_constructor)
+
 def extract_nav_paths(nav_item, paths):
     """Recursively extract file paths from the mkdocs nav structure."""
     if isinstance(nav_item, list):
