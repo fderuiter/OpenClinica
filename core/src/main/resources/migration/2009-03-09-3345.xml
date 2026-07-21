@@ -22,5 +22,9 @@
         <sql splitStatements="false"> create or replace trigger test_bef_trg before insert on test
             for each row begin if :new.id is null then select TEST_ID_SEQ.nextval into :new.id from
             dual; end if; end; </sql>
+        <rollback>
+            DROP TRIGGER IF EXISTS test_bef_trg;
+            DROP SEQUENCE IF EXISTS TEST_ID_SEQ;
+        </rollback>
     </changeSet>
 </databaseChangeLog>

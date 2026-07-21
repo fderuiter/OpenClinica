@@ -14,6 +14,9 @@
             SET search_path = public, pg_catalog;
             COMMENT ON SCHEMA public IS 'Standard public schema';
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet> 
     <changeSet author="pgawade (generated)" id="1235684743487-1">
         <createTable tableName="archived_dataset_file">

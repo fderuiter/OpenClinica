@@ -9,6 +9,7 @@ nav:
     - Participate Setup: tutorials/participate_setup.md
     - Randomize Setup: tutorials/randomize_setup.md
     - Tomcat Initialization: tutorials/tomcat.md
+    - Installation Guide: tutorials/installation.md
   - How-To Guides:
     - Import Data: how-to/import_data.md
     - Verify Import Rule: how-to/verify_import_rule.md
@@ -20,16 +21,15 @@ nav:
     - Event Scheduling: how-to/cookbook_scheduling.md
     - Form Data Ingestion: how-to/cookbook_ingestion.md
     - Visual Testing Guide: how-to/visual_testing.md
+    - Upgrade Guide: how-to/upgrade.md
   - Reference:
     - Rules XML Reference: reference/rules.md
     - React Components API: reference/frontend-api/modules.md
     - Interactive REST API: reference/api.md
     - SOAP API Documentation: reference/soap.md
-    - Installation & Upgrade: reference/installation-upgrade.md
   - Explanation:
     - Project Information: explanation/project-info.md
     - Lifecycle Management: explanation/lifecycle_management.md
-    - Safeguards and Rollbacks: explanation/configuration_safeguards_and_rollbacks.md
     - Staged Batch Persistence: explanation/staged_batch_persistence.md
     - Architecture Guide: explanation/architecture.md
 hooks:
@@ -62,17 +62,18 @@ plugins:
         'diataxis/how-to/cookbook_scheduling.md': 'how-to/cookbook_scheduling.md'
         'diataxis/how-to/cookbook_ingestion.md': 'how-to/cookbook_ingestion.md'
         'diataxis/explanation/lifecycle_management.md': 'explanation/lifecycle_management.md'
-        'diataxis/explanation/configuration_safeguards_and_rollbacks.md': 'explanation/configuration_safeguards_and_rollbacks.md'
+        'explanation/configuration_safeguards_and_rollbacks.md': 'explanation/lifecycle_management.md'
+        'diataxis/explanation/configuration_safeguards_and_rollbacks.md': 'explanation/lifecycle_management.md'
         'diataxis/explanation/staged_batch_persistence.md': 'explanation/staged_batch_persistence.md'
         'diataxis/explanation/architecture.md': 'explanation/architecture.md'
-        'installation/windows-install.md': 'reference/installation-upgrade.md'
-        'installation/windows-upgrade.md': 'reference/installation-upgrade.md'
-        'installation/linux-install.md': 'reference/installation-upgrade.md'
-        'installation/linux-upgrade.md': 'reference/installation-upgrade.md'
-        'how-to/windows-upgrade.md': 'reference/installation-upgrade.md'
-        'how-to/linux-upgrade.md': 'reference/installation-upgrade.md'
-        'tutorials/windows-install.md': 'reference/installation-upgrade.md'
-        'tutorials/linux-install.md': 'reference/installation-upgrade.md'
+        'installation/windows-install.md': 'tutorials/installation.md'
+        'installation/windows-upgrade.md': 'how-to/upgrade.md'
+        'installation/linux-install.md': 'tutorials/installation.md'
+        'installation/linux-upgrade.md': 'how-to/upgrade.md'
+        'how-to/windows-upgrade.md': 'how-to/upgrade.md'
+        'how-to/linux-upgrade.md': 'how-to/upgrade.md'
+        'tutorials/windows-install.md': 'tutorials/installation.md'
+        'tutorials/linux-install.md': 'tutorials/installation.md'
         'installation/tomcat.md': 'tutorials/tomcat.md'
         'frontend/visual_testing.md': 'how-to/visual_testing.md'
         'api.md': 'reference/api.md'
