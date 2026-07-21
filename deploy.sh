@@ -12,8 +12,11 @@ if [ -n "$MODERN_IMG" ]; then
     docker tag "$MODERN_IMG" app-modern:stable
 fi
 
+echo "Initiating database backup prior to deployment..."
+docker compose run --rm admin backup
+
 echo "Starting deployment..."
-docker compose up -d web modern
+docker compose up -d --no-build web modern
 
 echo "Waiting up to 50 seconds for application initialization..."
 # Wait for health checks
@@ -48,7 +51,7 @@ if [ "$HEALTHY_DEPLOY" = false ]; then
     
     # Scale to 0 to terminate active client connections and drop locks
     echo "Scaling application instances to 0..."
-    docker compose up -d --scale web=0 --scale modern=0 web modern
+    docker compose up -d --no-build --scale web=0 --scale modern=0 web modern
     
     # Run database recovery using the admin container
     echo "Restoring database schema..."
@@ -56,11 +59,11 @@ if [ "$HEALTHY_DEPLOY" = false ]; then
     
     # Restart applications
     echo "Restarting application containers..."
-    IMAGE_TAG=stable docker compose up -d --scale web=1 --scale modern=1 web modern
+    IMAGE_TAG=stable docker compose up -d --no-build --scale web=1 --scale modern=1 web modern
     
     # Verify they are back online
     echo "Verifying application health post-rollback..."
-    if ! IMAGE_TAG=stable docker compose up --wait web modern; then
+    if ! IMAGE_TAG=stable docker compose up --no-build --wait web modern; then
         echo "ERROR: Rollback health check failed. Manual intervention required."
         exit 1
     fi

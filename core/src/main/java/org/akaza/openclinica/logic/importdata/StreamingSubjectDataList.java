@@ -21,6 +21,9 @@ public class StreamingSubjectDataList extends ArrayList<SubjectDataBean> {
     private String studyOid;
     private UpsertOnBean upsertOn;
     private int size = -1;
+    
+    private java.util.Map<String, Boolean> eventSignatureMap = new java.util.HashMap<>();
+    private java.util.Map<String, Boolean> formSignatureMap = new java.util.HashMap<>();
 
     public StreamingSubjectDataList(File xmlFile) {
         this.xmlFile = xmlFile;
@@ -30,6 +33,14 @@ public class StreamingSubjectDataList extends ArrayList<SubjectDataBean> {
     public StreamingSubjectDataList(String xmlString) {
         this.xmlString = xmlString;
         initMetadata();
+    }
+    
+    public java.util.Map<String, Boolean> getEventSignatureMap() {
+        return eventSignatureMap;
+    }
+
+    public java.util.Map<String, Boolean> getFormSignatureMap() {
+        return formSignatureMap;
     }
 
     private InputStream getInputStream() throws Exception {
@@ -48,6 +59,18 @@ public class StreamingSubjectDataList extends ArrayList<SubjectDataBean> {
                 if (event == XMLStreamReader.START_ELEMENT) {
                     if ("ClinicalData".equals(reader.getLocalName())) {
                         studyOid = reader.getAttributeValue(null, "StudyOID");
+                    } else if ("StudyEventDef".equals(reader.getLocalName())) {
+                        String oid = reader.getAttributeValue(null, "OID");
+                        String sigReq = reader.getAttributeValue(null, "SignatureRequired");
+                        if ("Yes".equalsIgnoreCase(sigReq)) {
+                            eventSignatureMap.put(oid, true);
+                        }
+                    } else if ("FormDef".equals(reader.getLocalName())) {
+                        String oid = reader.getAttributeValue(null, "OID");
+                        String sigReq = reader.getAttributeValue(null, "SignatureRequired");
+                        if ("Yes".equalsIgnoreCase(sigReq)) {
+                            formSignatureMap.put(oid, true);
+                        }
                     } else if ("UpsertOn".equals(reader.getLocalName())) {
                         upsertOn = new UpsertOnBean();
                         String ns = reader.getAttributeValue(null, "NotStarted");

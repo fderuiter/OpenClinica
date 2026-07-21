@@ -192,6 +192,12 @@ public class DataEndpoint {
                     return new DOMSource(mapFailConfirmation(null, err_msg));
                 }
 
+                if (odmContainer.getCrfDataPostImportContainer().getSubjectData() instanceof org.akaza.openclinica.logic.importdata.StreamingSubjectDataList) {
+                    org.akaza.openclinica.logic.importdata.StreamingSubjectDataList streamingList = (org.akaza.openclinica.logic.importdata.StreamingSubjectDataList) odmContainer.getCrfDataPostImportContainer().getSubjectData();
+                    org.akaza.openclinica.web.crfdata.ImportCRFDataService importService = new org.akaza.openclinica.web.crfdata.ImportCRFDataService(dataSource, locale);
+                    importService.updateElectronicSignatures(streamingList.getEventSignatureMap(), streamingList.getFormSignatureMap(), userBean);
+                }
+
                 // setup ruleSets to run if applicable
                 ArrayList<SubjectDataBean> subjectDataBeans = odmContainer.getCrfDataPostImportContainer().getSubjectData();
                 List<ImportDataRuleRunnerContainer> containers = dataImportService.runRulesSetup(dataSource, studyBean, userBean, subjectDataBeans,
