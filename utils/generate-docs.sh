@@ -137,6 +137,15 @@ if [ ! -z "$MALFORMED_CITATIONS" ]; then
 fi
 
 # Validate Diátaxis structural definition for tutorials
+if ! python3 utils/test_validate_prose.py; then
+    echo "Error: Prose validation test suite failed."
+    if [ "$STRICT_MODE" = "true" ]; then
+        exit 1
+    else
+        echo "Warning: Strict mode disabled. Continuing anyway..."
+    fi
+fi
+
 if ! python3 utils/validate_prose.py docs/tutorials/*.md; then
     if [ "$STRICT_MODE" = "true" ]; then
         exit 1
