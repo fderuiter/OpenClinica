@@ -123,7 +123,7 @@ if [ ! -z "$MALFORMED_CITATIONS" ]; then
 fi
 
 # Validate Diátaxis structural definition for tutorials
-if ! python3 validate_prose.py docs/tutorials/*.md; then
+if ! python3 utils/validate_prose.py docs/tutorials/*.md; then
     exit 1
 fi
 
