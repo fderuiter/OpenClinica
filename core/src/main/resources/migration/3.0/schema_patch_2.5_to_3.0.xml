@@ -201,6 +201,9 @@
             AUTHORITIES -- */ create or replace trigger authorities_bef_trg before insert on
             authorities for each row begin if :new.id is null then select AUTHORITIES_ID_SEQ.nextval
             into :new.id from dual; end if; end; /* / */ </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="1235684743487-403">
         <createTable tableName="oc_qrtz_blob_triggers">
@@ -530,6 +533,9 @@
             <column name="name" value="souce_data_verification"/>
             <column name="description" value="indicates the element has undergone SDV"/>
         </insert>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="kkrumlian" id="1235684743487-435" dbms="postgresql">
         <sql splitStatements="false">

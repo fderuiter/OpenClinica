@@ -79,6 +79,9 @@
 		'
 		    LANGUAGE plpgsql;
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 
     <changeSet author="ywang" id="2009-07-23-3930-2">
@@ -159,6 +162,9 @@
 		end;
 		/* / */
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 		<changeSet author="ywang" id="2009-07-23-3930-4" dbms="oracle" runOnChange="true">
 		<comment>modify clinica_table_api for event_crf_triger adding event crf sdv status</comment>
@@ -790,5 +796,8 @@
 	      /* show errors; */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 </databaseChangeLog>

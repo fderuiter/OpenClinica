@@ -1,5 +1,3 @@
-
-
 # Enterprise Lifecycle Management for Configuration
 
 ## 1. Context & Objectives
@@ -12,6 +10,9 @@
     - Zero unrecoverable configuration states in production environments.
     - 100% of critical system settings managed via the authenticated UI.
     - Configuration rollback completed in under 30 seconds.
+    - 100% of critical configuration updates pass automated pre-flight checks before saving.
+    - The system successfully degrades to a read-only state during database connection loss without crashing.
+    - Administrators can revert any system configuration to a previous snapshot within 3 clicks in the user interface.
 
 ---
 
@@ -24,6 +25,12 @@
 - **Scenario: One-Click Disaster Recovery**
     - **User Intent:** Revert a series of incorrect mail server changes that caused notification failures.
     - **Desired Experience:** The admin views a history of previous configuration states, identifies the last known good version, and clicks "Rollback" to immediately restore all settings to that point in time [cite:source5].
+- **Scenario: Admin Saves New Settings**
+    - **User Intent:** Update the active email server settings and the file storage location safely.
+    - **Desired Experience:** When the administrator modifies the values and clicks save, the system runs silent background tests on the mail server and directory write permissions. If the mail server fails to respond, the system prevents the save operation and highlights the invalid connection parameters.
+- **Scenario: Reverting an Error in Production**
+    - **User Intent:** Recover a functional system after realizing a saved update broke user workflows.
+    - **Desired Experience:** The administrator accesses the configuration history panel in the console. They view previous versioned snapshots with clear timestamps and usernames, selecting a snapshot from yesterday to perform a UI-driven point-in-time recovery to instantly restore all active configurations using the Memento/Snapshot pattern.
 
 ---
 
@@ -31,19 +38,23 @@
 *A high-level list of what the solution must be able to do. Avoid mentioning specific code, databases, or implementation details.*
 
 - **Requirement 1:** Migrate all critical properties currently stored in external files to a managed database repository [cite:source1, cite:source3].
-- **Requirement 2:** Provide a secure administrative interface to view and modify all core system settings [cite:source4].
-- **Requirement 3:** Implement pre-flight validation checks for database and mail connectivity before allowing updates to be saved [cite:source2].
-- **Requirement 4:** Automatically capture a versioned snapshot of all configuration settings every time a change is made [cite:source3].
-- **Requirement 5:** Enable administrators to view a chronological history of changes including timestamps and the user who performed the edit [cite:source5].
-- **Requirement 6:** Support a one-click restoration of any historical configuration version [cite:source5].
+- **Requirement 2:** Provide a secure administrative interface for super-admins to view and modify all core system settings, restricted from standard users [cite:source4, cite:source8].
+- **Requirement 3:** The system must run pre-flight checks to validate SMTP mail server connectivity, folder access permissions, and database parameters before saving any changes [cite:source4, cite:source5, cite:source6].
+- **Requirement 4:** The system must save database-backed versioned snapshots of active configuration parameters using the Memento/Snapshot pattern, capturing author metadata on every change [cite:source1, cite:source2, cite:source7].
+- **Requirement 5:** The user interface must provide administrators with a chronological revision history view and a single 1-click mechanism to restore previous snapshots [cite:source5, cite:source9].
+- **Requirement 6:** The application must degrade automatically to a secure read-only mode if the configuration database becomes inaccessible [cite:source3, cite:source10].
+- **Requirement 7:** Command-line configuration utilities must require manual interactive confirmations or explicit force/override flags to execute [cite:source8].
 
 ---
 
 ## 4. Constraints & Guardrails
 - Only users with super-administrator privileges may access the configuration lifecycle module.
-- The system must remain operational in a read-only mode if the database configuration table becomes inaccessible.
+- The automatic read-only degradation mode must block all database modifications while permitting users to search and view existing records during database connection loss.
 - Manual file-based overrides must be disabled or strictly audited to prevent out-of-band changes [cite:source1].
-- All sensitive values, such as passwords, must be masked in the history view.
+- All sensitive values, such as passwords and credentials, must be masked in the history view.
+- Pre-flight connectivity validations must complete in under 5 seconds to avoid UI delays during editing.
+- Non-interactive command-line operations must immediately abort with an error code unless an override flag is set.
+- Modifying database configuration records directly on the database host must trigger email alerts to all registered super-administrators.
 
 ---
 
@@ -51,10 +62,12 @@
 *A checklist of conditions that must be met for the solution to be considered complete and successful.*
 
 - [ ] Administrators can successfully edit and save database connection properties through the UI.
-- [ ] The system prevents saving a configuration if the pre-flight connectivity test fails.
-- [ ] Every change creates a new entry in a version history table.
-- [ ] Clicking the rollback button successfully reverts all active settings to a chosen historical state.
-- [ ] An audit log records the identity of the user who performed each configuration change.
+- [ ] Pre-flight checks prevent administrators from saving incorrect SMTP details, unreachable directories, or malformed database URLs [cite:source4] [cite:source5] [cite:source6].
+- [ ] The system records a new database-backed historical configuration snapshot (with audit logs of user identity) for every validated modification [cite:source1] [cite:source2] [cite:source7].
+- [ ] Administrators can revert the system configuration to any previous snapshot from the administration panel UI in a 1-click restore [cite:source9].
+- [ ] Users can browse, filter, and view records in a read-only state during simulated database network drops [cite:source10].
+- [ ] Command-line management commands fail unless the administrator answers 'yes' to safety prompts or sets the override environment variable [cite:source8].
+
 ## 6. Database Schema Isolation & Safety
 The deployment lifecycle ensures that the application's database schema is isolated from shared infrastructure, mitigating the risk of accidental data deletion.
 
@@ -81,3 +94,8 @@ pg_restore -h <HOST> -p <PORT> -U <USER> -d <DATABASE> -1 path/to/db_backup.dump
 - [cite:source3]: Placeholder descriptive title for source 3
 - [cite:source4]: Placeholder descriptive title for source 4
 - [cite:source5]: Placeholder descriptive title for source 5
+- [cite:source6]: Placeholder descriptive title for source 6
+- [cite:source7]: Placeholder descriptive title for source 7
+- [cite:source8]: Placeholder descriptive title for source 8
+- [cite:source9]: Placeholder descriptive title for source 9
+- [cite:source10]: Placeholder descriptive title for source 10

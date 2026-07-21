@@ -71,6 +71,9 @@
 		'
 		    LANGUAGE plpgsql;
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="1235684743487-359">
     	<preConditions onFail="MARK_RAN">
@@ -138,6 +141,9 @@
 		'
 		    LANGUAGE plpgsql;
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="1235684743487-360" runOnChange="true">
     	<preConditions onFail="MARK_RAN">
@@ -188,6 +194,9 @@
 		'
 		    LANGUAGE plpgsql;
     	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     
     
@@ -273,6 +282,9 @@
 		'
 		    LANGUAGE plpgsql;
 	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="1235684743487-362" runOnChange="true">
     	 <preConditions onFail="MARK_RAN">
@@ -346,6 +358,9 @@
 		END;'
 		    LANGUAGE plpgsql;
 	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>    
     <changeSet author="pgawade (generated)" id="1235684743487-363">
     	 <preConditions onFail="MARK_RAN">
@@ -381,6 +396,9 @@
 		END;'
 		    LANGUAGE plpgsql;
 	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="1235684743487-364">
 	 <preConditions onFail="MARK_RAN">
@@ -425,6 +443,9 @@
 		RETURN NULL;  /*return values ignored for ''after'' triggers*/
 		END; ' LANGUAGE plpgsql VOLATILE;
     	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     
     
@@ -440,6 +461,9 @@
 		    FOR EACH ROW
 		    EXECUTE PROCEDURE event_crf_trigger();
     	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="1235684743487-366">
     	<preConditions onFail="MARK_RAN">
@@ -452,6 +476,9 @@
 		    FOR EACH ROW
 		    EXECUTE PROCEDURE global_subject_trigger();
 	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="1235684743487-367">
     	<preConditions onFail="MARK_RAN">
@@ -464,6 +491,9 @@
 		    FOR EACH ROW
 		    EXECUTE PROCEDURE item_data_trigger();
 	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="1235684743487-368">
     	<preConditions onFail="MARK_RAN">
@@ -476,6 +506,9 @@
 		    FOR EACH ROW
 		    EXECUTE PROCEDURE study_subject_trigger();
 	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="1235684743487-369">
     	<preConditions onFail="MARK_RAN">
@@ -488,6 +521,9 @@
 		    FOR EACH ROW
 		    EXECUTE PROCEDURE study_event_trigger();
 	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="1235684743487-370">
     	<preConditions onFail="MARK_RAN">
@@ -500,6 +536,9 @@
 		    FOR EACH ROW
 		    EXECUTE PROCEDURE subject_group_assignment_trigger();
 	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     <changeSet author="pgawade (generated)" id="1235684743487-371">
     	 <preConditions onFail="MARK_RAN">
@@ -513,6 +552,9 @@
 		  FOR EACH ROW
   		  EXECUTE PROCEDURE repeating_item_data_trigger();
 	 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
    
     <changeSet author="pgawade (generated)" id="1235684743487-372">
@@ -555,6 +597,9 @@
 				
 			  LANGUAGE plpgsql;
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
      <changeSet author="pgawade (generated)" id="1235684743487-375">
     	<preConditions onFail="MARK_RAN">
@@ -569,6 +614,9 @@
 			  EXECUTE PROCEDURE public.global_user_trigger();
 	
 		 </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 <!-- Oracle database specific sequnces, triggers, packages -->   
 <!-- TRIGGERS -->
@@ -645,6 +693,9 @@
 		end;
 		/* / */
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>	
 	<changeSet author="pgawade (generated)" id="1235684743487-94">
 		<preConditions onFail="MARK_RAN">
@@ -705,6 +756,9 @@
 
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-95">
 		<preConditions onFail="MARK_RAN">
@@ -760,6 +814,9 @@
 		end;
 	     /* /  */
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-96">
 		<preConditions onFail="MARK_RAN">
@@ -826,6 +883,9 @@
 		end;
 	      /* /  */
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-97">
 		<preConditions onFail="MARK_RAN">
@@ -879,6 +939,9 @@
 	     /* / */
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-155">
 		<preConditions onFail="MARK_RAN">
@@ -932,6 +995,9 @@
 		end;
 		/* / */
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-98">
 		<preConditions onFail="MARK_RAN">
@@ -987,6 +1053,9 @@
 		end;
 	     /* / */
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-99">
 		<preConditions onFail="MARK_RAN">
@@ -1014,6 +1083,9 @@
 		end;
 	     /* / */
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-100">
 		<preConditions onFail="MARK_RAN">
@@ -1037,6 +1109,9 @@
 	     /* / */
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-101">
 		<preConditions onFail="MARK_RAN">
@@ -1059,6 +1134,9 @@
 		end;
 	     /* / */
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-102">
 		<preConditions onFail="MARK_RAN">
@@ -1082,6 +1160,9 @@
 	     /* / */
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-103">
 		<preConditions onFail="MARK_RAN">
@@ -1105,6 +1186,9 @@
 		/* / */
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-104">
 		<preConditions onFail="MARK_RAN">
@@ -1127,6 +1211,9 @@
 		end;
 		/* / */
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-105">
 		<preConditions onFail="MARK_RAN">
@@ -1150,6 +1237,9 @@
 		/* / */
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-106">
 		<preConditions onFail="MARK_RAN">
@@ -1173,6 +1263,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-107">
 		<preConditions onFail="MARK_RAN">
@@ -1196,6 +1289,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-108">
 		<preConditions onFail="MARK_RAN">
@@ -1219,6 +1315,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-109">
 		<preConditions onFail="MARK_RAN">
@@ -1242,6 +1341,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-110">
 		<preConditions onFail="MARK_RAN">
@@ -1265,6 +1367,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-111">
 		<preConditions onFail="MARK_RAN">
@@ -1288,6 +1393,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-112">
 		<preConditions onFail="MARK_RAN">
@@ -1311,6 +1419,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-113">
 		<preConditions onFail="MARK_RAN">
@@ -1334,6 +1445,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-380">
 		<preConditions onFail="MARK_RAN">
@@ -1357,6 +1471,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-114">
 		<preConditions onFail="MARK_RAN">
@@ -1379,6 +1496,9 @@
 		end;
 		/* / */
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-115">
 		<preConditions onFail="MARK_RAN">
@@ -1402,6 +1522,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-116">
 		<preConditions onFail="MARK_RAN">
@@ -1425,6 +1548,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-117">
 		<preConditions onFail="MARK_RAN">
@@ -1448,6 +1574,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-118">
 		<preConditions onFail="MARK_RAN">
@@ -1472,6 +1601,9 @@
 
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-119">
 		<preConditions onFail="MARK_RAN">
@@ -1494,6 +1626,9 @@
 		end;
 		/* / */
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-120">
 		<preConditions onFail="MARK_RAN">
@@ -1517,6 +1652,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-388">
 		<preConditions onFail="MARK_RAN">
@@ -1540,6 +1678,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-121">
 		<preConditions onFail="MARK_RAN">
@@ -1563,6 +1704,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-122">
 		<preConditions onFail="MARK_RAN">
@@ -1586,6 +1730,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-123">
 		<preConditions onFail="MARK_RAN">
@@ -1609,6 +1756,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-124">
 		<preConditions onFail="MARK_RAN">
@@ -1632,6 +1782,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-125">
 		<preConditions onFail="MARK_RAN">
@@ -1655,6 +1808,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-126">
 		<preConditions onFail="MARK_RAN">
@@ -1678,6 +1834,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-127">
 		<preConditions onFail="MARK_RAN">
@@ -1701,6 +1860,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-128">
 		<preConditions onFail="MARK_RAN">
@@ -1724,6 +1886,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-129">
 		<preConditions onFail="MARK_RAN">
@@ -1747,6 +1912,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-130">
 		<preConditions onFail="MARK_RAN">
@@ -1770,6 +1938,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-131">
 		<preConditions onFail="MARK_RAN">
@@ -1793,6 +1964,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-132">
 		<preConditions onFail="MARK_RAN">
@@ -1816,6 +1990,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-133">
 		<preConditions onFail="MARK_RAN">
@@ -1839,6 +2016,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-134">
 		<preConditions onFail="MARK_RAN">
@@ -1862,6 +2042,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>    	
 	<changeSet author="pgawade (generated)" id="1235684743487-135">
 		<preConditions onFail="MARK_RAN">
@@ -1885,6 +2068,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>    	
 	<changeSet author="pgawade (generated)" id="1235684743487-136">
 		<preConditions onFail="MARK_RAN">
@@ -1909,6 +2095,9 @@
 
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>  
 	<changeSet author="pgawade (generated)" id="1235684743487-137">
 		<preConditions onFail="MARK_RAN">
@@ -1932,6 +2121,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>  
 	<changeSet author="pgawade (generated)" id="1235684743487-138">
 		<preConditions onFail="MARK_RAN">
@@ -1955,6 +2147,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet> 
 	<changeSet author="pgawade (generated)" id="1235684743487-139">
 		<preConditions onFail="MARK_RAN">
@@ -1978,6 +2173,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>    	
 	<changeSet author="pgawade (generated)" id="1235684743487-140">
 		<preConditions onFail="MARK_RAN">
@@ -2001,6 +2199,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>    
 	<changeSet author="pgawade (generated)" id="1235684743487-141">
 		<preConditions onFail="MARK_RAN">
@@ -2024,6 +2225,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>   
 	<changeSet author="pgawade (generated)" id="1235684743487-142">
 		<preConditions onFail="MARK_RAN">
@@ -2047,6 +2251,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>  
 	<changeSet author="pgawade (generated)" id="1235684743487-143">
 		<preConditions onFail="MARK_RAN">
@@ -2070,6 +2277,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-144">
 		<preConditions onFail="MARK_RAN">
@@ -2093,6 +2303,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>  
 	<changeSet author="pgawade (generated)" id="1235684743487-145">
 		<preConditions onFail="MARK_RAN">
@@ -2116,6 +2329,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>    
 	<changeSet author="pgawade (generated)" id="1235684743487-146">
 		<preConditions onFail="MARK_RAN">
@@ -2139,6 +2355,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet> 
 	<changeSet author="pgawade (generated)" id="1235684743487-147">
 		<preConditions onFail="MARK_RAN">
@@ -2162,6 +2381,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet> 
 	<changeSet author="pgawade (generated)" id="1235684743487-148">
 		<preConditions onFail="MARK_RAN">
@@ -2185,6 +2407,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>  
 	<changeSet author="pgawade (generated)" id="1235684743487-149">
 		<preConditions onFail="MARK_RAN">
@@ -2209,6 +2434,9 @@
 
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet> 
 	<changeSet author="pgawade (generated)" id="1235684743487-150">
 		<preConditions onFail="MARK_RAN">
@@ -2232,6 +2460,9 @@
 		/* / */
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet> 
 	<changeSet author="pgawade (generated)" id="1235684743487-151">
 		<preConditions onFail="MARK_RAN">
@@ -2255,6 +2486,9 @@
 		/* / */
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet> 
 	<changeSet author="pgawade (generated)" id="1235684743487-152">
 		<preConditions onFail="MARK_RAN">
@@ -2278,6 +2512,9 @@
 		/* / */
 
 		</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>    	
 	<!-- packages -->
 	<changeSet author="pgawade (generated)" id="1235684743487-373">
@@ -2340,6 +2577,9 @@
 		/* / */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>
 	<changeSet author="pgawade (generated)" id="1235684743487-374" runOnChange="true">
 		<preConditions onFail="MARK_RAN">
@@ -2975,6 +3215,9 @@
 	      /* show errors; */
 
 	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
 	</changeSet>	
 <!-- SEQUENCES -->
             <changeSet author="pgawade (generated)" id="1236096695424-291">

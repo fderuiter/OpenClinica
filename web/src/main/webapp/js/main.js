@@ -17,59 +17,94 @@ import './vendor/new_cal/index.js';
 import './vendor/wz_tooltip/wz_tooltip.js';
 import './vendor/calendarpopup/CalendarPopup.js';
 
-// Initialize modern React UI
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import Navigation from './components/Navigation.jsx';
-import CRFRenderer from './components/CRFRenderer.jsx';
-import { AccessibilityProvider } from './components/AccessibilityProvider.jsx';
-import ErrorBoundary from './components/ErrorBoundary.jsx';
+// Initialize modern React UI (dynamically imported below)
 
-function mountReactApp() {
+async function mountReactApp() {
   const isPrintableMode =
-    (window.app_studyOID !== undefined &&
-      document.title.includes('Printable Forms')) ||
+    (window.app_studyOID !== undefined && document.title.includes('Printable Forms')) ||
     window.location.pathname.includes('printcrf');
 
-  if (isPrintableMode) {
+  const crfContainer = document.getElementById('printCRFContainer');
+  const menuContainer = document.getElementById('menuContainer');
+
+  const needsCRF = !!(isPrintableMode && crfContainer);
+  // Navigation is bypassed if we are in printable mode to fix memory leaks
+  const needsNavigation = !isPrintableMode && !!menuContainer;
+
+  if (!needsNavigation && !needsCRF) {
+    return;
+  }
+
+  const [
+    { default: React },
+    { createRoot },
+    { AccessibilityProvider },
+    { default: ErrorBoundary }
+  ] = await Promise.all([
+    import('react'),
+    import('react-dom/client'),
+    import('./components/AccessibilityProvider.jsx'),
+    import('./components/ErrorBoundary.jsx')
+  ]);
+
+  if (needsCRF) {
     // If this is the print CRF page, replace the body or specific element with the new renderer
-    const crfContainer = document.getElementById('printCRFContainer');
-    if (crfContainer) {
-      const crfRoot = createRoot(crfContainer);
-      crfRoot.render(
+    const CRFRenderer = React.lazy(() => import('./components/CRFRenderer.jsx'));
+    const crfRoot = createRoot(crfContainer);
+    crfRoot.render(
+      React.createElement(
+        ErrorBoundary,
+        null,
         React.createElement(
-          ErrorBoundary,
+          AccessibilityProvider,
           null,
           React.createElement(
-            AccessibilityProvider,
-            null,
+            React.Suspense,
+            { fallback: React.createElement('div', null, 'Loading CRF...') },
             React.createElement(CRFRenderer, null)
           )
         )
-      );
-    }
-  } else {
+      )
+    );
+  } else if (needsNavigation) {
     // Mount the modern navigation menu if the container exists
-    const menuContainer = document.getElementById('menuContainer');
-    if (menuContainer) {
-      const navRoot = createRoot(menuContainer);
-      navRoot.render(
+    const Navigation = React.lazy(() => import('./components/Navigation.jsx'));
+    const navRoot = createRoot(menuContainer);
+    navRoot.render(
+      React.createElement(
+        ErrorBoundary,
+        null,
         React.createElement(
-          ErrorBoundary,
+          AccessibilityProvider,
           null,
           React.createElement(
-            AccessibilityProvider,
-            null,
+            React.Suspense,
+            { fallback: React.createElement('div', null, 'Loading Navigation...') },
             React.createElement(Navigation, null)
           )
         )
-      );
-    }
+      )
+    );
   }
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', mountReactApp);
+  document.addEventListener('DOMContentLoaded', () => {
+    mountReactApp();
+    clearHardcodedTabIndex();
+  });
 } else {
   mountReactApp();
+  clearHardcodedTabIndex();
+}
+
+function clearHardcodedTabIndex() {
+  const formElements = document.querySelectorAll('input[tabindex], select[tabindex], textarea[tabindex], button[tabindex]');
+  formElements.forEach(el => {
+    const tabIndex = parseInt(el.getAttribute('tabindex'), 10);
+    // Only clear if it's explicitly set to break visual flow (positive tab index)
+    if (tabIndex > 0) {
+      el.removeAttribute('tabindex');
+    }
+  });
 }

@@ -69,7 +69,7 @@ const getFieldDiscrepancy = (fieldId, value) => {
   return null;
 };
 
-const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
+const FormField = React.memo(function FormField({ field, fieldId, value, groupOID, index }) {
   const [localValue, setLocalValue] = useState(value || '');
   const { announce } = useAccessibility();
 
@@ -128,6 +128,7 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
           onChange={handleChange}
           onBlur={handleBlur}
           aria-describedby={discrepancyId}
+          aria-invalid={discrepancy ? 'true' : 'false'}
         >
           <option value="">--Select--</option>
           {field.options.map((opt) => (
@@ -146,13 +147,14 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
           onChange={handleChange}
           onBlur={handleBlur}
           aria-describedby={discrepancyId}
+          aria-invalid={discrepancy ? 'true' : 'false'}
         />
       )}
 
       {discrepancy && (
         <div 
           id={discrepancyId} 
-          className={styles.discrepancyText}
+          className={`sr-only ${styles.discrepancyText}`}
         >
           {discrepancy.text}
         </div>
@@ -160,8 +162,9 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
     </div>
   );
 });
+FormField.displayName = 'FormField';
 
-const FormRow = React.memo(({ group, row, index, totalRemaining, setRowRef, setFocusAction }) => {
+const FormRow = React.memo(function FormRow({ group, row, index, totalRemaining, setRowRef, setFocusAction }) {
   const { announce } = useAccessibility();
 
   return (
@@ -206,8 +209,9 @@ const FormRow = React.memo(({ group, row, index, totalRemaining, setRowRef, setF
     </div>
   );
 });
+FormRow.displayName = 'FormRow';
 
-const FormGroup = React.memo(({ group, rows, setRowRef, setAddBtnRef, setFocusAction }) => {
+const FormGroup = React.memo(function FormGroup({ group, rows, setRowRef, setAddBtnRef, setFocusAction }) {
   const { announce } = useAccessibility();
 
   return (
@@ -242,6 +246,7 @@ const FormGroup = React.memo(({ group, rows, setRowRef, setAddBtnRef, setFocusAc
     </div>
   );
 });
+FormGroup.displayName = 'FormGroup';
 
 export default function CRFRenderer() {
   const [studyOID, setStudyOID] = useState(store.getState().studyOID);
@@ -325,7 +330,7 @@ export default function CRFRenderer() {
       clearTimeout(timer);
       unsubscribe();
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return <div className="spinner">Loading CRF Data...</div>;

@@ -87,5 +87,8 @@
 	    	'
 		    LANGUAGE plpgsql;
     	</sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
 </databaseChangeLog>
