@@ -33,6 +33,7 @@ nav:
     - Architecture Guide: explanation/architecture.md
 hooks:
   - hooks/assign_categories.py
+  - hooks/filter_restricted.py
 plugins:
   - search
   - tags
