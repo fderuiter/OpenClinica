@@ -8,7 +8,7 @@ def generate_soap_docs():
     docs_dir = 'docs/reference'
     os.makedirs(docs_dir, exist_ok=True)
     
-    with open(os.path.join(docs_dir, 'soap.md'), 'w') as out:
+    with open(os.path.join(docs_dir, 'soap.md'), 'w', encoding='utf-8') as out:
         out.write('# Static SOAP Service Documentation\n\n')
         out.write('This section provides static references to the legacy SOAP service specifications.\n\n')
         
@@ -16,7 +16,7 @@ def generate_soap_docs():
             filename = os.path.basename(xsd_file)
             out.write(f'## {filename}\n\n')
             out.write('```xml\n')
-            with open(xsd_file, 'r') as f:
+            with open(xsd_file, 'r', encoding='utf-8') as f:
                 out.write(f.read())
             out.write('\n```\n\n')
 
