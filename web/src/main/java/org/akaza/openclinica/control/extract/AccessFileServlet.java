@@ -43,10 +43,10 @@ public class AccessFileServlet extends SecureController {
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         int fileId = fp.getInt("fileId");
-        ArchivedDatasetFileDAO asdfdao = new ArchivedDatasetFileDAO(sm.getDataSource());
-        DatasetDAO dsDao = new DatasetDAO(sm.getDataSource());
+        ArchivedDatasetFileDAO asdfdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ArchivedDatasetFileDAO.class);
+        DatasetDAO dsDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DatasetDAO.class);
         ArchivedDatasetFileBean asdfBean = (ArchivedDatasetFileBean) asdfdao.findByPK(fileId);
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+        StudyDAO studyDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
         DatasetBean dsBean = (DatasetBean) dsDao.findByPK(asdfBean.getDatasetId());
         int parentId = currentStudy.getParentStudyId();
         if(parentId==0)//Logged in at study level

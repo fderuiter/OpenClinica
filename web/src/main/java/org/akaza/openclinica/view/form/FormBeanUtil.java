@@ -107,8 +107,8 @@ public class FormBeanUtil {
         List<DisplayItemBean> disBeans = new ArrayList<DisplayItemBean>();
         if (itemBeans == null || itemBeans.isEmpty())
             return disBeans;
-        ItemFormMetadataDAO metaDao = new ItemFormMetadataDAO(dataSource);
-        ItemDataDAO itemDataDAO = new ItemDataDAO(dataSource);
+        ItemFormMetadataDAO metaDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
+        ItemDataDAO itemDataDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
         DisplayItemBean displayBean;
         ItemFormMetadataBean meta;
 
@@ -186,8 +186,8 @@ public class FormBeanUtil {
         List<DisplayItemBean> disBeans = new ArrayList<DisplayItemBean>();
         if (itemBeans == null || itemBeans.isEmpty())
             return disBeans;
-        ItemFormMetadataDAO metaDao = new ItemFormMetadataDAO(dataSource);
-        ItemDataDAO itemDataDAO = new ItemDataDAO(dataSource);
+        ItemFormMetadataDAO metaDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
+        ItemDataDAO itemDataDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
         DisplayItemBean displayBean;
         ItemFormMetadataBean meta;
 
@@ -258,8 +258,8 @@ public class FormBeanUtil {
         List<DisplayItemBean> disBeans = new ArrayList<DisplayItemBean>();
         if (itemBeans == null || itemBeans.isEmpty())
             return disBeans;
-        ItemFormMetadataDAO metaDao = new ItemFormMetadataDAO(dataSource);
-        ItemDataDAO itemDataDao = new ItemDataDAO(dataSource);
+        ItemFormMetadataDAO metaDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
+        ItemDataDAO itemDataDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
         DisplayItemBean displayBean;
         ItemFormMetadataBean meta;
         for (ItemBean iBean : itemBeans) {
@@ -322,8 +322,8 @@ public class FormBeanUtil {
 
         DisplayItemBean disBean = new DisplayItemBean();
         ItemBean itemBean = new ItemBean();
-        ItemDAO itemDAO = new ItemDAO(dataSource);
-        ItemDataDAO itemDataDao = new ItemDataDAO(dataSource);
+        ItemDAO itemDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
+        ItemDataDAO itemDataDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
         if (itemFBean == null)
             return disBean;
 
@@ -800,11 +800,11 @@ public class FormBeanUtil {
 
         DisplaySectionBean displaySectionBean = new DisplaySectionBean();
 
-        ItemGroupDAO formGroupDAO = new ItemGroupDAO(dataSource);
-        ItemGroupMetadataDAO igMetaDAO = new ItemGroupMetadataDAO(dataSource);
-        ItemDAO itemDao = new ItemDAO(dataSource);
-        ItemFormMetadataDAO metaDao = new ItemFormMetadataDAO(dataSource);
-        SectionDAO sectionDao = new SectionDAO(dataSource);
+        ItemGroupDAO formGroupDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupDAO.class);
+        ItemGroupMetadataDAO igMetaDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupMetadataDAO.class);
+        ItemDAO itemDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
+        ItemFormMetadataDAO metaDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
+        SectionDAO sectionDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SectionDAO.class);
 
         // Give the DisplaySectionBean a legitimate SectionBean
         SectionBean secBean = (SectionBean) sectionDao.findByPK(sectionId);
@@ -907,11 +907,11 @@ public class FormBeanUtil {
 
         DisplaySectionBean displaySectionBean = new DisplaySectionBean();
 
-        ItemGroupDAO formGroupDAO = new ItemGroupDAO(dataSource);
-        ItemGroupMetadataDAO igMetaDAO = new ItemGroupMetadataDAO(dataSource);
-        ItemDAO itemDao = new ItemDAO(dataSource);
-        ItemFormMetadataDAO metaDao = new ItemFormMetadataDAO(dataSource);
-        SectionDAO sectionDao = new SectionDAO(dataSource);
+        ItemGroupDAO formGroupDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupDAO.class);
+        ItemGroupMetadataDAO igMetaDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupMetadataDAO.class);
+        ItemDAO itemDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
+        ItemFormMetadataDAO metaDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
+        SectionDAO sectionDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SectionDAO.class);
 
         // Give the DisplaySectionBean a legitimate SectionBean
         SectionBean secBean = (SectionBean) sectionDao.findByPK(sectionId);
@@ -1243,9 +1243,9 @@ public class FormBeanUtil {
     public DisplaySectionBean createDisplaySectionBeanWithItemGroups(int sectionId, EventCRFBean eventCrfBean, SectionBean sectionBean, SessionManager sm,
             ServletContext context) {
         DisplaySectionBean dBean = new DisplaySectionBean();
-        ItemGroupDAO formGroupDAO = new ItemGroupDAO(sm.getDataSource());
-        ItemGroupMetadataDAO igMetaDAO = new ItemGroupMetadataDAO(sm.getDataSource());
-        ItemDAO itemDao = new ItemDAO(sm.getDataSource());
+        ItemGroupDAO formGroupDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupDAO.class);
+        ItemGroupMetadataDAO igMetaDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupMetadataDAO.class);
+        ItemDAO itemDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
         // Get all items associated with this crfVersion ID; divide them up into
         // items with a group, and those without a group.
         // get all items associated with a section id, then split them up into
@@ -1321,10 +1321,10 @@ public class FormBeanUtil {
             SessionManager sm, int eventDefinitionCRFId, ServletContext context) {
 
         DisplaySectionBean dBean = new DisplaySectionBean();
-        ItemGroupDAO formGroupDAO = new ItemGroupDAO(sm.getDataSource());
-        ItemGroupMetadataDAO igMetaDAO = new ItemGroupMetadataDAO(sm.getDataSource());
-        ItemDAO itemDao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO metaDao = new ItemFormMetadataDAO(sm.getDataSource());
+        ItemGroupDAO formGroupDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupDAO.class);
+        ItemGroupMetadataDAO igMetaDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupMetadataDAO.class);
+        ItemDAO itemDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
+        ItemFormMetadataDAO metaDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
 
         List<ItemGroupBean> arrList = formGroupDAO.findLegitGroupBySectionId(sectionId);
         // all items associated with the section, including those not in a group
@@ -1348,7 +1348,7 @@ public class FormBeanUtil {
         // logger.info("line 923, found event def crf id
         // "+eventDefinitionCRFId);
         if (eventDefinitionCRFId <= 0) {
-            EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+            EventDefinitionCRFDAO edcdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
             EventDefinitionCRFBean edcBean = edcdao.findByStudyEventIdAndCRFVersionId(study, studyEventId, eventCrfBean.getCRFVersionId());
             eventDefinitionCRFId = edcBean.getId();
         }
@@ -1404,7 +1404,7 @@ public class FormBeanUtil {
     }
 
     public boolean sectionHasUngroupedItems(DataSource dataSource, int sectionId, List<DisplayItemGroupBean> displayFormBeans) {
-        ItemFormMetadataDAO metaDao = new ItemFormMetadataDAO(dataSource);
+        ItemFormMetadataDAO metaDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
         List<ItemFormMetadataBean> allMetas = new ArrayList<ItemFormMetadataBean>();
         try {
             allMetas = metaDao.findAllBySectionId(sectionId);
@@ -1433,7 +1433,7 @@ public class FormBeanUtil {
         // hold the bean's return value
         List<NullValue> nullObjectList = new ArrayList<NullValue>();
         EventDefinitionCRFBean eventCRFDefBean;
-        EventDefinitionCRFDAO eventDefinitionCRFDAO = new EventDefinitionCRFDAO(dataSource);
+        EventDefinitionCRFDAO eventDefinitionCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
         eventCRFDefBean = (EventDefinitionCRFBean) eventDefinitionCRFDAO.findByPK(eventDefinitionCRFId);
         nullObjectList = eventCRFDefBean.getNullValuesList();
         if (nullObjectList == null) {

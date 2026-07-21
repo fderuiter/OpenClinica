@@ -62,7 +62,7 @@ public class MetadataUnit extends OdmUnit {
         super(ds, study, category);
         this.odmStudy = new OdmStudyBean();
         if (study.getParentStudyId() > 0) {
-            this.parentStudy = (StudyBean) new StudyDAO(ds).findByPK(study.getParentStudyId());
+            this.parentStudy = (StudyBean) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class).findByPK(study.getParentStudyId());
         } else {
             this.parentStudy = new StudyBean();
         }
@@ -77,7 +77,7 @@ public class MetadataUnit extends OdmUnit {
         this.odmStudy = new OdmStudyBean();
         this.ruleSetRuleDao = ruleSetRuleDao;
         if (study.getParentStudyId() > 0) {
-            this.parentStudy = (StudyBean) new StudyDAO(ds).findByPK(study.getParentStudyId());
+            this.parentStudy = (StudyBean) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class).findByPK(study.getParentStudyId());
         } else {
             this.parentStudy = new StudyBean();
         }
@@ -139,12 +139,12 @@ public class MetadataUnit extends OdmUnit {
 
     private void collectBasicDefinitions() {
         int studyid = studyBase.getStudy().getParentStudyId()>0 ? studyBase.getStudy().getParentStudyId() : studyBase.getStudy().getId();
-        new OdmExtractDAO(this.ds).getBasicDefinitions(studyid, odmStudy.getBasicDefinitions());
+        org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(OdmExtractDAO.class).getBasicDefinitions(studyid, odmStudy.getBasicDefinitions());
     }
     
     
     private void collectBasicDefinitions(String formVersionOID){
-    	new OdmExtractDAO(this.ds).getBasicDefinitions(formVersionOID, odmStudy.getBasicDefinitions());
+    	org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(OdmExtractDAO.class).getBasicDefinitions(formVersionOID, odmStudy.getBasicDefinitions());
     }
     /**
      * To retrieve the ODM with form version OID as one of the parameters
@@ -152,7 +152,7 @@ public class MetadataUnit extends OdmUnit {
      */
     private void collectMetaDataVersion(String formVersionOID){
         StudyBean study = studyBase.getStudy();
-        OdmExtractDAO oedao = new OdmExtractDAO(this.ds);
+        OdmExtractDAO oedao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(OdmExtractDAO.class);
         MetaDataVersionBean metadata = this.odmStudy.getMetaDataVersion();
         
         ODMBean odmBean = new ODMBean();
@@ -192,12 +192,12 @@ public class MetadataUnit extends OdmUnit {
         MetaDataVersionBean metadata = this.odmStudy.getMetaDataVersion();
         metadata.setStudy(study);
 
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(this.ds);
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyParameterValueDAO.class);
         int parentId = study.getParentStudyId()>0 ? study.getParentStudyId() : study.getId();
         StudyParameterValueBean spv = spvdao.findByHandleAndStudy(parentId, "discrepancyManagement");
         metadata.setSoftHard(spv.getValue().equalsIgnoreCase("true") ? "Hard" : "Soft");
 
-        OdmExtractDAO oedao = new OdmExtractDAO(this.ds);
+        OdmExtractDAO oedao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(OdmExtractDAO.class);
         int studyId = study.getId();
         int parentStudyId = study.getParentStudyId() > 0 ? study.getParentStudyId() : studyId;
         if (this.getCategory() == 1 && study.isSite(study.getParentStudyId())) {

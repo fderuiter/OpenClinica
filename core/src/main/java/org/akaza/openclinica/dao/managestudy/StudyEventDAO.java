@@ -972,8 +972,8 @@ public class StudyEventDAO extends AuditableEntityDAO implements Listener {
         variables.put(Integer.valueOf(1), Integer.valueOf(seb.getStudyEventDefinitionId()));
         ArrayList alist = this.select(digester.getQuery("findCRFsByStudyEvent"), variables);
         Iterator it = alist.iterator();
-        CRFDAO cdao = new CRFDAO(this.ds);
-        CRFVersionDAO cvdao = new CRFVersionDAO(this.ds);
+        CRFDAO cdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
         while (it.hasNext()) {
             HashMap answers = (HashMap) it.next();
             logger.warn("***First CRF ID: " + answers.get("crf_id"));

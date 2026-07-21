@@ -624,7 +624,7 @@ public class XsltTransformJob extends QuartzJobBean {
             auditEventDAO = ctx.getBean(AuditEventDAO.class);
             datasetDao = ctx.getBean(DatasetDAO.class);
             userAccountDao = ctx.getBean(UserAccountDAO.class);
-            studyDao = new StudyDAO(dataSource);
+            studyDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
             archivedDatasetFileDao = ctx.getBean(ArchivedDatasetFileDAO.class);
             generateFileService = ctx.getBean(GenerateExtractFileService.class);
             odmFileCreation = ctx.getBean(OdmFileCreation.class);

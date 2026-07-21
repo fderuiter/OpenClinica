@@ -59,18 +59,28 @@ public class UnifiedRepository {
 
 
     @Autowired
-    public UnifiedRepository(DataSource dataSource) {
+    public UnifiedRepository(DataSource dataSource,
+            org.akaza.openclinica.dao.managestudy.StudyDAO studyDaoJdbc,
+            org.akaza.openclinica.dao.managestudy.StudySubjectDAO studySubjectDaoJdbc,
+            org.akaza.openclinica.dao.submit.SubjectDAO subjectDaoJdbc,
+            org.akaza.openclinica.dao.admin.CRFDAO crfDaoJdbc,
+            org.akaza.openclinica.dao.submit.CRFVersionDAO crfVersionDaoJdbc,
+            org.akaza.openclinica.dao.managestudy.StudyEventDAO studyEventDaoJdbc,
+            org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO studyEventDefinitionDaoJdbc,
+            org.akaza.openclinica.dao.submit.ItemDAO itemDaoJdbc,
+            org.akaza.openclinica.dao.submit.ItemDataDAO itemDataDaoJdbc,
+            org.akaza.openclinica.dao.submit.ItemFormMetadataDAO itemFormMetadataDaoJdbc) {
         this.dataSource = dataSource;
-        this.studyDaoJdbc = new StudyDAO(dataSource);
-        this.studySubjectDaoJdbc = new StudySubjectDAO(dataSource);
-        this.subjectDaoJdbc = new SubjectDAO(dataSource);
-        this.crfDaoJdbc = new org.akaza.openclinica.dao.admin.CRFDAO(dataSource);
-        this.crfVersionDaoJdbc = new org.akaza.openclinica.dao.submit.CRFVersionDAO(dataSource);
-        this.studyEventDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDAO(dataSource);
-        this.studyEventDefinitionDaoJdbc = new org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO(dataSource);
-        this.itemDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDAO(dataSource);
-        this.itemDataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemDataDAO(dataSource);
-        this.itemFormMetadataDaoJdbc = new org.akaza.openclinica.dao.submit.ItemFormMetadataDAO(dataSource);
+        this.studyDaoJdbc = studyDaoJdbc;
+        this.studySubjectDaoJdbc = studySubjectDaoJdbc;
+        this.subjectDaoJdbc = subjectDaoJdbc;
+        this.crfDaoJdbc = crfDaoJdbc;
+        this.crfVersionDaoJdbc = crfVersionDaoJdbc;
+        this.studyEventDaoJdbc = studyEventDaoJdbc;
+        this.studyEventDefinitionDaoJdbc = studyEventDefinitionDaoJdbc;
+        this.itemDaoJdbc = itemDaoJdbc;
+        this.itemDataDaoJdbc = itemDataDaoJdbc;
+        this.itemFormMetadataDaoJdbc = itemFormMetadataDaoJdbc;
     }
     
     public void setStudyDaoHibernate(StudyDao studyDaoHibernate) {

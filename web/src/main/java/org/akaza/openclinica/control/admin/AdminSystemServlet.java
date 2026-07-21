@@ -39,25 +39,25 @@ public class AdminSystemServlet extends SecureController {
     protected void processRequest() throws Exception {
 
         // find last 5 modifed studies
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         ArrayList studies = (ArrayList) sdao.findAllByLimit(true);
         request.setAttribute("studies", studies);
         ArrayList allStudies = (ArrayList) sdao.findAll();
         request.setAttribute("allStudyNumber", new Integer(allStudies.size()));
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
         ArrayList users = (ArrayList) udao.findAllByLimit(true);
         request.setAttribute("users", users);
         ArrayList allUsers = (ArrayList) udao.findAll();
         request.setAttribute("allUserNumber", new Integer(allUsers.size()));
 
-        SubjectDAO subdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO subdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
         ArrayList subjects = (ArrayList) subdao.findAllByLimit(true);
         request.setAttribute("subjects", subjects);
         ArrayList allSubjects = (ArrayList) subdao.findAllByPermission(ub, 1);
         request.setAttribute("allSubjectNumber", new Integer(allSubjects.size()));
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
         ArrayList crfs = (ArrayList) cdao.findAllByLimit(true);
         request.setAttribute("crfs", crfs);
         ArrayList allCrfs = (ArrayList) cdao.findAllByPermission(ub, 1);

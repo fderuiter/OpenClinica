@@ -95,7 +95,7 @@ public class CreateOneDiscrepancyNoteServlet extends SecureController {
     @Override
     protected void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
-        DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+        DiscrepancyNoteDAO dndao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DiscrepancyNoteDAO.class);
 
         int eventCRFId = fp.getInt(CreateDiscrepancyNoteServlet.EVENT_CRF_ID);
         request.setAttribute(CreateDiscrepancyNoteServlet.EVENT_CRF_ID, new Integer(eventCRFId));
@@ -259,13 +259,13 @@ public class CreateOneDiscrepancyNoteServlet extends SecureController {
 
                     // generate message here
                     EmailEngine em = new EmailEngine(EmailEngine.getSMTPHost());
-                    UserAccountDAO userAccountDAO = new UserAccountDAO(sm.getDataSource());
-                    ItemDAO itemDAO = new ItemDAO(sm.getDataSource());
-                    ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                    UserAccountDAO userAccountDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
+                    ItemDAO itemDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDAO.class);
+                    ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
                     ItemBean item = new ItemBean();
                     ItemDataBean itemData = new ItemDataBean();
 
-                    StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+                    StudyDAO studyDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
                     UserAccountBean assignedUser = (UserAccountBean) userAccountDAO.findByPK(dn.getAssignedUserId());
                     String alertEmail = assignedUser.getEmail();
                     message.append(MessageFormat.format(respage.getString("mailDNHeader"), assignedUser.getFirstName(),assignedUser.getLastName()));
@@ -373,11 +373,11 @@ public class CreateOneDiscrepancyNoteServlet extends SecureController {
     private void updateStudySubjectStatus(String entityType, int entityId) {
         if ("itemData".equalsIgnoreCase(entityType)) {
             int itemDataId = entityId;
-            ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+            ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
             ItemDataBean itemData = (ItemDataBean) iddao.findByPK(itemDataId);
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
-            StudySubjectDAO studySubjectDAO = new StudySubjectDAO(sm.getDataSource());
+            EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
+            StudyEventDAO svdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
+            StudySubjectDAO studySubjectDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
             EventCRFBean ec = (EventCRFBean) ecdao.findByPK(itemData.getEventCRFId());
             StudyEventBean event = (StudyEventBean) svdao.findByPK(ec.getStudyEventId());
             StudySubjectBean studySubject = (StudySubjectBean) studySubjectDAO.findByPK(event.getStudySubjectId());
@@ -402,10 +402,10 @@ public class CreateOneDiscrepancyNoteServlet extends SecureController {
     private void updateStudyEvent(String entityType, int entityId) {
         if ("itemData".equalsIgnoreCase(entityType)) {
             int itemDataId = entityId;
-            ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+            ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
             ItemDataBean itemData = (ItemDataBean) iddao.findByPK(itemDataId);
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
+            EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
+            StudyEventDAO svdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
             EventCRFBean ec = (EventCRFBean) ecdao.findByPK(itemData.getEventCRFId());
             StudyEventBean event = (StudyEventBean) svdao.findByPK(ec.getStudyEventId());
             if (event.getSubjectEventStatus().equals(SubjectEventStatus.SIGNED)) {
@@ -416,8 +416,8 @@ public class CreateOneDiscrepancyNoteServlet extends SecureController {
             }
         } else if ("eventCrf".equalsIgnoreCase(entityType)) {
             int eventCRFId = entityId;
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
+            EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
+            StudyEventDAO svdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
 
             EventCRFBean ec = (EventCRFBean) ecdao.findByPK(eventCRFId);
             StudyEventBean event = (StudyEventBean) svdao.findByPK(ec.getStudyEventId());

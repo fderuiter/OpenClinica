@@ -20,6 +20,9 @@ import org.akaza.openclinica.dao.submit.CRFVersionDAO;
 import org.akaza.openclinica.dao.submit.EventCRFDAO;
 
 public class ParticipantEventService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     private DataSource dataSource = null;
     private StudyDAO studyDAO = null;
@@ -122,7 +125,7 @@ public class ParticipantEventService {
      * @return the StudyDAO
      */
     private StudyDAO getStudyDAO() {
-        studyDAO = studyDAO != null ? studyDAO : new StudyDAO(dataSource);
+        studyDAO = studyDAO != null ? studyDAO : applicationContext.getBean(StudyDAO.class);
         return studyDAO;
     }
 
@@ -130,7 +133,7 @@ public class ParticipantEventService {
      * @return the StudyEventDAO
      */
     private StudyEventDAO getStudyEventDAO() {
-        studyEventDAO = studyEventDAO != null ? studyEventDAO : new StudyEventDAO(dataSource);
+        studyEventDAO = studyEventDAO != null ? studyEventDAO : applicationContext.getBean(StudyEventDAO.class);
         return studyEventDAO;
     }
 
@@ -138,7 +141,7 @@ public class ParticipantEventService {
      * @return the EventCRFDAO
      */
     private EventCRFDAO getEventCRFDAO() {
-        eventCRFDAO = eventCRFDAO != null ? eventCRFDAO : new EventCRFDAO(dataSource);
+        eventCRFDAO = eventCRFDAO != null ? eventCRFDAO : applicationContext.getBean(EventCRFDAO.class);
         return eventCRFDAO;
     }
 
@@ -146,7 +149,7 @@ public class ParticipantEventService {
      * @return the EventDefinitionCRFDAO
      */
     private EventDefinitionCRFDAO getEventDefCRFDAO() {
-        eventDefCRFDAO = eventDefCRFDAO != null ? eventDefCRFDAO : new EventDefinitionCRFDAO(dataSource);
+        eventDefCRFDAO = eventDefCRFDAO != null ? eventDefCRFDAO : applicationContext.getBean(EventDefinitionCRFDAO.class);
         return eventDefCRFDAO;
     }
 
@@ -154,7 +157,7 @@ public class ParticipantEventService {
      * @return the CRFVersionDAO
      */
     private CRFVersionDAO getCRFVersionDAO() {
-        crfVersionDAO = crfVersionDAO != null ? crfVersionDAO : new CRFVersionDAO(dataSource);
+        crfVersionDAO = crfVersionDAO != null ? crfVersionDAO : applicationContext.getBean(CRFVersionDAO.class);
         return crfVersionDAO;
     }
 

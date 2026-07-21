@@ -29,7 +29,7 @@ public class ViewPersistanceHandler {
     public List<ItemDataBean> fetchPersistedData(int sectionId, int eventcrfId) {
 
         //SessionManager sessionManager = new SessionManager();
-        ItemDataDAO itemDataDAO = new ItemDataDAO(SessionManager.getStaticDataSource());
+        ItemDataDAO itemDataDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
         List<ItemDataBean> itemDataBeans = itemDataDAO.findAllActiveBySectionIdAndEventCRFId(sectionId, eventcrfId);
         return itemDataBeans == null ? new ArrayList<ItemDataBean>() : itemDataBeans;
     }

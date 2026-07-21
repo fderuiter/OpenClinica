@@ -86,15 +86,15 @@ public class JobTriggerService {
 
 
     public StudySubjectDAO getStudySubjecdao() {
-        return new StudySubjectDAO(ds);
+        return org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
     }
 
     public UserAccountDAO getUserAccountDao() {
-        return new UserAccountDAO(ds);
+        return org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
     }
 
     public StudyDAO getStudyDao() {
-        return new StudyDAO(ds);
+        return org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
     }
 
 }

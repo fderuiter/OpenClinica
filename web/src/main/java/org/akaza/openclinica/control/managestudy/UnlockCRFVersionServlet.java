@@ -58,13 +58,13 @@ public class UnlockCRFVersionServlet extends SecureController {
            return;
        }
        
-       CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-       CRFDAO cdao = new CRFDAO (sm.getDataSource());
+       CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+       CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
        
        CRFVersionBean version = (CRFVersionBean)cvdao.findByPK(crfVersionId);
        CRFBean crf = (CRFBean)cdao.findByPK(version.getCrfId());
        
-       EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+       EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
        ArrayList eventCRFs = ecdao.findAllStudySubjectByCRFVersion(crfVersionId);
        
        if (StringUtil.isBlank(action)) {

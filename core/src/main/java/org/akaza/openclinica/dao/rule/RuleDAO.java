@@ -56,27 +56,27 @@ public class RuleDAO extends AuditableEntityDAO {
     }
 
     private StudyEventDefinitionDAO getStudyEventDefinitionDao() {
-        return this.studyEventDefinitionDao != null ? this.studyEventDefinitionDao : new StudyEventDefinitionDAO(ds);
+        return this.studyEventDefinitionDao != null ? this.studyEventDefinitionDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
     }
 
     private RuleSetDAO getRuleSetDao() {
-        return this.ruleSetDao != null ? this.ruleSetDao : new RuleSetDAO(ds);
+        return this.ruleSetDao != null ? this.ruleSetDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleSetDAO.class);
     }
 
     private EventCRFDAO getEventCrfDao() {
-        return this.eventCrfDao != null ? this.eventCrfDao : new EventCRFDAO(ds);
+        return this.eventCrfDao != null ? this.eventCrfDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
     }
 
     private CRFVersionDAO getCrfVersionDao() {
-        return this.crfVersionDao != null ? this.crfVersionDao : new CRFVersionDAO(ds);
+        return this.crfVersionDao != null ? this.crfVersionDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
     }
 
     private ItemDataDAO getItemDataDao() {
-        return this.itemDataDao != null ? this.itemDataDao : new ItemDataDAO(ds);
+        return this.itemDataDao != null ? this.itemDataDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
     }
 
     private ExpressionDAO getExpressionDao() {
-        return this.expressionDao != null ? this.expressionDao : new ExpressionDAO(ds);
+        return this.expressionDao != null ? this.expressionDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ExpressionDAO.class);
     }
 
     public RuleDAO(DataSource ds, DAODigester digester) {

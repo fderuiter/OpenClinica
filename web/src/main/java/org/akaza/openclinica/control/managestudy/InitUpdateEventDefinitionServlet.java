@@ -64,7 +64,7 @@ public class InitUpdateEventDefinitionServlet extends SecureController {
             return;
         }
 
-        StudyEventDAO sdao = new StudyEventDAO(sm.getDataSource());
+        StudyEventDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
         // get current studyid
         int studyId = currentStudy.getId();
 
@@ -102,7 +102,7 @@ public class InitUpdateEventDefinitionServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyEventDefinitionDAO sdao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
         String idString = request.getParameter("id");
         logger.info("definition id: " + idString);
         if (StringUtil.isBlank(idString)) {
@@ -112,7 +112,7 @@ public class InitUpdateEventDefinitionServlet extends SecureController {
             // definition id
             int defId = Integer.valueOf(idString.trim()).intValue();
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) sdao.findByPK(defId);
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+            StudyParameterValueDAO spvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyParameterValueDAO.class);    
             String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();
               if (participateFormStatus.equals("enabled")) 	baseUrl();
             request.setAttribute("participateFormStatus",participateFormStatus );
@@ -124,11 +124,11 @@ public class InitUpdateEventDefinitionServlet extends SecureController {
                 return;
             }
 
-            EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(sm.getDataSource());
+            EventDefinitionCRFDAO edao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
             ArrayList eventDefinitionCRFs = (ArrayList) edao.findAllParentsByDefinition(defId);
 
-            CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+            CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
             ArrayList newEventDefinitionCRFs = new ArrayList();
             for (int i = 0; i < eventDefinitionCRFs.size(); i++) {
                 EventDefinitionCRFBean edc = (EventDefinitionCRFBean) eventDefinitionCRFs.get(i);

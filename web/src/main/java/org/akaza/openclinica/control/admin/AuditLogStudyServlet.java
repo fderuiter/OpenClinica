@@ -68,19 +68,19 @@ public class AuditLogStudyServlet extends SecureController {
     protected void processRequest() throws Exception {
         int studyId = currentStudy.getId();
 
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
-        AuditDAO adao = new AuditDAO(sm.getDataSource());
+        StudySubjectDAO subdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
+        SubjectDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
+        AuditDAO adao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), AuditDAO.class);
 
         FormProcessor fp = new FormProcessor(request);
 
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        StudyDAO studydao = new StudyDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
+        EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
+        StudyDAO studydao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
+        CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
 
         HashMap eventCRFAuditsHashMap = new HashMap();
         HashMap eventsHashMap = new HashMap();
@@ -160,7 +160,7 @@ public class AuditLogStudyServlet extends SecureController {
 
         // FormProcessor fp = new FormProcessor(request);
         //
-        // AuditEventDAO aeDAO = new AuditEventDAO(sm.getDataSource());
+        // AuditEventDAO aeDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), AuditEventDAO.class);
         // ArrayList al = aeDAO.findAllByStudyId(currentStudy.getId());
         //
         // EntityBeanTable table = fp.getEntityBeanTable();

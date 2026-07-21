@@ -94,9 +94,9 @@ public class OpenRosaXmlGenerator {
      */
     public String buildForm(String formId) throws Exception {
         try {
-            CRFVersionDAO versionDAO = new CRFVersionDAO(dataSource);
+            CRFVersionDAO versionDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
             CRFVersionBean crfVersion = versionDAO.findByOid(formId);
-            CRFDAO crfDAO = new CRFDAO(dataSource);
+            CRFDAO crfDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
             CRFBean crf = (CRFBean) crfDAO.findByPK(crfVersion.getCrfId());
             CRFVersionMetadataUtil metadataUtil = new CRFVersionMetadataUtil(dataSource);
             ArrayList<SectionBean> crfSections = metadataUtil.retrieveFormMetadata(crfVersion);
@@ -129,7 +129,7 @@ public class OpenRosaXmlGenerator {
     private ArrayList<ItemGroupBean> getItemGroupBeans(SectionBean section) throws Exception {
         ArrayList<ItemGroupBean> itemGroupBeans = null;
 
-        igdao = new ItemGroupDAO(dataSource);
+        igdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupDAO.class);
         itemGroupBeans = (ArrayList<ItemGroupBean>) igdao.findGroupBySectionId(section.getId());
         return itemGroupBeans;
     }
@@ -138,7 +138,7 @@ public class OpenRosaXmlGenerator {
     private ArrayList<ItemGroupBean> getItemGroupBeansByCrfVersion(CRFVersionBean crfVersion) throws Exception {
         ArrayList<ItemGroupBean> itemGroupBeans = null;
 
-        igdao = new ItemGroupDAO(dataSource);
+        igdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupDAO.class);
         itemGroupBeans = (ArrayList<ItemGroupBean>) igdao.findGroupByCRFVersionID(crfVersion.getId());
         return itemGroupBeans;
     }
@@ -146,14 +146,14 @@ public class OpenRosaXmlGenerator {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private ItemGroupBean getItemGroupBeanByItemId(Integer itemId) {
         ArrayList<ItemGroupBean> itemGroupBean = null;
-        igdao = new ItemGroupDAO(dataSource);
+        igdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupDAO.class);
 
         itemGroupBean = (ArrayList<ItemGroupBean>) igdao.findGroupsByItemID(itemId);
         return itemGroupBean.get(0);
     }
 
     private SectionBean getSectionBean(Integer ID) {
-        sdao = new SectionDAO(dataSource);
+        sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SectionDAO.class);
         SectionBean sBean = (SectionBean) sdao.findByPK(ID);
         return sBean;
     }
@@ -161,21 +161,21 @@ public class OpenRosaXmlGenerator {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private ItemBean getItemBean(String itemOid) {
         ArrayList<ItemBean> itemBean = null;
-        idao = new ItemDAO(dataSource);
+        idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
         itemBean = (ArrayList<ItemBean>) idao.findByOid(itemOid);
         return itemBean.get(0);
     }
 
     private ItemBean getItemBean(int itemId) {
         ItemBean itemBean = null;
-        idao = new ItemDAO(dataSource);
+        idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
         itemBean = (ItemBean) idao.findByPK(itemId);
         return itemBean;
     }
 
     @SuppressWarnings({ "unused", "rawtypes" })
     private ItemFormMetadataBean getItemFormMetadataBeanById(Integer id) throws OpenClinicaException {
-        itemFormMetadataDAO = new ItemFormMetadataDAO(dataSource);
+        itemFormMetadataDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
         ItemFormMetadataBean itemFormMetadataBean = (ItemFormMetadataBean) itemFormMetadataDAO.findByPK(id);
         return itemFormMetadataBean;
     }
@@ -184,7 +184,7 @@ public class OpenRosaXmlGenerator {
     private ItemFormMetadataBean getItemFormMetadata(ItemBean item, CRFVersionBean crfVersion) throws Exception {
         ItemFormMetadataBean itemFormMetadataBean = null;
 
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(dataSource);
+        ItemFormMetadataDAO ifmdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
         itemFormMetadataBean = ifmdao.findByItemIdAndCRFVersionId(item.getId(), crfVersion.getId());
 
         return itemFormMetadataBean;
@@ -194,7 +194,7 @@ public class OpenRosaXmlGenerator {
     private ItemGroupMetadataBean getItemGroupMetadata(ItemGroupBean itemGroupBean, CRFVersionBean crfVersion, SectionBean section) throws Exception {
         ArrayList<ItemGroupMetadataBean> itemGroupMetadataBean = null;
 
-        ItemGroupMetadataDAO itemGroupMetadataDAO = new ItemGroupMetadataDAO(dataSource);
+        ItemGroupMetadataDAO itemGroupMetadataDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupMetadataDAO.class);
         itemGroupMetadataBean = (ArrayList<ItemGroupMetadataBean>) itemGroupMetadataDAO.findMetaByGroupAndSection(itemGroupBean.getId(), crfVersion.getId(),
                 section.getId());
 
@@ -205,7 +205,7 @@ public class OpenRosaXmlGenerator {
     private ItemGroupMetadataBean getItemGroupMetadataByGroup(ItemGroupBean itemGroupBean, CRFVersionBean crfVersion) throws Exception {
         ArrayList<ItemGroupMetadataBean> itemGroupMetadataBean = null;
 
-        ItemGroupMetadataDAO itemGroupMetadataDAO = new ItemGroupMetadataDAO(dataSource);
+        ItemGroupMetadataDAO itemGroupMetadataDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupMetadataDAO.class);
         itemGroupMetadataBean = (ArrayList<ItemGroupMetadataBean>) itemGroupMetadataDAO.findMetaByGroupAndCrfVersion(itemGroupBean.getId(), crfVersion.getId());
 
         return itemGroupMetadataBean.get(0);
@@ -283,7 +283,7 @@ public class OpenRosaXmlGenerator {
     private HashMap<String, Object> getGroupInfo(ItemGroupBean itemGroupBean, CRFVersionBean crfVersion, SectionBean section, WidgetFactory factory,
             ArrayList<Bind> bindList) throws Exception {
         boolean expressionEvaluate = true;
-        igmdao = new ItemGroupMetadataDAO(dataSource);
+        igmdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupMetadataDAO.class);
         List<ItemGroupMetadataBean> itemGroupMetadata = igmdao.findMetaByGroupAndSection(itemGroupBean.getId(), crfVersion.getId(), section.getId());
 
         HashMap<String, Object> map = new HashMap<String, Object>();
@@ -353,7 +353,7 @@ public class OpenRosaXmlGenerator {
             singleSection.setRef(ref);
             String sectionExpression = null;
 
-            igdao = new ItemGroupDAO(dataSource);
+            igdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupDAO.class);
             ArrayList<ItemGroupBean> groupBeans = (ArrayList<ItemGroupBean>) igdao.findGroupBySectionId(section.getId());
             int count = 0;
             if (groupBeans.size() > 0) {
@@ -387,7 +387,7 @@ public class OpenRosaXmlGenerator {
                 Group group = null;
                 Repeat repeat = null;
 
-                idao = new ItemDAO(dataSource);
+                idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
                 ArrayList<ItemBean> items = (ArrayList<ItemBean>) idao.findAllBySectionIdOrderedByItemFormMetadataOrdinal(section.getId());
 
                 Integer itemGroupId = 0;
@@ -479,7 +479,7 @@ public class OpenRosaXmlGenerator {
             }
             crfElement.appendChild(groupElement);
 
-            idao = new ItemDAO(dataSource);
+            idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
             ArrayList<ItemBean> items = (ArrayList<ItemBean>) idao.findAllItemsByGroupIdOrdered(itemGroupBean.getId(), crfVersion.getId());
             for (ItemBean item : items) {
                 ItemFormMetadataBean itemMetaData = getItemFormMetadata(item, crfVersion);
@@ -615,7 +615,7 @@ public class OpenRosaXmlGenerator {
                 ItemBean itemBean = getItemBean(itemOid);
 
                 ItemGroupBean itemGroupBean = getItemGroupBeanByItemId(itemBean.getId());
-                itemFormMetadataDAO = new ItemFormMetadataDAO(dataSource);
+                itemFormMetadataDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
                 ItemFormMetadataBean ifmBean = (ItemFormMetadataBean) itemFormMetadataDAO.findByItemIdAndCRFVersionId(itemBean.getId(), version.getId());
 
                 if (ifmBean.getResponseSet().getResponseTypeId() == 3 || ifmBean.getResponseSet().getResponseTypeId() == 7) {

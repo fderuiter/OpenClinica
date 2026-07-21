@@ -311,23 +311,23 @@ public class InsertActionValidator implements Validator {
     }
 
     public ItemDAO getItemDAO() {
-        return this.itemDAO != null ? itemDAO : new ItemDAO(dataSource);
+        return this.itemDAO != null ? itemDAO : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
     }
 
     public StudyEventDefinitionDAO getStudyEventDefinitionDAO() {
-        return this.studyEventDefinitionDAO != null ? studyEventDefinitionDAO : new StudyEventDefinitionDAO(dataSource);
+        return this.studyEventDefinitionDAO != null ? studyEventDefinitionDAO : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
     }
 
     public CRFDAO getCrfDAO() {
-        return this.crfDAO != null ? crfDAO : new CRFDAO(dataSource);
+        return this.crfDAO != null ? crfDAO : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
     }
 
     public EventDefinitionCRFDAO getEventDefinitionCRFDAO() {
-        return this.eventDefinitionCRFDAO != null ? eventDefinitionCRFDAO : new EventDefinitionCRFDAO(dataSource);
+        return this.eventDefinitionCRFDAO != null ? eventDefinitionCRFDAO : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
     }
 
     public ItemFormMetadataDAO getItemFormMetadataDAO() {
-        return this.itemFormMetadataDAO != null ? itemFormMetadataDAO : new ItemFormMetadataDAO(dataSource);
+        return this.itemFormMetadataDAO != null ? itemFormMetadataDAO : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
     }
 
     public EventDefinitionCRFBean getEventDefinitionCRFBean() {

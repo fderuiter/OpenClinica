@@ -40,7 +40,7 @@ public class ClinicalTemplateSeederMigration extends AbstractJavaManagedDataMigr
         System.out.println("Starting interactive clinical data seeding from template: " + templatePath);
         
         // 1. Create a Seeded Study
-        StudyDAO studyDAO = new StudyDAO(dataSource);
+        StudyDAO studyDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
         StudyBean study = new StudyBean();
         study.setName("Seeded Study " + System.currentTimeMillis());
         study.setIdentifier("SEED-" + System.currentTimeMillis());

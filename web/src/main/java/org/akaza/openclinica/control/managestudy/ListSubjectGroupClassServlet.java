@@ -70,9 +70,9 @@ public class ListSubjectGroupClassServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
+        StudyGroupClassDAO sgcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupClassDAO.class);
         // YW <<
-        StudyDAO stdao = new StudyDAO(sm.getDataSource());
+        StudyDAO stdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         int parentStudyId = currentStudy.getParentStudyId();
         ArrayList groups = new ArrayList();
         if (parentStudyId > 0) {
@@ -84,7 +84,7 @@ public class ListSubjectGroupClassServlet extends SecureController {
         // YW >>
         String isReadOnly = request.getParameter("read");
 
-        StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
+        StudyGroupDAO sgdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupDAO.class);
         for (int i = 0; i < groups.size(); i++) {
             StudyGroupClassBean group = (StudyGroupClassBean) groups.get(i);
             ArrayList studyGroups = sgdao.findAllByGroupClass(group);

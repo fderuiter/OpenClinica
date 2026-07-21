@@ -41,7 +41,7 @@ public class DeleteStudyUserRoleServlet extends SecureController {
 
     @Override
     protected void processRequest() throws Exception {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
 
         FormProcessor fp = new FormProcessor(request);
         int studyId = fp.getInt(ARG_STUDYID);
@@ -98,7 +98,7 @@ public class DeleteStudyUserRoleServlet extends SecureController {
     // }
     //
     // SQLFactory factory = SQLFactory.getInstance();
-    // UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+    // UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
     //
     // FormProcessor fp = new FormProcessor(request);
     // int studyId = fp.getInt(ARG_STUDYID);

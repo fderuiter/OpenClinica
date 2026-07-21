@@ -53,7 +53,7 @@ public class RestoreCRFFromDefinitionServlet extends SecureController {
         logger.info("crf id:" + idString);
 
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) session.getAttribute("definition");
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyParameterValueDAO.class);    
         String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();
     
         request.setAttribute("participateFormStatus",participateFormStatus );

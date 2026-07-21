@@ -44,7 +44,7 @@ public class InitUpdateStudyServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         String idString = request.getParameter("id");
         logger.info("study id:" + idString);
         if (StringUtil.isBlank(idString)) {

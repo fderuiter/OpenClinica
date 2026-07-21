@@ -89,7 +89,7 @@ public class MainMenuServlet extends SecureController {
             return;
         }
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         ArrayList studies = null;
 
         long pwdExpireDay = new Long(SQLInitServlet.getField("passwd_expiration_time")).longValue();
@@ -99,7 +99,7 @@ public class MainMenuServlet extends SecureController {
         // time log in or pwd expired
         int pwdChangeRequired = new Integer(SQLInitServlet.getField("change_passwd_required")).intValue();
         // update last visit date to current date
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
         UserAccountBean ub1 = (UserAccountBean) udao.findByPK(ub.getId());
         ub1.setLastVisitDate(new Date(System.currentTimeMillis()));
         // have to actually set the above to a timestamp? tbh
@@ -176,7 +176,7 @@ System.out.println("is ub a ldapuser??"+ub.isLdapUser());
                 request.setAttribute("assignedDiscrepancies", assignedDiscrepancies == null ? 0 : assignedDiscrepancies);
 
                 int parentStudyId = currentStudy.getParentStudyId()>0?currentStudy.getParentStudyId():currentStudy.getId();
-                StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+                StudyParameterValueDAO spvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyParameterValueDAO.class);
                 StudyParameterValueBean parentSPV = spvdao.findByHandleAndStudy(parentStudyId, "subjectIdGeneration");
                 currentStudy.getStudyParameterConfig().setSubjectIdGeneration(parentSPV.getValue());
                 String idSetting = parentSPV.getValue();
@@ -301,7 +301,7 @@ System.out.println("is ub a ldapuser??"+ub.isLdapUser());
 
     
     public StudyParameterValueDAO getStudyParameterValueDAO() {
-     studyParameterValueDAO = this.studyParameterValueDAO == null ? new StudyParameterValueDAO(sm.getDataSource()) : studyParameterValueDAO;
+     studyParameterValueDAO = this.studyParameterValueDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyParameterValueDAO.class) : studyParameterValueDAO;
 		return studyParameterValueDAO;
 	}
 
@@ -310,57 +310,57 @@ System.out.println("is ub a ldapuser??"+ub.isLdapUser());
 	}
 
 	public StudyEventDefinitionDAO getStudyEventDefinitionDao() {
-        studyEventDefinitionDAO = studyEventDefinitionDAO == null ? new StudyEventDefinitionDAO(sm.getDataSource()) : studyEventDefinitionDAO;
+        studyEventDefinitionDAO = studyEventDefinitionDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class) : studyEventDefinitionDAO;
         return studyEventDefinitionDAO;
     }
 
     public SubjectDAO getSubjectDAO() {
-        subjectDAO = this.subjectDAO == null ? new SubjectDAO(sm.getDataSource()) : subjectDAO;
+        subjectDAO = this.subjectDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class) : subjectDAO;
         return subjectDAO;
     }
 
     public StudySubjectDAO getStudySubjectDAO() {
-        studySubjectDAO = this.studySubjectDAO == null ? new StudySubjectDAO(sm.getDataSource()) : studySubjectDAO;
+        studySubjectDAO = this.studySubjectDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class) : studySubjectDAO;
         return studySubjectDAO;
     }
 
     public StudyGroupClassDAO getStudyGroupClassDAO() {
-        studyGroupClassDAO = this.studyGroupClassDAO == null ? new StudyGroupClassDAO(sm.getDataSource()) : studyGroupClassDAO;
+        studyGroupClassDAO = this.studyGroupClassDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupClassDAO.class) : studyGroupClassDAO;
         return studyGroupClassDAO;
     }
 
     public SubjectGroupMapDAO getSubjectGroupMapDAO() {
-        subjectGroupMapDAO = this.subjectGroupMapDAO == null ? new SubjectGroupMapDAO(sm.getDataSource()) : subjectGroupMapDAO;
+        subjectGroupMapDAO = this.subjectGroupMapDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectGroupMapDAO.class) : subjectGroupMapDAO;
         return subjectGroupMapDAO;
     }
 
     public StudyEventDAO getStudyEventDAO() {
-        studyEventDAO = this.studyEventDAO == null ? new StudyEventDAO(sm.getDataSource()) : studyEventDAO;
+        studyEventDAO = this.studyEventDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class) : studyEventDAO;
         return studyEventDAO;
     }
 
     public StudyDAO getStudyDAO() {
-        studyDAO = this.studyDAO == null ? new StudyDAO(sm.getDataSource()) : studyDAO;
+        studyDAO = this.studyDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class) : studyDAO;
         return studyDAO;
     }
 
     public EventCRFDAO getEventCRFDAO() {
-        eventCRFDAO = this.eventCRFDAO == null ? new EventCRFDAO(sm.getDataSource()) : eventCRFDAO;
+        eventCRFDAO = this.eventCRFDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class) : eventCRFDAO;
         return eventCRFDAO;
     }
 
     public EventDefinitionCRFDAO getEventDefinitionCRFDAO() {
-        eventDefintionCRFDAO = this.eventDefintionCRFDAO == null ? new EventDefinitionCRFDAO(sm.getDataSource()) : eventDefintionCRFDAO;
+        eventDefintionCRFDAO = this.eventDefintionCRFDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class) : eventDefintionCRFDAO;
         return eventDefintionCRFDAO;
     }
 
     public StudyGroupDAO getStudyGroupDAO() {
-        studyGroupDAO = this.studyGroupDAO == null ? new StudyGroupDAO(sm.getDataSource()) : studyGroupDAO;
+        studyGroupDAO = this.studyGroupDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupDAO.class) : studyGroupDAO;
         return studyGroupDAO;
     }
 
     public DiscrepancyNoteDAO getDiscrepancyNoteDAO() {
-        discrepancyNoteDAO = this.discrepancyNoteDAO == null ? new DiscrepancyNoteDAO(sm.getDataSource()) : discrepancyNoteDAO;
+        discrepancyNoteDAO = this.discrepancyNoteDAO == null ? org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DiscrepancyNoteDAO.class) : discrepancyNoteDAO;
         return discrepancyNoteDAO;
     }
 

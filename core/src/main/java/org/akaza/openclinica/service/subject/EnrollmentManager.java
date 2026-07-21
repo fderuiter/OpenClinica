@@ -26,10 +26,9 @@ public class EnrollmentManager {
     private final StudyParameterValueDAO studyParameterValueDAO;
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public EnrollmentManager(DataSource dataSource) {
-        this.unifiedRepository = new UnifiedRepository(dataSource);
-        this.studyParameterValueDAO = new StudyParameterValueDAO(dataSource);
+    public EnrollmentManager(DataSource dataSource, UnifiedRepository unifiedRepository, org.akaza.openclinica.dao.service.StudyParameterValueDAO studyParameterValueDAO) {
+        this.unifiedRepository = unifiedRepository;
+        this.studyParameterValueDAO = studyParameterValueDAO;
         if (dataSource != null) {
             this.jdbcTemplate = new JdbcTemplate(dataSource);
         } else {

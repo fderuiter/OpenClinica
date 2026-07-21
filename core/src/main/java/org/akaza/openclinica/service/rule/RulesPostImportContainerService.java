@@ -79,6 +79,9 @@ import javax.sql.DataSource;
  *
  */
 public class RulesPostImportContainerService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     DataSource ds;
@@ -468,7 +471,7 @@ public class RulesPostImportContainerService {
                          if (param.startsWith(prefix)){
                         String gcName= param.substring(21,param.indexOf("\"]"));
 
-                     StudyGroupClassDAO studyGroupClassDAO =new StudyGroupClassDAO(ds);
+                     StudyGroupClassDAO studyGroupClassDAO =applicationContext.getBean(StudyGroupClassDAO.class);
                      ArrayList <StudyGroupClassBean> studyGroupClasses = studyGroupClassDAO.findAllByStudy(currentStudy);
                      for (StudyGroupClassBean studyGroupClass :studyGroupClasses){
                            if (studyGroupClass.getName().equalsIgnoreCase(gcName.trim())){
@@ -619,7 +622,7 @@ public class RulesPostImportContainerService {
 
 	public boolean isEventTypeRepeating(String event) {
 		boolean isRepeating = false;
-		StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(ds);
+		StudyEventDefinitionDAO seddao = applicationContext.getBean(StudyEventDefinitionDAO.class);
 		StudyEventDefinitionBean studyEventDefinition = (StudyEventDefinitionBean) seddao.findByOid(event);
 		return studyEventDefinition.isRepeating();
 	}

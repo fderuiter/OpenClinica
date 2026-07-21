@@ -71,8 +71,8 @@ public class BatchCRFMigrationServlet extends SecureController {
             addPageMessage(respage.getString("please_choose_a_CRF_to_view"));
             forwardPage(Page.CRF_LIST);
         } else {
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
-            CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
+            CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
+            CRFVersionDAO vdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
             CRFBean crf = (CRFBean) cdao.findByPK(crfId);
             request.setAttribute("crfName", crf.getName());
             ArrayList<CRFVersionBean> versions = (ArrayList<CRFVersionBean>) vdao.findAllByCRF(crfId);
@@ -121,12 +121,12 @@ public class BatchCRFMigrationServlet extends SecureController {
 
     @SuppressWarnings("rawtypes")
     private StudyDAO sdao() {
-        return new StudyDAO(sm.getDataSource());
+        return org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
     }
 
     @SuppressWarnings("rawtypes")
     private StudyEventDefinitionDAO seddao() {
-        return new StudyEventDefinitionDAO(sm.getDataSource());
+        return org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
     }
 
 

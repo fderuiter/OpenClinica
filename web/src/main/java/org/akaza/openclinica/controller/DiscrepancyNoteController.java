@@ -55,6 +55,9 @@ import java.util.Locale;
 @RequestMapping(value = "/auth/api/v1/discrepancynote")
 @ResponseStatus(value = org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
 public class DiscrepancyNoteController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
 	@Autowired
 	@Qualifier("dataSource")
@@ -88,11 +91,11 @@ public class DiscrepancyNoteController {
 		String dn_id = map.get("DN_Id");
 		dn_id = dn_id != null ? dn_id.replaceFirst("DN_",""): dn_id;
 
-		UserAccountDAO udao = new UserAccountDAO(dataSource);
-		StudySubjectDAO ssdao = new StudySubjectDAO(dataSource);
-		StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(dataSource);
-		StudyEventDAO sedao = new StudyEventDAO(dataSource);
-		DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(dataSource);
+		UserAccountDAO udao = applicationContext.getBean(UserAccountDAO.class);
+		StudySubjectDAO ssdao = applicationContext.getBean(StudySubjectDAO.class);
+		StudyEventDefinitionDAO seddao = applicationContext.getBean(StudyEventDefinitionDAO.class);
+		StudyEventDAO sedao = applicationContext.getBean(StudyEventDAO.class);
+		DiscrepancyNoteDAO dndao = applicationContext.getBean(DiscrepancyNoteDAO.class);
 
 		UserAccountBean assignedUserBean = (UserAccountBean) udao.findByUserName(assignedUser);
 		UserAccountBean ownerBean = (UserAccountBean)request.getSession().getAttribute("userBean");
@@ -142,13 +145,13 @@ public class DiscrepancyNoteController {
 	}
 
 	private StudyBean getStudy(Integer id) {
-		sdao = new StudyDAO(dataSource);
+		sdao = applicationContext.getBean(StudyDAO.class);
 		StudyBean studyBean = (StudyBean) sdao.findByPK(id);
 		return studyBean;
 	}
 
 	private StudyBean getStudy(String oid) {
-		sdao = new StudyDAO(dataSource);
+		sdao = applicationContext.getBean(StudyDAO.class);
 		StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
 		return studyBean;
 	}
@@ -213,7 +216,7 @@ public class DiscrepancyNoteController {
 	}
 
 	public DiscrepancyNoteDAO getDnDao() {
-		dnDao = new DiscrepancyNoteDAO(dataSource);
+		dnDao = applicationContext.getBean(DiscrepancyNoteDAO.class);
 		return dnDao;
 	}
 

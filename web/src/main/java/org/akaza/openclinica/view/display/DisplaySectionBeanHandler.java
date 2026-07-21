@@ -93,7 +93,7 @@ public class DisplaySectionBeanHandler {
                 return displaySectionBeans;
             }
 
-            sectionDao = new SectionDAO(dataSource);
+            sectionDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SectionDAO.class);
             allCrfSections = (ArrayList) sectionDao.findByVersionId(this.crfVersionId);
 
             // for the purposes of null values, try to obtain a valid
@@ -101,13 +101,13 @@ public class DisplaySectionBeanHandler {
             EventDefinitionCRFBean eventDefBean = null;
             EventCRFBean eventCRFBean = new EventCRFBean();
             if (eventCRFId > 0) {
-                EventCRFDAO ecdao = new EventCRFDAO(dataSource);
+                EventCRFDAO ecdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
                 eventCRFBean = (EventCRFBean) ecdao.findByPK(eventCRFId);
-                StudyEventDAO sedao = new StudyEventDAO(dataSource);
+                StudyEventDAO sedao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
                 StudyEventBean studyEvent = (StudyEventBean) sedao.findByPK(eventCRFBean.getStudyEventId());
 
-                EventDefinitionCRFDAO eventDefinitionCRFDAO = new EventDefinitionCRFDAO(dataSource);
-                StudyDAO sdao = new StudyDAO(dataSource);
+                EventDefinitionCRFDAO eventDefinitionCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
+                StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
                 StudyBean study = sdao.findByStudySubjectId(eventCRFBean.getStudySubjectId());
                 eventDefBean = eventDefinitionCRFDAO.findByStudyEventIdAndCRFVersionId(study, studyEvent.getId(), this.crfVersionId);
             }

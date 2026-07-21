@@ -52,6 +52,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UnifiedWorkflowEnforcementService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     private static final Logger logger = LoggerFactory.getLogger(UnifiedWorkflowEnforcementService.class);
 
@@ -283,19 +286,19 @@ public class UnifiedWorkflowEnforcementService {
     @Transactional
     public void executeRulesAndMetadata(EventCrf eventCrf, Study study, UserAccount user) {
         try {
-            EventCRFDAO ecdao = new EventCRFDAO(dataSource);
+            EventCRFDAO ecdao = applicationContext.getBean(EventCRFDAO.class);
             EventCRFBean ecb = (EventCRFBean) ecdao.findByPK(eventCrf.getEventCrfId());
 
-            StudyDAO sdao = new StudyDAO(dataSource);
+            StudyDAO sdao = applicationContext.getBean(StudyDAO.class);
             StudyBean studyBean = (StudyBean) sdao.findByPK(study.getStudyId());
 
-            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountDAO udao = applicationContext.getBean(UserAccountDAO.class);
             UserAccountBean ub = (UserAccountBean) udao.findByPK(user.getUserId());
 
-            StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(dataSource);
+            StudyEventDefinitionDAO sedDao = applicationContext.getBean(StudyEventDefinitionDAO.class);
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) sedDao.findByPK(eventCrf.getStudyEvent().getStudyEventDefinition().getStudyEventDefinitionId());
 
-            CRFVersionDAO cvDao = new CRFVersionDAO(dataSource);
+            CRFVersionDAO cvDao = applicationContext.getBean(CRFVersionDAO.class);
             CRFVersionBean crfVersion = (CRFVersionBean) cvDao.findByPK(eventCrf.getCrfVersion().getCrfVersionId());
 
             List<RuleSetBean> ruleSets = ruleSetService.getRuleSetsByCrfStudyAndStudyEventDefinition(studyBean, sed, crfVersion);

@@ -547,7 +547,7 @@ public class ItemDataDAO extends AuditableEntityDAO {
         if (dataTypeCache.containsKey(itemId)) {
             return dataTypeCache.get(itemId);
         }
-        ItemDAO itemDAO = new ItemDAO(this.getDs());
+        ItemDAO itemDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
         ItemBean itemBean = (ItemBean) itemDAO.findByPK(itemId);
         ItemDataType dt = itemBean.getDataType();
         dataTypeCache.put(itemId, dt);
@@ -555,7 +555,7 @@ public class ItemDataDAO extends AuditableEntityDAO {
     }
 
     // public boolean isPDateType(int itemId) {
-    // ItemDAO itemDAO = new ItemDAO(this.getDs());
+    // ItemDAO itemDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
     // ItemBean itemBean = (ItemBean)itemDAO.findByPK(itemId);
     // if (itemBean.getDataType().equals(ItemDataType.PDATE)) {
     // return true;

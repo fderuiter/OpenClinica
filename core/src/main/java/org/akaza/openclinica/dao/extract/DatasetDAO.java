@@ -663,7 +663,7 @@ public class DatasetDAO extends AuditableEntityDAO {
      * @author ywang (Feb., 2008)
      */
     public DatasetBean initialDatasetData(int datasetId) {
-        ItemDAO idao = new ItemDAO(ds);
+        ItemDAO idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
         DatasetBean db = (DatasetBean) findByPK(datasetId);
         String sql = db.getSQLStatement();
         sql = sql.split("study_event_definition_id in")[1];

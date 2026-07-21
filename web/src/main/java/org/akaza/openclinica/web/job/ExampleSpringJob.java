@@ -96,7 +96,7 @@ public class ExampleSpringJob extends QuartzJobBean {
             ruleSetRuleDao = (RuleSetRuleDao) appContext.getBean("ruleSetRuleDao");
             dataSource = (DataSource) appContext.getBean("dataSource");
             mailSender = (OpenClinicaMailSender) appContext.getBean("openClinicaMailSender");
-            AuditEventDAO auditEventDAO = new AuditEventDAO(dataSource);
+            AuditEventDAO auditEventDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(AuditEventDAO.class);
             // Scheduler scheduler = context.getScheduler();
             // JobDetail detail = context.getJobDetail();
             // jobDetailBean = (JobDetailBean) detail;
@@ -156,10 +156,10 @@ public class ExampleSpringJob extends QuartzJobBean {
             HashMap fileName = new HashMap<String, Integer>();
             if (dsId > 0) {
                 // trying to not throw an error if there's no dataset id
-                DatasetDAO dsdao = new DatasetDAO(dataSource);
+                DatasetDAO dsdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DatasetDAO.class);
                 DatasetBean datasetBean = (DatasetBean) dsdao.findByPK(dsId);
-                StudyDAO studyDao = new StudyDAO(dataSource);
-                UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+                StudyDAO studyDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
+                UserAccountDAO userAccountDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
                 // hmm, three lines in the if block DRY?
                 String generalFileDir = "";
                 String generalFileDirCopy = "";
@@ -188,7 +188,7 @@ public class ExampleSpringJob extends QuartzJobBean {
                 StudyBean parentStudy = new StudyBean();
                 logger.debug("active study: " + studyId + " parent study: " + activeStudy.getParentStudyId());
                 if (activeStudy.getParentStudyId() > 0) {
-                    // StudyDAO sdao = new StudyDAO(sm.getDataSource());
+                    // StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
                     parentStudy = (StudyBean) studyDao.findByPK(activeStudy.getParentStudyId());
                 } else {
                     parentStudy = activeStudy;

@@ -884,7 +884,7 @@ public class OdmExtractDAO extends DatasetDAO {
 
 	public FormDefBean fetchFormDetails(CRFVersionBean crfVBean,FormDefBean formDef){
     
-    	CRFDAO<String, ArrayList> crfDao = new CRFDAO(this.ds);
+    	CRFDAO<String, ArrayList> crfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
     	CRFBean crfBean   = (CRFBean) crfDao.findByPK(crfVBean.getCrfId());  	
     	formDef.setOid(crfVBean.getOid());
     	formDef.setName(crfBean.getName() + " - " +crfVBean.getName());
@@ -1542,7 +1542,7 @@ public class OdmExtractDAO extends DatasetDAO {
         variables.put(new Integer(1), new Integer(crfVId));
         ArrayList<SectionDetails>sectionBeans = new ArrayList<SectionDetails>();
         
-        SectionDAO secdao = new SectionDAO(this.ds);
+        SectionDAO secdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SectionDAO.class);
         ArrayList sections = secdao.findAllByCRFVersionId (crfVId);
     	Iterator iter = sections.iterator();
     	 while(iter.hasNext()){
@@ -1566,7 +1566,7 @@ public class OdmExtractDAO extends DatasetDAO {
         //StudyBean study = metadata.getStudy();
         //if(study.getId()>0) {
         //} else {
-        //    StudyDAO sdao = new StudyDAO(this.ds);
+        //    StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
         //    study = (StudyBean)sdao.findByPK(studyId);
         //}
         //StudyConfigService studyConfig = new StudyConfigService(this.ds);
@@ -2888,7 +2888,7 @@ private void fetchItemGroupMetaData(MetaDataVersionBean metadata,String cvIds, S
         HashMap<String, Integer> igpos = new HashMap<String, Integer>();
         String igprev = "";
         String oidPos = "";
-        StudyBean parentStudy = study.getParentStudyId() > 0 ? (StudyBean) new StudyDAO(this.ds).findByPK(study.getParentStudyId()) : study;
+        StudyBean parentStudy = study.getParentStudyId() > 0 ? (StudyBean) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class).findByPK(study.getParentStudyId()) : study;
         setStudyParemeterConfig(parentStudy);
         HashSet<Integer> sgcIdSet = new HashSet<Integer>();
         HashMap<String, String> subOidPoses = new HashMap<String, String>();
@@ -3158,7 +3158,7 @@ private void fetchItemGroupMetaData(MetaDataVersionBean metadata,String cvIds, S
     }
 
     protected void setStudyParemeterConfig(StudyBean study) {
-        StudyParameterValueBean param = new StudyParameterValueDAO(this.ds).findByHandleAndStudy(study.getId(), "collectDob");
+        StudyParameterValueBean param = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyParameterValueDAO.class).findByHandleAndStudy(study.getId(), "collectDob");
         study.getStudyParameterConfig().setCollectDob(param.getValue());
     }
 

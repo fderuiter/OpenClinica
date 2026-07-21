@@ -357,7 +357,7 @@ public class OpenClinicaUsernamePasswordAuthenticationFilter extends AbstractAut
     }
 
     public UserAccountDAO getUserAccountDao() {
-        return userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        return userAccountDao != null ? userAccountDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
     }
 
     public CRFLocker getCrfLocker() {

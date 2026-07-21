@@ -47,8 +47,8 @@ public class DeleteStudyEventServlet extends SecureController{
         int studyEventId = fp.getInt("id");// studyEventId
         int studySubId = fp.getInt("studySubId");// studySubjectId
 
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
+        StudySubjectDAO subdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
 
         if (studyEventId == 0) {
             addPageMessage(respage.getString("please_choose_a_SE_to_remove"));
@@ -61,21 +61,21 @@ public class DeleteStudyEventServlet extends SecureController{
             StudySubjectBean studySub = (StudySubjectBean) subdao.findByPK(studySubId);
             request.setAttribute("studySub", studySub);
 
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+            StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(event.getStudyEventDefinitionId());
             event.setStudyEventDefinition(sed);
 
-            StudyDAO studydao = new StudyDAO(sm.getDataSource());
+            StudyDAO studydao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
             StudyBean study = (StudyBean) studydao.findByPK(studySub.getStudyId());
 
             String action = request.getParameter("action");
             if ("confirm".equalsIgnoreCase(action)) {
 
-                EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+                EventDefinitionCRFDAO edcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
                 // find all crfs in the definition
                 ArrayList eventDefinitionCRFs = (ArrayList) edcdao.findAllByEventDefinitionId(study, sed.getId());
 
-                EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
                 // construct info needed on view study event page
                 DisplayStudyEventBean de = new DisplayStudyEventBean();
                 de.setStudyEvent(event);

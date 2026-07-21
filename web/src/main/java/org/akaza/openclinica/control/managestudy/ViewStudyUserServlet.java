@@ -46,7 +46,7 @@ public class ViewStudyUserServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
         String name = request.getParameter("name");
         String studyIdString = request.getParameter("studyId");
        
@@ -65,7 +65,7 @@ public class ViewStudyUserServlet extends SecureController {
             StudyUserRoleBean uRole = udao.findRoleByUserNameAndStudyId(name, studyId);
             request.setAttribute("uRole", uRole);
 
-            StudyDAO sdao = new StudyDAO(sm.getDataSource());
+            StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
             StudyBean study = (StudyBean) sdao.findByPK(studyId);
             request.setAttribute("uStudy", study);
             request.setAttribute("siteRoleMap", Role.siteRoleMap);

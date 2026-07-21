@@ -20,7 +20,7 @@ public class DuplicateClinicalRecordsCleanupMigration extends AbstractJavaManage
     @Override
     protected void doMigration() throws Exception {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        ItemDataDAO itemDataDAO = new ItemDataDAO(dataSource);
+        ItemDataDAO itemDataDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
 
         boolean hasDuplicates = true;
         while (hasDuplicates) {

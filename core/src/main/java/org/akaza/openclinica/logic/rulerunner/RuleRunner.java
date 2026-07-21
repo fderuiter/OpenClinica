@@ -192,62 +192,62 @@ public class RuleRunner {
     }
 
     RuleSetDAO getRuleSetDao() {
-        ruleSetDao = this.ruleSetDao != null ? ruleSetDao : new RuleSetDAO(ds);
+        ruleSetDao = this.ruleSetDao != null ? ruleSetDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleSetDAO.class);
         return ruleSetDao;
     }
 
     CRFDAO getCrfDao() {
-        crfDao = this.crfDao != null ? crfDao : new CRFDAO(ds);
+        crfDao = this.crfDao != null ? crfDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
         return crfDao;
     }
 
     RuleSetRuleDAO getRuleSetRuleDao() {
-        ruleSetRuleDao = this.ruleSetRuleDao != null ? ruleSetRuleDao : new RuleSetRuleDAO(ds);
+        ruleSetRuleDao = this.ruleSetRuleDao != null ? ruleSetRuleDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleSetRuleDAO.class);
         return ruleSetRuleDao;
     }
 
     RuleActionDAO getRuleActionDao() {
-        ruleActionDao = this.ruleActionDao != null ? ruleActionDao : new RuleActionDAO(ds);
+        ruleActionDao = this.ruleActionDao != null ? ruleActionDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleActionDAO.class);
         return ruleActionDao;
     }
 
     StudyEventDAO getStudyEventDao() {
-        studyEventDao = this.studyEventDao != null ? studyEventDao : new StudyEventDAO(ds);
+        studyEventDao = this.studyEventDao != null ? studyEventDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
         return studyEventDao;
     }
 
     ItemDataDAO getItemDataDao() {
-        itemDataDao = this.itemDataDao != null ? itemDataDao : new ItemDataDAO(ds);
+        itemDataDao = this.itemDataDao != null ? itemDataDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
         return itemDataDao;
     }
 
     EventCRFDAO getEventCrfDao() {
-        eventCrfDao = this.eventCrfDao != null ? eventCrfDao : new EventCRFDAO(ds);
+        eventCrfDao = this.eventCrfDao != null ? eventCrfDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         return eventCrfDao;
     }
 
     CRFVersionDAO getCrfVersionDao() {
-        crfVersionDao = this.crfVersionDao != null ? crfVersionDao : new CRFVersionDAO(ds);
+        crfVersionDao = this.crfVersionDao != null ? crfVersionDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
         return crfVersionDao;
     }
 
     StudySubjectDAO getStudySubjectDao() {
-        studySubjectDao = this.studySubjectDao != null ? studySubjectDao : new StudySubjectDAO(ds);
+        studySubjectDao = this.studySubjectDao != null ? studySubjectDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         return studySubjectDao;
     }
 
     ItemFormMetadataDAO getItemFormMetadataDAO() {
-        itemFormMetadataDao = this.itemFormMetadataDao != null ? itemFormMetadataDao : new ItemFormMetadataDAO(ds);
+        itemFormMetadataDao = this.itemFormMetadataDao != null ? itemFormMetadataDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
         return itemFormMetadataDao;
     }
 
     SectionDAO getSectionDAO() {
-        sectionDao = this.sectionDao != null ? sectionDao : new SectionDAO(ds);
+        sectionDao = this.sectionDao != null ? sectionDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SectionDAO.class);
         return sectionDao;
     }
 
     StudyDAO getStudyDao() {
-        studyDao = this.studyDao != null ? studyDao : new StudyDAO(ds);
+        studyDao = this.studyDao != null ? studyDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
         return studyDao;
     }
 

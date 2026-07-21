@@ -91,9 +91,9 @@ public class CreateCRFVersionServlet extends SecureController {
         resetPanel();
         panel.setStudyInfoShown(true);
 
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        CRFVersionDAO vdao = new CRFVersionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(sm.getDataSource());
+        CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
+        CRFVersionDAO vdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+        EventDefinitionCRFDAO edao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
 
         FormProcessor fp = new FormProcessor(request);
         // checks which module the requests are from
@@ -251,7 +251,7 @@ public class CreateCRFVersionServlet extends SecureController {
                     // YW << for add a link to "View CRF Version Data Entry".
                     // For this purpose, CRFVersion id is needed.
                     // So the latest CRFVersion Id of A CRF Id is it.
-                    CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+                    CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
                     ArrayList crfvbeans = new ArrayList();
 
                     logger.debug("CRF-ID [" + version.getCrfId() + "]");
@@ -553,7 +553,7 @@ public class CreateCRFVersionServlet extends SecureController {
      * @return
      */
     private boolean canDeleteVersion(int previousVersionId) {
-        CRFVersionDAO cdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
         ArrayList items = null;
         ArrayList itemsHaveData = new ArrayList();
         // boolean isItemUsedByOtherVersion =
@@ -563,7 +563,7 @@ public class CreateCRFVersionServlet extends SecureController {
         // cdao.findItemUsedByOtherVersion(previousVersionId);
         // session.setAttribute("itemsUsedByOtherVersion",itemsUsedByOtherVersion);
         // return false;
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+        EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
         ArrayList events = ecdao.findAllByCRFVersion(previousVersionId);
         if (!events.isEmpty()) {
             session.setAttribute("eventsForVersion", events);
@@ -602,7 +602,7 @@ public class CreateCRFVersionServlet extends SecureController {
      * @return the items found
      */
     private ArrayList isItemSame(HashMap items, CRFVersionBean version) {
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
+        ItemDAO idao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDAO.class);
         ArrayList diffItems = new ArrayList();
         Set names = items.keySet();
         Iterator it = names.iterator();
@@ -625,8 +625,8 @@ public class CreateCRFVersionServlet extends SecureController {
     }
 
     private ItemBean isResponseValid(HashMap items, CRFVersionBean version) {
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO metadao = new ItemFormMetadataDAO(sm.getDataSource());
+        ItemDAO idao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDAO.class);
+        ItemFormMetadataDAO metadao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemFormMetadataDAO.class);
         Set names = items.keySet();
         Iterator it = names.iterator();
         while (it.hasNext()) {

@@ -206,11 +206,11 @@ public class ODMClinicaDataResource {
 	}
 
 	private String getStudySubjectOID(String subjectIdentifier, String studyOID) {
-		StudySubjectDAO studySubjectDAO = new StudySubjectDAO(getDataSource());
+		StudySubjectDAO studySubjectDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
 		StudySubjectBean studySubject = studySubjectDAO.findByOid(subjectIdentifier);
 		if (subjectIdentifier.equals("*") || (studySubject != null  && studySubject.getOid() != null)) return subjectIdentifier;
 		else {
-			StudyDAO studyDAO = new StudyDAO(getDataSource());
+			StudyDAO studyDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
 			StudyBean study = studyDAO.findByOid(studyOID);
 			studySubject = studySubjectDAO.findByLabelAndStudy(subjectIdentifier,study);
 			if (studySubject != null && studySubject.getOid() != null) return studySubject.getOid();

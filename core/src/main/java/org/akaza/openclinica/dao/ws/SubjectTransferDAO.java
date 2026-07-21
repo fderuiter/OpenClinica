@@ -60,7 +60,7 @@ public class SubjectTransferDAO extends EntityDAO {
     }
 
     private UserAccountDAO getUserAccountDao() {
-        return this.userAccountDao != null ? this.userAccountDao : new UserAccountDAO(ds);
+        return this.userAccountDao != null ? this.userAccountDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
     }
 
     @Override

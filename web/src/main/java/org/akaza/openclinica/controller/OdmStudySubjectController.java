@@ -62,6 +62,9 @@ import java.util.Locale;
 @Controller
 @RequestMapping(value = "/odmss")
 public class OdmStudySubjectController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
 	@Autowired
 	@Qualifier("dataSource")
@@ -100,8 +103,8 @@ public class OdmStudySubjectController {
 
 	private ODM getODM(String studyOID, String studySubjectLabel, String crcUserName) {
 
-		StudyDAO studyDAO = new StudyDAO(dataSource);
-		StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+		StudyDAO studyDAO = applicationContext.getBean(StudyDAO.class);
+		StudySubjectDAO studySubjectDAO = applicationContext.getBean(StudySubjectDAO.class);
 		StudyBean studyBean = null;
 		StudySubjectBean studySubjectBean = null;
 		try {
@@ -181,7 +184,7 @@ public class OdmStudySubjectController {
 	}
 
 	private StudyBean getStudy(String oid) {
-		sdao = new StudyDAO(dataSource);
+		sdao = applicationContext.getBean(StudyDAO.class);
 		StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
 		return studyBean;
 	}
@@ -200,7 +203,7 @@ public class OdmStudySubjectController {
 	private boolean mayProceed(String studyOid, StudySubjectBean ssBean) throws Exception {
 		boolean accessPermission = false;
 		StudyBean study = getParentStudy(studyOid);
-		StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+		StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
 		StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
 		participantPortalRegistrar = new ParticipantPortalRegistrar();
 		String pManageStatus = participantPortalRegistrar.getRegistrationStatus(studyOid).toString(); // ACTIVE , PENDING , INACTIVE

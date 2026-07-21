@@ -66,7 +66,7 @@ public class UpdateStudyServlet extends SecureController {
         panel.setIconInfoShown(true);
         panel.setManageSubject(false);
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         StudyBean study = (StudyBean) session.getAttribute("newStudy");
 
         if (study == null) {
@@ -435,8 +435,8 @@ public class UpdateStudyServlet extends SecureController {
     }
 
     private void submitStudy() {
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyParameterValueDAO.class);
 
         StudyBean study1 = (StudyBean) session.getAttribute("newStudy");
         logger.info("study bean to be updated:" + study1.getName());

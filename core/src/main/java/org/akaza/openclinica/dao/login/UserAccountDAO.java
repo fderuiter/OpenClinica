@@ -681,7 +681,7 @@ public class UserAccountDAO extends AuditableEntityDAO {
 
         ArrayList answer = new ArrayList();
 
-        StudyDAO sdao = new StudyDAO(ds);
+        StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
 
         HashMap childrenByParentId = sdao.getChildrenByParentIds(allStudies);
 

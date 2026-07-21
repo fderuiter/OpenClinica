@@ -83,7 +83,7 @@ public class ViewNoteServlet extends SecureController {
         Locale locale = LocaleResolver.getLocale(request);
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
 
-        DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+        DiscrepancyNoteDAO dndao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DiscrepancyNoteDAO.class);
         dndao.setFetchMapping(true);
         int noteId = fp.getInt(NOTE_ID, true);
 
@@ -94,10 +94,10 @@ public class ViewNoteServlet extends SecureController {
 
             if (!StringUtil.isBlank(entityType)) {
                 if ("itemData".equalsIgnoreCase(entityType)) {
-                    ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                    ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
                     ItemDataBean itemData = (ItemDataBean) iddao.findByPK(note.getEntityId());
 
-                    ItemDAO idao = new ItemDAO(sm.getDataSource());
+                    ItemDAO idao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDAO.class);
                     ItemBean item = (ItemBean) idao.findByPK(itemData.getItemId());
 
                     note.setEntityValue(itemData.getValue());
@@ -105,37 +105,37 @@ public class ViewNoteServlet extends SecureController {
                     //Mantis Issue 5165. It should be itemData.getId() instead of item.getId()
                     note.setEntityId(itemData.getId());
 
-                    EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                    EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
                     EventCRFBean ec = (EventCRFBean) ecdao.findByPK(itemData.getEventCRFId());
 
-                    StudyEventDAO sed = new StudyEventDAO(sm.getDataSource());
+                    StudyEventDAO sed = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
                     StudyEventBean se = (StudyEventBean) sed.findByPK(ec.getStudyEventId());
 
-                    StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+                    StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
                     StudySubjectBean ssub = (StudySubjectBean) ssdao.findByPK(se.getStudySubjectId());
 
                     note.setStudySub(ssub);
 
-                    StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+                    StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
                     StudyEventDefinitionBean sedb = (StudyEventDefinitionBean) seddao.findByPK(se.getStudyEventDefinitionId());
 
                     se.setName(sedb.getName());
                     note.setEvent(se);
 
-                    CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+                    CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
                     CRFVersionBean cv = (CRFVersionBean) cvdao.findByPK(ec.getCRFVersionId());
 
-                    CRFDAO cdao = new CRFDAO(sm.getDataSource());
+                    CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
                     CRFBean crf = (CRFBean) cdao.findByPK(cv.getCrfId());
                     note.setCrfName(crf.getName());
 
                 } else if ("studySub".equalsIgnoreCase(entityType)) {
-                    StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+                    StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
                     StudySubjectBean ssub = (StudySubjectBean) ssdao.findByPK(note.getEntityId());
 
                     note.setStudySub(ssub);
                     // System.out.println("column" + note.getColumn());
-                    SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+                    SubjectDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
                     SubjectBean sub = (SubjectBean) sdao.findByPK(ssub.getSubjectId());
 
                     if (!StringUtil.isBlank(note.getColumn())) {
@@ -157,7 +157,7 @@ public class ViewNoteServlet extends SecureController {
 
                 } else if ("subject".equalsIgnoreCase(entityType)) {
 
-                    SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+                    SubjectDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
                     SubjectBean sub = (SubjectBean) sdao.findByPK(note.getEntityId());
                     StudySubjectBean ssub = new StudySubjectBean();
                     ssub.setLabel(sub.getUniqueIdentifier());
@@ -180,15 +180,15 @@ public class ViewNoteServlet extends SecureController {
 
                 } else if ("studyEvent".equalsIgnoreCase(entityType)) {
 
-                    StudyEventDAO sed = new StudyEventDAO(sm.getDataSource());
+                    StudyEventDAO sed = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
                     StudyEventBean se = (StudyEventBean) sed.findByPK(note.getEntityId());
 
-                    StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+                    StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
                     StudySubjectBean ssub = (StudySubjectBean) ssdao.findByPK(se.getStudySubjectId());
 
                     note.setStudySub(ssub);
 
-                    StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+                    StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
                     StudyEventDefinitionBean sedb = (StudyEventDefinitionBean) seddao.findByPK(se.getStudyEventDefinitionId());
 
                     se.setName(sedb.getName());
@@ -216,11 +216,11 @@ public class ViewNoteServlet extends SecureController {
                     }
 
                 } else if ("eventCrf".equalsIgnoreCase(entityType)) {
-                    EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                    EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
                     EventCRFBean ec = (EventCRFBean) ecdao.findByPK(note.getEntityId());
-                    StudySubjectBean ssub = (StudySubjectBean) new StudySubjectDAO(sm.getDataSource()).findByPK(ec.getStudySubjectId());
+                    StudySubjectBean ssub = (StudySubjectBean) org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class).findByPK(ec.getStudySubjectId());
                     note.setStudySub(ssub);
-                    StudyEventBean event = (StudyEventBean) new StudyEventDAO(sm.getDataSource()).findByPK(ec.getStudyEventId());
+                    StudyEventBean event = (StudyEventBean) org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class).findByPK(ec.getStudyEventId());
                     note.setEvent(event);
                     if (!StringUtil.isBlank(note.getColumn())) {
                         if ("date_interviewed".equals(note.getColumn())) {
@@ -252,7 +252,7 @@ public class ViewNoteServlet extends SecureController {
                 }
             } else {
                 // The SubjectStudy is not belong to currentstudy and current study is not a site.
-                StudyDAO studydao = new StudyDAO(sm.getDataSource());
+                StudyDAO studydao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
                 Collection sites;
                 sites = studydao.findOlnySiteIdsByStudy(currentStudy);
                 if (!sites.contains(note.getStudySub().getStudyId())) {
@@ -267,7 +267,7 @@ public class ViewNoteServlet extends SecureController {
 
 
 
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
 
         ArrayList<DiscrepancyNoteBean> notes = dndao.findAllEntityByPK(note.getEntityType(), noteId);
 

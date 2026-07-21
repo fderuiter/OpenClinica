@@ -109,18 +109,18 @@ public class ListEventsForSubjectServlet extends SecureController {
             return;
         }
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(definitionId);
 
-        StudySubjectDAO sdao = new StudySubjectDAO(sm.getDataSource());
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudySubjectDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
+        StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
 
-        SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
+        SubjectGroupMapDAO sgmdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectGroupMapDAO.class);
+        StudyGroupClassDAO sgcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupClassDAO.class);
 
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+        EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
+        CRFDAO crfdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
 
         // find all the groups in the current study
         ArrayList studyGroupClasses = sgcdao.findAllActiveByStudy(currentStudy);
@@ -131,7 +131,7 @@ public class ListEventsForSubjectServlet extends SecureController {
 
         if (currentStudy.getParentStudyId() > 0) {
 
-            StudyDAO stdao = new StudyDAO(sm.getDataSource());
+            StudyDAO stdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
             StudyBean parent = (StudyBean) stdao.findByPK(currentStudy.getParentStudyId());
 
             allDefs = seddao.findAllActiveByStudy(parent);

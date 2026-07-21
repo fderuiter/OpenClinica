@@ -54,6 +54,9 @@ import javax.sql.DataSource;
  */
 @Controller("sdvController")
 public class SDVController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
     public final static String SUBJECT_SDV_TABLE_ATTRIBUTE = "sdvTableAttribute";
     @Autowired
     @Qualifier("dataSource")
@@ -128,7 +131,7 @@ public class SDVController {
     public ModelMap viewSubjectHandler(HttpServletRequest request, @RequestParam("studySubjectId") int studySubjectId, @RequestParam("studyId") int studyId) {
 
         ModelMap gridMap = new ModelMap();
-        /*EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        /*EventCRFDAO eventCRFDAO = applicationContext.getBean(EventCRFDAO.class);
         List<EventCRFBean> eventCRFBeans = eventCRFDAO.findAllByStudySubject(studySubjectId);*/
 
         request.setAttribute("studyId", studyId);
@@ -215,8 +218,8 @@ public class SDVController {
     public ModelMap viewAllSubjectFormHandler(HttpServletRequest request, HttpServletResponse response, @RequestParam("studyId") int studyId) {
 
         ModelMap gridMap = new ModelMap();
-        StudyDAO studyDAO = new StudyDAO(dataSource);
-        // StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+        StudyDAO studyDAO = applicationContext.getBean(StudyDAO.class);
+        // StudyEventDAO studyEventDAO = applicationContext.getBean(StudyEventDAO.class);
         StudyBean studyBean = (StudyBean) studyDAO.findByPK(studyId);
         String pattern = "MM/dd/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
@@ -502,7 +505,7 @@ public class SDVController {
     */
     private String renderSubjectsTable(List<EventCRFBean> eventCRFBeans, int studySubjectId, HttpServletRequest request) {
 
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = applicationContext.getBean(StudySubjectDAO.class);
         StudySubjectBean subjectBean = (StudySubjectBean) studySubjectDAO.findByPK(studySubjectId);
 
         Collection<SubjectSDVContainer> items = sdvUtil.getSubjectRows(eventCRFBeans, request);

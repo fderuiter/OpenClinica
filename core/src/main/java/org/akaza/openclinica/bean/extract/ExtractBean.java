@@ -797,14 +797,14 @@ public class ExtractBean {
      * called after DatasetDAO.getDatasetData();
      */
     public void getMetadata() {
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(ds);
-        CRFDAO cdao = new CRFDAO(ds);
-        CRFVersionDAO cvdao = new CRFVersionDAO(ds);
-        ItemDAO idao = new ItemDAO(ds);
-        ItemFormMetadataDAO ifmDAO = new ItemFormMetadataDAO(this.ds);
-        StudyGroupDAO studygroupDAO = new StudyGroupDAO(ds);
-        StudyGroupClassDAO studygroupclassDAO = new StudyGroupClassDAO(ds);
-        // SubjectGroupMapDAO subjectGroupMapDAO = new SubjectGroupMapDAO(ds);
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
+        CRFDAO cdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
+        ItemDAO idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
+        ItemFormMetadataDAO ifmDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
+        StudyGroupDAO studygroupDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyGroupDAO.class);
+        StudyGroupClassDAO studygroupclassDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyGroupClassDAO.class);
+        // SubjectGroupMapDAO subjectGroupMapDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SubjectGroupMapDAO.class);
         studyGroupClasses = new ArrayList();
         studyGroupMap = new HashMap();
         studyGroupMaps = new HashMap<Integer, ArrayList>();
@@ -1148,7 +1148,7 @@ public class ExtractBean {
             return;
         }
         // YW 08-21-2007 << fetch start_time_flag and end_time_flag
-        StudyEventDAO sedao = new StudyEventDAO(ds);
+        StudyEventDAO sedao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
         StudyEventBean se = (StudyEventBean) sedao.findByStudySubjectIdAndDefinitionIdAndOrdinal(studySubjectId, studyEventDefinitionId, sampleOrdinal);
         // YW >>
         if (se == null) {
@@ -1182,7 +1182,7 @@ public class ExtractBean {
         eventCRF.setDateInterviewed(dateInterviewed);
         // eventCRF.setStatus(status); //this is the one that we want, tbh
 
-        // EventCRFDAO ecrfdao = new EventCRFDAO(ds);
+        // EventCRFDAO ecrfdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         // ArrayList events = ecrfdao.findAllByStudyEvent(se);
 
         CRFVersionBean crfVersion = new CRFVersionBean();

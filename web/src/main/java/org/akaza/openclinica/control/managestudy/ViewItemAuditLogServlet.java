@@ -24,7 +24,7 @@ public class ViewItemAuditLogServlet extends SecureController {
     }
 
     public void processRequest () throws Exception{
-        AuditDAO adao = new AuditDAO(sm.getDataSource());
+        AuditDAO adao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), AuditDAO.class);
         FormProcessor fp = new FormProcessor(request);
         String auditTable = fp.getString("auditTable");
         if(auditTable.equalsIgnoreCase("studysub")){

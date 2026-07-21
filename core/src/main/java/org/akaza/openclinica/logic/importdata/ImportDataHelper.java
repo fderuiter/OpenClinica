@@ -70,14 +70,14 @@ public class ImportDataHelper {
         // << tbh
         int eventCRFId = 0;
 
-        EventCRFDAO eventCrfDao = new EventCRFDAO(sm.getDataSource());
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
-        StudySubjectDAO studySubjectDao = new StudySubjectDAO(sm.getDataSource());
-        StudyEventDefinitionDAO studyEventDefinistionDao = new StudyEventDefinitionDAO(sm.getDataSource());
-        CRFVersionDAO crfVersionDao = new CRFVersionDAO(sm.getDataSource());
-        StudyEventDAO studyEventDao = new StudyEventDAO(sm.getDataSource());
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
-        SubjectDAO subjectDao = new SubjectDAO(sm.getDataSource());
+        EventCRFDAO eventCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+        StudyDAO studyDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
+        StudySubjectDAO studySubjectDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
+        StudyEventDefinitionDAO studyEventDefinistionDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
+        CRFVersionDAO crfVersionDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
+        StudyEventDAO studyEventDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
+        CRFDAO crfdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
+        SubjectDAO subjectDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SubjectDAO.class);
 
         StudyBean studyBean = (StudyBean) studyDao.findByName(studyName);
         // .findByPK(studyId);

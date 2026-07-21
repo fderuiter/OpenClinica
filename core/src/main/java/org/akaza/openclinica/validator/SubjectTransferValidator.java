@@ -143,15 +143,15 @@ public class SubjectTransferValidator implements Validator {
     }
 
     public StudyDAO getStudyDAO() {
-        return this.studyDAO != null ? studyDAO : new StudyDAO(dataSource);
+        return this.studyDAO != null ? studyDAO : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
     }
 
     public StudySubjectDAO getStudySubjectDAO() {
-        return this.studySubjectDAO != null ? studySubjectDAO : new StudySubjectDAO(dataSource);
+        return this.studySubjectDAO != null ? studySubjectDAO : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
     }
 
     public StudyParameterValueDAO getStudyParameterValueDAO() {
-        return this.studyParameterValueDAO != null ? studyParameterValueDAO : new StudyParameterValueDAO(dataSource);
+        return this.studyParameterValueDAO != null ? studyParameterValueDAO : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyParameterValueDAO.class);
     }
 
 }

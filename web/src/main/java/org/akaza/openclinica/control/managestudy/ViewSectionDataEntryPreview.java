@@ -387,19 +387,19 @@ public class ViewSectionDataEntryPreview extends DataEntryServlet {
         String age = "";
         EventCRFBean ecb = (EventCRFBean)request.getAttribute(INPUT_EVENT_CRF);
 
-        StudySubjectDAO ssdao = new StudySubjectDAO(getDataSource());
+        StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
         StudySubjectBean sub = (StudySubjectBean) ssdao.findByPK(ecb.getStudySubjectId());
         // This is the SubjectBean
-        SubjectDAO subjectDao = new SubjectDAO(getDataSource());
+        SubjectDAO subjectDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
         int subjectId = sub.getSubjectId();
         int studyId = sub.getStudyId();
         SubjectBean subject = (SubjectBean) subjectDao.findByPK(subjectId);
         StudyBean currentStudy =    (StudyBean)  request.getSession().getAttribute("study");
         // Let us process the age
         if (currentStudy.getStudyParameterConfig().getCollectDob().equals("1")) {
-            StudyEventDAO sedao = new StudyEventDAO(getDataSource());
+            StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
             StudyEventBean se = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(getDataSource());
+            StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(se.getStudyEventDefinitionId());
             se.setStudyEventDefinition(sed);
             request.setAttribute("studyEvent", se);
@@ -407,7 +407,7 @@ public class ViewSectionDataEntryPreview extends DataEntryServlet {
             age = Utils.getInstacne().processAge(sub.getEnrollmentDate(), subject.getDateOfBirth());
         }
         // Get the study then the parent study
-        StudyDAO studydao = new StudyDAO(getDataSource());
+        StudyDAO studydao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         StudyBean study = (StudyBean) studydao.findByPK(studyId);
 
         if (study.getParentStudyId() > 0) {

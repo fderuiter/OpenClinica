@@ -89,7 +89,7 @@ public class RequestPasswordServlet extends SecureController {
 
         sm = new SessionManager(null, ubForm.getName(), SpringServletAccess.getApplicationContext(context));
 
-        UserAccountDAO uDAO = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO uDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
         // see whether this user in the DB
         UserAccountBean ubDB = (UserAccountBean) uDAO.findByUserName(ubForm.getName());
 

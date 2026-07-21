@@ -136,9 +136,9 @@ public class AddNewSubjectServlet extends SecureController {
         checkStudyLocked(Page.LIST_STUDY_SUBJECTS, respage.getString("current_study_locked"));
         checkStudyFrozen(Page.LIST_STUDY_SUBJECTS, respage.getString("current_study_frozen"));
 
-        StudySubjectDAO ssd = new StudySubjectDAO(sm.getDataSource());
-        StudyDAO stdao = new StudyDAO(sm.getDataSource());
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
+        StudySubjectDAO ssd = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
+        StudyDAO stdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
+        StudyGroupClassDAO sgcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupClassDAO.class);
         ArrayList classes = new ArrayList();
         panel.setStudyInfoShown(false);
         FormProcessor fp = new FormProcessor(request);
@@ -160,7 +160,7 @@ public class AddNewSubjectServlet extends SecureController {
             StudyBean parentStudy = (StudyBean) stdao.findByPK(parentStudyId);
             classes = sgcdao.findAllActiveByStudy(parentStudy);
         }
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyParameterValueDAO.class);
         StudyParameterValueBean parentSPV = spvdao.findByHandleAndStudy(parentStudyId, "collectDob");
         currentStudy.getStudyParameterConfig().setCollectDob(parentSPV.getValue());
         parentSPV = spvdao.findByHandleAndStudy(parentStudyId, "genderRequired");
@@ -287,7 +287,7 @@ public class AddNewSubjectServlet extends SecureController {
 
             HashMap errors = v.validate();
 
-            SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+            SubjectDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
             String uniqueIdentifier = fp.getString(INPUT_UNIQUE_IDENTIFIER);// global
             // Id
             SubjectBean subjectWithSameId = new SubjectBean();
@@ -753,7 +753,7 @@ public class AddNewSubjectServlet extends SecureController {
                     studySubject = ssd.createWithoutGroup(studySubject);
                 }
                 if (!classes.isEmpty() && studySubject.isActive()) {
-                    SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
+                    SubjectGroupMapDAO sgmdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectGroupMapDAO.class);
                     for (int i = 0; i < classes.size(); i++) {
                         StudyGroupClassBean group = (StudyGroupClassBean) classes.get(i);
                         int studyGroupId = group.getStudyGroupId();
@@ -778,7 +778,7 @@ public class AddNewSubjectServlet extends SecureController {
 
                 // save discrepancy notes into DB
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(FORM_DISCREPANCY_NOTES_NAME);
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DiscrepancyNoteDAO.class);
 
                 String[] subjectFields = { INPUT_DOB, INPUT_YOB, INPUT_GENDER };
                 for (String element : subjectFields) {
@@ -895,8 +895,8 @@ public class AddNewSubjectServlet extends SecureController {
                 addPageMessage(restext.getString("not_a_valid_location"));
             } else {
                 logger.info("will create event with new subject");
-                StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+                StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
+                StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
                 StudyEventBean se = new StudyEventBean();
                 se.setLocation(location);
                 se.setDateStarted(startDate);
@@ -946,7 +946,7 @@ public class AddNewSubjectServlet extends SecureController {
     }
 
     protected void setUpBeans(ArrayList classes) throws Exception {
-        StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
+        StudyGroupDAO sgdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupDAO.class);
         // addEntityList(BEAN_GROUPS, sgdao.findAllByStudy(currentStudy),
         // "A group must be available in order to add new subjects to this
         // study;

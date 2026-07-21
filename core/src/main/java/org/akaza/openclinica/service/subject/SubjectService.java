@@ -19,6 +19,9 @@ import java.util.List;
 import javax.sql.DataSource;
 
 public class SubjectService implements SubjectServiceInterface {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     org.akaza.openclinica.repository.UnifiedRepository unifiedRepository;
@@ -51,14 +54,14 @@ public class SubjectService implements SubjectServiceInterface {
      */
     public String createSubject(SubjectBean subjectBean, StudyBean studyBean, Date enrollmentDate, String secondaryId) {
         if (this.enrollmentManager == null) {
-            this.enrollmentManager = new EnrollmentManager(dataSource);
+            this.enrollmentManager = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(org.akaza.openclinica.service.subject.EnrollmentManager.class);
         }
         return this.enrollmentManager.enrollSubject(subjectBean, studyBean, enrollmentDate, secondaryId);
     }
 
     public String generateSubjectId(StudyBean studyBean) {
         if (this.enrollmentManager == null) {
-            this.enrollmentManager = new EnrollmentManager(dataSource);
+            this.enrollmentManager = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(org.akaza.openclinica.service.subject.EnrollmentManager.class);
         }
         return this.enrollmentManager.generateSubjectId(studyBean);
     }
@@ -69,7 +72,7 @@ public class SubjectService implements SubjectServiceInterface {
 
     
     public StudyParameterValueDAO getStudyParameterValueDAO() {
-        return this.studyParameterValueDAO != null ? studyParameterValueDAO : new StudyParameterValueDAO(dataSource);
+        return this.studyParameterValueDAO != null ? studyParameterValueDAO : applicationContext.getBean(StudyParameterValueDAO.class);
     }
 
 
@@ -78,7 +81,7 @@ public class SubjectService implements SubjectServiceInterface {
      * @return the UserAccountDao
      */
     public UserAccountDAO getUserAccountDao() {
-        userAccountDao = userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        userAccountDao = userAccountDao != null ? userAccountDao : applicationContext.getBean(UserAccountDAO.class);
         return userAccountDao;
     }
 
@@ -100,7 +103,7 @@ public class SubjectService implements SubjectServiceInterface {
 
     private org.akaza.openclinica.repository.UnifiedRepository getUnifiedRepository() {
         if (this.unifiedRepository == null) {
-            this.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(dataSource);
+            this.unifiedRepository = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(org.akaza.openclinica.repository.UnifiedRepository.class);
         }
         return this.unifiedRepository;
     }

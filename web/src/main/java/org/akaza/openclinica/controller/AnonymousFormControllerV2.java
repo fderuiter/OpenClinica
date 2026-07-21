@@ -40,6 +40,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping(value = "/api/v2/anonymousform")
 @ResponseStatus(value = org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
 public class AnonymousFormControllerV2 {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     @Autowired
     @Qualifier("dataSource")
@@ -94,13 +97,13 @@ public class AnonymousFormControllerV2 {
 
             StudyBean study = getStudy(studyOid);
 
-            EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(dataSource);
+            EventDefinitionCRFDAO edcdao = applicationContext.getBean(EventDefinitionCRFDAO.class);
             ArrayList<EventDefinitionCRFBean> edcBeans = edcdao.findAllSubmissionUriAndStudyId(submissionUri, study.getId());
             if (edcBeans.size() != 0) {
                 EventDefinitionCRFBean edcBean = edcBeans.get(0);
-                CRFDAO crfdao = new CRFDAO(dataSource);
-                CRFVersionDAO cvdao = new CRFVersionDAO(dataSource);
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(dataSource);
+                CRFDAO crfdao = applicationContext.getBean(CRFDAO.class);
+                CRFVersionDAO cvdao = applicationContext.getBean(CRFVersionDAO.class);
+                StudyEventDefinitionDAO seddao = applicationContext.getBean(StudyEventDefinitionDAO.class);
 
                 CRFVersionBean crfVersionBean = (CRFVersionBean) cvdao.findByPK(edcBean.getDefaultVersionId());
                 CRFBean crf = (CRFBean) crfdao.findByPK(crfVersionBean.getCrfId());
@@ -137,7 +140,7 @@ public class AnonymousFormControllerV2 {
     }
 
     private StudyBean getStudy(String oid) {
-        sdao = new StudyDAO(dataSource);
+        sdao = applicationContext.getBean(StudyDAO.class);
         StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
         return studyBean;
     }
@@ -158,7 +161,7 @@ public class AnonymousFormControllerV2 {
         boolean accessPermission = false;
         StudyBean siteStudy = getStudy(studyOid);
         StudyBean study = getParentStudy(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         participantPortalRegistrar = new ParticipantPortalRegistrar();
         String pManageStatus = participantPortalRegistrar.getRegistrationStatus(study.getOid()).toString(); // ACTIVE , PENDING , INACTIVE

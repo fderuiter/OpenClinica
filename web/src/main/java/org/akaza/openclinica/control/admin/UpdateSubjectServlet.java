@@ -62,7 +62,7 @@ public class UpdateSubjectServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
         FormProcessor fp = new FormProcessor(request);
         FormDiscrepancyNotes discNotes = new FormDiscrepancyNotes();
 
@@ -159,7 +159,7 @@ public class UpdateSubjectServlet extends SecureController {
                 subjectService.updateSubject(subject, ub, theNote != null ? theNote.getDescription() : "Subject updated via UI", theNote);
 
                 // save discrepancy notes into DB
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DiscrepancyNoteDAO.class);
             	
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
                 AddNewSubjectServlet.saveFieldNotes("gender", fdn, dndao, subject.getId(), "subject", currentStudy);
@@ -306,7 +306,7 @@ public class UpdateSubjectServlet extends SecureController {
 	        		Validator.addError(errors, "uniqueIdentifier", descr);
 	        		
 	        	}
-	            SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+	            SubjectDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
 	            SubjectBean sub1 = (SubjectBean) sdao.findAnotherByIdentifier(uniqueIdentifier, subject.getId());
 	            if (sub1.getId() > 0) {
 	            	  Validator.addError(errors, "uniqueIdentifier", resexception.getString("person_ID_used_by_another_choose_unique"));
@@ -351,7 +351,7 @@ public class UpdateSubjectServlet extends SecureController {
     }
     
     private void setDNFlag(int subjectId){
-    	DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+    	DiscrepancyNoteDAO dndao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DiscrepancyNoteDAO.class);
     	
     	 request.setAttribute("genderDNFlag","icon_noNote");
          request.setAttribute("birthDNFlag","icon_noNote");

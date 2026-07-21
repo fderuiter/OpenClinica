@@ -48,10 +48,10 @@ public class SetUpStudyRole {
         StudyBean currentStudy = new StudyBean();
         StudyInfoPanel panel = new StudyInfoPanel();
 
-        StudyDAO sdao = new StudyDAO(dataSource);
+        StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
 
         if (userAccountBean.getId() > 0 && userAccountBean.getActiveStudyId() > 0) {
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+            StudyParameterValueDAO spvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyParameterValueDAO.class);
             currentStudy = (StudyBean) sdao.findByPK(userAccountBean.getActiveStudyId());
 
             ArrayList studyParameters = spvdao.findParamConfigByStudy(currentStudy);

@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 
 public class RuleService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     DataSource ds;
@@ -47,7 +50,7 @@ public class RuleService {
     }
 
     private RuleDAO getRuleDao() {
-        ruleDao = this.ruleDao != null ? ruleDao : new RuleDAO(ds);
+        ruleDao = this.ruleDao != null ? ruleDao : applicationContext.getBean(RuleDAO.class);
         return ruleDao;
     }
 

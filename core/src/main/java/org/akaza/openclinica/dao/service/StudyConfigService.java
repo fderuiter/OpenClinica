@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import javax.sql.DataSource;
 
 public class StudyConfigService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     private DataSource ds;
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
@@ -58,8 +61,8 @@ public class StudyConfigService {
      * @return
      */
     public String hasDefinedParameterValue(int studyId, String parameterHandle) {
-        StudyDAO sdao = new StudyDAO(ds);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(ds);
+        StudyDAO sdao = applicationContext.getBean(StudyDAO.class);
+        StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
 
         if (studyId <= 0 || StringUtil.isBlank(parameterHandle)) {
             return null;
@@ -92,7 +95,7 @@ public class StudyConfigService {
      * @return
      */
     public StudyBean setParametersForStudy(StudyBean study) {
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(ds);
+        StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
         ArrayList parameters = spvdao.findAllParameters();
         StudyParameterConfig spc = new StudyParameterConfig();
 
@@ -151,7 +154,7 @@ public class StudyConfigService {
     }
 
     public StudyBean setParameterValuesForStudy(StudyBean study) {
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(ds);
+        StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
         ArrayList theParameters = spvdao.findParamConfigByStudy(study);
         study.setStudyParameters(theParameters);
 
@@ -211,8 +214,8 @@ public class StudyConfigService {
     }
 
     public StudyBean setParametersForSite(StudyBean site) {
-        StudyDAO sdao = new StudyDAO(ds);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(ds);
+        StudyDAO sdao = applicationContext.getBean(StudyDAO.class);
+        StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
         StudyBean parent = (StudyBean) sdao.findByPK(site.getParentStudyId());
         parent = this.setParameterValuesForStudy(parent);
         site.setStudyParameterConfig(parent.getStudyParameterConfig());

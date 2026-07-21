@@ -15,6 +15,10 @@ public class SpringServletAccess {
         return WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
     }
     
+    public static <T> T getDao(ServletContext servletContext, Class<T> clazz) {
+        return getApplicationContext(servletContext).getBean(clazz);
+    }
+
     public static String getPropertiesDir(ServletContext servletContext) {
     	String resource = "properties/placeholder.properties";
     	ServletContextResource scr = (ServletContextResource)getApplicationContext(servletContext).getResource(resource);

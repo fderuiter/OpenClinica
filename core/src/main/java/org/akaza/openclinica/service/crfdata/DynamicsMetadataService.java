@@ -78,6 +78,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 public class DynamicsMetadataService implements MetadataServiceInterface {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final String ESCAPED_SEPERATOR = "\\.";
     private DynamicsItemFormMetadataDao dynamicsItemFormMetadataDao;
@@ -1045,50 +1048,50 @@ public class DynamicsMetadataService implements MetadataServiceInterface {
 
 
     private EventCRFDAO getEventCRFDAO() {
-    /*    eventCRFDAO = this.eventCRFDAO != null ? eventCRFDAO : new EventCRFDAO(ds);
+    /*    eventCRFDAO = this.eventCRFDAO != null ? eventCRFDAO : applicationContext.getBean(EventCRFDAO.class);
         return eventCRFDAO;*/
-        return  new EventCRFDAO(ds);
+        return  applicationContext.getBean(EventCRFDAO.class);
     }
 
     private ItemDataDAO getItemDataDAO() {
-    /*    itemDataDAO = this.itemDataDAO != null ? itemDataDAO : new ItemDataDAO(ds);
+    /*    itemDataDAO = this.itemDataDAO != null ? itemDataDAO : applicationContext.getBean(ItemDataDAO.class);
         return itemDataDAO;*/
-        return new ItemDataDAO(ds);
+        return applicationContext.getBean(ItemDataDAO.class);
     }
 
     private ItemDAO getItemDAO() {
-        /*itemDAO = this.itemDAO != null ? itemDAO : new ItemDAO(ds);
+        /*itemDAO = this.itemDAO != null ? itemDAO : applicationContext.getBean(ItemDAO.class);
         return itemDAO;*/
-        return new ItemDAO(ds);
+        return applicationContext.getBean(ItemDAO.class);
     }
 
     private ItemGroupDAO getItemGroupDAO() {
-        //itemGroupDAO = this.itemGroupDAO != null ? itemGroupDAO : new ItemGroupDAO(ds);
-        return new ItemGroupDAO(ds);
+        //itemGroupDAO = this.itemGroupDAO != null ? itemGroupDAO : applicationContext.getBean(ItemGroupDAO.class);
+        return applicationContext.getBean(ItemGroupDAO.class);
     }
 
     private SectionDAO getSectionDAO() {
-     //   sectionDAO = this.sectionDAO != null ? sectionDAO : new SectionDAO(ds);
-        return new SectionDAO(ds);
+     //   sectionDAO = this.sectionDAO != null ? sectionDAO : applicationContext.getBean(SectionDAO.class);
+        return applicationContext.getBean(SectionDAO.class);
     }
 
     private ItemFormMetadataDAO getItemFormMetadataDAO() {
-     //   itemFormMetadataDAO = this.itemFormMetadataDAO != null ? itemFormMetadataDAO : new ItemFormMetadataDAO(ds);
-        return new ItemFormMetadataDAO(ds);
+     //   itemFormMetadataDAO = this.itemFormMetadataDAO != null ? itemFormMetadataDAO : applicationContext.getBean(ItemFormMetadataDAO.class);
+        return applicationContext.getBean(ItemFormMetadataDAO.class);
     }
 
     private ItemGroupMetadataDAO getItemGroupMetadataDAO() {
-        //itemGroupMetadataDAO = this.itemGroupMetadataDAO != null ? itemGroupMetadataDAO : new ItemGroupMetadataDAO(ds);
-        return new ItemGroupMetadataDAO(ds);
+        //itemGroupMetadataDAO = this.itemGroupMetadataDAO != null ? itemGroupMetadataDAO : applicationContext.getBean(ItemGroupMetadataDAO.class);
+        return applicationContext.getBean(ItemGroupMetadataDAO.class);
     }
 
     public StudyEventDAO getStudyEventDAO() {
-        //studyEventDAO = this.studyEventDAO != null ? studyEventDAO : new StudyEventDAO(ds);
-        return new StudyEventDAO(ds);
+        //studyEventDAO = this.studyEventDAO != null ? studyEventDAO : applicationContext.getBean(StudyEventDAO.class);
+        return applicationContext.getBean(StudyEventDAO.class);
     }
 
     public EventDefinitionCRFDAO getEventDefinitionCRfDAO() {
-        eventDefinitionCRFDAO = this.eventDefinitionCRFDAO != null ? eventDefinitionCRFDAO : new EventDefinitionCRFDAO(ds);
+        eventDefinitionCRFDAO = this.eventDefinitionCRFDAO != null ? eventDefinitionCRFDAO : applicationContext.getBean(EventDefinitionCRFDAO.class);
         return eventDefinitionCRFDAO;
     }
 

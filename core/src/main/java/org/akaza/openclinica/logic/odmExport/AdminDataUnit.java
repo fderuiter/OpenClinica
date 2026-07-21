@@ -49,7 +49,7 @@ public class AdminDataUnit extends OdmUnit {
         }
         odmAdminData.setStudyOID(studyOID);
 
-        OdmExtractDAO oedao = new OdmExtractDAO(this.ds);
+        OdmExtractDAO oedao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(OdmExtractDAO.class);
         if (this.getCategory() == 1 && study.isSite(study.getParentStudyId())) {
             String mvoid = "";
             if (this.dataset != null && this.dataset.getId() > 0) {

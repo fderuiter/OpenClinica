@@ -69,6 +69,9 @@ import java.util.UUID;
 @RequestMapping(value = "auth/api/itemdata")
 @ResponseStatus(value = org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
 public class IdtViewController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
     @Autowired
     @Qualifier("dataSource")
     private DataSource dataSource;
@@ -244,13 +247,13 @@ public class IdtViewController {
     }
 
     private StudyBean getStudy(String oid) {
-        sdao = new StudyDAO(dataSource);
+        sdao = applicationContext.getBean(StudyDAO.class);
         StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
         return studyBean;
     }
 
     private StudyBean getStudy(Integer id) {
-        sdao = new StudyDAO(dataSource);
+        sdao = applicationContext.getBean(StudyDAO.class);
         StudyBean studyBean = (StudyBean) sdao.findByPK(id);
         return studyBean;
     }

@@ -37,6 +37,9 @@ import java.util.*;
 @Controller
 @RequestMapping(value = "/auth/api/v1/fhir")
 public class NativeFhirIngestionController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
@@ -54,7 +57,7 @@ public class NativeFhirIngestionController {
 
             // Get UserAccountBean
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+            UserAccountDAO userAccountDAO = applicationContext.getBean(UserAccountDAO.class);
             UserAccountBean ub = (UserAccountBean) userAccountDAO.findByUserName(userDetails.getUsername());
 
             // Build mapping
@@ -68,7 +71,7 @@ public class NativeFhirIngestionController {
             }
 
             String studyOid = odmContainer.getCrfDataPostImportContainer().getStudyOID();
-            StudyDAO studyDao = new StudyDAO(dataSource);
+            StudyDAO studyDao = applicationContext.getBean(StudyDAO.class);
             StudyBean studyBean = studyDao.findByOid(studyOid);
             if (studyBean == null) {
                 return new ResponseEntity<String>("Study OID " + studyOid + " not found.", HttpStatus.BAD_REQUEST);
@@ -111,8 +114,8 @@ public class NativeFhirIngestionController {
 
             // 4. Save data
             CrfBusinessLogicHelper crfBusinessLogicHelper = new CrfBusinessLogicHelper(dataSource);
-            ItemDataDAO itemDataDao = new ItemDataDAO(dataSource);
-            EventCRFDAO eventCrfDao = new EventCRFDAO(dataSource);
+            ItemDataDAO itemDataDao = applicationContext.getBean(ItemDataDAO.class);
+            EventCRFDAO eventCrfDao = applicationContext.getBean(EventCRFDAO.class);
 
             for (DisplayItemBeanWrapper wrapper : wrappers) {
                 boolean resetSDV = false;

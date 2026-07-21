@@ -90,7 +90,7 @@ public class OpenClinicaSessionRegistryImpl extends SessionRegistryImpl {
     }
 
     public UserAccountDAO getUserAccountDao() {
-        return userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        return userAccountDao != null ? userAccountDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
     }
 
     public AuditUserLoginDao getAuditUserLoginDao() {

@@ -51,8 +51,8 @@ public class SetStudyUserRoleServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
+        StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
         String name = request.getParameter("name");
         String studyIdString = request.getParameter("studyId");
         if (StringUtil.isBlank(name) || StringUtil.isBlank(studyIdString)) {
@@ -136,7 +136,7 @@ public class SetStudyUserRoleServlet extends SecureController {
      */
     private String sendEmail(UserAccountBean u, StudyUserRoleBean sub) throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
         StudyBean study = (StudyBean) sdao.findByPK(sub.getStudyId());
         logger.info("Sending email...");
         String body =

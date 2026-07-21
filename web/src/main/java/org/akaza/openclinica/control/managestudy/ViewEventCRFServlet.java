@@ -49,13 +49,13 @@ public class ViewEventCRFServlet extends SecureController {
         int eventCRFId = fp.getInt("id", true);
         int studySubId = fp.getInt("studySubId", true);
 
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
-        SectionDAO secdao = new SectionDAO(sm.getDataSource());
+        StudySubjectDAO subdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
+        EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
+        ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
+        ItemDAO idao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDAO.class);
+        ItemFormMetadataDAO ifmdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemFormMetadataDAO.class);
+        CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
+        SectionDAO secdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SectionDAO.class);
 
         if (eventCRFId == 0) {
             addPageMessage(respage.getString("please_choose_an_event_CRF_to_view"));

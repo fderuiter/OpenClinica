@@ -123,8 +123,8 @@ public class CreateDatasetServlet extends SecureController {
      */
 
     public ArrayList setUpStudyGroups() {
-        StudyDAO studydao = new StudyDAO(sm.getDataSource());
-        StudyGroupClassDAO sgclassdao = new StudyGroupClassDAO(sm.getDataSource());
+        StudyDAO studydao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
+        StudyGroupClassDAO sgclassdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupClassDAO.class);
         StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
         ArrayList sgclasses = sgclassdao.findAllActiveByStudy(theStudy);
         // StudyGroupClassBean sgclass = (StudyGroupClassBean)sgclasses.get(0);
@@ -156,9 +156,9 @@ public class CreateDatasetServlet extends SecureController {
             if ("begin".equalsIgnoreCase(action)) {
                 // step 2 -- select study events/crfs
 
-                StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
-                EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
+                StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
+                EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
                 StudyBean studyWithEventDefinitions = currentStudy;
                 if (currentStudy.getParentStudyId() > 0) {
                     studyWithEventDefinitions = new StudyBean();
@@ -167,7 +167,7 @@ public class CreateDatasetServlet extends SecureController {
                 }
                 ArrayList seds = seddao.findAllActiveByStudy(studyWithEventDefinitions);
 
-                CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+                CRFDAO crfdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
                 HashMap events = new LinkedHashMap();
                 for (int i = 0; i < seds.size(); i++) {
                     StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seds.get(i);
@@ -191,8 +191,8 @@ public class CreateDatasetServlet extends SecureController {
                     addPageMessage(respage.getString("not_have_study_definitions_assigned"));
                     forwardPage(Page.CREATE_DATASET_1);
                 } else {
-                    crfdao = new CRFDAO(sm.getDataSource());
-                    ItemDAO idao = new ItemDAO(sm.getDataSource());
+                    crfdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
+                    ItemDAO idao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDAO.class);
                     ArrayList sedItemIds = CreateDatasetServlet.allSedItemIdsInStudy(events, crfdao, idao);
 
                     request.setAttribute("numberOfStudyItems", Integer.toString(sedItemIds.size()));
@@ -319,7 +319,7 @@ public class CreateDatasetServlet extends SecureController {
                     request.setAttribute("newDataset", dsb);
 
                     if (fp.getString("submit").equals(resword.getString("continue_to_apply_filter"))) {
-                        // FilterDAO fdao = new FilterDAO(sm.getDataSource());
+                        // FilterDAO fdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), FilterDAO.class);
                         // Collection filters = fdao.findAll();
                         // TODO make findAllByProject
                         // request.setAttribute("filters",filters);
@@ -373,7 +373,7 @@ public class CreateDatasetServlet extends SecureController {
                     if (((DatasetBean) session.getAttribute("newDataset")).getId() <= 0) {
                         // YW >>
                         // logger.info("dsName" + fp.getString("dsName"));
-                        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+                        DatasetDAO dsdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DatasetDAO.class);
                         DatasetBean dsBean = (DatasetBean) dsdao.findByNameAndStudy(fp.getString("dsName").trim(), currentStudy);
                         if (dsBean.getId() > 0) {
                             Validator.addError(errors, "dsName", restext.getString("dataset_name_used_by_another_choose_unique"));
@@ -421,7 +421,7 @@ public class CreateDatasetServlet extends SecureController {
                     // possibly done need to test, tbh 1/7/2005
                     FilterBean fb = (FilterBean) session.getAttribute("newFilter");
                     if (fb != null) {
-                        // FilterDAO fDAO = new FilterDAO(sm.getDataSource());
+                        // FilterDAO fDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), FilterDAO.class);
                         dsb.setSQLStatement(dsb.getSQLStatement() + " " + fb.getSQLStatement());
                     }
                     // YW 2-21-2008 << editing dataset becomes creating a new
@@ -460,7 +460,7 @@ public class CreateDatasetServlet extends SecureController {
                     // request.removeAttribute("newFilter");
                     forwardPage(Page.CREATE_DATASET_4);
                 } else {
-                    DatasetDAO ddao = new DatasetDAO(sm.getDataSource());
+                    DatasetDAO ddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DatasetDAO.class);
                     DatasetBean dsb = (DatasetBean) session.getAttribute("newDataset");
                     dsb.setStudyId(this.currentStudy.getId());
 
@@ -531,7 +531,7 @@ public class CreateDatasetServlet extends SecureController {
             db.getEventIds().add(new Integer(defId));
         }
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
         String defName = "";
         if (defId > 0 && crfId != -1) {
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(defId);
@@ -566,7 +566,7 @@ public class CreateDatasetServlet extends SecureController {
         }
 
         if (crfId != 0 && allItems != null) {
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
             CRFBean crf = (CRFBean) cdao.findByPK(crfId);
 
             ArrayList newSelectItems = new ArrayList();
@@ -741,7 +741,7 @@ public class CreateDatasetServlet extends SecureController {
 
     private EntityBeanTable getFilterTable() {
         FormProcessor fp = new FormProcessor(request);
-        FilterDAO fdao = new FilterDAO(sm.getDataSource());
+        FilterDAO fdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), FilterDAO.class);
         EntityBeanTable table = fp.getEntityBeanTable();
 
         ArrayList filters = (ArrayList) fdao.findAll();

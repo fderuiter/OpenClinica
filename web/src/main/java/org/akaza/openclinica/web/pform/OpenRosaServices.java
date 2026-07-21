@@ -93,6 +93,9 @@ import org.w3c.dom.NodeList;
 @Path("/openrosa")
 @Component
 public class OpenRosaServices {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     public static final String INPUT_USER_SOURCE = "userSource";
     public static final String INPUT_FIRST_NAME = "Participant";
@@ -163,13 +166,13 @@ public class OpenRosaServices {
         if (!mayProceedPreview(studyOID))
             return null;
 
-        StudyDAO sdao = new StudyDAO(getDataSource());
+        StudyDAO sdao = applicationContext.getBean(StudyDAO.class);
         StudyBean study = sdao.findByOid(studyOID);
 
-        CRFDAO cdao = new CRFDAO(getDataSource());
+        CRFDAO cdao = applicationContext.getBean(CRFDAO.class);
         Collection<CRFBean> crfs = cdao.findAll();
 
-        CRFVersionDAO cVersionDao = new CRFVersionDAO(getDataSource());
+        CRFVersionDAO cVersionDao = applicationContext.getBean(CRFVersionDAO.class);
         Collection<CRFVersionBean> crfVersions = cVersionDao.findAll();
 
         CrfVersionMediaDao mediaDao = (CrfVersionMediaDao) SpringServletAccess.getApplicationContext(context).getBean("crfVersionMediaDao");
@@ -244,7 +247,7 @@ public class OpenRosaServices {
         if (!mayProceedPreview(studyOID))
             return null;
 
-        CRFVersionDAO cVersionDao = new CRFVersionDAO(getDataSource());
+        CRFVersionDAO cVersionDao = applicationContext.getBean(CRFVersionDAO.class);
         CrfVersionMediaDao mediaDao = (CrfVersionMediaDao) SpringServletAccess.getApplicationContext(context).getBean("crfVersionMediaDao");
 
         CRFVersionBean crfVersion = cVersionDao.findByOid(crfOID);
@@ -316,7 +319,7 @@ public class OpenRosaServices {
         }
 
         try {
-            CRFVersionDAO versionDAO = new CRFVersionDAO(dataSource);
+            CRFVersionDAO versionDAO = applicationContext.getBean(CRFVersionDAO.class);
             CRFVersionBean crfVersion = versionDAO.findByOid(formId);
 
             if (crfVersion.getXform() != null && !crfVersion.getXform().equals("")){
@@ -473,9 +476,9 @@ public class OpenRosaServices {
 
         try {
             // Need to retrieve crf's for next event
-            StudyEventDAO eventDAO = new StudyEventDAO(getDataSource());
+            StudyEventDAO eventDAO = applicationContext.getBean(StudyEventDAO.class);
             StudyEventBean nextEvent = (StudyEventBean) eventDAO.getNextScheduledEvent(ssoid);
-            CRFVersionDAO versionDAO = new CRFVersionDAO(getDataSource());
+            CRFVersionDAO versionDAO = applicationContext.getBean(CRFVersionDAO.class);
             ArrayList<CRFVersionBean> crfs = versionDAO.findDefCRFVersionsByStudyEvent(nextEvent.getStudyEventDefinitionId());
             PFormCache cache = PFormCache.getInstance(context);
             for (CRFVersionBean crfVersion : crfs) {
@@ -537,7 +540,7 @@ public class OpenRosaServices {
     }
 
     private StudyBean getStudy(String oid) {
-        sdao = new StudyDAO(dataSource);
+        sdao = applicationContext.getBean(StudyDAO.class);
         StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
         return studyBean;
     }
@@ -616,7 +619,7 @@ public class OpenRosaServices {
     private boolean mayProceedSubmission(String studyOid, StudySubjectBean ssBean) throws Exception {
         boolean accessPermission = false;
         StudyBean study = getParentStudy(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         participantPortalRegistrar = new ParticipantPortalRegistrar();
         String pManageStatus = participantPortalRegistrar.getRegistrationStatus(studyOid).toString(); // ACTIVE ,
@@ -636,7 +639,7 @@ public class OpenRosaServices {
     private boolean mayProceedPreview(String studyOid) throws Exception {
         boolean accessPermission = false;
         StudyBean study = getParentStudy(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
 
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         participantPortalRegistrar = new ParticipantPortalRegistrar();

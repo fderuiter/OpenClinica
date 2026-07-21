@@ -79,6 +79,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class BatchCRFMigrationController implements Runnable {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     @Autowired
     private DataSource dataSource;
@@ -513,48 +516,48 @@ public class BatchCRFMigrationController implements Runnable {
 
     @SuppressWarnings("rawtypes")
     private StudyDAO sdao() {
-        return new StudyDAO(dataSource);
+        return applicationContext.getBean(StudyDAO.class);
     }
 
     @SuppressWarnings("rawtypes")
     private EventCRFDAO ecdao() {
-        return new EventCRFDAO(dataSource);
+        return applicationContext.getBean(EventCRFDAO.class);
     }
 
     private StudyEventDAO sedao() {
-        return new StudyEventDAO(dataSource);
+        return applicationContext.getBean(StudyEventDAO.class);
     }
 
     @SuppressWarnings("rawtypes")
     private StudyEventDefinitionDAO seddao() {
-        return new StudyEventDefinitionDAO(dataSource);
+        return applicationContext.getBean(StudyEventDefinitionDAO.class);
     }
 
     @SuppressWarnings("rawtypes")
     private StudySubjectDAO ssdao() {
-        return new StudySubjectDAO(dataSource);
+        return applicationContext.getBean(StudySubjectDAO.class);
     }
 
     private EventDefinitionCRFDAO edcdao() {
-        return new EventDefinitionCRFDAO(dataSource);
+        return applicationContext.getBean(EventDefinitionCRFDAO.class);
     }
 
     private UserAccountDAO uadao() {
-        return new UserAccountDAO(dataSource);
+        return applicationContext.getBean(UserAccountDAO.class);
     }
 
     @SuppressWarnings("rawtypes")
     private CRFDAO cdao() {
-        return new CRFDAO(dataSource);
+        return applicationContext.getBean(CRFDAO.class);
     }
 
     @SuppressWarnings("rawtypes")
     private CRFVersionDAO cvdao() {
-        return new CRFVersionDAO(dataSource);
+        return applicationContext.getBean(CRFVersionDAO.class);
     }
 
     private AuditDAO auditDao() {
-        return new AuditDAO(dataSource);
+        return applicationContext.getBean(AuditDAO.class);
     }
 
     private UserAccountBean getCurrentUser(HttpServletRequest request) {

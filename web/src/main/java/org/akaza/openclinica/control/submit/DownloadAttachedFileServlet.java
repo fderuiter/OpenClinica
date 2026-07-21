@@ -38,7 +38,7 @@ public class DownloadAttachedFileServlet extends SecureController {
         Locale locale = LocaleResolver.getLocale(request);
         FormProcessor fp = new FormProcessor(request);
 /*        int eventCRFId = fp.getInt("eventCRFId");
-        EventCRFDAO edao = new EventCRFDAO(sm.getDataSource());
+        EventCRFDAO edao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
 
         if (eventCRFId > 0) {
             if (!entityIncluded(eventCRFId, ub.getName(), edao, sm.getDataSource())) {
@@ -92,14 +92,14 @@ public class DownloadAttachedFileServlet extends SecureController {
                 logger.info(currentStudy.getName() + " existing filePathName=" + filePathName);
             } else {
                 if (currentStudy.isSite(parentStudyId)) {
-                    testName = testPath + ((StudyBean) new StudyDAO(sm.getDataSource()).findByPK(parentStudyId)).getOid() + tail;
+                    testName = testPath + ((StudyBean) org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class).findByPK(parentStudyId)).getOid() + tail;
                     temp = new File(testName);
                     if (temp.exists()) {
                         filePathName = testName;
                         logger.info("parent existing filePathName=" + filePathName);
                     }
                 } else {
-                    ArrayList<StudyBean> sites = (ArrayList<StudyBean>) new StudyDAO(sm.getDataSource()).findAllByParent(currentStudy.getId());
+                    ArrayList<StudyBean> sites = (ArrayList<StudyBean>) org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class).findAllByParent(currentStudy.getId());
                     for (StudyBean s : sites) {
                         testPath = Utils.getAttachedFilePath(s);
                         testName = testPath + tail;//+ s.getIdentifier() + tail;

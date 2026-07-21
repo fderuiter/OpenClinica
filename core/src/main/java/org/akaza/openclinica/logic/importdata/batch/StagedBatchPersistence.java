@@ -35,8 +35,8 @@ public class StagedBatchPersistence {
     public void executeBatchInserts(List<Object> entities) {
         logger.info("Executing multi-row batch inserts to replace sequential row-level commits");
         
-        AuditEventDAO auditEventDAO = new AuditEventDAO(this.jdbcTemplate.getDataSource());
-        ItemDataDAO itemDataDAO = new ItemDataDAO(this.jdbcTemplate.getDataSource());
+        AuditEventDAO auditEventDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(AuditEventDAO.class);
+        ItemDataDAO itemDataDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
         
         java.util.List<AuditEventBean> audits = new java.util.ArrayList<>();
         java.util.List<ItemDataBean> items = new java.util.ArrayList<>();

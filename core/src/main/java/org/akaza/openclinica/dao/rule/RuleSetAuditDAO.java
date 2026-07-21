@@ -60,11 +60,11 @@ public class RuleSetAuditDAO extends EntityDAO {
     }
 
     private RuleSetDAO getRuleSetDao() {
-        return this.ruleSetDao != null ? this.ruleSetDao : new RuleSetDAO(ds);
+        return this.ruleSetDao != null ? this.ruleSetDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleSetDAO.class);
     }
 
     private UserAccountDAO getUserAccountDao() {
-        return this.userAccountDao != null ? this.userAccountDao : new UserAccountDAO(ds);
+        return this.userAccountDao != null ? this.userAccountDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
     }
 
     @Override

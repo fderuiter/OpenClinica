@@ -54,10 +54,10 @@ public class ViewSubjectGroupClassServlet extends SecureController {
             addPageMessage(respage.getString("please_choose_a_subject_group_class_to_view"));
             forwardPage(Page.SUBJECT_GROUP_CLASS_LIST_SERVLET);
         } else {
-            StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
-            StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
-            SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
-            StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+            StudyGroupClassDAO sgcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupClassDAO.class);
+            StudyGroupDAO sgdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupDAO.class);
+            SubjectGroupMapDAO sgmdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectGroupMapDAO.class);
+            StudyDAO studyDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
 
             StudyGroupClassBean sgcb = (StudyGroupClassBean) sgcdao.findByPK(classId);
             StudyBean study = (StudyBean)studyDao.findByPK(sgcb.getStudyId());

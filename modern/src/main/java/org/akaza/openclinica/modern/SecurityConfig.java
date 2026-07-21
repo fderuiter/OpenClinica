@@ -45,15 +45,18 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final DataSource dataSource;
+    private final UnifiedRepository unifiedRepository;
+    private final org.akaza.openclinica.dao.login.UserAccountDAO userAccountDaoJdbc;
 
-    public SecurityConfig(DataSource dataSource) {
+    public SecurityConfig(DataSource dataSource, UnifiedRepository unifiedRepository, org.akaza.openclinica.dao.login.UserAccountDAO userAccountDaoJdbc) {
         this.dataSource = dataSource;
+        this.unifiedRepository = unifiedRepository;
+        this.userAccountDaoJdbc = userAccountDaoJdbc;
     }
 
     @Bean
     public SecurityFilterChain unifiedFilterChain(HttpSecurity http) throws Exception {
-        UnifiedRepository unifiedRepository = new UnifiedRepository(dataSource);
-        LegacyModernContextBridgeFilter bridgeFilter = new LegacyModernContextBridgeFilter(dataSource, unifiedRepository);
+        LegacyModernContextBridgeFilter bridgeFilter = new LegacyModernContextBridgeFilter(dataSource, unifiedRepository, userAccountDaoJdbc);
 
         http
             .authorizeHttpRequests(authorize -> authorize

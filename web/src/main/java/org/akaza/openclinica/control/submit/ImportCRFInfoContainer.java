@@ -46,11 +46,11 @@ public class ImportCRFInfoContainer {
 
         ArrayList<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
         ArrayList<Integer> eventCRFBeanIds = new ArrayList<Integer>();
-        EventCRFDAO eventCrfDAO = new EventCRFDAO(ds);
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(ds);
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(ds);
-        StudyDAO studyDAO = new StudyDAO(ds);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(ds);
+        EventCRFDAO eventCrfDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+        StudySubjectDAO studySubjectDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
+        StudyEventDefinitionDAO studyEventDefinitionDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
+        StudyDAO studyDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
+        StudyEventDAO studyEventDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
         UpsertOnBean upsert = odmContainer.getCrfDataPostImportContainer().getUpsertOn();
         final UpsertOnBean finalUpsert = upsert == null ? new UpsertOnBean() : upsert;
         // If Upsert bean is not present, create one with default settings
@@ -83,7 +83,7 @@ public void process(SubjectDataBean subjectDataBean) {
                 Map<String, String> formMap = new HashMap<String, String>();
                 for (FormDataBean formDataBean : formDataBeans) {
 
-                    CRFVersionDAO crfVersionDAO = new CRFVersionDAO(ds);
+                    CRFVersionDAO crfVersionDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
                     ArrayList<CRFVersionBean> crfVersionBeans = crfVersionDAO.findAllByOid(formDataBean.getFormOID());
                     for (CRFVersionBean crfVersionBean : crfVersionBeans) {
 

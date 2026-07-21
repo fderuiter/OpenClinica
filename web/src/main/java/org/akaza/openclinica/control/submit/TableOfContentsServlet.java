@@ -119,7 +119,7 @@ public class TableOfContentsServlet extends SecureController {
     private String action;
 
     private void getEventCRFAndAction() {
-        ecdao = new EventCRFDAO(sm.getDataSource());
+        ecdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
 
         ecb = (EventCRFBean) request.getAttribute(INPUT_EVENT_CRF_BEAN);
 
@@ -193,7 +193,7 @@ public class TableOfContentsServlet extends SecureController {
      */
     private EventCRFBean createEventCRF() throws Exception {
         EventCRFBean ecb;
-        ecdao = new EventCRFDAO(sm.getDataSource());
+        ecdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
 
         int crfVersionId = fp.getInt(INPUT_CRF_VERSION_ID);
         int studyEventId = fp.getInt(INPUT_STUDY_EVENT_ID);
@@ -204,28 +204,28 @@ public class TableOfContentsServlet extends SecureController {
         logger.info("Creating event CRF within Table of Contents.  Study id: " + currentStudy.getId() + "; CRF Version id: " + crfVersionId
             + "; Study Event id: " + studyEventId + "; Event Definition CRF id: " + eventDefinitionCRFId + "; Subject: " + subjectId);
 
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         StudySubjectBean ssb = ssdao.findBySubjectIdAndStudy(subjectId, currentStudy);
 
         if (!ssb.isActive()) {
             throw new InconsistentStateException(Page.LIST_STUDY_SUBJECTS_SERVLET, resexception.getString("trying_to_begin_DE1"));
         }
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean sedb = seddao.findByEventDefinitionCRFId(eventDefinitionCRFId);
 
         if (!ssb.isActive() || !sedb.isActive()) {
             throw new InconsistentStateException(Page.LIST_STUDY_SUBJECTS_SERVLET, resexception.getString("trying_to_begin_DE2"));
         }
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
         EntityBean eb = cvdao.findByPK(crfVersionId);
 
         if (!eb.isActive()) {
             throw new InconsistentStateException(Page.LIST_STUDY_SUBJECTS_SERVLET, resexception.getString("trying_to_begin_DE3"));
         }
 
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
         StudyEventBean sEvent = (StudyEventBean) sedao.findByPK(studyEventId);
 
         StudyBean studyWithSED = currentStudy;
@@ -365,14 +365,14 @@ public class TableOfContentsServlet extends SecureController {
                 ecb.setDateInterviewed(fp.getDate(INPUT_INTERVIEW_DATE));
 
                 if (ecdao == null) {
-                    ecdao = new EventCRFDAO(sm.getDataSource());
+                    ecdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
                 }
 
                 ecb = (EventCRFBean) ecdao.update(ecb);
 
                 // save discrepancy notes into DB
                 FormDiscrepancyNotes fdn = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
-                DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
+                DiscrepancyNoteDAO dndao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
 
                 AddNewSubjectServlet.saveFieldNotes(INPUT_INTERVIEWER, fdn, dndao, ecb.getId(), "EventCRF", currentStudy);
                 AddNewSubjectServlet.saveFieldNotes(INPUT_INTERVIEW_DATE, fdn, dndao, ecb.getId(), "EventCRF", currentStudy);
@@ -403,7 +403,7 @@ public class TableOfContentsServlet extends SecureController {
         DisplayTableOfContentsBean displayBean = getDisplayBean(ecb, sm.getDataSource(), currentStudy);
 
         // this is for generating side info panel
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         StudySubjectBean ssb = (StudySubjectBean) ssdao.findByPK(ecb.getStudySubjectId());
         ArrayList beans = ViewStudySubjectServlet.getDisplayStudyEventsForStudySubject(ssb, sm.getDataSource(), ub, currentRole);
         request.setAttribute("studySubject", ssb);
@@ -582,8 +582,8 @@ public class TableOfContentsServlet extends SecureController {
     }
 
     public static ArrayList getSections(EventCRFBean ecb, DataSource ds) {
-        SectionDAO sdao = new SectionDAO(ds);
-        ItemGroupDAO igdao = new ItemGroupDAO(ds);
+        SectionDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SectionDAO.class);
+        ItemGroupDAO igdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupDAO.class);
 
         HashMap numItemsBySectionId = sdao.getNumItemsBySectionId();
         HashMap numItemsPlusRepeatBySectionId = sdao.getNumItemsPlusRepeatBySectionId(ecb);
@@ -636,33 +636,33 @@ public class TableOfContentsServlet extends SecureController {
         answer.setEventCRF(ecb);
 
         // get data
-        StudySubjectDAO ssdao = new StudySubjectDAO(ds);
+        StudySubjectDAO ssdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         StudySubjectBean ssb = (StudySubjectBean) ssdao.findByPK(ecb.getStudySubjectId());
         answer.setStudySubject(ssb);
 
-        StudyEventDAO sedao = new StudyEventDAO(ds);
+        StudyEventDAO sedao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
         StudyEventBean seb = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
         answer.setStudyEvent(seb);
 
-        SectionDAO sdao = new SectionDAO(ds);
+        SectionDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SectionDAO.class);
         ArrayList sections = getSections(ecb, ds);
         answer.setSections(sections);
 
         // get metadata
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(ds);
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean sedb = (StudyEventDefinitionBean) seddao.findByPK(seb.getStudyEventDefinitionId());
         answer.setStudyEventDefinition(sedb);
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(ds);
+        CRFVersionDAO cvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
         CRFVersionBean cvb = (CRFVersionBean) cvdao.findByPK(ecb.getCRFVersionId());
         answer.setCrfVersion(cvb);
 
-        CRFDAO cdao = new CRFDAO(ds);
+        CRFDAO cdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
         CRFBean cb = (CRFBean) cdao.findByPK(cvb.getCrfId());
         answer.setCrf(cb);
 
-        StudyBean studyForStudySubject = new StudyDAO(ds).findByStudySubjectId(ssb.getId());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(ds);
+        StudyBean studyForStudySubject = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class).findByStudySubjectId(ssb.getId());
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
         EventDefinitionCRFBean edcb = edcdao.findByStudyEventDefinitionIdAndCRFId(studyForStudySubject, sedb.getId(), cb.getId());
         answer.setEventDefinitionCRF(edcb);
 
@@ -685,7 +685,7 @@ public class TableOfContentsServlet extends SecureController {
             return displayTableOfContentsBean;
         }
         EventCRFBean ecb = displayTableOfContentsBean.getEventCRF();
-        SectionDAO sectionDAO = new SectionDAO(ds);
+        SectionDAO sectionDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SectionDAO.class);
         ArrayList<SectionBean> sectionBeans = getSections(ecb, ds);
         ArrayList<SectionBean> showSections = new ArrayList<SectionBean>();
         if(sectionBeans != null && sectionBeans.size()>0) {

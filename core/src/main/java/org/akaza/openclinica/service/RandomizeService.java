@@ -54,6 +54,9 @@ import org.springframework.util.MultiValueMap;
 
 
 public class RandomizeService extends RandomizationRegistrar {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final String ESCAPED_SEPERATOR = "\\.";
     private DynamicsItemFormMetadataDao dynamicsItemFormMetadataDao;
@@ -90,7 +93,7 @@ public class RandomizeService extends RandomizationRegistrar {
         StudyBean sBean = (StudyBean) sdao.findByPK(ssBean.getStudyId());
         String siteIdentifier = sBean.getOid(); // site or study oid
         String name = sBean.getName(); // site or study name
-        UserAccountDAO udao = new UserAccountDAO(ds);
+        UserAccountDAO udao = applicationContext.getBean(UserAccountDAO.class);
         int userId = 0;
         if (eventCrfBean.getUpdaterId() == 0) {
             userId = eventCrfBean.getOwnerId();
@@ -159,9 +162,9 @@ public class RandomizeService extends RandomizationRegistrar {
     private String getStudySubjectAttrValue(String expr, EventCRFBean eventCrfBean, RuleSetBean ruleSet) {
         String value = "";
         StudySubjectDAO<String, ArrayList> ssdao = new StudySubjectDAO<>(ds);
-        SubjectDAO subdao = new SubjectDAO(ds);
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(ds);
-        StudyGroupDAO sgdao = new StudyGroupDAO(ds);
+        SubjectDAO subdao = applicationContext.getBean(SubjectDAO.class);
+        StudyGroupClassDAO sgcdao = applicationContext.getBean(StudyGroupClassDAO.class);
+        StudyGroupDAO sgdao = applicationContext.getBean(StudyGroupDAO.class);
         StudyDAO<String, ArrayList> sdao = new StudyDAO<>(ds);
         StudySubjectBean ssBean = (StudySubjectBean) ssdao.findByPK(eventCrfBean.getStudySubjectId());
         SubjectBean subjectBean = (SubjectBean) subdao.findByPK(ssBean.getSubjectId());
@@ -337,14 +340,14 @@ public class RandomizeService extends RandomizationRegistrar {
     }
 
     public ItemDataDAO getItemDataDAO() {
-        return new ItemDataDAO(ds);
+        return applicationContext.getBean(ItemDataDAO.class);
     }
 
     public void setItemDataDAO(ItemDataDAO itemDataDAO) {
         this.itemDataDAO = itemDataDAO;
     }
     private StudyBean getStudy(String oid) {
-        sdao = new StudyDAO(ds);
+        sdao = applicationContext.getBean(StudyDAO.class);
         StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
         return studyBean;
     }

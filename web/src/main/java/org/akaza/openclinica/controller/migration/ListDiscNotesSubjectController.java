@@ -37,6 +37,9 @@ import java.util.Set;
 
 @Controller
 public class ListDiscNotesSubjectController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     @Autowired
     @Qualifier("dataSource")
@@ -125,18 +128,18 @@ public class ListDiscNotesSubjectController {
         Set mapKeys = stats.keySet();
         request.setAttribute("mapKeys", mapKeys);
 
-        StudyDAO studyDAO = new StudyDAO(dataSource);
-        StudySubjectDAO sdao = new StudySubjectDAO(dataSource);
-        StudyEventDAO sedao = new StudyEventDAO(dataSource);
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(dataSource);
-        SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(dataSource);
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(dataSource);
-        StudyGroupDAO sgdao = new StudyGroupDAO(dataSource);
-        StudySubjectDAO ssdao = new StudySubjectDAO(dataSource);
-        EventCRFDAO edao = new EventCRFDAO(dataSource);
-        EventDefinitionCRFDAO eddao = new EventDefinitionCRFDAO(dataSource);
-        SubjectDAO subdao = new SubjectDAO(dataSource);
-        DiscrepancyNoteDAO dnDAO = new DiscrepancyNoteDAO(dataSource);
+        StudyDAO studyDAO = applicationContext.getBean(StudyDAO.class);
+        StudySubjectDAO sdao = applicationContext.getBean(StudySubjectDAO.class);
+        StudyEventDAO sedao = applicationContext.getBean(StudyEventDAO.class);
+        StudyEventDefinitionDAO seddao = applicationContext.getBean(StudyEventDefinitionDAO.class);
+        SubjectGroupMapDAO sgmdao = applicationContext.getBean(SubjectGroupMapDAO.class);
+        StudyGroupClassDAO sgcdao = applicationContext.getBean(StudyGroupClassDAO.class);
+        StudyGroupDAO sgdao = applicationContext.getBean(StudyGroupDAO.class);
+        StudySubjectDAO ssdao = applicationContext.getBean(StudySubjectDAO.class);
+        EventCRFDAO edao = applicationContext.getBean(EventCRFDAO.class);
+        EventDefinitionCRFDAO eddao = applicationContext.getBean(EventDefinitionCRFDAO.class);
+        SubjectDAO subdao = applicationContext.getBean(SubjectDAO.class);
+        DiscrepancyNoteDAO dnDAO = applicationContext.getBean(DiscrepancyNoteDAO.class);
 
         ListDiscNotesSubjectTableFactory factory = new ListDiscNotesSubjectTableFactory(ResourceBundleProvider.getTermsBundle(locale));
         factory.setStudyEventDefinitionDao(seddao);

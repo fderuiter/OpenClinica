@@ -63,6 +63,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ExpressionService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final String SEPERATOR = ".";
@@ -1453,70 +1456,70 @@ public class ExpressionService {
     }
 
     private ItemDAO getItemDao() {
-        // itemDao = this.itemDao != null ? itemDao : new ItemDAO(ds);
-        return new ItemDAO(ds);
+        // itemDao = this.itemDao != null ? itemDao : applicationContext.getBean(ItemDAO.class);
+        return applicationContext.getBean(ItemDAO.class);
     }
 
     private ItemDataDAO getItemDataDao() {
         // itemDataDao = this.itemDataDao != null ? itemDataDao : new
         // ItemDataDAO(ds);
-        return new ItemDataDAO(ds);
+        return applicationContext.getBean(ItemDataDAO.class);
     }
 
     private CRFVersionDAO getCrfVersionDao() {
         // crfVersionDao = this.crfVersionDao != null ? crfVersionDao : new
         // CRFVersionDAO(ds);
-        return new CRFVersionDAO(ds);
+        return applicationContext.getBean(CRFVersionDAO.class);
     }
 
     private CRFDAO getCrfDao() {
-        // crfDao = this.crfDao != null ? crfDao : new CRFDAO(ds);
-        return new CRFDAO(ds);
+        // crfDao = this.crfDao != null ? crfDao : applicationContext.getBean(CRFDAO.class);
+        return applicationContext.getBean(CRFDAO.class);
     }
 
     private ItemGroupDAO getItemGroupDao() {
         // itemGroupDao = this.itemGroupDao != null ? itemGroupDao : new
         // ItemGroupDAO(ds);
-        return new ItemGroupDAO(ds);
+        return applicationContext.getBean(ItemGroupDAO.class);
     }
 
     private ItemGroupMetadataDAO getItemGroupMetadataDao() {
         // itemGroupMetadataDao = this.itemGroupMetadataDao != null ?
-        // itemGroupMetadataDao : new ItemGroupMetadataDAO(ds);
+        // itemGroupMetadataDao : applicationContext.getBean(ItemGroupMetadataDAO.class);
         // return itemGroupMetadataDao;
-        return new ItemGroupMetadataDAO(ds);
+        return applicationContext.getBean(ItemGroupMetadataDAO.class);
     }
 
     private EventDefinitionCRFDAO getEventDefinitionCRFDao() {
         // eventDefinitionCRFDao = this.eventDefinitionCRFDao != null ?
-        // eventDefinitionCRFDao : new EventDefinitionCRFDAO(ds);
+        // eventDefinitionCRFDao : applicationContext.getBean(EventDefinitionCRFDAO.class);
         // return eventDefinitionCRFDao;
-        return new EventDefinitionCRFDAO(ds);
+        return applicationContext.getBean(EventDefinitionCRFDAO.class);
     }
 
     private StudyEventDefinitionDAO getStudyEventDefinitionDao() {
         // studyEventDefinitionDao = this.studyEventDefinitionDao != null ?
-        // studyEventDefinitionDao : new StudyEventDefinitionDAO(ds);
+        // studyEventDefinitionDao : applicationContext.getBean(StudyEventDefinitionDAO.class);
         // return studyEventDefinitionDao;
-        return new StudyEventDefinitionDAO(ds);
+        return applicationContext.getBean(StudyEventDefinitionDAO.class);
     }
 
     private StudyEventDAO getStudyEventDao() {
         // studyEventDao = this.studyEventDao != null ? studyEventDao : new
         // StudyEventDAO(ds);
         // return studyEventDao;
-        return new StudyEventDAO(ds);
+        return applicationContext.getBean(StudyEventDAO.class);
     }
 
     private StudySubjectDAO getStudySubjectDao() {
-        return new StudySubjectDAO(ds);
+        return applicationContext.getBean(StudySubjectDAO.class);
     }
 
     private EventCRFDAO getEventCRFDao() {
         // eventCRFDao = this.eventCRFDao != null ? eventCRFDao : new
         // EventCRFDAO(ds);
         // return eventCRFDao;
-        return new EventCRFDAO(ds);
+        return applicationContext.getBean(EventCRFDAO.class);
     }
 
     public void setExpressionWrapper(ExpressionObjectWrapper expressionWrapper) {
@@ -1524,7 +1527,7 @@ public class ExpressionService {
     }
 
     public ItemFormMetadataDAO getItemFormMetadataDao() {
-        return new ItemFormMetadataDAO(ds);
+        return applicationContext.getBean(ItemFormMetadataDAO.class);
     }
 
 }

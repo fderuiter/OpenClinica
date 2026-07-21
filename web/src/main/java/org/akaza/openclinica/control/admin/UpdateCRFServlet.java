@@ -132,7 +132,7 @@ public class UpdateCRFServlet extends SecureController {
         errors = v.validate();
 
         if (!StringUtil.isBlank(fp.getString("name"))) {
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
 
             CRFBean crf = (CRFBean) session.getAttribute(CRF);
             CRFBean crf1 = (CRFBean) cdao.findAnotherByName(fp.getString("name").trim(), crf.getId());
@@ -166,7 +166,7 @@ public class UpdateCRFServlet extends SecureController {
      *
      */
     private void submitCRF() {
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
         CRFBean crf = (CRFBean) session.getAttribute(CRF);
         logger.info("CRF bean to be updated:" + crf.getName());
 

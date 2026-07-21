@@ -168,7 +168,7 @@ public class OdmFileCreation {
         //////////////////////////////////////////
         ////////// ClinicalData Extraction ///////
 
-        DatasetDAO dsdao = new DatasetDAO(dataSource);
+        DatasetDAO dsdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DatasetDAO.class);
         String sql = eb.getDataset().getSQLStatement();
         String st_sed_in = dsdao.parseSQLDataset(sql, true, true);
         String st_itemid_in = dsdao.parseSQLDataset(sql, false, true);
@@ -352,7 +352,7 @@ public class OdmFileCreation {
                 // logger.info("ODM setOwnerId: " + sm.getUserBean().getId() );
                 fb.setDateCreated(new Date(System.currentTimeMillis()));
                 boolean write = true;
-                ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(dataSource);
+                ArchivedDatasetFileDAO asdfDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ArchivedDatasetFileDAO.class);
                 // eliminating all checks so that we create multiple files, tbh 6-7
                 if (write) {
                     fbFinal = (ArchivedDatasetFileBean) asdfDAO.create(fb);

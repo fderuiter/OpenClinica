@@ -65,10 +65,10 @@ public class RemoveEventCRFServlet extends SecureController {
         int eventCRFId = fp.getInt("id");// eventCRFId
         int studySubId = fp.getInt("studySubId");// studySubjectId
         checkStudyLocked("ViewStudySubject?id" + studySubId, respage.getString("current_study_locked"));
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
+        StudySubjectDAO subdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
+        EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
+        StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
 
         if (eventCRFId == 0) {
             addPageMessage(respage.getString("please_choose_an_event_CRF_to_remove"));
@@ -81,8 +81,8 @@ public class RemoveEventCRFServlet extends SecureController {
             request.setAttribute("studySub", studySub);
 
             // construct info needed on view event crf page
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
-            CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+            CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
+            CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
 
             int crfVersionId = eventCRF.getCRFVersionId();
             CRFBean cb = cdao.findByVersionId(crfVersionId);
@@ -98,12 +98,12 @@ public class RemoveEventCRFServlet extends SecureController {
             StudyEventBean event = (StudyEventBean) sedao.findByPK(studyEventId);
 
             int studyEventDefinitionId = sedao.getDefinitionIdFromStudyEventId(studyEventId);
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+            StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(studyEventDefinitionId);
             event.setStudyEventDefinition(sed);
             request.setAttribute("event", event);
 
-            EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+            EventDefinitionCRFDAO edcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
 
             StudyBean study = (StudyBean) sdao.findByPK(studySub.getStudyId());
             EventDefinitionCRFBean edc = edcdao.findByStudyEventDefinitionIdAndCRFId(study, studyEventDefinitionId, cb.getId());
@@ -113,7 +113,7 @@ public class RemoveEventCRFServlet extends SecureController {
             dec.setFlags(eventCRF, ub, currentRole, edc.isDoubleEntry());
 
             // find all item data
-            ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+            ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
 
             ArrayList itemData = iddao.findAllByEventCRFId(eventCRF.getId());
 
@@ -148,7 +148,7 @@ public class RemoveEventCRFServlet extends SecureController {
                         item.setUpdater(ub);
                         item.setUpdatedDate(new Date());
                         iddao.update(item);
-                        DiscrepancyNoteDAO dnDao = new DiscrepancyNoteDAO(sm.getDataSource());
+                        DiscrepancyNoteDAO dnDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DiscrepancyNoteDAO.class);
                         List dnNotesOfRemovedItem = dnDao.findExistingNotesForItemData(item.getId());
                         if (!dnNotesOfRemovedItem.isEmpty()) {
                             DiscrepancyNoteBean itemParentNote = null;

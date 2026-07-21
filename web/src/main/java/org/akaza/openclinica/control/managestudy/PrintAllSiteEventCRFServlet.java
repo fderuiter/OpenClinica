@@ -77,11 +77,11 @@ public class PrintAllSiteEventCRFServlet extends DataEntryServlet {
         EventCRFBean ecb = (EventCRFBean)request.getAttribute(INPUT_EVENT_CRF);
         SectionBean sb = (SectionBean)request.getAttribute(SECTION_BEAN);
 
-        StudyEventDefinitionDAO sedao = new StudyEventDefinitionDAO(getDataSource());
-        EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(getDataSource());
+        StudyEventDefinitionDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
+        EventDefinitionCRFDAO edao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
         ArrayList<SectionBean> allSectionBeans;
-        StudyDAO studyDao = new StudyDAO(getDataSource());
+        StudyDAO studyDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         StudyBean site = (StudyBean) studyDao.findByPK(siteId);
 
         ArrayList<StudyEventDefinitionBean> seds = new ArrayList<StudyEventDefinitionBean>();
@@ -89,8 +89,8 @@ public class PrintAllSiteEventCRFServlet extends DataEntryServlet {
 
         //        ArrayList eventDefinitionCRFs = (ArrayList) edao.findAllByStudy(site);
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(getDataSource());
-        CRFDAO cdao = new CRFDAO(getDataSource());
+        CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+        CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
         boolean isSubmitted = false;
         ArrayList<EventDefinitionCRFBean> edcs = new ArrayList();
         for (StudyEventDefinitionBean sed : seds) {
@@ -134,9 +134,9 @@ public class PrintAllSiteEventCRFServlet extends DataEntryServlet {
             request.setAttribute("isInternetExplorer", "true");
         }
 
-        SectionDAO sdao = new SectionDAO(getDataSource());
-        CRFVersionDAO crfVersionDAO = new CRFVersionDAO(getDataSource());
-        CRFDAO crfDao = new CRFDAO(getDataSource());
+        SectionDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SectionDAO.class);
+        CRFVersionDAO crfVersionDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+        CRFDAO crfDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
         Map sedCrfBeans = null;
 
         for (Iterator it = eventDefinitionDefaultVersions.keySet().iterator(); it.hasNext();) {
@@ -149,7 +149,7 @@ public class PrintAllSiteEventCRFServlet extends DataEntryServlet {
                 allSectionBeans = new ArrayList<SectionBean>();
                 ArrayList sectionBeans = new ArrayList();
 
-                ItemGroupDAO itemGroupDao = new ItemGroupDAO(getDataSource());
+                ItemGroupDAO itemGroupDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemGroupDAO.class);
                 // Find truely grouped tables, not groups with a name of 'Ungrouped'
                 List<ItemGroupBean> itemGroupBeans = itemGroupDao.findOnlyGroupsByCRFVersionID(crfVersionBean.getId());
                 CRFBean crfBean = crfDao.findByVersionId(crfVersionBean.getId());

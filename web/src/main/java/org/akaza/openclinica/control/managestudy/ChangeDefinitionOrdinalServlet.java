@@ -24,7 +24,7 @@ public class ChangeDefinitionOrdinalServlet extends ChangeOrdinalServlet {
         FormProcessor fp = new FormProcessor(request);
         int current = fp.getInt("current");
         int previous = fp.getInt("previous");
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
         increase(current, previous, seddao);
         String url=response.encodeRedirectURL("ListEventDefinition");
         response.sendRedirect(url);

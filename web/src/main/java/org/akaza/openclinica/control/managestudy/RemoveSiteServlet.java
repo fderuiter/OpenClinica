@@ -65,7 +65,7 @@ public class RemoveSiteServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         String idString = request.getParameter("id");
         logger.info("site id:" + idString);
 
@@ -79,15 +79,15 @@ public class RemoveSiteServlet extends SecureController {
         }
 
         // find all user and roles
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
         ArrayList userRoles = udao.findAllByStudyId(siteId);
 
         // find all subjects
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
         ArrayList subjects = ssdao.findAllByStudy(study);
 
         // find all events
-        StudyEventDefinitionDAO sefdao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sefdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
         ArrayList definitions = sefdao.findAllByStudy(study);
 
         String action = request.getParameter("action");
@@ -106,7 +106,7 @@ public class RemoveSiteServlet extends SecureController {
             } else {
                 logger.info("submit to remove the site");
                 // change all statuses to unavailable
-                StudyDAO studao = new StudyDAO(sm.getDataSource());
+                StudyDAO studao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
                 study.setOldStatus(study.getStatus());
                 study.setStatus(Status.DELETED);
                 study.setUpdater(ub);
@@ -142,8 +142,8 @@ public class RemoveSiteServlet extends SecureController {
                 }
 
                 // remove all study_group
-                StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
-                SubjectGroupMapDAO sgmdao = new SubjectGroupMapDAO(sm.getDataSource());
+                StudyGroupDAO sgdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupDAO.class);
+                SubjectGroupMapDAO sgmdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectGroupMapDAO.class);
                 ArrayList groups = sgdao.findAllByStudy(study);
                 for (int i = 0; i < groups.size(); i++) {
                     StudyGroupBean group = (StudyGroupBean) groups.get(i);
@@ -167,8 +167,8 @@ public class RemoveSiteServlet extends SecureController {
                 }
 
                 // remove all events
-                EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-                StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+                EventDefinitionCRFDAO edcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
+                StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
                 for (int i = 0; i < subjects.size(); i++) {
                     StudySubjectBean subject = (StudySubjectBean) subjects.get(i);
 
@@ -179,7 +179,7 @@ public class RemoveSiteServlet extends SecureController {
                         ssdao.update(subject);
 
                         ArrayList events = sedao.findAllByStudySubject(subject);
-                        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                        EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
 
                         for (int j = 0; j < events.size(); j++) {
                             StudyEventBean event = (StudyEventBean) events.get(j);
@@ -191,7 +191,7 @@ public class RemoveSiteServlet extends SecureController {
 
                                 ArrayList eventCRFs = ecdao.findAllByStudyEvent(event);
 
-                                ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                                ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
                                 for (int k = 0; k < eventCRFs.size(); k++) {
                                     EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(k);
                                     if (!eventCRF.getStatus().equals(Status.DELETED)) {
@@ -219,7 +219,7 @@ public class RemoveSiteServlet extends SecureController {
                     }
                 }// for subjects
 
-                DatasetDAO datadao = new DatasetDAO(sm.getDataSource());
+                DatasetDAO datadao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DatasetDAO.class);
                 ArrayList dataset = datadao.findAllByStudyId(study.getId());
                 for (int i = 0; i < dataset.size(); i++) {
                     DatasetBean data = (DatasetBean) dataset.get(i);

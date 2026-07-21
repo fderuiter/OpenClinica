@@ -52,6 +52,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OdmService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     @Autowired
     @Qualifier("dataSource")
@@ -74,12 +77,12 @@ public class OdmService {
             return null;
         }
 
-        CRFVersionDAO versionDAO = new CRFVersionDAO(dataSource);
-        StudyDAO studyDAO = new StudyDAO(dataSource);
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        ItemDataDAO itemDataDAO = new ItemDataDAO(dataSource);
-        CRFDAO crfDAO = new CRFDAO(dataSource);
+        CRFVersionDAO versionDAO = applicationContext.getBean(CRFVersionDAO.class);
+        StudyDAO studyDAO = applicationContext.getBean(StudyDAO.class);
+        StudySubjectDAO studySubjectDAO = applicationContext.getBean(StudySubjectDAO.class);
+        EventCRFDAO eventCRFDAO = applicationContext.getBean(EventCRFDAO.class);
+        ItemDataDAO itemDataDAO = applicationContext.getBean(ItemDataDAO.class);
+        CRFDAO crfDAO = applicationContext.getBean(CRFDAO.class);
         List<ODMcomplexTypeDefinitionFormData> formDatas = new ArrayList<>();
         try {
             StudySubjectBean studySubjectBean = studySubjectDAO.findByOid(ssoid);
@@ -147,7 +150,7 @@ public class OdmService {
     }
 
     private StudyEventDefinitionBean getStudyEventDefinitionBean(int ID) {
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(dataSource);
+        StudyEventDefinitionDAO seddao = applicationContext.getBean(StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean studyEventDefinitionBean = (StudyEventDefinitionBean) seddao.findByPK(ID);
         return studyEventDefinitionBean;
     }
@@ -256,7 +259,7 @@ public class OdmService {
     }
 
     private StudyBean getStudy(String oid) {
-        sdao = new StudyDAO(dataSource);
+        sdao = applicationContext.getBean(StudyDAO.class);
         StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
         return studyBean;
     }
@@ -284,7 +287,7 @@ public class OdmService {
     private boolean mayProceed(String studyOid) throws Exception {
         boolean accessPermission = false;
         StudyBean study = getParentStudy(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         participantPortalRegistrar = new ParticipantPortalRegistrar();
         String pManageStatus = participantPortalRegistrar.getRegistrationStatus(studyOid).toString(); 

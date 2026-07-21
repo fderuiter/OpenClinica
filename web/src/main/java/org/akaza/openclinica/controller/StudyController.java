@@ -77,6 +77,9 @@ import java.util.ResourceBundle;
 @Controller
 @RequestMapping(value = "/auth/api/v1/studies")
 public class StudyController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
 	@Autowired
 	@Qualifier("dataSource")
@@ -190,7 +193,7 @@ public class StudyController {
 				UserRole uRole = new UserRole();
 				uRole.setUsername((String) ((HashMap<String, Object>) userRole).get("username"));
 				uRole.setRole((String) ((HashMap<String, Object>) userRole).get("role"));
-				udao = new UserAccountDAO(dataSource);
+				udao = applicationContext.getBean(UserAccountDAO.class);
 				UserAccountBean assignedUserBean = (UserAccountBean) udao.findByUserName(uRole.getUsername());
 				if (assignedUserBean == null || !assignedUserBean.isActive()) {
 					ErrorObject errorOBject = createErrorObject("Study Object", "The Assigned Username " + uRole.getUsername() + " is not a Valid User", "Assigned User");
@@ -365,7 +368,7 @@ public class StudyController {
 				sub.setStudyId(sBean.getId());
 				sub.setStatus(Status.AVAILABLE);
 				sub.setOwner(ownerUserAccount);
-				udao = new UserAccountDAO(dataSource);
+				udao = applicationContext.getBean(UserAccountDAO.class);
 				UserAccountBean assignedUserBean = (UserAccountBean) udao.findByUserName(userRole.getUsername());
 				surb = createRole(assignedUserBean, sub);
 			}
@@ -470,7 +473,7 @@ public class StudyController {
 				UserRole uRole = new UserRole();
 				uRole.setUsername((String) ((HashMap<String, Object>) userRole).get("username"));
 				uRole.setRole((String) ((HashMap<String, Object>) userRole).get("role"));
-				udao = new UserAccountDAO(dataSource);
+				udao = applicationContext.getBean(UserAccountDAO.class);
 				UserAccountBean assignedUserBean = (UserAccountBean) udao.findByUserName(uRole.getUsername());
 				if (assignedUserBean == null || !assignedUserBean.isActive()) {
 					ErrorObject errorOBject = createErrorObject("Study Object", "The Assigned Username " + uRole.getUsername() + " is not a Valid User", "Assigned User");
@@ -658,7 +661,7 @@ public class StudyController {
 				sub.setStudyId(sBean.getId());
 				sub.setStatus(Status.AVAILABLE);
 				sub.setOwner(ownerUserAccount);
-				udao = new UserAccountDAO(dataSource);
+				udao = applicationContext.getBean(UserAccountDAO.class);
 				UserAccountBean assignedUserBean = (UserAccountBean) udao.findByUserName(userRole.getUsername());
 				StudyUserRoleBean surb = createRole(assignedUserBean, sub);
 			}
@@ -890,7 +893,7 @@ public class StudyController {
 	public StudyEventDefinitionBean buildEventDefBean(String name, String description, String category, String type, String repeating, UserAccountBean owner, StudyBean parentStudy) {
 
 		StudyEventDefinitionBean sed = new StudyEventDefinitionBean();
-        seddao = new StudyEventDefinitionDAO(dataSource);
+        seddao = applicationContext.getBean(StudyEventDefinitionDAO.class);
         ArrayList defs = seddao.findAllByStudy(parentStudy);
         if (defs == null || defs.isEmpty()) {
             sed.setOrdinal(1);
@@ -931,33 +934,33 @@ public class StudyController {
 	}
 
 	public StudyBean createStudy(StudyBean studyBean, UserAccountBean owner) {
-		sdao = new StudyDAO(dataSource);
+		sdao = applicationContext.getBean(StudyDAO.class);
 		StudyBean sBean = (StudyBean) sdao.create(studyBean);
 		sBean = (StudyBean) sdao.findByPK(sBean.getId());
 		return sBean;
 	}
 
 	public StudyEventDefinitionBean createEventDefn(StudyEventDefinitionBean sedBean, UserAccountBean owner) {
-		seddao = new StudyEventDefinitionDAO(dataSource);
+		seddao = applicationContext.getBean(StudyEventDefinitionDAO.class);
 		StudyEventDefinitionBean sdBean = (StudyEventDefinitionBean) seddao.create(sedBean);
 		sdBean = (StudyEventDefinitionBean) seddao.findByPK(sdBean.getId());
 		return sdBean;
 	}
 
 	public StudyUserRoleBean createRole(UserAccountBean ownerUserAccount, StudyUserRoleBean sub) {
-		udao = new UserAccountDAO(dataSource);
+		udao = applicationContext.getBean(UserAccountDAO.class);
 		StudyUserRoleBean studyUserRoleBean = (StudyUserRoleBean) udao.createStudyUserRole(ownerUserAccount, sub);
 		return studyUserRoleBean;
 	}
 
 	public StudyUserRoleBean createUserRole(UserAccountBean ownerUserAccount, StudyBean study) {
-		udao = new UserAccountDAO(dataSource);
+		udao = applicationContext.getBean(UserAccountDAO.class);
 		StudyUserRoleBean surBean = udao.findRoleByUserNameAndStudyId(ownerUserAccount.getName(), study.getId());
 		return surBean;
 	}
 
 	public StudyBean updateStudy(StudyBean studyBean, UserAccountBean owner) {
-		sdao = new StudyDAO(dataSource);
+		sdao = applicationContext.getBean(StudyDAO.class);
 		StudyBean sBean = (StudyBean) sdao.update(studyBean);
 		return sBean;
 	}
@@ -972,19 +975,19 @@ public class StudyController {
 	}
 
 	private UserAccountBean getUserAccount(String userName) {
-		udao = new UserAccountDAO(dataSource);
+		udao = applicationContext.getBean(UserAccountDAO.class);
 		UserAccountBean userAccountBean = (UserAccountBean) udao.findByUserName(userName);
 		return userAccountBean;
 	}
 
 	private StudyBean getStudyByUniqId(String uniqueId) {
-		sdao = new StudyDAO(dataSource);
+		sdao = applicationContext.getBean(StudyDAO.class);
 		StudyBean studyBean = (StudyBean) sdao.findByUniqueIdentifier(uniqueId);
 		return studyBean;
 	}
 
 	public void validateUniqueProId(HttpServletRequest request, HashMap errors) {
-		StudyDAO studyDAO = new StudyDAO(dataSource);
+		StudyDAO studyDAO = applicationContext.getBean(StudyDAO.class);
 		ArrayList<StudyBean> allStudies = (ArrayList<StudyBean>) studyDAO.findAll();
 		for (StudyBean thisBean : allStudies) {
 			if (request.getAttribute("uniqueProId") != null && request.getAttribute("uniqueProId").equals(thisBean.getIdentifier())) {

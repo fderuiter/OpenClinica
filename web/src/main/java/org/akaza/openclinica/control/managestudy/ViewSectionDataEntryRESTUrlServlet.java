@@ -119,7 +119,7 @@ public class ViewSectionDataEntryRESTUrlServlet extends ViewSectionDataEntryServ
         int crfId = fp.getInt("crfId");
         // BWP>> ... try to get crfId from crfVersionId
         if (crfId == 0 && crfVersionId > 0) {
-            CRFVersionDAO crfVDao = new CRFVersionDAO(getDataSource());
+            CRFVersionDAO crfVDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
             CRFVersionBean crvVBean = (CRFVersionBean) crfVDao.findByPK(crfVersionId);
             if (crvVBean != null) {
                 crfId = crvVBean.getCrfId();
@@ -130,7 +130,7 @@ public class ViewSectionDataEntryRESTUrlServlet extends ViewSectionDataEntryServ
         // int eventDefinitionCRFId = fp.getInt("eventDefinitionCRFId");
         Integer eventDefinitionCRFId = (Integer) (request.getAttribute("eventDefinitionCRFId"));
 
-        EventDefinitionCRFDAO eventCrfDao = new EventDefinitionCRFDAO(getDataSource());
+        EventDefinitionCRFDAO eventCrfDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
         edcb = (EventDefinitionCRFBean) eventCrfDao.findByPK(eventDefinitionCRFId);
         if (eventCRFId == 0 && edcb.getStudyId() != currentStudy.getParentStudyId() && edcb.getStudyId() != currentStudy.getId()) {
             addPageMessage(respage.getString("no_have_correct_privilege_current_study") + " " + respage.getString("change_study_contact_sysadmin"), request);
@@ -153,8 +153,8 @@ public class ViewSectionDataEntryRESTUrlServlet extends ViewSectionDataEntryServ
         // for a particular event
         request.removeAttribute("presetValues");
 
-        EventCRFDAO ecdao = new EventCRFDAO(getDataSource());
-        SectionDAO sdao = new SectionDAO(getDataSource());
+        EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
+        SectionDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SectionDAO.class);
         String age = "";
         if (sectionId == 0 && crfVersionId == 0 && eventCRFId == 0) {
             addPageMessage(respage.getString("please_choose_a_CRF_to_view"), request);
@@ -164,7 +164,7 @@ public class ViewSectionDataEntryRESTUrlServlet extends ViewSectionDataEntryServ
             return;
         }
         if (studySubjectId > 0) {
-            StudySubjectDAO ssdao = new StudySubjectDAO(getDataSource());
+            StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
             StudySubjectBean sub = (StudySubjectBean) ssdao.findByPK(studySubjectId);
             request.setAttribute("studySubject", sub);
         }
@@ -173,7 +173,7 @@ public class ViewSectionDataEntryRESTUrlServlet extends ViewSectionDataEntryServ
             // for event crf, the input crfVersionId from url =0
             ecb = (EventCRFBean) ecdao.findByPK(eventCRFId);
 
-            StudyEventDAO sedao = new StudyEventDAO(getDataSource());
+            StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
             StudyEventBean event = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
             // System.out.println("event.getSubjectEventStatus()" +
             // event.getSubjectEventStatus().getName());
@@ -194,7 +194,7 @@ public class ViewSectionDataEntryRESTUrlServlet extends ViewSectionDataEntryServ
 
             }
             // Get the status/number of item discrepancy notes
-            DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(getDataSource());
+            DiscrepancyNoteDAO dndao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DiscrepancyNoteDAO.class);
             ArrayList<DiscrepancyNoteBean> allNotes = new ArrayList<DiscrepancyNoteBean>();
             List<DiscrepancyNoteBean> eventCrfNotes = new ArrayList<DiscrepancyNoteBean>();
             List<DiscrepancyNoteThread> noteThreads = new ArrayList<DiscrepancyNoteThread>();
@@ -321,7 +321,7 @@ public class ViewSectionDataEntryRESTUrlServlet extends ViewSectionDataEntryServ
             ecb.setCRFVersionId(sb.getCRFVersionId());
             if (currentStudy.getParentStudyId() > 0) {
                 // this is a site,find parent
-                StudyDAO studydao = new StudyDAO(getDataSource());
+                StudyDAO studydao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
                 StudyBean parentStudy = (StudyBean) studydao.findByPK(currentStudy.getParentStudyId());
                 request.setAttribute("studyTitle", parentStudy.getName());
                 request.setAttribute("siteTitle", currentStudy.getName());
@@ -336,19 +336,19 @@ public class ViewSectionDataEntryRESTUrlServlet extends ViewSectionDataEntryServ
             request.setAttribute(SECTION_BEAN, sb);
 
             // This is the StudySubjectBean
-            StudySubjectDAO ssdao = new StudySubjectDAO(getDataSource());
+            StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
             StudySubjectBean sub = (StudySubjectBean) ssdao.findByPK(ecb.getStudySubjectId());
             // This is the SubjectBean
-            SubjectDAO subjectDao = new SubjectDAO(getDataSource());
+            SubjectDAO subjectDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
             int subjectId = sub.getSubjectId();
             int studyId = sub.getStudyId();
             SubjectBean subject = (SubjectBean) subjectDao.findByPK(subjectId);
             // BWP 01/08 >> check for a null currentStudy
             // Let us process the age
             if (currentStudy.getStudyParameterConfig().getCollectDob().equals("1")) {
-                StudyEventDAO sedao = new StudyEventDAO(getDataSource());
+                StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
                 StudyEventBean se = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(getDataSource());
+                StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
                 StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(se.getStudyEventDefinitionId());
                 se.setStudyEventDefinition(sed);
                 request.setAttribute("studyEvent", se);
@@ -357,7 +357,7 @@ public class ViewSectionDataEntryRESTUrlServlet extends ViewSectionDataEntryServ
                 age = Utils.getInstacne().processAge(sub.getEnrollmentDate(), subject.getDateOfBirth());
             }
             // Get the study then the parent study
-            StudyDAO studydao = new StudyDAO(getDataSource());
+            StudyDAO studydao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
             StudyBean study = (StudyBean) studydao.findByPK(studyId);
 
             if (study.getParentStudyId() > 0) {
@@ -380,7 +380,7 @@ public class ViewSectionDataEntryRESTUrlServlet extends ViewSectionDataEntryServ
         boolean hasItemGroup = false;
         // we will look into db to see if any repeating items for this CRF
         // section
-        ItemGroupDAO igdao = new ItemGroupDAO(getDataSource());
+        ItemGroupDAO igdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemGroupDAO.class);
         List<ItemGroupBean> itemGroups = igdao.findLegitGroupBySectionId(sectionId);
         if (!itemGroups.isEmpty()) {
             hasItemGroup = true;
@@ -429,7 +429,7 @@ public class ViewSectionDataEntryRESTUrlServlet extends ViewSectionDataEntryServ
             LOGGER.info("33333how many group rows:" + dsb.getDisplayItemGroups().size());
 
             // let's save notes for the blank items
-            DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(getDataSource());
+            DiscrepancyNoteDAO dndao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DiscrepancyNoteDAO.class);
             discNotes = (FormDiscrepancyNotes) session.getAttribute(AddNewSubjectServlet.FORM_DISCREPANCY_NOTES_NAME);
 
             for (int i = 0; i < dsb.getDisplayItemGroups().size(); i++) {

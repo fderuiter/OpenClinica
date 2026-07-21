@@ -79,7 +79,7 @@ public class UpdateJobExportServlet extends SecureController {
     private void setUpServlet(Trigger trigger) {
         FormProcessor fp2 = new FormProcessor(request);
 
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DatasetDAO.class);
         Collection dsList = dsdao.findAllOrderByStudyIdAndName();
         // TODO will have to dress this up to allow for sites then datasets
         request.setAttribute("datasets", dsList);
@@ -146,9 +146,9 @@ public class UpdateJobExportServlet extends SecureController {
                 forwardPage(Page.UPDATE_JOB_EXPORT);
             } else {
                 // change trigger, update in database
-                StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+                StudyDAO studyDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
                 StudyBean study = (StudyBean) studyDAO.findByPK(sm.getUserBean().getActiveStudyId());
-                DatasetDAO datasetDao = new DatasetDAO(sm.getDataSource());
+                DatasetDAO datasetDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DatasetDAO.class);
                 CoreResources cr =  new CoreResources();
                 UserAccountBean userBean = (UserAccountBean) request.getSession().getAttribute("userBean");
 

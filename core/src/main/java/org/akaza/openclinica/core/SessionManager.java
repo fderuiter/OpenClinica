@@ -93,7 +93,7 @@ public class SessionManager {
             // create a new user account bean form database
             SQLFactory factory = SQLFactory.getInstance();
 
-            uDAO = new UserAccountDAO(ds);
+            uDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
             if (userName == null) {
                 userName = "";
             }

@@ -56,14 +56,14 @@ public class UnlockEventDefinitionServlet extends SecureController {
         String idString = request.getParameter("id");
 
         int defId = Integer.valueOf(idString.trim()).intValue();
-        StudyEventDefinitionDAO sdao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean sed = (StudyEventDefinitionBean) sdao.findByPK(defId);
         // find all CRFs
-        EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(sm.getDataSource());
+        EventDefinitionCRFDAO edao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
         ArrayList eventDefinitionCRFs = (ArrayList) edao.findAllByDefinition(defId);
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+        CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
         for (int i = 0; i < eventDefinitionCRFs.size(); i++) {
             EventDefinitionCRFBean edc = (EventDefinitionCRFBean) eventDefinitionCRFs.get(i);
             ArrayList versions = (ArrayList) cvdao.findAllByCRF(edc.getCrfId());
@@ -73,7 +73,7 @@ public class UnlockEventDefinitionServlet extends SecureController {
         }
 
         // finds all events
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
         ArrayList events = (ArrayList) sedao.findAllByDefinition(sed.getId());
 
         String action = request.getParameter("action");
@@ -110,7 +110,7 @@ public class UnlockEventDefinitionServlet extends SecureController {
                 }
                 // unlock all events
 
-                EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
 
                 for (int j = 0; j < events.size(); j++) {
                     StudyEventBean event = (StudyEventBean) events.get(j);
@@ -121,7 +121,7 @@ public class UnlockEventDefinitionServlet extends SecureController {
 
                     ArrayList eventCRFs = ecdao.findAllByStudyEvent(event);
                     // unlock all the item data
-                    ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                    ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
                     for (int k = 0; k < eventCRFs.size(); k++) {
                         EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(k);
                         eventCRF.setStatus(Status.AVAILABLE);

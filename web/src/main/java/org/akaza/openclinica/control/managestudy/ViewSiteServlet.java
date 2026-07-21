@@ -67,7 +67,7 @@ public class ViewSiteServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         String idString = "";
         if (request.getAttribute("siteId") == null) {
             idString = request.getParameter("id");
@@ -86,7 +86,7 @@ public class ViewSiteServlet extends SecureController {
             // if (currentStudy.getId() != study.getId()) {
 
             ArrayList configs = new ArrayList();
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+            StudyParameterValueDAO spvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyParameterValueDAO.class);
             configs = spvdao.findParamConfigByStudy(study);
             study.setStudyParameters(configs);
 
@@ -109,14 +109,14 @@ public class ViewSiteServlet extends SecureController {
     private void viewSiteEventDefinitions(StudyBean siteToView) throws MalformedURLException {
         int siteId = siteToView.getId();
         ArrayList<StudyEventDefinitionBean> seds = new ArrayList<StudyEventDefinitionBean>();
-        StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sedDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
+        EventDefinitionCRFDAO edcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+        CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
         seds = sedDao.findAllByStudy(siteToView);
         int start = 0;
         for (StudyEventDefinitionBean sed : seds) {
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+            StudyParameterValueDAO spvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyParameterValueDAO.class);    
             String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();       
             request.setAttribute("participateFormStatus",participateFormStatus );            
             if (participateFormStatus.equals("enabled")) baseUrl();

@@ -269,7 +269,7 @@ public class StudyEventDefinitionDAO<K extends String,V extends ArrayList> exten
     @Override
     public ArrayList findAllByStudy(StudyBean study) {
 
-        StudyDAO studyDao = new StudyDAO(this.getDs());
+        StudyDAO studyDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
 
         if (study.getParentStudyId() > 0) {
             // If the study has a parent than it is a site, in this case we

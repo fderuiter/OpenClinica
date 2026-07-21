@@ -42,6 +42,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GenerateExtractFileService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     private static final Logger logger = LoggerFactory.getLogger(GenerateExtractFileService.class);
     private final DataSource ds;
@@ -87,7 +90,7 @@ public class GenerateExtractFileService {
 
         TabReportBean answer = new TabReportBean();
 
-        DatasetDAO dsdao = new DatasetDAO(ds);
+        DatasetDAO dsdao = applicationContext.getBean(DatasetDAO.class);
         // create the extract bean here, tbh
         eb = dsdao.getDatasetData(eb, activeStudyId, parentStudyId);
         eb.getMetadata();
@@ -166,7 +169,7 @@ public class GenerateExtractFileService {
 
         SPSSVariableNameValidator svnv = new SPSSVariableNameValidator();
         answer.setDatFileName(SPSSFileName);
-        // DatasetDAO dsdao = new DatasetDAO(ds);
+        // DatasetDAO dsdao = applicationContext.getBean(DatasetDAO.class);
 
         // create the extract bean here, tbh
         // ExtractBean eb = this.generateExtractBean(db, currentStudy,
@@ -183,8 +186,8 @@ public class GenerateExtractFileService {
         // itemMetadata
 
         // set up response sets for each item here
-        ItemDAO itemdao = new ItemDAO(ds);
-        ItemFormMetadataDAO imfdao = new ItemFormMetadataDAO(ds);
+        ItemDAO itemdao = applicationContext.getBean(ItemDAO.class);
+        ItemFormMetadataDAO imfdao = applicationContext.getBean(ItemFormMetadataDAO.class);
         ArrayList items = answer.getItems();
         for (int i = 0; i < items.size(); i++) {
             DisplayItemHeaderBean dih = (DisplayItemHeaderBean) items.get(i);
@@ -331,7 +334,7 @@ public class GenerateExtractFileService {
                 fb.setDateCreated(new Date(System.currentTimeMillis()));
 
                 boolean write = true;
-                ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(ds);
+                ArchivedDatasetFileDAO asdfDAO = applicationContext.getBean(ArchivedDatasetFileDAO.class);
 
                 if (write) {
                     fbFinal = (ArchivedDatasetFileBean) asdfDAO.create(fb);
@@ -434,7 +437,7 @@ public class GenerateExtractFileService {
                 // logger.info("ODM setOwnerId: " + sm.getUserBean().getId() );
                 fb.setDateCreated(new Date(System.currentTimeMillis()));
                 boolean write = true;
-                ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(ds);
+                ArchivedDatasetFileDAO asdfDAO = applicationContext.getBean(ArchivedDatasetFileDAO.class);
                 // eliminating all checks so that we create multiple files, tbh 6-7
                 if (write) {
                     fbFinal = (ArchivedDatasetFileBean) asdfDAO.create(fb);
@@ -554,7 +557,7 @@ public class GenerateExtractFileService {
                 // logger.info("ODM setOwnerId: " + sm.getUserBean().getId() );
                 fb.setDateCreated(new Date(System.currentTimeMillis()));
                 boolean write = true;
-                ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(ds);
+                ArchivedDatasetFileDAO asdfDAO = applicationContext.getBean(ArchivedDatasetFileDAO.class);
                 // eliminating all checks so that we create multiple files, tbh 6-7
                 if (write) {
                     fbFinal = (ArchivedDatasetFileBean) asdfDAO.create(fb);

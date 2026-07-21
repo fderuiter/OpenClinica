@@ -64,7 +64,7 @@ public class ApiSecurityFilter extends OncePerRequestFilter {
 
         if (apiKey != null && !apiKey.trim().isEmpty()) {
             apiKey = apiKey.trim();
-            UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+            UserAccountDAO userAccountDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
             UserAccountBean ub = (UserAccountBean) userAccountDAO.findByApiKey(apiKey);
             if (ub != null && ub.getId() != 0) {
                 OpenClinicaJdbcService jdbcService = new OpenClinicaJdbcService(dataSource);

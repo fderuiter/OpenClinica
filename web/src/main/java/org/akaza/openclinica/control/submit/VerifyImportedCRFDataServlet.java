@@ -88,7 +88,7 @@ public class VerifyImportedCRFDataServlet extends SecureController {
             Integer parentId, UserAccountBean uab, DataSource ds, StudyBean study) {
         // DisplayItemBean displayItemBean) {
         DiscrepancyNoteBean note = new DiscrepancyNoteBean();
-        StudySubjectDAO ssdao = new StudySubjectDAO(ds);
+        StudySubjectDAO ssdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         note.setDescription(message);
         note.setDetailedNotes("Failed Validation Check");
         note.setOwner(uab);
@@ -115,7 +115,7 @@ public class VerifyImportedCRFDataServlet extends SecureController {
         note.setEntityId(displayItemBean.getData().getId());
         note.setColumn("value");
 
-        DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(ds);
+        DiscrepancyNoteDAO dndao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
         note = (DiscrepancyNoteBean) dndao.create(note);
         // so that the below method works, need to set the entity above
         // System.out.println("trying to create mapping with " + note.getId() +
@@ -129,10 +129,10 @@ public class VerifyImportedCRFDataServlet extends SecureController {
     @Override
     @SuppressWarnings(value = "unchecked")
     public void processRequest() throws Exception {
-        ItemDataDAO itemDataDao = new ItemDataDAO(sm.getDataSource());
+        ItemDataDAO itemDataDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
         itemDataDao.setFormatDates(false);
         itemDataDao.setBatchingEnabled(true);
-        EventCRFDAO eventCrfDao = new EventCRFDAO(sm.getDataSource());
+        EventCRFDAO eventCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         CrfBusinessLogicHelper crfBusinessLogicHelper = new CrfBusinessLogicHelper(sm.getDataSource());
         String action = request.getParameter("action");
 
@@ -270,7 +270,7 @@ public class VerifyImportedCRFDataServlet extends SecureController {
                         // "+displayItemBean.getData().getName());
                         // logger.info("continued:
                         // "+displayItemBean.getData().getItemId());
-                        ItemDAO idao = new ItemDAO(sm.getDataSource());
+                        ItemDAO idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
                         ItemBean ibean = (ItemBean) idao.findByPK(displayItemBean.getData().getItemId());
                         // logger.info("continued2: getName " +
                         // ibean.getName());

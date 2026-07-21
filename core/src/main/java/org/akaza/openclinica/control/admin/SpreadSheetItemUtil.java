@@ -684,7 +684,7 @@ public class SpreadSheetItemUtil {
             		*/
 		
 		//get all items with group / version info from db 
-		 ItemDAO idao = new ItemDAO(ds);
+		 ItemDAO idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
 		 int row_count = 1; int check_group_count = 0;
 		 StringBuffer item_messages = null;
 		 ArrayList<ItemGroupCrvVersionUtil> item_group_crf_records= idao.findAllWithItemGroupCRFVersionMetadataByCRFId(   crfName) ;

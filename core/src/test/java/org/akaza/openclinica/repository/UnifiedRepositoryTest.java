@@ -24,7 +24,7 @@ public class UnifiedRepositoryTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        unifiedRepository = new UnifiedRepository(dataSource);
+        unifiedRepository = new UnifiedRepository(dataSource, mock(org.akaza.openclinica.dao.managestudy.StudyDAO.class), mock(org.akaza.openclinica.dao.managestudy.StudySubjectDAO.class), mock(org.akaza.openclinica.dao.submit.SubjectDAO.class), mock(org.akaza.openclinica.dao.admin.CRFDAO.class), mock(org.akaza.openclinica.dao.submit.CRFVersionDAO.class), mock(org.akaza.openclinica.dao.managestudy.StudyEventDAO.class), mock(org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO.class), mock(org.akaza.openclinica.dao.submit.ItemDAO.class), mock(org.akaza.openclinica.dao.submit.ItemDataDAO.class), mock(org.akaza.openclinica.dao.submit.ItemFormMetadataDAO.class));
         unifiedRepository.setStudyDaoHibernate(studyDao);
         
         unifiedRepository = spy(unifiedRepository);

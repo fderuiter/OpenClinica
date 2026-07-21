@@ -156,7 +156,7 @@ public class CreateSubjectGroupClassServlet extends SecureController {
     private void submitGroup() throws OpenClinicaException, IOException {
         StudyGroupClassBean group = (StudyGroupClassBean) session.getAttribute("group");
         ArrayList studyGroups = (ArrayList) session.getAttribute("studyGroups");
-        StudyGroupClassDAO sgcdao = new StudyGroupClassDAO(sm.getDataSource());
+        StudyGroupClassDAO sgcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupClassDAO.class);
         group.setStudyId(currentStudy.getId());
         group.setOwner(ub);
         group.setStatus(Status.AVAILABLE);
@@ -165,7 +165,7 @@ public class CreateSubjectGroupClassServlet extends SecureController {
         if (!group.isActive()) {
             addPageMessage(respage.getString("the_subject_group_class_not_created_database"));
         } else {
-            StudyGroupDAO sgdao = new StudyGroupDAO(sm.getDataSource());
+            StudyGroupDAO sgdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupDAO.class);
             for (int i = 0; i < studyGroups.size(); i++) {
                 StudyGroupBean sg = (StudyGroupBean) studyGroups.get(i);
                 sg.setStudyGroupClassId(group.getId());

@@ -77,7 +77,7 @@ public class DiscrepancyNoteUtil {
             return;
         }
 
-        StudySubjectDAO studySubjDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         StudySubjectBean studySubjBean = new StudySubjectBean();
 
         for (StudyEventBean sbean : studyBeans) {
@@ -133,8 +133,8 @@ public class DiscrepancyNoteUtil {
         boolean hasResolutionStatus = resolutionStatus >= 1 && resolutionStatus <= 5;
         boolean hasDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        EventCRFDAO eventCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
 
         StudyEventBean studyEventBean;
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
@@ -226,8 +226,8 @@ public class DiscrepancyNoteUtil {
         boolean hasResolutionStatus = this.checkResolutionStatus(resolutionStatusIds);
         boolean hasDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        EventCRFDAO eventCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
 
         StudyEventBean studyEventBean;
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
@@ -379,8 +379,8 @@ public class DiscrepancyNoteUtil {
         boolean hasResolutionStatus = this.checkResolutionStatus(resolutionStatusIds);
         boolean hasDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        EventCRFDAO eventCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
 
         StudyEventBean studyEventBean;
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
@@ -453,11 +453,11 @@ public class DiscrepancyNoteUtil {
 
         boolean filterforDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
         // what is the purpose of this data member?
         discrepancyNoteDAO.setFetchMapping(true);
 
-        EventCRFDAO ecdao = new EventCRFDAO(dataSource);
+        EventCRFDAO ecdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         ArrayList itemDataNotes = discrepancyNoteDAO.findAllItemDataByStudy(currentStudy);
 
         ArrayList subjectNotes = discrepancyNoteDAO.findAllSubjectByStudy(currentStudy);
@@ -514,11 +514,11 @@ public class DiscrepancyNoteUtil {
 
         boolean filterforDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
         // what is the purpose of this data member?
         discrepancyNoteDAO.setFetchMapping(true);
 
-        EventCRFDAO ecdao = new EventCRFDAO(dataSource);
+        EventCRFDAO ecdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         ArrayList itemDataNotes = discrepancyNoteDAO.findAllItemDataByStudy(currentStudy);
 
         ArrayList subjectNotes = discrepancyNoteDAO.findAllSubjectByStudy(currentStudy);
@@ -577,14 +577,14 @@ public class DiscrepancyNoteUtil {
 
         boolean filterforDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
-        StudyDAO studyDAO = new StudyDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
+        StudyDAO studyDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
         // what is the purpose of this data member?
         discrepancyNoteDAO.setFetchMapping(true);
         int parentStudyId = currentStudy.getParentStudyId();
         Set<String> hiddenCrfNames = new TreeSet<String>();
         if (parentStudyId > 0) {
-            hiddenCrfNames = new EventDefinitionCRFDAO(dataSource).findHiddenCrfNamesBySite(currentStudy);
+            hiddenCrfNames = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class).findHiddenCrfNamesBySite(currentStudy);
         }
         allDiscNotes = discrepancyNoteDAO.findAllDiscrepancyNotesDataByStudy(currentStudy);
 
@@ -637,7 +637,7 @@ public class DiscrepancyNoteUtil {
             return;
         }
         List<DiscrepancyNoteBean> childDiscBeans = new ArrayList<DiscrepancyNoteBean>();
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
         DiscrepancyNoteBean lastChild = new DiscrepancyNoteBean();
         int resolutionStatusId = 0;
 
@@ -676,7 +676,7 @@ public class DiscrepancyNoteUtil {
 
         boolean filterforDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
         // what is the purpose of this data member?
         discrepancyNoteDAO.setFetchMapping(true);
         // method finds only parents
@@ -721,7 +721,7 @@ public class DiscrepancyNoteUtil {
         List<DiscrepancyNoteBean> childDiscBeans = new ArrayList<DiscrepancyNoteBean>();
         List<DiscrepancyNoteBean> eventCRFChildDiscBeans = new ArrayList<DiscrepancyNoteBean>();
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
         DiscrepancyNoteThread tempDNThread = null;
         int resolutionStatusId = 0;
 
@@ -936,7 +936,7 @@ public class DiscrepancyNoteUtil {
             return allDiscNotes;
         }
 
-        StudySubjectDAO studySubjDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         StudySubjectBean studySubjBean = new StudySubjectBean();
         studySubjBean = (StudySubjectBean) studySubjDAO.findByPK(subjectId);
 
@@ -960,7 +960,7 @@ public class DiscrepancyNoteUtil {
      */
     public Map generateDiscNoteSummaryRefactored(DataSource ds, StudyBean currentStudy, Set<Integer> resolutionStatusIds, int discNoteType) {
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(ds);
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
         boolean filterDiscNotes = checkResolutionStatus(resolutionStatusIds);
         boolean filterforDiscNoteType = discNoteType >= 1 && discNoteType <= 4;
         //if (allDiscBeans == null || allDiscBeans.isEmpty())
@@ -1435,7 +1435,7 @@ public class DiscrepancyNoteUtil {
         if (discrepancyNoteBean == null)
             return 0;
 
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         List<StudySubjectBean> studySubjectBeans = new ArrayList<StudySubjectBean>();
 
         if ("subject".equalsIgnoreCase(discrepancyNoteBean.getEntityType())) {
@@ -1444,7 +1444,7 @@ public class DiscrepancyNoteUtil {
                 if (bean.getStudyId() == studyId) {
                     return bean.getId();
                 } else {
-                    if (((StudyBean) new StudyDAO(dataSource).findByPK(bean.getStudyId())).getParentStudyId() == studyId) {
+                    if (((StudyBean) org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class).findByPK(bean.getStudyId())).getParentStudyId() == studyId) {
                         return bean.getId();
                     }
                 }
@@ -1468,7 +1468,7 @@ public class DiscrepancyNoteUtil {
         List<DiscrepancyNoteBean> childDiscBeans = new ArrayList<DiscrepancyNoteBean>();
         List<DiscrepancyNoteBean> eventCRFChildDiscBeans = new ArrayList<DiscrepancyNoteBean>();
 
-        DiscrepancyNoteDAO discrepancyNoteDAO = new DiscrepancyNoteDAO(dataSource);
+        DiscrepancyNoteDAO discrepancyNoteDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
         DiscrepancyNoteThread tempDNThread = null;
         int resolutionStatusId = 0;
 

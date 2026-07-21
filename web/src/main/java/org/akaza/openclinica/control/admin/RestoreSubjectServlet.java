@@ -53,7 +53,7 @@ public class RestoreSubjectServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
         FormProcessor fp = new FormProcessor(request);
         int subjectId = fp.getInt("id");
 
@@ -66,11 +66,11 @@ public class RestoreSubjectServlet extends SecureController {
             SubjectBean subject = (SubjectBean) sdao.findByPK(subjectId);
 
             // find all study subjects
-            StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+            StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
             ArrayList studySubs = ssdao.findAllBySubjectId(subjectId);
 
             // find study events
-            StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+            StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
             ArrayList events = sedao.findAllBySubjectId(subjectId);
             if ("confirm".equalsIgnoreCase(action)) {
                 request.setAttribute("subjectToRestore", subject);
@@ -97,7 +97,7 @@ public class RestoreSubjectServlet extends SecureController {
                     }
                 }
 
-                EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+                EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
 
                 for (int j = 0; j < events.size(); j++) {
                     StudyEventBean event = (StudyEventBean) events.get(j);
@@ -109,7 +109,7 @@ public class RestoreSubjectServlet extends SecureController {
 
                         ArrayList eventCRFs = ecdao.findAllByStudyEvent(event);
 
-                        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                        ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
                         for (int k = 0; k < eventCRFs.size(); k++) {
                             EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(k);
                             if (eventCRF.getStatus().equals(Status.AUTO_DELETED)) {

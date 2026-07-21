@@ -94,9 +94,9 @@ public class PrintCRFServlet extends DataEntryServlet {
         int eventDefinitionCRFId = fp.getInt("eventDefinitionCRFId");
         // EventDefinitionCRFDao findByStudyEventIdAndCRFVersionId(int
         // studyEventId, int crfVersionId)
-        SectionDAO sdao = new SectionDAO(getDataSource());
-        CRFVersionDAO crfVersionDAO = new CRFVersionDAO(getDataSource());
-        CRFDAO crfDao = new CRFDAO(getDataSource());
+        SectionDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SectionDAO.class);
+        CRFVersionDAO crfVersionDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+        CRFDAO crfDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
 
         ArrayList <SectionBean> allSectionBeans = new ArrayList<SectionBean>();
         ArrayList sectionBeans = new ArrayList();
@@ -111,7 +111,7 @@ public class PrintCRFServlet extends DataEntryServlet {
             // BWP 2/7/2008>> Find out if the CRF has grouped tables, and if so,
             // use
             // that dedicated JSP
-            ItemGroupDAO itemGroupDao = new ItemGroupDAO(getDataSource());
+            ItemGroupDAO itemGroupDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemGroupDAO.class);
             // Find truely grouped tables, not groups with a name of 'Ungrouped'
             List<ItemGroupBean> itemGroupBeans = itemGroupDao.findOnlyGroupsByCRFVersionID(crfVersionId);
 

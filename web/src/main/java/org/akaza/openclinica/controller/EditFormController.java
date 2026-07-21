@@ -68,6 +68,9 @@ import org.w3c.dom.Element;
 @Controller
 @RequestMapping(value = "/api/v1/editform")
 public class EditFormController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     @Autowired
     @Qualifier("dataSource")
@@ -188,13 +191,13 @@ public class EditFormController {
     }
 
     private StudyBean getStudy(Integer id) {
-        sdao = new StudyDAO(dataSource);
+        sdao = applicationContext.getBean(StudyDAO.class);
         StudyBean studyBean = (StudyBean) sdao.findByPK(id);
         return studyBean;
     }
 
     private StudyBean getStudy(String oid) {
-        sdao = new StudyDAO(dataSource);
+        sdao = applicationContext.getBean(StudyDAO.class);
         StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
         return studyBean;
     }
@@ -215,7 +218,7 @@ public class EditFormController {
         boolean accessPermission = false;
         StudyBean siteStudy = getStudy(studyOid);
         StudyBean study = getParentStudy(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "participantPortal");
         participantPortalRegistrar = new ParticipantPortalRegistrar();
         String pManageStatus = participantPortalRegistrar.getRegistrationStatus(study.getOid()).toString(); // ACTIVE ,

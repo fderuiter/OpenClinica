@@ -89,10 +89,10 @@ public class DeleteEventCRFServlet extends SecureController {
 
 		String action = request.getParameter("action");
 
-		StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-		StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
-		EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-		StudyDAO sdao = new StudyDAO(sm.getDataSource());
+		StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
+		StudySubjectDAO subdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
+		EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
+		StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
 
 		if (eventCRFId == 0) {
 			addPageMessage(respage.getString("please_choose_an_event_CRF_to_delete"));
@@ -105,8 +105,8 @@ public class DeleteEventCRFServlet extends SecureController {
 			request.setAttribute("studySub", studySub);
 
 			// construct info needed on view event crf page
-			CRFDAO cdao = new CRFDAO(sm.getDataSource());
-			CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+			CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
+			CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
 
 			int crfVersionId = eventCRF.getCRFVersionId();
 			CRFBean cb = cdao.findByVersionId(crfVersionId);
@@ -122,12 +122,12 @@ public class DeleteEventCRFServlet extends SecureController {
 			StudyEventBean event = (StudyEventBean) sedao.findByPK(studyEventId);
 
 			int studyEventDefinitionId = sedao.getDefinitionIdFromStudyEventId(studyEventId);
-			StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+			StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
 			StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(studyEventDefinitionId);
 			event.setStudyEventDefinition(sed);
 			request.setAttribute("event", event);
 
-			EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+			EventDefinitionCRFDAO edcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
 
 			StudyBean study = (StudyBean) sdao.findByPK(studySub.getStudyId());
 			EventDefinitionCRFBean edc = edcdao.findByStudyEventDefinitionIdAndCRFId(study, studyEventDefinitionId, cb.getId());
@@ -137,8 +137,8 @@ public class DeleteEventCRFServlet extends SecureController {
 			dec.setFlags(eventCRF, ub, currentRole, edc.isDoubleEntry());
 
 			// find all item data
-			ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
-			dnDao = new DiscrepancyNoteDAO(sm.getDataSource());
+			ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
+			dnDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DiscrepancyNoteDAO.class);
 			ArrayList<ItemDataBean> itemData = iddao.findAllByEventCRFId(eventCRF.getId());
 			request.setAttribute("items", itemData);
 
@@ -178,8 +178,8 @@ public class DeleteEventCRFServlet extends SecureController {
 							createDiscrepancyNoteBean(description, detailedNotes, itemdata.getId(), study, ub, parentDiscrepancyNote);
 						}
 					}
-					iddao = new ItemDataDAO(sm.getDataSource());
-					ifmdao = new ItemFormMetadataDAO(sm.getDataSource());
+					iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
+					ifmdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemFormMetadataDAO.class);
 					ItemDataBean idBean = (ItemDataBean) iddao.findByPK(itemdata.getId());
 
 					ItemFormMetadataBean ifmBean = ifmdao.findByItemIdAndCRFVersionId(idBean.getItemId(), crfVersionId);
@@ -215,7 +215,7 @@ public class DeleteEventCRFServlet extends SecureController {
 				if(event.getSubjectEventStatus().isCompleted() || event.getSubjectEventStatus().isSigned()){
 					event.setSubjectEventStatus(SubjectEventStatus.DATA_ENTRY_STARTED);
 					event.setUpdater(ub);
-                   sedao = new StudyEventDAO(sm.getDataSource());
+                   sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
                    sedao.update(event);
 				}
 				

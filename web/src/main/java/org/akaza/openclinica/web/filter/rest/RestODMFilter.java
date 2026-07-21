@@ -99,16 +99,16 @@ public class RestODMFilter implements ContainerRequestFilter {
 	}
 	
 	private StudyBean getStudyByOID(String OID,DataSource ds){
-		StudyDAO studyDAO= new StudyDAO(ds);
+		StudyDAO studyDAO= org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
 		return studyDAO.findByOid(OID);
 	}
 	private StudyUserRoleBean getRoleByStudy(StudyBean studyBean,DataSource ds,UserAccountBean userBean){
-		UserAccountDAO userAccountDAO = new UserAccountDAO(ds);
+		UserAccountDAO userAccountDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
 		return userAccountDAO.findRoleByUserNameAndStudyId(userBean.getName(), studyBean.getId());
 		
 	}
 	private StudyBean getStudyByID(int id,DataSource ds){
-		StudyDAO studyDAO = new StudyDAO(ds);
+		StudyDAO studyDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
 		return (StudyBean) studyDAO.findByPK(id);
 	}
 }

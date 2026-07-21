@@ -488,12 +488,12 @@ else
     }
 
     private ItemDAO getItemDAO() {
-        itemDAO = this.itemDAO != null ? itemDAO : new ItemDAO(sm.getDataSource());
+        itemDAO = this.itemDAO != null ? itemDAO : org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDAO.class);
         return itemDAO;
     }
 
     private ItemFormMetadataDAO getItemFormMetadataDAO() {
-        itemFormMetadataDAO = this.itemFormMetadataDAO != null ? itemFormMetadataDAO : new ItemFormMetadataDAO(sm.getDataSource());
+        itemFormMetadataDAO = this.itemFormMetadataDAO != null ? itemFormMetadataDAO : org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemFormMetadataDAO.class);
         return itemFormMetadataDAO;
     }
 

@@ -143,13 +143,13 @@ public class SpreadSheetTableClassic implements SpreadSheetTable {// extends
         ArrayList<String> itemGroupOids = new ArrayList<String>();
         ArrayList<String> itemOids = new ArrayList<String>();
 
-        CRFDAO cdao = new CRFDAO(ds);
+        CRFDAO cdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
         CRFBean crf = (CRFBean) cdao.findByPK(crfId);
 
-        ItemDataDAO iddao = new ItemDataDAO(ds);
-        ItemDAO idao = new ItemDAO(ds);
-        CRFVersionDAO cvdao = new CRFVersionDAO(ds);
-        ItemGroupDAO itemGroupDao = new ItemGroupDAO(ds);
+        ItemDataDAO iddao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
+        ItemDAO idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
+        ItemGroupDAO itemGroupDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupDAO.class);
 
         int validSheetNum = 0;
         for (int j = 0; j < numSheets; j++) {

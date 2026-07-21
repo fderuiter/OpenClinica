@@ -105,8 +105,8 @@ public class ExportDatasetServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
-        ArchivedDatasetFileDAO asdfdao = new ArchivedDatasetFileDAO(sm.getDataSource());
+        DatasetDAO dsdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DatasetDAO.class);
+        ArchivedDatasetFileDAO asdfdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ArchivedDatasetFileDAO.class);
         FormProcessor fp = new FormProcessor(request);
 
         GenerateExtractFileService generateFileService = new GenerateExtractFileService(sm.getDataSource(),
@@ -127,7 +127,7 @@ public class ExportDatasetServlet extends SecureController {
             }
         }
         DatasetBean db = (DatasetBean) dsdao.findByPK(datasetId);
-       StudyDAO sdao = new StudyDAO(sm.getDataSource());
+       StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         StudyBean study = (StudyBean)sdao.findByPK(db.getStudyId());
         checkRoleByUserAndStudy(ub, study.getParentStudyId(), study.getId());
 
@@ -151,7 +151,7 @@ public class ExportDatasetServlet extends SecureController {
 
         StudyBean parentStudy = new StudyBean();
         if (currentStudy.getParentStudyId() > 0) {
-            //StudyDAO sdao = new StudyDAO(sm.getDataSource());
+            //StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
             parentStudy = (StudyBean) sdao.findByPK(currentStudy.getParentStudyId());
         }
 

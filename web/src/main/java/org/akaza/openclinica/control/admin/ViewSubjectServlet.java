@@ -41,7 +41,7 @@ public class ViewSubjectServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
         FormProcessor fp = new FormProcessor(request);
         int subjectId = fp.getInt("id");
 
@@ -52,7 +52,7 @@ public class ViewSubjectServlet extends SecureController {
             SubjectBean subject = (SubjectBean) sdao.findByPK(subjectId);
 
             // find all study subjects
-            StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+            StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
             ArrayList studySubs = ssdao.findAllBySubjectId(subjectId);
 
             request.setAttribute("subject", subject);

@@ -53,7 +53,7 @@ public class CreateFiltersOneServlet extends SecureController {
             // note that this is now set up to accept the
             // tabling classes created in View.
             FormProcessor fp = new FormProcessor(request);
-            FilterDAO fdao = new FilterDAO(sm.getDataSource());
+            FilterDAO fdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), FilterDAO.class);
             EntityBeanTable table = fp.getEntityBeanTable();
 
             ArrayList filters = new ArrayList();

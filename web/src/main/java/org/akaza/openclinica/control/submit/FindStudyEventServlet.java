@@ -78,10 +78,10 @@ public class FindStudyEventServlet extends SecureController {
             ArrayList allDisplayEntities = new ArrayList();
 
             if (browseBy.equals(ARG_BROWSEBY_SUBJECT)) {
-                StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+                StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
                 allDisplayEntities = ssdao.findAllWithStudyEvent(currentStudy);
             } else {
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+                StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
                 allDisplayEntities = seddao.findAllWithStudyEvent(currentStudy);
             }
 
@@ -110,19 +110,19 @@ public class FindStudyEventServlet extends SecureController {
 
         // User is coming from Step 2, is going to Step 3
         else {
-            StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+            StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
             ArrayList events = new ArrayList();
 
             EntityBean entityWithStudyEvents;
             if (browseBy.equals(ARG_BROWSEBY_SUBJECT)) {
                 events = sedao.findAllByStudyAndStudySubjectId(currentStudy, id);
 
-                StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+                StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
                 entityWithStudyEvents = ssdao.findByPK(id);
             } else {
                 events = sedao.findAllByStudyAndEventDefinitionId(currentStudy, id);
 
-                StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+                StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
                 entityWithStudyEvents = seddao.findByPK(id);
             }
 

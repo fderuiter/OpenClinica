@@ -68,15 +68,15 @@ public class ViewTableOfContentServlet extends SecureController {
     public static DisplayTableOfContentsBean getDisplayBean(DataSource ds, int crfVersionId) {
         DisplayTableOfContentsBean answer = new DisplayTableOfContentsBean();
 
-        SectionDAO sdao = new SectionDAO(ds);
+        SectionDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SectionDAO.class);
         ArrayList sections = getSections(crfVersionId, ds);
         answer.setSections(sections);
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(ds);
+        CRFVersionDAO cvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
         CRFVersionBean cvb = (CRFVersionBean) cvdao.findByPK(crfVersionId);
         answer.setCrfVersion(cvb);
 
-        CRFDAO cdao = new CRFDAO(ds);
+        CRFDAO cdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
         CRFBean cb = (CRFBean) cdao.findByPK(cvb.getCrfId());
         answer.setCrf(cb);
 
@@ -88,7 +88,7 @@ public class ViewTableOfContentServlet extends SecureController {
     }
 
     public static ArrayList getSections(int crfVersionId, DataSource ds) {
-        SectionDAO sdao = new SectionDAO(ds);
+        SectionDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SectionDAO.class);
 
         HashMap numItemsBySectionId = sdao.getNumItemsBySectionId();
         ArrayList sections = sdao.findAllByCRFVersionId(crfVersionId);

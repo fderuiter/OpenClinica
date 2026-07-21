@@ -58,7 +58,7 @@ public class ClinicalDataCollector extends OdmDataCollector {
             OdmStudyBase u = it.next();
             ClinicalDataUnit cdata = new ClinicalDataUnit(this.ds, this.dataset, this.getOdmbean(), u.getStudy(), this.getCategory());
             cdata.setCategory(this.getCategory());
-            StudySubjectDAO ssdao = new StudySubjectDAO(this.ds);
+            StudySubjectDAO ssdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
             cdata.setStudySubjectIds(ssdao.findStudySubjectIdsByStudyIds(u.getStudy().getId()+""));
             cdata.collectOdmClinicalData();
             odmClinicalDataMap.put(u.getStudy().getOid(), cdata.getOdmClinicalData());

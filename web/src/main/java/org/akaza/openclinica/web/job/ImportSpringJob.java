@@ -111,8 +111,8 @@ public class ImportSpringJob extends QuartzJobBean {
     private DataSource dataSource;
     private OpenClinicaMailSender mailSender;
     private ImportCRFDataService dataService;
-    private ItemDataDAO itemDataDao;// = new ItemDataDAO(sm.getDataSource());
-    private EventCRFDAO eventCrfDao;// = new EventCRFDAO(sm.getDataSource());
+    private ItemDataDAO itemDataDao;// = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
+    private EventCRFDAO eventCrfDao;// = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
     private AuditEventDAO auditEventDAO;
     private TriggerService triggerService;
 
@@ -152,12 +152,12 @@ public class ImportSpringJob extends QuartzJobBean {
             mailSender = (OpenClinicaMailSender) appContext.getBean("openClinicaMailSender");
             RuleSetServiceInterface ruleSetService = (RuleSetServiceInterface) appContext.getBean("ruleSetService");
 
-            itemDataDao = new ItemDataDAO(dataSource);
-            eventCrfDao = new EventCRFDAO(dataSource);
-            auditEventDAO = new AuditEventDAO(dataSource);
+            itemDataDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
+            eventCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+            auditEventDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(AuditEventDAO.class);
 
             int userId = dataMap.getInt(USER_ID);
-            UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+            UserAccountDAO userAccountDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
 
             UserAccountBean ub = (UserAccountBean) userAccountDAO.findByPK(userId);
             triggerBean.setUserAccount(ub);
@@ -172,7 +172,7 @@ public class ImportSpringJob extends QuartzJobBean {
                 respage = ResourceBundleProvider.getPageMessagesBundle();
                 resword = ResourceBundleProvider.getWordsBundle();
             }
-            StudyDAO studyDAO = new StudyDAO(dataSource);
+            StudyDAO studyDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
             StudyBean studyBean;
             if (studyOid != null) {
                 studyBean = studyDAO.findByOid(studyOid);
@@ -698,7 +698,7 @@ public class ImportSpringJob extends QuartzJobBean {
                                 itemDataHibernateDao.getEntityManager().flush();
                                 itemDataHibernateDao.getEntityManager().clear();
                             }
-                            ItemDAO idao = new ItemDAO(dataSource);
+                            ItemDAO idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
                             ItemBean ibean = (ItemBean) idao.findByPK(displayItemBean.getData().getItemId());
                             logger.debug("*** checking for validation errors: " + ibean.getName());
                             String itemOid = displayItemBean.getItem().getOid() + "_" + wrapper.getStudyEventRepeatKey() + "_"
@@ -778,7 +778,7 @@ public class ImportSpringJob extends QuartzJobBean {
             Integer parentId, UserAccountBean uab, DataSource ds, StudyBean study) {
         // DisplayItemBean displayItemBean) {
         DiscrepancyNoteBean note = new DiscrepancyNoteBean();
-        StudySubjectDAO ssdao = new StudySubjectDAO(ds);
+        StudySubjectDAO ssdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         note.setDescription(message);
         note.setDetailedNotes("Failed Validation Check");
         note.setOwner(uab);
@@ -805,7 +805,7 @@ public class ImportSpringJob extends QuartzJobBean {
         note.setEntityId(displayItemBean.getData().getId());
         note.setColumn("value");
 
-        DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(ds);
+        DiscrepancyNoteDAO dndao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(DiscrepancyNoteDAO.class);
         note = (DiscrepancyNoteBean) dndao.create(note);
         // so that the below method works, need to set the entity above
         // System.out.println("trying to create mapping with " + note.getId() +

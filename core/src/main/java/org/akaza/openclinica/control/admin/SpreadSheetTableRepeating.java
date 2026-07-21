@@ -172,16 +172,16 @@ public class SpreadSheetTableRepeating implements SpreadSheetTable {
         ArrayList<String> itemGroupOids = new ArrayList<String>();
         ArrayList<String> itemOids = new ArrayList<String>();
 
-        CRFDAO cdao = new CRFDAO(ds);
+        CRFDAO cdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
         CRFBean crf = (CRFBean) cdao.findByPK(crfId);
-        ItemDAO idao = new ItemDAO(ds);
-        CRFVersionDAO cvdao = new CRFVersionDAO(ds);
-        ItemGroupDAO itemGroupDao = new ItemGroupDAO(ds);
+        ItemDAO idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
+        CRFVersionDAO cvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
+        ItemGroupDAO itemGroupDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemGroupDAO.class);
         SheetValidationContainer sheetContainer = new SheetValidationContainer();
         HashMap<String, String> allItems = (HashMap<String, String>)sheetContainer.getAllItems();
         //HashMap<String, String> allItems = new HashMap<String, String>();
         Map<String, String[]> controlValues = new HashMap<String, String[]>();
-        int maxItemFormMetadataId = new ItemFormMetadataDAO(ds).findMaxId();
+        int maxItemFormMetadataId = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class).findMaxId();
         OnChangeSheetValidator instantValidator = new OnChangeSheetValidator(sheetContainer, resPageMsg);
 
 

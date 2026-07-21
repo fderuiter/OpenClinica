@@ -99,7 +99,7 @@ public class ScoreCalculator {
      * return errors. logger.error("In scoreCalculator doCalculations(), items
      * are empty!"); errors.add("Calculation cannot be started because needed
      * items are empty!"); return updateFailedItems; } ItemFormMetadataDAO
-     * ifmdao = new ItemFormMetadataDAO(sm.getDataSource()); ItemDAO idao = new
+     * ifmdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class); ItemDAO idao = new
      * ItemDAO(sm.getDataSource()); ItemDataDAO iddao = new
      * ItemDataDAO(sm.getDataSource());
      * 
@@ -257,9 +257,9 @@ public class ScoreCalculator {
             errors.add("In ScoreCalculator redoCalculations(), 'changeItems' set is empty!");
             return updateFailedItems;
         }
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(sm.getDataSource());
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        ItemFormMetadataDAO ifmdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemFormMetadataDAO.class);
+        ItemDAO idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
+        ItemDataDAO iddao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
 
         NumberFormat nf = NumberFormat.getInstance();
         Parser parser = new Parser(items, itemdata);
@@ -384,7 +384,7 @@ public class ScoreCalculator {
     }
 
     protected boolean writeToDB(ItemBean ib, ItemFormMetadataBean ifm, ItemDataBean idb, String exp, String value, StringBuffer err) {
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        ItemDataDAO iddao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
         NumberFormat nf = NumberFormat.getInstance();
 
         if (idb == null) {

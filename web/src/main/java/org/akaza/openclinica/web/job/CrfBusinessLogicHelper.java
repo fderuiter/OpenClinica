@@ -46,17 +46,17 @@ public class CrfBusinessLogicHelper {
 
     private EventDefinitionCRFBean getEventDefinitionCrfByStudyEventAndCrfVersion(EventCRFBean eventCrf, StudyBean study) {
 
-        EventDefinitionCRFDAO eventDefinitionCrfDao = new EventDefinitionCRFDAO(ds);
+        EventDefinitionCRFDAO eventDefinitionCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
         // TODO we have to get that id before we can continue
-        eventDefinitionCrfDao = new EventDefinitionCRFDAO(ds);
+        eventDefinitionCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
         EventDefinitionCRFBean eventDefinitionCrf = eventDefinitionCrfDao.findByStudyEventIdAndCRFVersionId(study, eventCrf.getStudyEventId(),
                 eventCrf.getCRFVersionId());
         return eventDefinitionCrf;
     }
 
     protected boolean isEachRequiredFieldFillout(EventCRFBean ecb) {
-        ItemDataDAO iddao = new ItemDataDAO(ds);
-        ItemDAO idao = new ItemDAO(ds);
+        ItemDataDAO iddao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
+        ItemDAO idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
         int allRequiredNum = idao.findAllRequiredByCRFVersionId(ecb.getCRFVersionId());
         int allRequiredFilledOut = iddao.findAllRequiredByEventCRFId(ecb);
         if (allRequiredNum > allRequiredFilledOut) {
@@ -71,8 +71,8 @@ public class CrfBusinessLogicHelper {
     }
 
     protected boolean areAllCompleted(StudyEventBean seBean, StudyBean study) {
-        EventDefinitionCRFDAO edcDao = new EventDefinitionCRFDAO(ds);
-        EventCRFDAO eventCrfDao = new EventCRFDAO(ds);
+        EventDefinitionCRFDAO edcDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
+        EventCRFDAO eventCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         ArrayList allCRFs = eventCrfDao.findAllByStudyEvent(seBean);
         ArrayList allEDCs = (ArrayList) edcDao.findAllActiveByEventDefinitionId(study, seBean.getStudyEventDefinitionId());
         boolean eventCompleted = true;
@@ -93,8 +93,8 @@ public class CrfBusinessLogicHelper {
     }
 
     protected boolean areAllRequiredCompleted(StudyEventBean seBean, StudyBean study) {
-        EventDefinitionCRFDAO edcDao = new EventDefinitionCRFDAO(ds);
-        EventCRFDAO eventCrfDao = new EventCRFDAO(ds);
+        EventDefinitionCRFDAO edcDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
+        EventCRFDAO eventCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         ArrayList allCRFs = eventCrfDao.findAllByStudyEvent(seBean);
         ArrayList allEDCs = (ArrayList) edcDao.findAllActiveByEventDefinitionId(study, seBean.getStudyEventDefinitionId());
         boolean eventRequiredCompleted = true;
@@ -127,7 +127,7 @@ public class CrfBusinessLogicHelper {
 
     protected boolean noneAreRequired(StudyEventBean seBean, StudyBean study) {
         boolean noneAreRequired = true;
-        EventDefinitionCRFDAO edcDao = new EventDefinitionCRFDAO(ds);
+        EventDefinitionCRFDAO edcDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
         ArrayList allEDCs = (ArrayList) edcDao.findAllActiveByEventDefinitionId(study, seBean.getStudyEventDefinitionId());
         logger.info("found all EDCs: " + allEDCs.size());
         for (int i = 0; i < allEDCs.size(); i++) {
@@ -143,8 +143,8 @@ public class CrfBusinessLogicHelper {
     }
 
     protected boolean areAllRequired(StudyEventBean seBean, StudyBean study) {
-        EventDefinitionCRFDAO edcDao = new EventDefinitionCRFDAO(ds);
-        // EventCRFDAO eventCrfDao = new EventCRFDAO(ds);
+        EventDefinitionCRFDAO edcDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
+        // EventCRFDAO eventCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         // ArrayList allCRFs = eventCrfDao.findAllByStudyEvent(seBean);
         ArrayList allEDCs = (ArrayList) edcDao.findAllActiveByEventDefinitionId(study, seBean.getStudyEventDefinitionId());
         boolean areAllRequired = true;
@@ -178,21 +178,21 @@ public class CrfBusinessLogicHelper {
         // getEventCRFBean();
         // getEventDefinitionCRFBean();
         DataEntryStage stage = ecb.getStage();
-        EventCRFDAO eventCrfDao = new EventCRFDAO(ds);
-        ItemDataDAO itemDataDao = new ItemDataDAO(ds);
-        StudyDAO sdao = new StudyDAO(ds);
-        StudySubjectDAO ssdao = new StudySubjectDAO(ds);
+        EventCRFDAO eventCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+        ItemDataDAO itemDataDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
+        StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
+        StudySubjectDAO ssdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         StudyBean study = sdao.findByStudySubjectId(ecb.getStudySubjectId());
         EventDefinitionCRFBean edcb = getEventDefinitionCrfByStudyEventAndCrfVersion(ecb, study);
 
-        // StudyEventDAO studyEventDao = new StudyEventDAO(ds);
+        // StudyEventDAO studyEventDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
         // StudyEventBean studyEventBean = (StudyEventBean)
         // studyEventDao.findByPK(ecb.getStudyEventId());
         // Status studyEventStatus = studyEventBean.getStatus();
 
-        StudyEventDefinitionDAO studyEventDefinitionDao = new StudyEventDefinitionDAO(ds);
+        StudyEventDefinitionDAO studyEventDefinitionDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean sedBean = (StudyEventDefinitionBean) studyEventDefinitionDao.findByPK(edcb.getStudyEventDefinitionId());
-        CRFDAO crfDao = new CRFDAO(ds);
+        CRFDAO crfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
         ArrayList crfs = (ArrayList) crfDao.findAllActiveByDefinition(sedBean);
         sedBean.setCrfs(crfs);
         // request.setAttribute(TableOfContentsServlet.INPUT_EVENT_CRF_BEAN,
@@ -304,7 +304,7 @@ public class CrfBusinessLogicHelper {
         itemDataDao.updateStatusByEventCRF(ecb, newStatus);
 
         // change status for study event
-        StudyEventDAO sedao = new StudyEventDAO(ds);
+        StudyEventDAO sedao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
         StudyEventBean seb = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
         seb.setUpdatedDate(new Date());
         seb.setUpdater(ub);
@@ -384,14 +384,14 @@ public class CrfBusinessLogicHelper {
      * @return
      */
     public boolean markCRFStarted(EventCRFBean ecb, UserAccountBean ub) throws Exception {
-        EventCRFDAO eventCrfDao = new EventCRFDAO(ds);
-        StudyDAO sdao = new StudyDAO(ds);
+        EventCRFDAO eventCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+        StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
         StudyBean study = sdao.findByStudySubjectId(ecb.getStudySubjectId());
         EventDefinitionCRFBean edcb = getEventDefinitionCrfByStudyEventAndCrfVersion(ecb, study);
 
-        StudyEventDefinitionDAO studyEventDefinitionDao = new StudyEventDefinitionDAO(ds);
+        StudyEventDefinitionDAO studyEventDefinitionDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean sedBean = (StudyEventDefinitionBean) studyEventDefinitionDao.findByPK(edcb.getStudyEventDefinitionId());
-        CRFDAO crfDao = new CRFDAO(ds);
+        CRFDAO crfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
         ArrayList crfs = (ArrayList) crfDao.findAllActiveByDefinition(sedBean);
         sedBean.setCrfs(crfs);
 
@@ -409,7 +409,7 @@ public class CrfBusinessLogicHelper {
         ecb = (EventCRFBean) eventCrfDao.update(ecb);
         logger.debug("just updated event crf id: " + ecb.getId());
 
-        StudyEventDAO sedao = new StudyEventDAO(ds);
+        StudyEventDAO sedao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
         StudyEventBean seb = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
         if (seb.getSubjectEventStatus().isScheduled() || seb.getSubjectEventStatus().isNotScheduled() || seb.getSubjectEventStatus().isDE_Started()) {
             // change status for study event

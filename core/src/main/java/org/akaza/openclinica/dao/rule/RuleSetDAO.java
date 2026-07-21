@@ -67,31 +67,31 @@ public class RuleSetDAO extends AuditableEntityDAO {
     }
 
     private StudyEventDefinitionDAO getStudyEventDefinitionDao() {
-        return this.studyEventDefinitionDAO != null ? this.studyEventDefinitionDAO : new StudyEventDefinitionDAO(ds);
+        return this.studyEventDefinitionDAO != null ? this.studyEventDefinitionDAO : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
     }
 
     private CRFDAO getCrfDao() {
-        return this.crfDao != null ? this.crfDao : new CRFDAO(ds);
+        return this.crfDao != null ? this.crfDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
     }
 
     private CRFVersionDAO getCrfVersionDao() {
-        return this.crfVersionDao != null ? this.crfVersionDao : new CRFVersionDAO(ds);
+        return this.crfVersionDao != null ? this.crfVersionDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
     }
 
     private EventCRFDAO getEventCrfDao() {
-        return this.eventCrfDao != null ? this.eventCrfDao : new EventCRFDAO(ds);
+        return this.eventCrfDao != null ? this.eventCrfDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
     }
 
     private RuleDAO getRuleDao() {
-        return this.ruleDao != null ? this.ruleDao : new RuleDAO(ds);
+        return this.ruleDao != null ? this.ruleDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleDAO.class);
     }
 
     private RuleSetAuditDAO getRuleSetAuditDao() {
-        return this.ruleSetAuditDao != null ? this.ruleSetAuditDao : new RuleSetAuditDAO(ds);
+        return this.ruleSetAuditDao != null ? this.ruleSetAuditDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleSetAuditDAO.class);
     }
 
     private ExpressionDAO getExpressionDao() {
-        return this.expressionDao != null ? this.expressionDao : new ExpressionDAO(ds);
+        return this.expressionDao != null ? this.expressionDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ExpressionDAO.class);
     }
 
     private ExpressionService getExpressionService() {
@@ -99,7 +99,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
     }
 
     private RuleSetRuleDAO getRuleSetRuleDao() {
-        return this.ruleSetRuleDao != null ? this.ruleSetRuleDao : new RuleSetRuleDAO(ds);
+        return this.ruleSetRuleDao != null ? this.ruleSetRuleDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleSetRuleDAO.class);
     }
 
     public RuleSetDAO(DataSource ds, DAODigester digester) {

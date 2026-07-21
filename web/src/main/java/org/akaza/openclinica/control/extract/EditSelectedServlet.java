@@ -71,8 +71,8 @@ public class EditSelectedServlet extends SecureController {
     public void setUpStudyGroups() {
         ArrayList sgclasses = (ArrayList) session.getAttribute("allSelectedGroups");
         if (sgclasses == null || sgclasses.size() == 0) {
-            StudyDAO studydao = new StudyDAO(sm.getDataSource());
-            StudyGroupClassDAO sgclassdao = new StudyGroupClassDAO(sm.getDataSource());
+            StudyDAO studydao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
+            StudyGroupClassDAO sgclassdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupClassDAO.class);
             StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
             sgclasses = sgclassdao.findAllActiveByStudy(theStudy);
         }
@@ -90,10 +90,10 @@ public class EditSelectedServlet extends SecureController {
         // is not part of the EditSelected-related JSP>>
         request.setAttribute("EditSelectedSubmitted", true);
         // <<
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        // CRFDAO crfdao = new CRFDAO(sm.getDataSource());
-        ItemFormMetadataDAO imfdao = new ItemFormMetadataDAO(sm.getDataSource());
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+        ItemDAO idao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDAO.class);
+        // CRFDAO crfdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
+        ItemFormMetadataDAO imfdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemFormMetadataDAO.class);
+        CRFDAO crfdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
 
         DatasetBean db = (DatasetBean) session.getAttribute("newDataset");
         if (db == null) {
@@ -149,8 +149,8 @@ public class EditSelectedServlet extends SecureController {
             ArrayList sgclasses = (ArrayList) session.getAttribute("allSelectedGroups");
             //
             ArrayList newsgclasses = new ArrayList();
-            StudyDAO studydao = new StudyDAO(sm.getDataSource());
-            StudyGroupClassDAO sgclassdao = new StudyGroupClassDAO(sm.getDataSource());
+            StudyDAO studydao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
+            StudyGroupClassDAO sgclassdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyGroupClassDAO.class);
             StudyBean theStudy = (StudyBean) studydao.findByPK(sm.getUserBean().getActiveStudyId());
             sgclasses = sgclassdao.findAllActiveByStudy(theStudy);
             for (int i = 0; i < sgclasses.size(); i++) {
@@ -185,8 +185,8 @@ public class EditSelectedServlet extends SecureController {
         }
         request.setAttribute("eventlist", events);
 
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+        ItemDAO idao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDAO.class);
+        CRFDAO crfdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
         ArrayList allItems = selectAll(events, crfdao, idao);
         Iterator it = events.keySet().iterator();
         while (it.hasNext()) {

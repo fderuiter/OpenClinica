@@ -45,6 +45,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EventService implements EventServiceInterface {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     UserAccountDAO userAccountDao;
@@ -205,7 +208,7 @@ public class EventService implements EventServiceInterface {
      * @return the UserAccountDao
      */
     public UserAccountDAO getUserAccountDao() {
-        userAccountDao = userAccountDao != null ? userAccountDao : new UserAccountDAO(dataSource);
+        userAccountDao = userAccountDao != null ? userAccountDao : applicationContext.getBean(UserAccountDAO.class);
         return userAccountDao;
     }
 
@@ -213,7 +216,7 @@ public class EventService implements EventServiceInterface {
      * @return the StudyEventDefinitionDao
      */
     public StudyEventDefinitionDAO getStudyEventDefinitionDao() {
-        studyEventDefinitionDao = studyEventDefinitionDao != null ? studyEventDefinitionDao : new StudyEventDefinitionDAO(dataSource);
+        studyEventDefinitionDao = studyEventDefinitionDao != null ? studyEventDefinitionDao : applicationContext.getBean(StudyEventDefinitionDAO.class);
         return studyEventDefinitionDao;
     }
 
@@ -221,7 +224,7 @@ public class EventService implements EventServiceInterface {
      * @return the StudyEventDao
      */
     public StudyEventDAO getStudyEventDao() {
-        studyEventDao = studyEventDao != null ? studyEventDao : new StudyEventDAO(dataSource);
+        studyEventDao = studyEventDao != null ? studyEventDao : applicationContext.getBean(StudyEventDAO.class);
         return studyEventDao;
     }
 
@@ -243,7 +246,7 @@ public class EventService implements EventServiceInterface {
 
     private org.akaza.openclinica.repository.UnifiedRepository getUnifiedRepository() {
         if (this.unifiedRepository == null) {
-            this.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(dataSource);
+            this.unifiedRepository = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(org.akaza.openclinica.repository.UnifiedRepository.class);
         }
         return this.unifiedRepository;
     }

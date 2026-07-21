@@ -66,8 +66,8 @@ public class ViewEventDefinitionServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyEventDefinitionDAO sdao = new StudyEventDefinitionDAO(sm.getDataSource());
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+        StudyEventDefinitionDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
+        StudyDAO studyDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         FormProcessor fp = new FormProcessor(request);
         int defId = fp.getInt("id", true);
 
@@ -87,11 +87,11 @@ public class ViewEventDefinitionServlet extends SecureController {
             
             checkRoleByUserAndStudy(ub, sed.getStudyId(), 0);
 
-            EventDefinitionCRFDAO edao = new EventDefinitionCRFDAO(sm.getDataSource());
+            EventDefinitionCRFDAO edao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
             ArrayList eventDefinitionCRFs = (ArrayList) edao.findAllByDefinition(this.currentStudy, defId);
 
-            CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+            CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
 
             for (int i = 0; i < eventDefinitionCRFs.size(); i++) {
                 EventDefinitionCRFBean edc = (EventDefinitionCRFBean) eventDefinitionCRFs.get(i);
@@ -113,7 +113,7 @@ public class ViewEventDefinitionServlet extends SecureController {
                 edc.setOffline(getEventDefinitionCrfTagService().getEventDefnCrfOfflineStatus(2,crfPath,true));
             }
             
-            StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());    
+            StudyParameterValueDAO spvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyParameterValueDAO.class);    
             String participateFormStatus = spvdao.findByHandleAndStudy(sed.getStudyId(), "participantPortal").getValue();       
             request.setAttribute("participateFormStatus",participateFormStatus );       
             if (participateFormStatus.equals("enabled")) baseUrl();

@@ -108,7 +108,7 @@ public class ViewRuleSetAuditServlet extends SecureController {
     }
 
     private UserAccountDAO getUserAccountDAO() {
-        return userAccountDAO = this.userAccountDAO != null ? userAccountDAO : new UserAccountDAO(sm.getDataSource());
+        return userAccountDAO = this.userAccountDAO != null ? userAccountDAO : org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
     }
 
 }

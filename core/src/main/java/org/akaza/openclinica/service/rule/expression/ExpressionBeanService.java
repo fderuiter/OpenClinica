@@ -32,6 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ExpressionBeanService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final String SEPERATOR = ".";
@@ -147,7 +150,7 @@ public class ExpressionBeanService {
         }
 
     private StudySubjectDAO getStudySubjectDao() {
-        return  new StudySubjectDAO(ds);
+        return  applicationContext.getBean(StudySubjectDAO.class);
     }
 
 }

@@ -94,7 +94,7 @@ public class AsyncExcelImportJob extends QuartzJobBean {
         }
         
         MeasurementUnitDao measurementUnitDao = (MeasurementUnitDao) appContext.getBean("measurementUnitDao");
-        UserAccountDAO udao = new UserAccountDAO(dataSource);
+        UserAccountDAO udao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
         UserAccountBean ub = (UserAccountBean) udao.findByPK(userId);
 
         File f = new File(filePath);
@@ -131,7 +131,7 @@ public class AsyncExcelImportJob extends QuartzJobBean {
         nib.setCrfId(crfId);
 
         if (deletePrevious && previousVersionId > 0) {
-            CRFVersionDAO cdao = new CRFVersionDAO(dataSource);
+            CRFVersionDAO cdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
             ArrayList items = cdao.findNotSharedItemsByVersion(previousVersionId);
             nib.setDeleteQueries(cdao.generateDeleteQueries(previousVersionId, items));
             nib.deleteInsertToDB();
@@ -140,7 +140,7 @@ public class AsyncExcelImportJob extends QuartzJobBean {
         }
 
         // Post-process logic from Servlet
-        CRFVersionDAO cvdao = new CRFVersionDAO(dataSource);
+        CRFVersionDAO cvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
         int crfVersionId = 0;
         ArrayList crfvbeans = cvdao.findAllByCRFId(crfId);
         if (!crfvbeans.isEmpty()) {
@@ -158,7 +158,7 @@ public class AsyncExcelImportJob extends QuartzJobBean {
         }
         CRFVersionBean finalVersion = (CRFVersionBean) cvdao.findByPK(crfVersionId);
 
-        CRFDAO cdao = new CRFDAO(dataSource);
+        CRFDAO cdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
         CRFBean crfBean = (CRFBean) cdao.findByPK(crfId);
         crfBean.setUpdatedDate(new java.util.Date());
         crfBean.setUpdater(ub);
@@ -183,7 +183,7 @@ public class AsyncExcelImportJob extends QuartzJobBean {
             File f = new File(filePath);
 
             DataSource dataSource = (DataSource) appContext.getBean("dataSource");
-            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountDAO udao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
             UserAccountBean ub = (UserAccountBean) udao.findByPK(userId);
 
             OpenClinicaMailSender mailSender = (OpenClinicaMailSender) appContext.getBean("openClinicaMailSender");

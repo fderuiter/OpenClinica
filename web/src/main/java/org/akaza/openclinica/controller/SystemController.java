@@ -67,6 +67,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping(value = "/auth/api/v1/system")
 @ResponseStatus(value = org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
 public class SystemController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     // Add in Spring Cor files /healthcheck path to avoid firewall
     @Autowired
@@ -113,7 +116,7 @@ public class SystemController {
 
         DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
         try {
-            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountDAO udao = applicationContext.getBean(UserAccountDAO.class);
             UserAccountBean uBean = (UserAccountBean) udao.findByPK(1);
 
             if (uBean.getFirstName().equals("Root") && uBean.getLastName().equals("User")) {
@@ -1179,19 +1182,19 @@ public class SystemController {
     }
 
     public ArrayList<StudyBean> getStudyList() {
-        StudyDAO sdao = new StudyDAO(dataSource);
+        StudyDAO sdao = applicationContext.getBean(StudyDAO.class);
         ArrayList<StudyBean> sBeans = (ArrayList<StudyBean>) sdao.findAllParents();
         return sBeans;
     }
 
     public StudyParameterValueBean getParticipateMod(StudyBean studyBean, String value) {
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(studyBean.getId(), value);
         return pStatus;
     }
 
     public void getRandomizeMod() {
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(dataSource);
+        StudyParameterValueDAO spvdao = applicationContext.getBean(StudyParameterValueDAO.class);
 
     }
 

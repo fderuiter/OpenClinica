@@ -73,17 +73,17 @@ public class RuleExecutionBusinessObject {
 
     // These are dao mostly calls see how to reduce redundancy
     private EventCRFBean getEventCRFBean(int eventCrfBeanId) {
-        EventCRFDAO eventCrfDao = new EventCRFDAO(sm.getDataSource());
+        EventCRFDAO eventCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         return eventCrfBeanId > 0 ? (EventCRFBean) eventCrfDao.findByPK(eventCrfBeanId) : null;
     }
 
     private RuleSetBean getRuleSetBean(EventCRFBean eventCrfBean) {
-        // RuleSetDAO ruleSetDao = new RuleSetDAO(sm.getDataSource());
+        // RuleSetDAO ruleSetDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleSetDAO.class);
         return null;
     }
 
     private ArrayList<RuleBean> getRuleBeans(RuleSetBean ruleSet) {
-        RuleDAO ruleDao = new RuleDAO(sm.getDataSource());
+        RuleDAO ruleDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleDAO.class);
         return ruleSet != null ? ruleDao.findByRuleSet(ruleSet) : new ArrayList<RuleBean>();
     }
 

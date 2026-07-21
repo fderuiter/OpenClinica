@@ -47,7 +47,7 @@ public class OdmStudyBase {
         }
         this.study = study;
         int parentStudyId = this.study.getParentStudyId() > 0 ? this.study.getParentStudyId() : this.study.getId();
-        this.sedBeansInStudy = new StudyEventDefinitionDAO(ds).findAllActiveByParentStudyId(parentStudyId);
+        this.sedBeansInStudy = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class).findAllActiveByParentStudyId(parentStudyId);
     }
 
     public OdmStudyBase setOdmStudyBean(DataSource ds, StudyBean study) {
@@ -57,7 +57,7 @@ public class OdmStudyBase {
         } else {
             this.study = study;
             int parentStudyId = this.study.getParentStudyId() > 0 ? this.study.getParentStudyId() : this.study.getId();
-            this.sedBeansInStudy = new StudyEventDefinitionDAO(ds).findAllActiveByParentStudyId(parentStudyId);
+            this.sedBeansInStudy = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class).findAllActiveByParentStudyId(parentStudyId);
         }
         return studyBase;
     }

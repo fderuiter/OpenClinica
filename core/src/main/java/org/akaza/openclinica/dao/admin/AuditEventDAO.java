@@ -191,19 +191,19 @@ public class AuditEventDAO extends AuditableEntityDAO {
 
     public AuditEventBean setStudyAndSubjectInfo(AuditEventBean aeb) {
         if (aeb.getStudyId() > 0) {
-            StudyDAO sdao = new StudyDAO(this.ds);
+            StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
             StudyBean sbean = (StudyBean) sdao.findByPK(aeb.getStudyId());
             aeb.setStudyName(sbean.getName());
         }
         if (aeb.getSubjectId() > 0) {
             SubjectBean subbean = new SubjectBean();
-            SubjectDAO subdao = new SubjectDAO(this.ds);
+            SubjectDAO subdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SubjectDAO.class);
             subbean = (SubjectBean) subdao.findByPK(aeb.getSubjectId());
             aeb.setSubjectName(subbean.getName());
         }
         if (aeb.getUserId() > 0) {
             UserAccountBean updater = new UserAccountBean();
-            UserAccountDAO uadao = new UserAccountDAO(this.ds);
+            UserAccountDAO uadao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
             updater = (UserAccountBean) uadao.findByPK(aeb.getUserId());
             aeb.setUpdater(updater);
         }
@@ -499,10 +499,10 @@ public class AuditEventDAO extends AuditableEntityDAO {
     // int studyId = ((Integer) hm.get("study_id")).intValue();
     // int subjectId = ((Integer) hm.get("subject_id")).intValue();
     // try {
-    // SubjectDAO sdao = new SubjectDAO(ds);
+    // SubjectDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SubjectDAO.class);
     // SubjectBean sbean = (SubjectBean)sdao.findByPK(subjectId);
     // aeb.setSubjectName(sbean.getName());
-    // StudyDAO stdao = new StudyDAO(ds);
+    // StudyDAO stdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
     // StudyBean stbean = (StudyBean)stdao.findByPK(studyId);
     // aeb.setStudyName(stbean.getName());
     // } catch (RuntimeException e) {

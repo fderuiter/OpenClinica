@@ -40,6 +40,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller("extractController")
 @RequestMapping("/extract")
 public class ExtractController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
     @Autowired
     @Qualifier("sidebarInit")
     private SidebarInit sidebarInit;
@@ -89,7 +92,7 @@ public class ExtractController {
         // get extract id
         // get dataset id
         // if id is a number and dataset id is a number ...
-        datasetDao = new DatasetDAO(dataSource);
+        datasetDao = applicationContext.getBean(DatasetDAO.class);
         UserAccountBean userBean = (UserAccountBean) request.getSession().getAttribute("userBean");
         CoreResources cr =  new CoreResources();
 

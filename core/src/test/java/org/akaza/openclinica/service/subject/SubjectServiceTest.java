@@ -21,7 +21,7 @@ public class SubjectServiceTest {
         org.akaza.openclinica.i18n.util.ResourceBundleProvider.updateLocale(new java.util.Locale("en", "US"));
         subjectService = new SubjectService((javax.sql.DataSource) null);
         
-        EnrollmentManager em = new EnrollmentManager(null) {
+        EnrollmentManager em = new EnrollmentManager(null, null, null) {
             @Override
             public String generateAtomicLabel() {
                 return String.valueOf(mockLabelToReturn + 1);
@@ -30,7 +30,7 @@ public class SubjectServiceTest {
         
         // Use reflection or just inject if we can
         // But EnrollmentManager doesn't have setters for DAOs, we can subclass it
-        em = new EnrollmentManager(null) {
+        em = new EnrollmentManager(null, null, null) {
             @Override
             public String generateSubjectId(StudyBean studyBean) {
                 int handleStudyId = studyBean.getParentStudyId() > 0 ? studyBean.getParentStudyId() : studyBean.getId();
@@ -45,7 +45,7 @@ public class SubjectServiceTest {
         };
         subjectService.setEnrollmentManager(em);
         
-        subjectService.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(null) {
+        subjectService.unifiedRepository = new org.akaza.openclinica.repository.UnifiedRepository(null, null, null, null, null, null, null, null, null, null, null) {
             @Override
             public int findTheGreatestStudySubjectLabel() {
                 return mockLabelToReturn;

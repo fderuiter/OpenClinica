@@ -80,7 +80,7 @@ public void setRuleSetRuleDao(RuleSetRuleDao ruleSetRuleDao) {
 
 
 	public StudyDAO getStudyDao() {
-		return new StudyDAO(dataSource);
+		return org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
 	}
 
 
@@ -241,7 +241,7 @@ public void setRuleSetRuleDao(RuleSetRuleDao ruleSetRuleDao) {
 	        return report;
 	}
 	private StudyBean populateStudyBean(StudyBean studyBean) {
-		 StudyParameterValueDAO spvdao = new StudyParameterValueDAO(this.dataSource);
+		 StudyParameterValueDAO spvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyParameterValueDAO.class);
 		  @SuppressWarnings("rawtypes")
 		ArrayList studyParameters = spvdao.findParamConfigByStudy(studyBean);
 

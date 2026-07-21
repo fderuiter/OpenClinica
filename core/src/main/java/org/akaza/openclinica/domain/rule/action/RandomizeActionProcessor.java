@@ -117,7 +117,7 @@ public class RandomizeActionProcessor implements ActionProcessor {
         boolean accessPermission = false;
         StudyBean siteStudy = getStudy(studyOid);
         StudyBean study = getParentStudy(studyOid);
-        StudyParameterValueDAO spvdao = new StudyParameterValueDAO(ds);
+        StudyParameterValueDAO spvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyParameterValueDAO.class);
         StudyParameterValueBean pStatus = spvdao.findByHandleAndStudy(study.getId(), "randomization");
 
         randomizationRegistrar = new RandomizationRegistrar();
@@ -137,7 +137,7 @@ public class RandomizeActionProcessor implements ActionProcessor {
     }
 
     private StudyBean getStudy(String oid) {
-        sdao = new StudyDAO(ds);
+        sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
         StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
         return studyBean;
     }

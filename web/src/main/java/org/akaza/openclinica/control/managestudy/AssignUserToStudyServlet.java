@@ -134,7 +134,7 @@ public class AssignUserToStudyServlet extends SecureController {
 
     private void addUser(ArrayList users) throws Exception {
         String pageMass = "";
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
         FormProcessor fp = new FormProcessor(request);
         Map tmpSelectedUsersMap = (HashMap) session.getAttribute("tmpSelectedUsersMap");
         Set addedUsers = new HashSet();
@@ -242,7 +242,7 @@ public class AssignUserToStudyServlet extends SecureController {
      * @return
      */
     private ArrayList findUsers() {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
         ArrayList userList = (ArrayList) udao.findAll();
         ArrayList userAvailable = new ArrayList();
         for (int i = 0; i < userList.size(); i++) {
@@ -267,7 +267,7 @@ public class AssignUserToStudyServlet extends SecureController {
 
                 } else {
                     // find all the sites for this top study
-                    StudyDAO sdao = new StudyDAO(sm.getDataSource());
+                    StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
                     ArrayList sites = (ArrayList) sdao.findAllByParent(currentStudy.getId());
                     String notes = "";
                     for (int j = 0; j < sites.size(); j++) {

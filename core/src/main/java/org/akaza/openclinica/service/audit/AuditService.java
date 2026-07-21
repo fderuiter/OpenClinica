@@ -8,10 +8,13 @@ import javax.sql.DataSource;
 import java.util.Date;
 
 public class AuditService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
     private AuditEventDAO auditEventDAO;
 
     public AuditService(DataSource dataSource) {
-        this.auditEventDAO = new AuditEventDAO(dataSource);
+        this.auditEventDAO = applicationContext.getBean(AuditEventDAO.class);
     }
     
     public AuditService(AuditEventDAO auditEventDAO) {

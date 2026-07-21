@@ -36,6 +36,9 @@ import jakarta.xml.bind.DatatypeConverter;
 @Controller
 @RequestMapping(value = "/auth/api/v1/studies")
 public class StudyAuditController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
@@ -64,14 +67,14 @@ public class StudyAuditController {
             }
 
             // 2. Resolve study and check existence
-            StudyDAO studyDAO = new StudyDAO(dataSource);
+            StudyDAO studyDAO = applicationContext.getBean(StudyDAO.class);
             StudyBean study = (StudyBean) studyDAO.findByOid(studyOid);
             if (study == null || study.getId() <= 0) {
                 return new ResponseEntity<>("Study not found", HttpStatus.NOT_FOUND);
             }
 
             // 3. Authorization Check
-            UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+            UserAccountDAO userAccountDAO = applicationContext.getBean(UserAccountDAO.class);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth == null || auth.getPrincipal() == null) {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);

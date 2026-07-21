@@ -52,7 +52,7 @@ public class RemoveFilterServlet extends SecureController {
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
         int filterId = fp.getInt("filterId");
-        FilterDAO fDAO = new FilterDAO(sm.getDataSource());
+        FilterDAO fDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), FilterDAO.class);
         FilterBean filter = (FilterBean) fDAO.findByPK(filterId);
 
         String action = request.getParameter("action");
@@ -103,7 +103,7 @@ public class RemoveFilterServlet extends SecureController {
 
     private EntityBeanTable getFilterTable() {
         FormProcessor fp = new FormProcessor(request);
-        FilterDAO fdao = new FilterDAO(sm.getDataSource());
+        FilterDAO fdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), FilterDAO.class);
         EntityBeanTable table = fp.getEntityBeanTable();
 
         ArrayList filters = (ArrayList) fdao.findAll();

@@ -39,7 +39,7 @@ public class SetUpUserInterceptor implements org.springframework.web.servlet.Han
         UserAccountBean userBean = (UserAccountBean) currentSession.getAttribute("userBean");
         String userName = "";
         boolean userBeanIsInvalid;
-        UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+        UserAccountDAO userAccountDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
 
         if (userBean == null) {
 

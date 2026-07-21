@@ -31,6 +31,9 @@ import javax.sql.DataSource;
  */
 //ywang (Aug. 2011)
 public class InstantOnChangeService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     DataSource dataSource;
@@ -202,7 +205,7 @@ public class InstantOnChangeService {
 
 
     public ItemFormMetadataDAO getItemFormMetadataDAO() {
-        return new ItemFormMetadataDAO(dataSource);
+        return applicationContext.getBean(ItemFormMetadataDAO.class);
     }
 
     public DataSource getDataSource() {

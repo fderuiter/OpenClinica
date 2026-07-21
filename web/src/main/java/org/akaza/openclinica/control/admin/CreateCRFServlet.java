@@ -65,7 +65,7 @@ public class CreateCRFServlet extends SecureController {
 
     @Override
     public void processRequest() throws Exception {
-        CRFDAO cdao = new CRFDAO(sm.getDataSource());
+        CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
         String action = request.getParameter("action");
 
         FormProcessor fp = new FormProcessor(request);

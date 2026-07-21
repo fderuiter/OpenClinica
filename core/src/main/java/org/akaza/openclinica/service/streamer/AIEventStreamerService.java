@@ -18,6 +18,9 @@ import jakarta.annotation.PreDestroy;
 
 @Service("aiEventStreamerService")
 public class AIEventStreamerService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     private static final Logger logger = LoggerFactory.getLogger(AIEventStreamerService.class);
 
@@ -59,7 +62,7 @@ public class AIEventStreamerService {
 
         try {
             DataSource ds = (DataSource) ApplicationContextProvider.getApplicationContext().getBean("dataSource");
-            ItemDataDAO itemDataDao = new ItemDataDAO(ds);
+            ItemDataDAO itemDataDao = applicationContext.getBean(ItemDataDAO.class);
             ArrayList<ItemDataBean> items = itemDataDao.findAllByEventCRFId(eventCrfId);
             
             Map<String, Object> payload = new HashMap<>();

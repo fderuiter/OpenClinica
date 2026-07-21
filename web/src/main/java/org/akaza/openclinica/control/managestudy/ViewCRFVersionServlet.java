@@ -57,9 +57,9 @@ public class ViewCRFVersionServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-        ItemDAO idao = new ItemDAO(sm.getDataSource());
-        ItemFormMetadataDAO ifmdao = new ItemFormMetadataDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+        ItemDAO idao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDAO.class);
+        ItemFormMetadataDAO ifmdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemFormMetadataDAO.class);
         FormProcessor fp = new FormProcessor(request);
         // checks which module the requests are from
         String module = fp.getString(MODULE);
@@ -73,7 +73,7 @@ public class ViewCRFVersionServlet extends SecureController {
         } else {
             CRFVersionBean version = (CRFVersionBean) cvdao.findByPK(crfVersionId);
             // tbh
-            CRFDAO crfdao = new CRFDAO(sm.getDataSource());
+            CRFDAO crfdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
             CRFBean crf = (CRFBean) crfdao.findByPK(version.getCrfId());
             CRFVersionMetadataUtil metadataUtil = new CRFVersionMetadataUtil(sm.getDataSource());
             ArrayList<SectionBean> sections = metadataUtil.retrieveFormMetadata(version); 

@@ -41,10 +41,10 @@ public class ViewSectionDataEntryByIdServlet extends ViewSectionDataEntryServlet
      */
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        StudyDAO studyDao = new StudyDAO(getDataSource());
+        StudyDAO studyDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
        
         StudyBean  currentStudy = (StudyBean) studyDao.findByPK(1);
-        CRFVersionDAO crfVersionDao = new CRFVersionDAO(getDataSource());
+        CRFVersionDAO crfVersionDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
         if (request.getParameter("id") == null) {
             forwardPage(Page.LOGIN, request, response);
         }

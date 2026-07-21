@@ -51,7 +51,7 @@ public class EditStudyUserRoleServlet extends SecureController {
 
     @Override
     protected void processRequest() throws Exception {
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
 
         FormProcessor fp = new FormProcessor(request);
 
@@ -63,7 +63,7 @@ public class EditStudyUserRoleServlet extends SecureController {
         
         techAdminProtect(user);
         
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         StudyBean sb = (StudyBean) sdao.findByPK(studyUserRole.getStudyId());
         if (sb != null) {
             studyUserRole.setStudyName(sb.getName());
@@ -185,7 +185,7 @@ public class EditStudyUserRoleServlet extends SecureController {
     // }
     //
     // SQLFactory factory = SQLFactory.getInstance();
-    // UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+    // UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
     //
     // FormProcessor fp = new FormProcessor(request);
     //
@@ -194,7 +194,7 @@ public class EditStudyUserRoleServlet extends SecureController {
     // StudyUserRoleBean studyUserRole =
     // udao.findRoleByUserNameAndStudyId(uName, studyId);
     //
-    // StudyDAO sdao = new StudyDAO(sm.getDataSource());
+    // StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
     // StudyBean sb = (StudyBean) sdao.findByPK(studyUserRole.getStudyId());
     // if (sb != null) {
     // studyUserRole.setStudyName(sb.getName());

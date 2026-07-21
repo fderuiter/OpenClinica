@@ -136,7 +136,7 @@ public class ViewStudyEventsServlet extends SecureController {
 
         request.setAttribute(STATUS_MAP, SubjectEventStatus.toArrayList());
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
         ArrayList definitions = seddao.findAllByStudy(currentStudy);
         request.setAttribute(DEFINITION_MAP, definitions);
 
@@ -172,12 +172,12 @@ public class ViewStudyEventsServlet extends SecureController {
      * @return
      */
     private ArrayList genTables(FormProcessor fp, ArrayList definitions, Date startDate, Date endDate, int sedId, int definitionId, int statusId) {
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
+        EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
         ArrayList allEvents = new ArrayList();
         definitions = findDefinitionById(definitions, definitionId);
         // YW <<
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
         ArrayList studySubjects = ssdao.findAllByStudyId(currentStudy.getId());
         // YW >>
         for (int i = 0; i < definitions.size(); i++) {
@@ -314,12 +314,12 @@ public class ViewStudyEventsServlet extends SecureController {
      * @return
      */
     private ArrayList genEventsForPrint(FormProcessor fp, ArrayList definitions, Date startDate, Date endDate, int sedId, int definitionId, int statusId) {
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
+        EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
         ArrayList allEvents = new ArrayList();
         definitions = findDefinitionById(definitions, definitionId);
         // YW <<
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
         ArrayList studySubjects = ssdao.findAllByStudyId(currentStudy.getId());
         // YW >>
         for (int i = 0; i < definitions.size(); i++) {

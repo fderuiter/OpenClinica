@@ -158,7 +158,7 @@ public class SDVUtil {
 
     public int getTotalRowCountSubjects(FilterSet filterSet, int studyId, int studySubjectId) {
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
 
         if (filterSet.getFilters().size() == 0) {
             return eventCRFDAO.countEventCRFsByStudySubject(studySubjectId, studyId, studyId);
@@ -166,7 +166,7 @@ public class SDVUtil {
 
         int count = 0;
         // Filter for study subject label
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         StudySubjectBean studySubjectBean = new StudySubjectBean();
         studySubjectBean = (StudySubjectBean) studySubjectDAO.findByPK(studySubjectId);
         String label = studySubjectBean.getLabel();
@@ -273,7 +273,7 @@ public class SDVUtil {
 
     public int getTotalRowCount(EventCRFSDVFilter eventCRFSDVFilter, Integer studyId) {
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         return eventCRFDAO.getCountWithFilter(studyId, studyId, eventCRFSDVFilter);
 
     }
@@ -308,12 +308,12 @@ public class SDVUtil {
     private Collection<SubjectSDVContainer> getFilteredItems(EventCRFSDVFilter filterSet, EventCRFSDVSort sortSet, int rowStart, int rowEnd, int studyId,
             HttpServletRequest request) {
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
         /*
-         * StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+         * StudyEventDAO studyEventDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
          * 
-         * StudyDAO studyDAO = new StudyDAO(dataSource);
+         * StudyDAO studyDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
          * StudyBean studyBean = (StudyBean) studyDAO.findByPK(studyId);
          * 
          * String label = "";
@@ -391,8 +391,8 @@ public class SDVUtil {
     private Collection<SubjectSDVContainer> getFilteredItemsSubject(FilterSet filterSet, SortSet sortSet, int rowStart, int rowEnd, int studyId,
             int studySubjectId, HttpServletRequest request) {
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+        EventCRFDAO eventCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+        StudyEventDAO studyEventDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
 
         String label = "";
@@ -445,7 +445,7 @@ public class SDVUtil {
      * private int getTotalRowCount(FilterSet filterSet, int studyId) {
      * 
      * 
-     * EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+     * EventCRFDAO eventCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
      * 
      * if (filterSet.getFilters().size() == 0) {
      * return eventCRFDAO.countEventCRFsByStudy(studyId, studyId);
@@ -453,9 +453,9 @@ public class SDVUtil {
      * 
      * int count = 0;
      * //Filter for study subject label
-     * StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+     * StudySubjectDAO studySubjectDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
      * StudySubjectBean studySubjectBean = new StudySubjectBean();
-     * StudyDAO studyDAO = new StudyDAO(dataSource);
+     * StudyDAO studyDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
      * StudyBean studyBean = (StudyBean) studyDAO.findByPK(studyId);
      * String subjectValue = "";
      * String eventNameValue = "";
@@ -709,7 +709,7 @@ public class SDVUtil {
         tableFacade.setStateAttr("restore");
 
         /*
-         * StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+         * StudySubjectDAO studySubjectDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
          * StudySubjectBean subjectBean = (StudySubjectBean) studySubjectDAO.findByPK(studySubjectId);
          */
 
@@ -850,12 +850,12 @@ public class SDVUtil {
 
         getEventNamesForEventCRFs(eventCRFBeans);
 
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
-        SubjectDAO subjectDAO = new SubjectDAO(dataSource);
-        StudyDAO studyDAO = new StudyDAO(dataSource);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
+        SubjectDAO subjectDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SubjectDAO.class);
+        StudyDAO studyDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
+        StudyEventDAO studyEventDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
 
-        EventDefinitionCRFDAO eventDefinitionCRFDAO = new EventDefinitionCRFDAO(dataSource);
+        EventDefinitionCRFDAO eventDefinitionCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
 
         StudySubjectBean studySubjectBean = null;
         SubjectBean subjectBean = null;
@@ -923,7 +923,7 @@ public class SDVUtil {
             }
             // TODO: I18N Date must be formatted properly
             // Fix OC 1888
-            StudyEventDAO sedao = new StudyEventDAO(dataSource);
+            StudyEventDAO sedao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
             StudyEventBean seBean = (StudyEventBean) sedao.findByPK(crfBean.getStudyEventId());
             tempSDVBean.setEventDate(sdformat.format(seBean.getDateStarted()));
 
@@ -1137,8 +1137,8 @@ public class SDVUtil {
         if (eventCRFBeans == null || eventCRFBeans.isEmpty())
             return;
 
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(dataSource);
+        StudyEventDAO studyEventDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
+        StudyEventDefinitionDAO studyEventDefinitionDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
 
         StudyEventBean studyEventBean = null;
         StudyEventDefinitionBean studyEventDefBean = null;
@@ -1166,8 +1166,8 @@ public class SDVUtil {
     }
 
     public String getCRFName(int crfVersionId) {
-        CRFVersionDAO cRFVersionDAO = new CRFVersionDAO(dataSource);
-        CRFDAO cRFDAO = new CRFDAO(dataSource);
+        CRFVersionDAO cRFVersionDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
+        CRFDAO cRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
 
         CRFVersionBean versionBean = (CRFVersionBean) cRFVersionDAO.findByPK(crfVersionId);
         if (versionBean != null) {
@@ -1181,7 +1181,7 @@ public class SDVUtil {
 
     public String getCRFVersionName(int crfVersionId) {
 
-        CRFVersionDAO cRFVersionDAO = new CRFVersionDAO(dataSource);
+        CRFVersionDAO cRFVersionDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFVersionDAO.class);
         CRFVersionBean versionBean = (CRFVersionBean) cRFVersionDAO.findByPK(crfVersionId);
         if (versionBean != null) {
             return versionBean.getName();
@@ -1196,7 +1196,7 @@ public class SDVUtil {
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
         List<EventCRFBean> studyEventCRFBeans = new ArrayList<EventCRFBean>();
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
 
         for (StudyEventBean studyEventBean : studyEventBeans) {
             eventCRFBeans = eventCRFDAO.findAllByStudyEvent(studyEventBean);
@@ -1211,7 +1211,7 @@ public class SDVUtil {
     public String renderSubjectsAggregateTable(int studyId, HttpServletRequest request) {
 
         List<StudySubjectBean> studySubjectBeans = new ArrayList<StudySubjectBean>();
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         studySubjectBeans = studySubjectDAO.findAllByStudyId(studyId);
 
         Collection<SubjectSDVContainer> items = getSubjectAggregateRows(studySubjectBeans);
@@ -1249,11 +1249,11 @@ public class SDVUtil {
 
     public boolean setSDVStatusForStudySubjects(List<Integer> studySubjectIds, int userId, boolean setVerification) {
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
-        EventDefinitionCRFDAO eventDefinitionCrfDAO = new EventDefinitionCRFDAO(dataSource);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
-        CRFDAO crfDAO = new CRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+        StudySubjectDAO studySubjectDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
+        EventDefinitionCRFDAO eventDefinitionCrfDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
+        StudyEventDAO studyEventDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
+        CRFDAO crfDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
 
         if (studySubjectIds == null || studySubjectIds.isEmpty()) {
             return true;
@@ -1295,7 +1295,7 @@ public class SDVUtil {
             return true;
         }
 
-        EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
+        EventCRFDAO eventCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
 
         for (Integer eventCrfId : eventCRFIds) {
             try {
@@ -1337,7 +1337,7 @@ public class SDVUtil {
         request.setAttribute("sdvRequirements", SourceDataVerification.values());
 
         // study event definitions
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(dataSource);
+        StudyEventDefinitionDAO studyEventDefinitionDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
 
         List<StudyEventDefinitionBean> studyEventDefinitionBeans = new ArrayList<StudyEventDefinitionBean>();
 
@@ -1350,7 +1350,7 @@ public class SDVUtil {
         // event CRF status
         request.setAttribute("eventCRFDStatuses", SubjectEventStatus.toArrayList());
 
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+        StudyEventDAO studyEventDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
 
         List<StudyEventBean> studyEventBeans = studyEventDAO.findAllByStudy(studyBean);
         List<EventCRFBean> eventCRFBeans = getAllEventCRFs(studyEventBeans);
@@ -1379,8 +1379,8 @@ public class SDVUtil {
         SdvFilterDataBean filterBean = (SdvFilterDataBean) bindingResult.getTarget();
         StudySubjectBean studySubjectBean = null;
         StudyEventBean studyEventBean = null;
-        StudySubjectDAO studySubjectDAO = new StudySubjectDAO(dataSource);
-        StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
+        StudySubjectDAO studySubjectDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
+        StudyEventDAO studyEventDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
         boolean studySub = true, studyEventDef = true, studyEventStatus = true, eventCRFStatusBool = true, eventcrfSDVStatus = true, eventCRFNameBool = true,
                 upDatedDateBool = true, sdvRequirementBool = true;
 

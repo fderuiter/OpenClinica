@@ -150,8 +150,8 @@ public class AsyncImportTask implements Runnable {
                                     List<ImportDataRuleRunnerContainer> containers = ruleRunSetup(dataSource, currentStudy, ruleSetService, odmContainer);
                                     
                                     CrfBusinessLogicHelper crfBusinessLogicHelper = new CrfBusinessLogicHelper(dataSource);
-                                    ItemDataDAO itemDataDao = new ItemDataDAO(dataSource);
-                                    EventCRFDAO eventCrfDao = new EventCRFDAO(dataSource);
+                                    ItemDataDAO itemDataDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
+                                    EventCRFDAO eventCrfDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
 
                                     org.akaza.openclinica.dao.hibernate.ItemDataDao itemDataHibernateDao = (org.akaza.openclinica.dao.hibernate.ItemDataDao) context.getBean("itemDataDao");
                                     int itemDataCount = 0;

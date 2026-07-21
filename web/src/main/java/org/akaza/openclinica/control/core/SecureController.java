@@ -353,7 +353,7 @@ public abstract class SecureController extends HttpServlet {
 
     private String decodeLINKURL(String successMsg, Integer datasetId) {
 
-        ArchivedDatasetFileDAO asdfDAO = new ArchivedDatasetFileDAO(sm.getDataSource());
+        ArchivedDatasetFileDAO asdfDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ArchivedDatasetFileDAO.class);
 
         ArrayList<ArchivedDatasetFileBean> fileBeans = asdfDAO.findByDatasetId(datasetId);
 
@@ -430,10 +430,10 @@ public abstract class SecureController extends HttpServlet {
             ub = sm.getUserBean();
             session.setAttribute("userBean", ub);
 
-            StudyDAO sdao = new StudyDAO(sm.getDataSource());
+            StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
             if (currentStudy == null || currentStudy.getId() <= 0) {
                 if (ub.getId() > 0 && ub.getActiveStudyId() > 0) {
-                    StudyParameterValueDAO spvdao = new StudyParameterValueDAO(sm.getDataSource());
+                    StudyParameterValueDAO spvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyParameterValueDAO.class);
                     currentStudy = (StudyBean) sdao.findByPK(ub.getActiveStudyId());
 
                     ArrayList studyParameters = spvdao.findParamConfigByStudy(currentStudy);
@@ -793,7 +793,7 @@ public abstract class SecureController extends HttpServlet {
      * @param ds javax.sql.DataSource
      */
     protected boolean entityIncluded(int entityId, String userName, AuditableEntityDAO adao, DataSource ds) {
-        StudyDAO sdao = new StudyDAO(ds);
+        StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
         ArrayList<StudyBean> studies = (ArrayList<StudyBean>) sdao.findAllByUserNotRemoved(userName);
         for (int i = 0; i < studies.size(); ++i) {
             if (adao.findByPKAndStudy(entityId, studies.get(i)).getId() > 0) {
@@ -876,8 +876,8 @@ public abstract class SecureController extends HttpServlet {
     }
 
     public ArrayList getEventDefinitionsByCurrentStudy() {
-        StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
-        StudyEventDefinitionDAO studyEventDefinitionDAO = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyDAO studyDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
+        StudyEventDefinitionDAO studyEventDefinitionDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
         int parentStudyId = currentStudy.getParentStudyId();
         ArrayList allDefs = new ArrayList();
         if (parentStudyId > 0) {
@@ -891,9 +891,9 @@ public abstract class SecureController extends HttpServlet {
     }
 
     public ArrayList getStudyGroupClassesByCurrentStudy() {
-        StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
-        StudyGroupClassDAO studyGroupClassDAO = new StudyGroupClassDAO(sm.getDataSource());
-        StudyGroupDAO studyGroupDAO = new StudyGroupDAO(sm.getDataSource());
+        StudyDAO studyDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
+        StudyGroupClassDAO studyGroupClassDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyGroupClassDAO.class);
+        StudyGroupDAO studyGroupDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyGroupDAO.class);
         int parentStudyId = currentStudy.getParentStudyId();
         ArrayList studyGroupClasses = new ArrayList();
         if (parentStudyId > 0) {
@@ -1052,29 +1052,29 @@ public abstract class SecureController extends HttpServlet {
 
 
     public DiscrepancyNoteBean getNoteInfo(DiscrepancyNoteBean note) {
-        StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO ssdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         if ("itemData".equalsIgnoreCase(note.getEntityType())) {
             int itemDataId = note.getEntityId();
-            ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+            ItemDataDAO iddao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
             ItemDataBean itemData = (ItemDataBean) iddao.findByPK(itemDataId);
-            ItemDAO idao = new ItemDAO(sm.getDataSource());
+            ItemDAO idao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDAO.class);
             if (StringUtil.isBlank(note.getEntityName())) {
                 ItemBean item = (ItemBean) idao.findByPK(itemData.getItemId());
                 note.setEntityName(item.getName());
                 request.setAttribute("item", item);
             }
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
+            EventCRFDAO ecdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+            StudyEventDAO svdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
 
             EventCRFBean ec = (EventCRFBean) ecdao.findByPK(itemData.getEventCRFId());
             StudyEventBean event = (StudyEventBean) svdao.findByPK(ec.getStudyEventId());
 
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+            StudyEventDefinitionDAO seddao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(event.getStudyEventDefinitionId());
             note.setEventName(sed.getName());
             note.setEventStart(event.getDateStarted());
 
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFDAO cdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
             CRFBean crf = cdao.findByVersionId(ec.getCRFVersionId());
             note.setCrfName(crf.getName());
             note.setEventCRFId(ec.getId());
@@ -1091,18 +1091,18 @@ public abstract class SecureController extends HttpServlet {
 
         } else if ("eventCrf".equalsIgnoreCase(note.getEntityType())) {
             int eventCRFId = note.getEntityId();
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
+            EventCRFDAO ecdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
+            StudyEventDAO svdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
 
             EventCRFBean ec = (EventCRFBean) ecdao.findByPK(eventCRFId);
             StudyEventBean event = (StudyEventBean) svdao.findByPK(ec.getStudyEventId());
 
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+            StudyEventDefinitionDAO seddao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(event.getStudyEventDefinitionId());
             note.setEventName(sed.getName());
             note.setEventStart(event.getDateStarted());
 
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFDAO cdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(CRFDAO.class);
             CRFBean crf = cdao.findByVersionId(ec.getCRFVersionId());
             note.setCrfName(crf.getName());
             StudySubjectBean ss = (StudySubjectBean) ssdao.findByPK(ec.getStudySubjectId());
@@ -1111,10 +1111,10 @@ public abstract class SecureController extends HttpServlet {
 
         } else if ("studyEvent".equalsIgnoreCase(note.getEntityType())) {
             int eventId = note.getEntityId();
-            StudyEventDAO svdao = new StudyEventDAO(sm.getDataSource());
+            StudyEventDAO svdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
             StudyEventBean event = (StudyEventBean) svdao.findByPK(eventId);
 
-            StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+            StudyEventDefinitionDAO seddao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
             StudyEventDefinitionBean sed = (StudyEventDefinitionBean) seddao.findByPK(event.getStudyEventDefinitionId());
             note.setEventName(sed.getName());
             note.setEventStart(event.getDateStarted());

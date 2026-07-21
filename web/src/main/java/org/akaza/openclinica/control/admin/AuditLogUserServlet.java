@@ -56,7 +56,7 @@ public class AuditLogUserServlet extends SecureController {
         } else {
             session.setAttribute(ARG_USERID, new Integer(userId));
         }
-        AuditEventDAO aeDAO = new AuditEventDAO(sm.getDataSource());
+        AuditEventDAO aeDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), AuditEventDAO.class);
         ArrayList al = aeDAO.findAllByUserId(userId);
 
         EntityBeanTable table = fp.getEntityBeanTable();
@@ -86,7 +86,7 @@ public class AuditLogUserServlet extends SecureController {
         table.computeDisplay();
 
         request.setAttribute("table", table);
-        UserAccountDAO uadao = new UserAccountDAO(sm.getDataSource());
+        UserAccountDAO uadao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
         UserAccountBean uabean = (UserAccountBean) uadao.findByPK(userId);
         request.setAttribute("auditUserBean", uabean);
         forwardPage(Page.AUDIT_LOG_USER);

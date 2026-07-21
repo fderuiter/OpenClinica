@@ -24,6 +24,9 @@ import org.quartz.JobDataMap;
 import org.quartz.SimpleTrigger;
 
 public class TriggerService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
     public TriggerService() {
         // do nothing, for the moment
@@ -111,7 +114,7 @@ public class TriggerService {
         // jobDataMap.get(ExampleSpringJob.CDISC13OC));
         jobDataMap.put(SPSS, spss);
         jobDataMap.put(USER_ID, userAccount.getId());
-        // StudyDAO studyDAO = new StudyDAO();
+        // StudyDAO studyDAO = applicationContext.getBean(StudyDAO.class);
         jobDataMap.put(STUDY_ID, study.getId());
         jobDataMap.put(STUDY_NAME, study.getName());
         jobDataMap.put(STUDY_OID, study.getOid());

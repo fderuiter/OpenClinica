@@ -90,7 +90,7 @@ public class ViewSingleJobServlet extends SecureController {
         logger.debug("found group name: " + groupName);
           TriggerBean triggerBean = new TriggerBean();
         JobDataMap dataMap = new JobDataMap();
-        AuditEventDAO auditEventDAO = new AuditEventDAO(sm.getDataSource());
+        AuditEventDAO auditEventDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), AuditEventDAO.class);
 
         try {
             triggerBean.setFullName(trigger.getKey().getName());
@@ -122,14 +122,14 @@ public class ViewSingleJobServlet extends SecureController {
                     int dsId = dataMap.getInt(ExampleSpringJob.DATASET_ID);
                     triggerBean.setExportFormat(exportFormat);
                     triggerBean.setPeriodToRun(periodToRun);
-                    DatasetDAO datasetDAO = new DatasetDAO(sm.getDataSource());
+                    DatasetDAO datasetDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DatasetDAO.class);
                     DatasetBean dataset = (DatasetBean) datasetDAO.findByPK(dsId);
                     triggerBean.setDataset(dataset);
                 }
                 int userId = dataMap.getInt(ExampleSpringJob.USER_ID);
                 // need to set information, extract bean, user account bean
 
-                UserAccountDAO userAccountDAO = new UserAccountDAO(sm.getDataSource());
+                UserAccountDAO userAccountDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
 
                 triggerBean.setContactEmail(contactEmail);
 

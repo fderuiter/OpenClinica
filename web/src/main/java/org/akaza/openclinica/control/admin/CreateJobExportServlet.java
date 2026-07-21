@@ -94,7 +94,7 @@ public class CreateJobExportServlet extends SecureController {
         // }
         // // possible error with dates? yep
         // }
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DatasetDAO.class);
         Collection dsList = dsdao.findAllOrderByStudyIdAndName();
         // TODO will have to dress this up to allow for sites then datasets
         request.setAttribute("datasets", dsList);
@@ -151,8 +151,8 @@ public class CreateJobExportServlet extends SecureController {
             } else {
                 logger.info("found no validation errors, continuing");
 
-                StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
-                DatasetDAO datasetDao = new DatasetDAO(sm.getDataSource());
+                StudyDAO studyDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
+                DatasetDAO datasetDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DatasetDAO.class);
 
                 UserAccountBean userBean = (UserAccountBean) request.getSession().getAttribute("userBean");
                 CoreResources cr =  new CoreResources();

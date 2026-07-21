@@ -85,7 +85,7 @@ public class InitUpdateCRFServlet extends SecureController {
             addPageMessage(respage.getString("please_choose_a_CRF_version_to_update"));
             forwardPage(Page.CRF_LIST_SERVLET);
         } else {
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
+            CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
             CRFBean crf = (CRFBean) cdao.findByPK(crfId);
             if(!ub.isSysAdmin() && (crf.getOwnerId() != ub.getId())){
                 addPageMessage(respage.getString("no_have_correct_privilege_current_study")

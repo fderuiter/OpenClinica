@@ -37,10 +37,10 @@ public class AsyncXmlImportJob extends QuartzJobBean {
             String localeStr = dataMap.getString(LOCALE);
 
             DataSource dataSource = (DataSource) appContext.getBean("dataSource");
-            UserAccountDAO udao = new UserAccountDAO(dataSource);
+            UserAccountDAO udao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
             UserAccountBean ub = (UserAccountBean) udao.findByPK(userId);
 
-            StudyDAO sdao = new StudyDAO(dataSource);
+            StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
             StudyBean study = (StudyBean) sdao.findByPK(studyId);
 
             Locale locale = new Locale(localeStr);

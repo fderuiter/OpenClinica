@@ -94,7 +94,7 @@ public class ImportDataRuleRunnerContainer {
                 }
                 String sedOrd = studyEventDataBean.getStudyEventRepeatKey();
                 Integer sedOrdinal = sedOrd != null && !sedOrd.isEmpty() ? Integer.valueOf(sedOrd) : 1;
-                StudyEventBean studyEvent = (StudyEventBean)new StudyEventDAO(ds).findByStudySubjectIdAndDefinitionIdAndOrdinal(
+                StudyEventBean studyEvent = (StudyEventBean)org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class).findByStudySubjectIdAndDefinitionIdAndOrdinal(
                         studySubject.getId(), sed.getId(), sedOrdinal);
                 List<RuleSetBean> ruleSets = ruleSetService.getRuleSetsByCrfStudyAndStudyEventDefinition(studyBean, sed, crfVersion);
                 //Set<String> targetItemOids = new HashSet<String>();

@@ -85,7 +85,7 @@ public class CreateUserAccountServlet extends SecureController {
     protected void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         // YW 11-28-2007 << list sites under their studies
         ArrayList<StudyBean> all = (ArrayList<StudyBean>) sdao.findAll();
         ArrayList<StudyBean> finalList = new ArrayList<StudyBean>();
@@ -191,7 +191,7 @@ public class CreateUserAccountServlet extends SecureController {
             setPresetValues(presetValues);
             forwardPage(Page.CREATE_ACCOUNT);
         } else {
-            UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+            UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
             Validator v = new Validator(request);
 
             // username must not be blank,
@@ -383,7 +383,7 @@ public class CreateUserAccountServlet extends SecureController {
     }
 
 	public Boolean isApiKeyExist(String uuid) {
-		UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+		UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
 		UserAccountBean uBean = (UserAccountBean) udao.findByApiKey(uuid);
 		if (uBean == null || !uBean.isActive()) {
 			return false;

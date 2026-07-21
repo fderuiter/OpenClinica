@@ -117,8 +117,8 @@ public class ViewNotesServlet extends SecureController {
         String viewForOne = fp.getString("viewForOne");
         boolean isForOneSubjectsNotes = "y".equalsIgnoreCase(viewForOne);
 
-        DiscrepancyNoteDAO dndao = new DiscrepancyNoteDAO(sm.getDataSource());
-        StudyDAO studyDAO = new StudyDAO(sm.getDataSource());
+        DiscrepancyNoteDAO dndao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DiscrepancyNoteDAO.class);
+        StudyDAO studyDAO = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
         dndao.setFetchMapping(true);
 
         int resolutionStatus = 0;
@@ -154,20 +154,20 @@ public class ViewNotesServlet extends SecureController {
             request.setAttribute(RESOLUTION_STATUS, resolutionStatusIds);
         }
 
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
-        StudyDAO studyDao = new StudyDAO(sm.getDataSource());
+        StudySubjectDAO subdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
+        StudyDAO studyDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
 
-        SubjectDAO sdao = new SubjectDAO(sm.getDataSource());
+        SubjectDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SubjectDAO.class);
 
-        UserAccountDAO uadao = new UserAccountDAO(sm.getDataSource());
-        CRFVersionDAO crfVersionDao = new CRFVersionDAO(sm.getDataSource());
-        CRFDAO crfDao = new CRFDAO(sm.getDataSource());
-        StudyEventDAO studyEventDao = new StudyEventDAO(sm.getDataSource());
-        StudyEventDefinitionDAO studyEventDefinitionDao = new StudyEventDefinitionDAO(sm.getDataSource());
-        EventDefinitionCRFDAO eventDefinitionCRFDao = new EventDefinitionCRFDAO(sm.getDataSource());
-        ItemDataDAO itemDataDao = new ItemDataDAO(sm.getDataSource());
-        ItemDAO itemDao = new ItemDAO(sm.getDataSource());
-        EventCRFDAO eventCRFDao = new EventCRFDAO(sm.getDataSource());
+        UserAccountDAO uadao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
+        CRFVersionDAO crfVersionDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+        CRFDAO crfDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
+        StudyEventDAO studyEventDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
+        StudyEventDefinitionDAO studyEventDefinitionDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
+        EventDefinitionCRFDAO eventDefinitionCRFDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
+        ItemDataDAO itemDataDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
+        ItemDAO itemDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDAO.class);
+        EventCRFDAO eventCRFDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
 
 
 
@@ -279,7 +279,7 @@ public class ViewNotesServlet extends SecureController {
         boolean filterByRes = resolutionStatus >= 1 && resolutionStatus <= 5;
 
         ArrayList<DiscrepancyNoteBean> filteredNotes = new ArrayList<DiscrepancyNoteBean>();
-        StudySubjectDAO subjectDao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO subjectDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
         StudySubjectBean studySubjBean = (StudySubjectBean) subjectDao.findByPK(subjectId);
 
         for (DiscrepancyNoteBean discBean : allNotes) {

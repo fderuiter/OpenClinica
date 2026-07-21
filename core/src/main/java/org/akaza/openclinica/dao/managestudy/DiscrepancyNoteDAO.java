@@ -151,7 +151,7 @@ public class DiscrepancyNoteDAO extends AuditableEntityDAO {
         eb.setStudyId(selectInt(hm, "study_id"));
         eb.setAssignedUserId(selectInt(hm, "assigned_user_id"));
         if (eb.getAssignedUserId() > 0) {
-            UserAccountDAO userAccountDAO = new UserAccountDAO(ds);
+            UserAccountDAO userAccountDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
             UserAccountBean assignedUser = (UserAccountBean) userAccountDAO.findByPK(eb.getAssignedUserId());
             eb.setAssignedUser(assignedUser);
         }
@@ -1881,15 +1881,15 @@ public class DiscrepancyNoteDAO extends AuditableEntityDAO {
     public static AuditableEntityDAO getAEDAO(DiscrepancyNoteBean note, DataSource ds) {
         String entityType = note.getEntityType();
         if ("subject".equalsIgnoreCase(entityType)) {
-            return new SubjectDAO(ds);
+            return org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(SubjectDAO.class);
         } else if ("studySub".equalsIgnoreCase(entityType)) {
-            return new StudySubjectDAO(ds);
+            return org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
         } else if ("eventCrf".equalsIgnoreCase(entityType)) {
-            return new EventCRFDAO(ds);
+            return org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventCRFDAO.class);
         } else if ("studyEvent".equalsIgnoreCase(entityType)) {
-            return new StudyEventDAO(ds);
+            return org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
         } else if ("itemData".equalsIgnoreCase(entityType)) {
-            return new ItemDataDAO(ds);
+            return org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(ItemDataDAO.class);
         }
 
         return null;

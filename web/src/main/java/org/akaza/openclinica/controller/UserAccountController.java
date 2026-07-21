@@ -60,6 +60,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping(value = "/auth/api/v1")
 @ResponseStatus(value = org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
 public class UserAccountController {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
 
 	@Autowired
 	@Qualifier("dataSource")
@@ -275,7 +278,7 @@ public class UserAccountController {
 	}
 
 	private void createUserAccount(UserAccountBean userAccountBean) {
-		udao = new UserAccountDAO(dataSource);
+		udao = applicationContext.getBean(UserAccountDAO.class);
 		udao.create(userAccountBean);
 	}
 
@@ -302,19 +305,19 @@ public class UserAccountController {
 	}
 
 	private StudyBean getStudyByName(String name) {
-		sdao = new StudyDAO(dataSource);
+		sdao = applicationContext.getBean(StudyDAO.class);
 		StudyBean studyBean = (StudyBean) sdao.findByName(name);
 		return studyBean;
 	}
 
 	private StudyBean getStudy(String oid) {
-		sdao = new StudyDAO(dataSource);
+		sdao = applicationContext.getBean(StudyDAO.class);
 		StudyBean studyBean = (StudyBean) sdao.findByOid(oid);
 		return studyBean;
 	}
 
 	private StudyBean getStudy(Integer id) {
-		sdao = new StudyDAO(dataSource);
+		sdao = applicationContext.getBean(StudyDAO.class);
 		StudyBean studyBean = (StudyBean) sdao.findByPK(id);
 		return studyBean;
 	}
@@ -331,19 +334,19 @@ public class UserAccountController {
 	}
 
 	private ArrayList<UserAccountBean> getUserAccountByStudy(String userName, ArrayList allStudies) {
-		udao = new UserAccountDAO(dataSource);
+		udao = applicationContext.getBean(UserAccountDAO.class);
 		ArrayList<UserAccountBean> userAccountBeans = udao.findStudyByUser(userName, allStudies);
 		return userAccountBeans;
 	}
 
 	private UserAccountBean getUserAccount(String userName) {
-		udao = new UserAccountDAO(dataSource);
+		udao = applicationContext.getBean(UserAccountDAO.class);
 		UserAccountBean userAccountBean = (UserAccountBean) udao.findByUserName(userName);
 		return userAccountBean;
 	}
 
 	private UserAccountBean getUserAccountByApiKey(String apiKey) {
-		udao = new UserAccountDAO(dataSource);
+		udao = applicationContext.getBean(UserAccountDAO.class);
 		UserAccountBean userAccountBean = (UserAccountBean) udao.findByApiKey(apiKey);
 		return userAccountBean;
 	}
@@ -361,7 +364,7 @@ public class UserAccountController {
 	}
 
 	public Boolean isApiKeyExist(String uuid) {
-		UserAccountDAO udao = new UserAccountDAO(dataSource);
+		UserAccountDAO udao = applicationContext.getBean(UserAccountDAO.class);
 		UserAccountBean uBean = (UserAccountBean) udao.findByApiKey(uuid);
 		if (uBean == null || !uBean.isActive()) {
 			return false;

@@ -38,7 +38,7 @@ public abstract class AbstractJavaManagedDataMigration implements CustomTaskChan
         
         this.dataSource = ApplicationContextProvider.getApplicationContext().getBean("dataSource", DataSource.class);
         
-        UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
+        UserAccountDAO userAccountDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
         systemUser = (UserAccountBean) userAccountDAO.findByUserName("root");
         if (systemUser == null || systemUser.getId() <= 0) {
             systemUser = new UserAccountBean();

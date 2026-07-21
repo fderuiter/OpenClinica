@@ -69,7 +69,7 @@ public class BeanPropertyRuleRunner extends RuleRunner{
                     {
 	                    RuleBean rule = ruleSetRule.getRuleBean();
 	             //       StudyBean currentStudy = rule.getStudy();//TODO:Fix me!
-	                    StudyDAO sdao = new StudyDAO(ds);
+	                    StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
 	                    StudyBean currentStudy = (StudyBean) sdao.findByPK(rule.getStudyId());
 	                    ExpressionBeanObjectWrapper eow = new ExpressionBeanObjectWrapper(ds, currentStudy, rule.getExpression(), ruleSet,studySubjectBeanId, studyEventDaoHib, studyEventDefDaoHib);
 	                    try {
@@ -152,7 +152,7 @@ public class BeanPropertyRuleRunner extends RuleRunner{
 
 	
 	public StudyEventDAO getStudyEventDao(DataSource ds) {
-		return new StudyEventDAO(ds);
+		return org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
 	}
 
 	

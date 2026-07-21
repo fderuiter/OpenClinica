@@ -58,7 +58,7 @@ public class ViewEventCRFContentServlet extends SecureController {
      */
     private StudyEventBean getStudyEvent(int eventId) throws Exception {
 
-        StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+        StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
         StudyBean studyWithSED = currentStudy;
         if (currentStudy.getParentStudyId() > 0) {
             studyWithSED = new StudyBean();
@@ -76,7 +76,7 @@ public class ViewEventCRFContentServlet extends SecureController {
 
         StudyEventBean seb = (StudyEventBean) aeb;
 
-        StudyEventDefinitionDAO seddao = new StudyEventDefinitionDAO(sm.getDataSource());
+        StudyEventDefinitionDAO seddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
         StudyEventDefinitionBean sedb = (StudyEventDefinitionBean) seddao.findByPK(seb.getStudyEventDefinitionId());
         seb.setStudyEventDefinition(sedb);
         return seb;
@@ -96,11 +96,11 @@ public class ViewEventCRFContentServlet extends SecureController {
 
         StudyEventBean seb = getStudyEvent(eventId);
 
-        StudySubjectDAO subdao = new StudySubjectDAO(sm.getDataSource());
+        StudySubjectDAO subdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
         StudySubjectBean studySub = (StudySubjectBean) subdao.findByPK(studySubId);
         request.setAttribute("studySub", studySub);
 
-        EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
+        EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
         EventCRFBean eventCRF = (EventCRFBean) ecdao.findByPK(eventCRFId);
         DisplayTableOfContentsBean displayBean = TableOfContentsServlet.getDisplayBean(eventCRF, sm.getDataSource(), currentStudy);
         request.setAttribute("toc", displayBean);

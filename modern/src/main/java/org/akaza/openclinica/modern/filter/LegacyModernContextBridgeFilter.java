@@ -27,10 +27,12 @@ public class LegacyModernContextBridgeFilter extends OncePerRequestFilter {
 
     private final DataSource dataSource;
     private final UnifiedRepository unifiedRepository;
+    private final UserAccountDAO userAccountDAO;
 
-    public LegacyModernContextBridgeFilter(DataSource dataSource, UnifiedRepository unifiedRepository) {
+    public LegacyModernContextBridgeFilter(DataSource dataSource, UnifiedRepository unifiedRepository, UserAccountDAO userAccountDAO) {
         this.dataSource = dataSource;
         this.unifiedRepository = unifiedRepository;
+        this.userAccountDAO = userAccountDAO;
     }
 
     @Override
@@ -46,7 +48,6 @@ public class LegacyModernContextBridgeFilter extends OncePerRequestFilter {
             if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
                 String username = authentication.getName();
                 
-                UserAccountDAO userAccountDAO = new UserAccountDAO(dataSource);
                 UserAccountBean userBean = (UserAccountBean) userAccountDAO.findByUserName(username);
                 
                 if (userBean != null && userBean.getId() > 0) {

@@ -66,14 +66,14 @@ public class DeleteCRFVersionServlet extends SecureController {
             addPageMessage(respage.getString("please_choose_a_CRF_version_to_delete"));
             forwardPage(Page.CRF_LIST_SERVLET);
         } else {
-            CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
-            CRFDAO cdao = new CRFDAO(sm.getDataSource());
-            EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
-            StudyEventDefinitionDAO sedDao = new StudyEventDefinitionDAO(sm.getDataSource());
-            StudyEventDAO seDao = new StudyEventDAO(sm.getDataSource());
-            ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
-            EventCRFDAO ecdao = new EventCRFDAO(sm.getDataSource());
-            StudySubjectDAO ssdao = new StudySubjectDAO(sm.getDataSource());
+            CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
+            CRFDAO cdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFDAO.class);
+            EventDefinitionCRFDAO edcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
+            StudyEventDefinitionDAO sedDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDefinitionDAO.class);
+            StudyEventDAO seDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
+            ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
+            EventCRFDAO ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
+            StudySubjectDAO ssdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudySubjectDAO.class);
             CRFVersionBean version = (CRFVersionBean) cvdao.findByPK(versionId);
 
             // find definitions using this version

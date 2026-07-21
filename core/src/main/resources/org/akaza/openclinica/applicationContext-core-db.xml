@@ -52,8 +52,47 @@
     </bean>
       
     <!-- Exposing old-fashioned DAOs as Spring beans -->
-   <!--  <bean class="org.akaza.openclinica.dao.login.UserAccountDAO">
+    <bean id="userAccountDaoJdbc" class="org.akaza.openclinica.dao.login.UserAccountDAO" scope="prototype">
         <constructor-arg ref="dataSource"/>
-        </bean>
--->
+    </bean>
+    <bean id="eventCrfDaoJdbc" class="org.akaza.openclinica.dao.submit.EventCRFDAO" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="studyDaoJdbc" class="org.akaza.openclinica.dao.managestudy.StudyDAO" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="studyEventDefinitionDaoJdbc" class="org.akaza.openclinica.dao.managestudy.StudyEventDefinitionDAO" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="crfVersionDaoJdbc" class="org.akaza.openclinica.dao.submit.CRFVersionDAO" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="studySubjectDaoJdbc" class="org.akaza.openclinica.dao.managestudy.StudySubjectDAO" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="subjectDaoJdbc" class="org.akaza.openclinica.dao.submit.SubjectDAO" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="crfDaoJdbc" class="org.akaza.openclinica.dao.admin.CRFDAO" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="studyEventDaoJdbc" class="org.akaza.openclinica.dao.managestudy.StudyEventDAO" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="itemDaoJdbc" class="org.akaza.openclinica.dao.submit.ItemDAO" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="itemDataDaoJdbc" class="org.akaza.openclinica.dao.submit.ItemDataDAO" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="itemFormMetadataDaoJdbc" class="org.akaza.openclinica.dao.submit.ItemFormMetadataDAO" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="auditDaoJdbc" class="org.akaza.openclinica.dao.admin.AuditDAO" scope="prototype"><constructor-arg ref="dataSource"/></bean>
+    <bean id="discrepancyNoteDaoJdbc" class="org.akaza.openclinica.dao.managestudy.DiscrepancyNoteDAO" scope="prototype"><constructor-arg ref="dataSource"/></bean>
+    <bean id="eventDefinitionCrfDaoJdbc" class="org.akaza.openclinica.dao.managestudy.EventDefinitionCRFDAO" scope="prototype"><constructor-arg ref="dataSource"/></bean>
+    <bean id="itemGroupDaoJdbc" class="org.akaza.openclinica.dao.submit.ItemGroupDAO" scope="prototype"><constructor-arg ref="dataSource"/></bean>
+    <bean id="sectionDaoJdbc" class="org.akaza.openclinica.dao.submit.SectionDAO" scope="prototype"><constructor-arg ref="dataSource"/></bean>
+    <bean id="studyParameterValueDaoJdbc" class="org.akaza.openclinica.dao.service.StudyParameterValueDAO" scope="prototype"><constructor-arg ref="dataSource"/></bean>
+    <bean id="archivedDatasetFileDaoJdbc" class="org.akaza.openclinica.dao.extract.ArchivedDatasetFileDAO" scope="prototype"><constructor-arg ref="dataSource"/></bean>
 </beans>

@@ -57,7 +57,7 @@ public class RemoveCRFVersionServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        CRFVersionDAO cvdao = new CRFVersionDAO(sm.getDataSource());
+        CRFVersionDAO cvdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), CRFVersionDAO.class);
         FormProcessor fp = new FormProcessor(request);
         int versionId = fp.getInt("id", true);
         String module = fp.getString("module");
@@ -81,9 +81,9 @@ public class RemoveCRFVersionServlet extends SecureController {
                 return;
             }
 
-            SectionDAO secdao = new SectionDAO(sm.getDataSource());
+            SectionDAO secdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SectionDAO.class);
 
-            EventCRFDAO evdao = new EventCRFDAO(sm.getDataSource());
+            EventCRFDAO evdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
             // find all event crfs by version id
             ArrayList eventCRFs = evdao.findUndeletedWithStudySubjectsByCRFVersion(versionId);
             if ("confirm".equalsIgnoreCase(action)) {
@@ -120,7 +120,7 @@ public class RemoveCRFVersionServlet extends SecureController {
                 }
 
                 // all item data related to event crfs
-                ItemDataDAO idao = new ItemDataDAO(sm.getDataSource());
+                ItemDataDAO idao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
                 for (int i = 0; i < eventCRFs.size(); i++) {
                     EventCRFBean eventCRF = (EventCRFBean) eventCRFs.get(i);
                     if (!eventCRF.getStatus().equals(Status.DELETED)) {
@@ -144,7 +144,7 @@ public class RemoveCRFVersionServlet extends SecureController {
 
                 ArrayList versionList = (ArrayList)cvdao.findAllByCRF(version.getCrfId());
                 if(versionList.size() > 0){
-                    EventDefinitionCRFDAO edCRFDao = new EventDefinitionCRFDAO(sm.getDataSource());
+                    EventDefinitionCRFDAO edCRFDao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
                     ArrayList edcList = (ArrayList)edCRFDao.findAllByCRF(version.getCrfId());
                     for(int i = 0; i < edcList.size(); i++){
                         EventDefinitionCRFBean edcBean = (EventDefinitionCRFBean)edcList.get(i);

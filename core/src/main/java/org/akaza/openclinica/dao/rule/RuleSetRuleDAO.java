@@ -53,11 +53,11 @@ public class RuleSetRuleDAO extends AuditableEntityDAO {
     }
 
     private RuleDAO getRuleDao() {
-        return this.ruleDao != null ? this.ruleDao : new RuleDAO(ds);
+        return this.ruleDao != null ? this.ruleDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleDAO.class);
     }
 
     private RuleSetDAO getRuleSetDao() {
-        return this.ruleSetDao != null ? this.ruleSetDao : new RuleSetDAO(ds);
+        return this.ruleSetDao != null ? this.ruleSetDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleSetDAO.class);
     }
 
     public RuleSetRuleDAO(DataSource ds, DAODigester digester) {
@@ -67,7 +67,7 @@ public class RuleSetRuleDAO extends AuditableEntityDAO {
     }
 
     private RuleSetRuleAuditDAO getRuleSetRuleAuditDao() {
-        return this.ruleSetRuleAuditDao != null ? this.ruleSetRuleAuditDao : new RuleSetRuleAuditDAO(ds);
+        return this.ruleSetRuleAuditDao != null ? this.ruleSetRuleAuditDao : org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(RuleSetRuleAuditDAO.class);
     }
 
     @Override

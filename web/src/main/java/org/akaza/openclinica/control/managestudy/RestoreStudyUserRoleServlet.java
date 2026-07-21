@@ -49,8 +49,8 @@ public class RestoreStudyUserRoleServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
 
-        StudyDAO sdao = new StudyDAO(sm.getDataSource());
-        UserAccountDAO udao = new UserAccountDAO(sm.getDataSource());
+        StudyDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyDAO.class);
+        UserAccountDAO udao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), UserAccountDAO.class);
         String name = request.getParameter("name");
         String studyIdString = request.getParameter("studyId");
         if (StringUtil.isBlank(name) || StringUtil.isBlank(studyIdString)) {

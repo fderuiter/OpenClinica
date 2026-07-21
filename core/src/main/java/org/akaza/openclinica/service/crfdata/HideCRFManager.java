@@ -169,7 +169,7 @@ public class HideCRFManager {
         if (crfBeans == null || crfBeans.isEmpty()) {
             return newBeans;
         }
-        EventDefinitionCRFDAO eventDefinitionCRFDAO = new EventDefinitionCRFDAO(dataSource);
+        EventDefinitionCRFDAO eventDefinitionCRFDAO = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(EventDefinitionCRFDAO.class);
         EventDefinitionCRFBean tempBean = new EventDefinitionCRFBean();
         for (CRFBean crfBean : crfBeans) {
             tempBean = eventDefinitionCRFDAO.findByStudyEventDefinitionIdAndCRFId(study, studyEventBean.getId(), crfBean.getId());

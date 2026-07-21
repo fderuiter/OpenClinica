@@ -99,6 +99,9 @@ public class InteropService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService workflowService;
+
     private ObjectMapper objectMapper = new ObjectMapper();
     private HapiContext hl7Context = new DefaultHapiContext();
 
@@ -178,7 +181,6 @@ public class InteropService {
             final String fEventId = eventId;
             final String fValue = value;
 
-            org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService workflowService = new org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService();
             workflowService.setDataSource(dataSource);
 
             workflowService.executeWorkflowTransaction(1L, payloadObj, new org.akaza.openclinica.service.clinical.WorkflowTransactionCallback<Void>() {
@@ -298,7 +300,6 @@ public class InteropService {
 
                     org.akaza.openclinica.model.ClinicalPayload payloadObj = new org.akaza.openclinica.model.ClinicalPayload(br.subjectId, br.eventId, br.value);
 
-                    org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService workflowService = new org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService();
                     workflowService.setDataSource(dataSource);
 
                     workflowService.executeWorkflowTransaction(1L, payloadObj, new org.akaza.openclinica.service.clinical.WorkflowTransactionCallback<Void>() {

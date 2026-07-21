@@ -92,9 +92,9 @@ public class NotificationActionProcessor implements ActionProcessor, Runnable {
 		this.ds = ds;
 		this.mailSender = mailSender;
 		this.ruleSetRule = ruleSetRule;
-		ssdao = new StudySubjectDAO(ds);
-		udao = new UserAccountDAO(ds);
-  	   spvdao = new StudyParameterValueDAO(ds);
+		ssdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
+		udao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(UserAccountDAO.class);
+  	   spvdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyParameterValueDAO.class);
 
 
 
@@ -314,19 +314,19 @@ public class NotificationActionProcessor implements ActionProcessor, Runnable {
 	}
 
 	public ArrayList<StudySubjectBean> getAllParticipantStudySubjectsPerStudy(int studyId, DataSource ds) {
-		StudySubjectDAO ssdao = new StudySubjectDAO(ds);
+		StudySubjectDAO ssdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudySubjectDAO.class);
 		ArrayList<StudySubjectBean> ssBeans = ssdao.findAllByStudyId(studyId);
 		return ssBeans;
 	}
 
 	public StudyEventBean getStudyEvent(StudySubjectBean ssBean, DataSource ds) {
-		StudyEventDAO studyEventDao = new StudyEventDAO(ds);
+		StudyEventDAO studyEventDao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDAO.class);
 		StudyEventBean seBean = (StudyEventBean) studyEventDao.getNextScheduledEvent(ssBean.getOid());
 		return seBean;
 	}
 
 	private StudyBean getParentStudy(DataSource ds, StudyBean study) {
-		StudyDAO sdao = new StudyDAO(ds);
+		StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
 		if (study.getParentStudyId() == 0) {
 			return study;
 		} else {
@@ -337,12 +337,12 @@ public class NotificationActionProcessor implements ActionProcessor, Runnable {
 	}
 
 	public StudyEventDefinitionBean getStudyEventDefnBean(int sed_Id) {
-		StudyEventDefinitionDAO sedao = new StudyEventDefinitionDAO(ds);
+		StudyEventDefinitionDAO sedao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyEventDefinitionDAO.class);
 		return (StudyEventDefinitionBean) sedao.findByPK(sed_Id);
 	};
 
 	public StudyBean getStudyBean(int studyId) {
-		StudyDAO sdao = new StudyDAO(ds);
+		StudyDAO sdao = org.akaza.openclinica.core.ApplicationContextProvider.getApplicationContext().getBean(StudyDAO.class);
 		return (StudyBean) sdao.findByPK(studyId);
 
 	}

@@ -42,7 +42,7 @@ public class ExtractDatasetsMainServlet extends SecureController {
     @Override
     public void processRequest() throws Exception {
         FormProcessor fp = new FormProcessor(request);
-        DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        DatasetDAO dsdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DatasetDAO.class);
         EntityBeanTable table = fp.getEntityBeanTable();
 
         ArrayList datasets = (ArrayList) dsdao.findTopFive(currentStudy);
@@ -63,7 +63,7 @@ public class ExtractDatasetsMainServlet extends SecureController {
 
         request.setAttribute("table", table);
         // the code above replaces the following lines:
-        // DatasetDAO dsdao = new DatasetDAO(sm.getDataSource());
+        // DatasetDAO dsdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), DatasetDAO.class);
         // ArrayList datasets = (ArrayList)dsdao.findTopFive();
         // request.setAttribute("datasets", datasets);
         resetPanel();

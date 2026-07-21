@@ -71,19 +71,19 @@ public class MarkEventCRFCompleteServlet extends SecureController {
         fp = new FormProcessor(request);
         int eventCRFId = fp.getInt(INPUT_EVENT_CRF_ID);
 
-        ecdao = new EventCRFDAO(sm.getDataSource());
+        ecdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventCRFDAO.class);
         ecb = (EventCRFBean) ecdao.findByPK(eventCRFId);
     }
 
     private boolean isEachRequiredFieldFillout() {
-        ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+        ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
         ArrayList dataList = iddao.findAllBlankRequiredByEventCRFId(ecb.getId(), ecb.getCRFVersionId());
         // empty means all required fields got filled out,return true-jxu
         return dataList.isEmpty();
     }
 
     private boolean isEachSectionReviewedOnce() {
-        SectionDAO sdao = new SectionDAO(sm.getDataSource());
+        SectionDAO sdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), SectionDAO.class);
 
         DataEntryStage stage = ecb.getStage();
 
@@ -115,7 +115,7 @@ public class MarkEventCRFCompleteServlet extends SecureController {
     }
 
     private void getEventDefinitionCRFBean() {
-        edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+        edcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
         edcb = edcdao.findForStudyByStudyEventIdAndCRFVersionId(ecb.getStudyEventId(), ecb.getCRFVersionId());
     }
 
@@ -224,16 +224,16 @@ public class MarkEventCRFCompleteServlet extends SecureController {
                 ecb = (EventCRFBean) ecdao.update(ecb);
                 ecdao.markComplete(ecb, ide);
 
-                ItemDataDAO iddao = new ItemDataDAO(sm.getDataSource());
+                ItemDataDAO iddao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), ItemDataDAO.class);
                 iddao.updateStatusByEventCRF(ecb, newStatus);
 
                 // change status for event
-                StudyEventDAO sedao = new StudyEventDAO(sm.getDataSource());
+                StudyEventDAO sedao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), StudyEventDAO.class);
                 StudyEventBean seb = (StudyEventBean) sedao.findByPK(ecb.getStudyEventId());
                 seb.setUpdatedDate(new Date());
                 seb.setUpdater(ub);
 
-                EventDefinitionCRFDAO edcdao = new EventDefinitionCRFDAO(sm.getDataSource());
+                EventDefinitionCRFDAO edcdao = org.akaza.openclinica.control.SpringServletAccess.getDao(getServletContext(), EventDefinitionCRFDAO.class);
                 ArrayList allCRFs = ecdao.findAllByStudyEvent(seb);
                 ArrayList allEDCs = edcdao.findAllActiveByEventDefinitionId(seb.getStudyEventDefinitionId());
                 boolean eventCompleted = true;
