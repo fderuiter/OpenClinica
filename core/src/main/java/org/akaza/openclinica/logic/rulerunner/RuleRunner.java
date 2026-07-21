@@ -16,7 +16,7 @@ import org.akaza.openclinica.dao.managestudy.StudyEventDAO;
 import org.akaza.openclinica.dao.managestudy.StudySubjectDAO;
 import org.akaza.openclinica.dao.rule.RuleSetDAO;
 import org.akaza.openclinica.dao.rule.RuleSetRuleDAO;
-import org.akaza.openclinica.dao.rule.action.RuleActionDAO;
+
 import org.akaza.openclinica.dao.submit.CRFVersionDAO;
 import org.akaza.openclinica.dao.submit.EventCRFDAO;
 import org.akaza.openclinica.dao.submit.ItemDataDAO;
@@ -48,7 +48,7 @@ public class RuleRunner {
     protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private RuleSetDAO ruleSetDao;
     private RuleSetRuleDAO ruleSetRuleDao;
-    private RuleActionDAO ruleActionDao;
+
     private CRFDAO crfDao;
     private CRFVersionDAO crfVersionDao;
     private StudyEventDAO studyEventDao;
@@ -206,10 +206,7 @@ public class RuleRunner {
         return ruleSetRuleDao;
     }
 
-    RuleActionDAO getRuleActionDao() {
-        ruleActionDao = this.ruleActionDao != null ? ruleActionDao : new RuleActionDAO(ds);
-        return ruleActionDao;
-    }
+
 
     StudyEventDAO getStudyEventDao() {
         studyEventDao = this.studyEventDao != null ? studyEventDao : new StudyEventDAO(ds);
