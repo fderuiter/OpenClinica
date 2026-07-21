@@ -200,12 +200,6 @@ public class BeanPropertyService{
     	else return 1;
     }
     
-	private StudyEventDefinition getStudyEventDefinitionBean(String eventOID) {
-        return getStudyEventDefinitionDao().findByColumnName(eventOID, "oc_oid");
-    	
-	}
-
-
 	public Boolean hasShowingDynGroupInSection(int sectionId, int crfVersionId, int eventCrfId) {
         return dynamicsItemGroupMetadataDao.hasShowingInSection(sectionId, crfVersionId, eventCrfId);
     }

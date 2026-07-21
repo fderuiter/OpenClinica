@@ -1,0 +1,7 @@
+node_modules
+dist
+vendor
+target
+.husky
+.git
+*.min.js
