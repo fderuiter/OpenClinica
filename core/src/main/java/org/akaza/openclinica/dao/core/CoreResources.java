@@ -33,7 +33,6 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 public class CoreResources implements ResourceLoaderAware {
 
     private ResourceLoader resourceLoader;
-    public static String PROPERTIES_DIR;
     private static String DB_NAME;
     private static Properties DATAINFO;
     private static Properties EXTRACTINFO;
@@ -868,23 +867,7 @@ public class CoreResources implements ResourceLoaderAware {
         }
     }
 
-    public void setPROPERTIES_DIR() {
-        String resource = "classpath:properties/placeholder.properties";
-        // System.out.println("Resource " + resource);
-        Resource scr = resourceLoader.getResource(resource);
-        String absolutePath = null;
-        try {
-            // System.out.println("Resource" + resource);
-            absolutePath = scr.getFile().getAbsolutePath();
-            // System.out.println("Resource" + ((ClassPathResource) scr).getPath());
-            // System.out.println("Resource" + resource);
-            PROPERTIES_DIR = absolutePath.replaceAll("placeholder.properties", "");
-            // System.out.println("Resource " + PROPERTIES_DIR);
-        } catch (IOException e) {
-            throw new OpenClinicaSystemException(e.getMessage(), e.fillInStackTrace());
-        }
 
-    }
 
     /**
      * @pgawade 18-April-2011 - Fix for issue 8394 Method to set the absolute file path value to point to "odm_mapping"
@@ -892,19 +875,7 @@ public class CoreResources implements ResourceLoaderAware {
      *          location during application initialization
      */
     public void setODM_MAPPING_DIR() {
-        String resource = "classpath:datainfo.properties";
-
-        Resource scr = resourceLoader.getResource(resource);
-        String absolutePath = null;
-        try {
-
-            absolutePath = scr.getFile().getAbsolutePath();
-
-            ODM_MAPPING_DIR = getField("filePath");
-            // System.out.println("ODM_MAPPING_DIR: " + ODM_MAPPING_DIR);
-        } catch (IOException e) {
-            throw new OpenClinicaSystemException(e.getMessage(), e.fillInStackTrace());
-        }
+        ODM_MAPPING_DIR = getField("filePath");
     }
 
     private static SQLDialect sqlDialect;

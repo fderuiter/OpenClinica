@@ -263,15 +263,17 @@ public class SQLFactory {
             DAODigester newDaoDigester = new DAODigester();
 
             try {
-         
-                if (System.getProperty("catalina.home") == null) {
-                    String path = getPropertiesDir();
-                    newDaoDigester.setInputStream(new FileInputStream(path + DAOFileName));
+                java.io.InputStream inputStream = null;
+                if (resourceLoader != null) {
+                    inputStream = resourceLoader.getResource("classpath:properties/" + DAOFileName).getInputStream();
                 } else {
-                    String path = CoreResources.PROPERTIES_DIR;
-                    newDaoDigester.setInputStream(resourceLoader.getResource("classpath:properties/" + DAOFileName).getInputStream());
-                    //newDaoDigester.setInputStream(new FileInputStream(path + DAOFileName));
+                    inputStream = SQLFactory.class.getClassLoader().getResourceAsStream("properties/" + DAOFileName);
+                    if (inputStream == null) {
+                        throw new java.io.FileNotFoundException("SQL definition resource not found on classpath: properties/" + DAOFileName);
+                    }
                 }
+                newDaoDigester.setInputStream(inputStream);
+                
                 try {
                     newDaoDigester.run();
                     digesters.put(DAOName, newDaoDigester);
@@ -283,19 +285,6 @@ public class SQLFactory {
             }// end try block for files
         }// end for loop
 
-    }
-
-    public String getPropertiesDir() {
-        String resource = "properties/placeholder.properties";
-        String absolutePath = null;
-        URL path = this.getClass().getClassLoader().getResource(resource);
-        if (null != path) {
-            absolutePath = path.getPath();
-        }else{
-            throw new RuntimeException("Could not get a path please investigate !!");
-        }
-        absolutePath = absolutePath.replaceAll("placeholder.properties", "");
-        return absolutePath;
     }
 
 }
