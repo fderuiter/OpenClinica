@@ -3,12 +3,12 @@ services:
   db:
     image: postgres:15-alpine
     environment:
-      POSTGRES_DB: ${DB}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      PGPORT: ${DB_PORT}
+      POSTGRES_DB: ${DB:-clinica}
+      POSTGRES_USER: ${DB_USER:-clinica}
+      POSTGRES_PASSWORD: ${DB_PASS:-clinica}
+      PGPORT: ${DB_PORT:-5432}
     ports:
-    - ${DB_PORT}:${DB_PORT}
+    - ${DB_PORT:-5432}:${DB_PORT:-5432}
     volumes:
     - db-data:/var/lib/postgresql/data
   admin:
@@ -17,11 +17,11 @@ services:
     depends_on:
     - db
     environment:
-    - DB_HOST=${DB_HOST}
-    - DB_PORT=${DB_PORT}
-    - DB_USER=${DB_USER}
-    - DB_PASS=${DB_PASS}
-    - DB_NAME=${DB}
+    - DB_HOST=${DB_HOST:-db}
+    - DB_PORT=${DB_PORT:-5432}
+    - DB_USER=${DB_USER:-clinica}
+    - DB_PASS=${DB_PASS:-clinica}
+    - DB_NAME=${DB:-clinica}
     - DB_SCHEMA=app_schema
     - BACKUP_FILE=/tmp/backup/db_backup.dump
     volumes:
@@ -37,7 +37,8 @@ services:
     - JAVA_OPTS=-Xmx1024m
     - SPRING_QUARTZ_AUTO_STARTUP=false
     env_file:
-    - .env
+    - path: .env
+      required: false
     volumes:
     - ${HOST_FILE_PATH:-./data}:/opt/clinica/data
     - ${HOST_CLINICAL_TEMPLATE_PATH:-./dummy_template.xlsx}:/opt/clinica/template.xlsx:ro
@@ -56,9 +57,9 @@ services:
     depends_on:
     - db
     environment:
-    - spring.datasource.url=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB}
-    - spring.datasource.username=${DB_USER}
-    - spring.datasource.password=${DB_PASS}
+    - spring.datasource.url=jdbc:postgresql://${DB_HOST:-db}:${DB_PORT:-5432}/${DB:-clinica}
+    - spring.datasource.username=${DB_USER:-clinica}
+    - spring.datasource.password=${DB_PASS:-clinica}
     - SPRING_QUARTZ_AUTO_STARTUP=false
     - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,metrics
     healthcheck:
