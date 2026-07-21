@@ -51,3 +51,11 @@
 - [ ] Audit trail entries are verified as present and accurate for all batched records.
 - [ ] The application connection pool remains available for UI users during a 10,000-row background import.
 - [ ] Failed batches in the staging area can be retried without re-parsing the original file.
+## References
+
+- [cite:source1]: Placeholder descriptive title for source 1
+- [cite:source2]: Placeholder descriptive title for source 2
+- [cite:source3]: Placeholder descriptive title for source 3
+- [cite:source4]: Placeholder descriptive title for source 4
+- [cite:source5]: Placeholder descriptive title for source 5
+- [cite:source6]: Placeholder descriptive title for source 6
