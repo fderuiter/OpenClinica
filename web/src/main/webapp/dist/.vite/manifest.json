@@ -25,7 +25,7 @@
     ]
   },
   "src/main/webapp/js/main.js": {
-    "file": "assets/main-DdeqnzRx.js",
+    "file": "assets/main-CqUGKp1z.js",
     "name": "main",
     "src": "src/main/webapp/js/main.js",
     "isEntry": true,
@@ -34,6 +34,9 @@
       "_legacy-vendor-CIKnzzFs.js",
       "_vendor-BkOcdPCZ.js",
       "_react-vendor-CpFJSVyn.js"
+    ],
+    "css": [
+      "assets/main-CmmNcQPU.css"
     ]
   }
 }
