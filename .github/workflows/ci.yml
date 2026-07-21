@@ -68,3 +68,48 @@ jobs:
       env:
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       run: mvn -B verify -Pdependency-scan -DskipTests
+
+  verification:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: clinica
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d clinica"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Run Validation and Verification Phase
+      run: mvn -B clean verify -Ddb.test=localhost
+    - name: Upload JaCoCo HTML Reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: jacoco-reports
+        path: |
+          **/target/site/jacoco/**
+          **/target/site/jacoco-aggregate/**
+        retention-days: 14
+    - name: Upload PMD Warning Reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: pmd-reports
+        path: |
+          **/target/pmd.xml
+          **/target/site/pmd.html
+        retention-days: 14
+
