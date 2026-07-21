@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@SuppressWarnings("PMD.UnusedPrivateMethod")
 public class ListEventsForSubjectFilter implements CriteriaCommand {
 
     List<Filter> filters = new ArrayList<Filter>();

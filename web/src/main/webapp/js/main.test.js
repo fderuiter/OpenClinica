@@ -5,7 +5,7 @@ describe('Frontend build environment', () => {
     const arrowFunc = () => true;
     expect(arrowFunc()).toBe(true);
   });
-  
+
   it('should support module imports (mocked)', async () => {
     // Basic test to satisfy the test requirement
     expect(typeof window).toBe('object');

@@ -11,15 +11,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-public class ContractTest {
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-    @Autowired
-    private MockMvc mockMvc;
+public class ContractTest extends AbstractIntegrationTest {
 
     @Test
     public void testContextLoads() {
-        // test class must have at least one test
+        assertNotNull(mockMvc, "MockMvc should be loaded in the application context");
     }
 }

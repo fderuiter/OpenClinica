@@ -22,6 +22,7 @@ import org.akaza.openclinica.core.util.ScriptRunner;
  * @author thickerson
  * 
  */
+@SuppressWarnings("PMD.UnusedPrivateMethod")
 public class SqlProcessingFunction extends ProcessingFunction implements Serializable {
 
     private ExtractPropertyBean extractPropertyBean;

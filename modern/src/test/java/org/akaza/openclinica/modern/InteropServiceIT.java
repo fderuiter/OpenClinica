@@ -7,17 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@SpringBootTest
-public class InteropServiceIT {
+public class InteropServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private InteropService interopService;
 
     @Autowired
     private ConfigurationDraftService draftService;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Test
     public void testUpsertSyntaxExecution() {

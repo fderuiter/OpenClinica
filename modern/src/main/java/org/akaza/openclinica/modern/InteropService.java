@@ -1,4 +1,6 @@
 package org.akaza.openclinica.modern;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionSynchronization;
 
 import org.akaza.openclinica.modern.model.ConfigurationDraft;
 import org.akaza.openclinica.modern.service.ConfigurationDraftService;
@@ -115,6 +117,7 @@ public class InteropService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void validate(String recordId, String payload) {
         // Schema validation and business logic checks
         recordsInStaging.put(recordId, payload);
@@ -172,6 +175,7 @@ public class InteropService {
 
             org.akaza.openclinica.model.ClinicalPayload payloadObj = new org.akaza.openclinica.model.ClinicalPayload(subjectId, eventId, value);
             final String fSubjectId = subjectId;
+            final String fEventId = eventId;
             final String fValue = value;
 
             org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService workflowService = new org.akaza.openclinica.service.clinical.UnifiedWorkflowEnforcementService();
@@ -180,15 +184,44 @@ public class InteropService {
             workflowService.executeWorkflowTransaction(1L, payloadObj, new org.akaza.openclinica.service.clinical.WorkflowTransactionCallback<Void>() {
                 @Override
                 public Void doInTransaction() {
-                    jdbcTemplate.update("INSERT INTO study_subject (label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, 1, 1, NOW(), 1) ON CONFLICT DO NOTHING", fSubjectId, fSubjectId);
-                    jdbcTemplate.update("INSERT INTO study_event (study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (1, 1, 1, 1, NOW()) ON CONFLICT DO NOTHING");
-                    jdbcTemplate.update("INSERT INTO item_data (event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (1, 1, 1, ?, 1, NOW())", fValue);
+                    Long sIdPk;
+                    try {
+                        sIdPk = jdbcTemplate.queryForObject("SELECT study_subject_id FROM study_subject WHERE subject_id = ? AND study_id = 1", Long.class, fSubjectId);
+                    } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+                        sIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_subject_study_subject_id_seq')", Long.class);
+                        jdbcTemplate.update("INSERT INTO study_subject (study_subject_id, label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, ?, 1, 1, NOW(), 1)", sIdPk, fSubjectId, fSubjectId);
+                    }
+
+                    Long eIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_event_study_event_id_seq')", Long.class);
+                    
+                    Long actualEventDefId = 1L;
+                    try {
+                        actualEventDefId = Long.parseLong(fEventId);
+                    } catch (Exception e) {
+                        try {
+                            actualEventDefId = jdbcTemplate.queryForObject("SELECT study_event_definition_id FROM study_event_definition WHERE oc_oid = ? LIMIT 1", Long.class, fEventId);
+                        } catch(Exception ex) {}
+                    }
+
+                    jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, ?, ?, 1, 1, NOW())", eIdPk, actualEventDefId, sIdPk);
+
+                    Long ecIdPk = jdbcTemplate.queryForObject("SELECT nextval('event_crf_event_crf_id_seq')", Long.class);
+                    jdbcTemplate.update("INSERT INTO event_crf (event_crf_id, study_event_id, study_subject_id, crf_version_id, completion_status_id, status_id, owner_id, date_created, sdv_status) VALUES (?, ?, ?, 1, 1, 1, 1, NOW(), false)", ecIdPk, eIdPk, sIdPk);
+
+                    Long iIdPk = jdbcTemplate.queryForObject("SELECT nextval('item_data_item_data_id_seq')", Long.class);
+                    jdbcTemplate.update("INSERT INTO item_data (item_data_id, event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (?, ?, 1, 1, ?, 1, NOW())", iIdPk, ecIdPk, fValue);
                     return null;
                 }
             });
             
-            recordsInStaging.remove(recordId);
+
             draftService.deleteDraft(recordId);
+            org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
+                @Override
+                public void afterCommit() {
+                    recordsInStaging.remove(recordId);
+                }
+            });
             log.info("Committed clinical record: {}", recordId);
         } catch (Exception e) {
             log.error("Failed to execute dynamic mapping or persist clinical data. Transaction rolled back for recordId: {}", recordId, e);
@@ -253,23 +286,13 @@ public class InteropService {
             int count = validatedRecords.size();
             if (count == 0) return;
 
-            List<Long> subjectIdsPk = jdbcTemplate.queryForList("SELECT nextval('study_subject_study_subject_id_seq') FROM generate_series(1, ?)", Long.class, count);
-            List<Long> eventIdsPk = jdbcTemplate.queryForList("SELECT nextval('study_event_study_event_id_seq') FROM generate_series(1, ?)", Long.class, count);
-            List<Long> itemDataIdsPk = jdbcTemplate.queryForList("SELECT nextval('item_data_item_data_id_seq') FROM generate_series(1, ?)", Long.class, count);
-
             int chunkSize = getChunkSize();
             for (int i = 0; i < count; i += chunkSize) {
                 int end = Math.min(i + chunkSize, count);
                 List<BatchRecord> chunk = validatedRecords.subList(i, end);
-                List<Long> chunkSubIds = subjectIdsPk.subList(i, end);
-                List<Long> chunkEvtIds = eventIdsPk.subList(i, end);
-                List<Long> chunkItemIds = itemDataIdsPk.subList(i, end);
 
                 for (int j = 0; j < chunk.size(); j++) {
                     BatchRecord br = chunk.get(j);
-                    Long sIdPk = chunkSubIds.get(j);
-                    Long eIdPk = chunkEvtIds.get(j);
-                    Long iIdPk = chunkItemIds.get(j);
 
                     org.akaza.openclinica.model.ClinicalPayload payloadObj = new org.akaza.openclinica.model.ClinicalPayload(br.subjectId, br.eventId, br.value);
 
@@ -279,15 +302,44 @@ public class InteropService {
                     workflowService.executeWorkflowTransaction(1L, payloadObj, new org.akaza.openclinica.service.clinical.WorkflowTransactionCallback<Void>() {
                         @Override
                         public Void doInTransaction() {
-                            jdbcTemplate.update("INSERT INTO study_subject (study_subject_id, label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, ?, 1, 1, NOW(), 1) ON CONFLICT DO NOTHING", sIdPk, br.subjectId, br.subjectId);
-                            jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, 1, 1, 1, 1, NOW()) ON CONFLICT DO NOTHING", eIdPk);
-                            jdbcTemplate.update("INSERT INTO item_data (item_data_id, event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (?, 1, 1, 1, ?, 1, NOW())", iIdPk, br.value);
+                            Long sIdPk;
+                            try {
+                                sIdPk = jdbcTemplate.queryForObject("SELECT study_subject_id FROM study_subject WHERE subject_id = ? AND study_id = 1", Long.class, br.subjectId);
+                            } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+                                sIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_subject_study_subject_id_seq')", Long.class);
+                                jdbcTemplate.update("INSERT INTO study_subject (study_subject_id, label, subject_id, study_id, status_id, date_created, owner_id) VALUES (?, ?, ?, 1, 1, NOW(), 1)", sIdPk, br.subjectId, br.subjectId);
+                            }
+
+                            Long eIdPk = jdbcTemplate.queryForObject("SELECT nextval('study_event_study_event_id_seq')", Long.class);
+                            
+                            Long actualEventDefId = 1L;
+                            try {
+                                actualEventDefId = Long.parseLong(br.eventId);
+                            } catch (Exception e) {
+                                try {
+                                    actualEventDefId = jdbcTemplate.queryForObject("SELECT study_event_definition_id FROM study_event_definition WHERE oc_oid = ? LIMIT 1", Long.class, br.eventId);
+                                } catch(Exception ex) {}
+                            }
+
+                            jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, ?, ?, 1, 1, NOW())", eIdPk, actualEventDefId, sIdPk);
+
+                            Long ecIdPk = jdbcTemplate.queryForObject("SELECT nextval('event_crf_event_crf_id_seq')", Long.class);
+                            jdbcTemplate.update("INSERT INTO event_crf (event_crf_id, study_event_id, study_subject_id, crf_version_id, completion_status_id, status_id, owner_id, date_created, sdv_status) VALUES (?, ?, ?, 1, 1, 1, 1, NOW(), false)", ecIdPk, eIdPk, sIdPk);
+
+                            Long iIdPk = jdbcTemplate.queryForObject("SELECT nextval('item_data_item_data_id_seq')", Long.class);
+                            jdbcTemplate.update("INSERT INTO item_data (item_data_id, event_crf_id, item_id, status_id, value, owner_id, date_created) VALUES (?, ?, 1, 1, ?, 1, NOW())", iIdPk, ecIdPk, br.value);
                             return null;
                         }
                     });
 
-                    recordsInStaging.remove(br.recordId);
+
                     draftService.deleteDraft(br.recordId);
+                    org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
+                        @Override
+                        public void afterCommit() {
+                            recordsInStaging.remove(br.recordId);
+                        }
+                    });
                 }
             }
             log.info("Committed batch of clinical records: count={}", count);

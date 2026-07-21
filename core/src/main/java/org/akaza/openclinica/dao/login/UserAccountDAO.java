@@ -46,6 +46,7 @@ import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
  *         <P>
  *         expand on query to get all that from a select star?
  */
+@SuppressWarnings("PMD.UnusedPrivateMethod")
 public class UserAccountDAO extends AuditableEntityDAO {
     // private DataSource ds;
     // private DAODigester digester;
