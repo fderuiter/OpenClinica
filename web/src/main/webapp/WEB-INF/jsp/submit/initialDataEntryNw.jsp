@@ -219,7 +219,7 @@
 </c:choose>
 </span><br>
     <div style="text-align:center; width:100%;">
-        <input align="center" type="password" name="password" id="passwordId"/>
+        <input align="center" type="password" id="passwordId"/>
         <input type="button" onclick="hm('box');requestSignatureFromCheckbox(document.getElementById('passwordId').value, checkboxObject);" value="OK"/>
     </div>
 </div>

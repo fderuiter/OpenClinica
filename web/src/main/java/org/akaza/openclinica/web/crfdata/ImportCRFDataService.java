@@ -83,6 +83,52 @@ public class ImportCRFDataService {
         this.ds = ds;
     }
 
+    public void updateElectronicSignatures(Map<String, Boolean> eventSignatureMap, Map<String, Boolean> formSignatureMap, UserAccountBean ub) {
+        if ((eventSignatureMap == null || eventSignatureMap.isEmpty()) && (formSignatureMap == null || formSignatureMap.isEmpty())) {
+            return;
+        }
+
+        EventDefinitionCRFDAO eventDefCrfDao = new EventDefinitionCRFDAO(ds);
+        StudyEventDefinitionDAO studyEventDefDao = new StudyEventDefinitionDAO(ds);
+        CRFDAO crfDao = new CRFDAO(ds);
+
+        if (eventSignatureMap != null) {
+            for (Map.Entry<String, Boolean> entry : eventSignatureMap.entrySet()) {
+                if (entry.getValue() != null && entry.getValue()) {
+                    StudyEventDefinitionBean sedBean = studyEventDefDao.findByOid(entry.getKey());
+                    if (sedBean != null && sedBean.getId() > 0) {
+                        java.util.Collection<EventDefinitionCRFBean> edcList = eventDefCrfDao.findAllByEventDefinitionId(sedBean.getId());
+                        for (EventDefinitionCRFBean edc : edcList) {
+                            if (!edc.isElectronicSignature()) {
+                                edc.setElectronicSignature(true);
+                                edc.setUpdater(ub);
+                                eventDefCrfDao.update(edc);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (formSignatureMap != null) {
+            for (Map.Entry<String, Boolean> entry : formSignatureMap.entrySet()) {
+                if (entry.getValue() != null && entry.getValue()) {
+                    CRFBean crfBean = crfDao.findByOid(entry.getKey());
+                    if (crfBean != null && crfBean.getId() > 0) {
+                        java.util.Collection<EventDefinitionCRFBean> edcList = eventDefCrfDao.findAllByCRF(crfBean.getId());
+                        for (EventDefinitionCRFBean edc : edcList) {
+                            if (!edc.isElectronicSignature()) {
+                                edc.setElectronicSignature(true);
+                                edc.setUpdater(ub);
+                                eventDefCrfDao.update(edc);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /*
      * purpose: look up EventCRFBeans by the following: Study Subject, Study Event, CRF Version, using the
      * findByEventSubjectVersion method in EventCRFDAO. May return more than one, hmm.
