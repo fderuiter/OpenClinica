@@ -46,6 +46,7 @@ import org.akaza.openclinica.i18n.util.ResourceBundleProvider;
  *         <P>
  *         expand on query to get all that from a select star?
  */
+@SuppressWarnings("PMD.UnusedPrivateMethod")
 public class UserAccountDAO extends AuditableEntityDAO {
     // private DataSource ds;
     // private DAODigester digester;
@@ -127,12 +128,6 @@ public class UserAccountDAO extends AuditableEntityDAO {
         this.setTypeExpected(6, TypeNames.DATE);
         this.setTypeExpected(7, TypeNames.INT);
         this.setTypeExpected(8, TypeNames.STRING);
-    }
-
-    private void setPasswordTypesExpected() {
-    	// assume getting list of old passwords
-    	this.unsetTypeExpected();
-    	this.setTypeExpected(1, TypeNames.STRING);
     }
 
     @Override
@@ -819,25 +814,6 @@ public class UserAccountDAO extends AuditableEntityDAO {
         // }
 
         return answer;
-    }
-
-    private ArrayList findAllByParent(Integer parentStudyId) {
-        this.setTypesExpected();
-        this.setTypeExpected(1, TypeNames.INT);
-        this.setTypeExpected(2, TypeNames.STRING);
-        HashMap variables = new HashMap();
-        variables.put(new Integer(1), parentStudyId);
-        ArrayList alist = this.select(digester.getQuery("findAllByParent"), variables);
-        ArrayList al = new ArrayList();
-        Iterator it = alist.iterator();
-        while (it.hasNext()) {
-            HashMap hm = (HashMap) it.next();
-            StudyBean sb = new StudyBean();
-            sb.setName((String) hm.get("name"));
-            sb.setId(((Integer) hm.get("study_id")).intValue());
-            al.add(sb);
-        }
-        return al;
     }
 
     public Collection findAllRolesByUserName(String userName) {
