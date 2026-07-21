@@ -27,7 +27,6 @@ import javax.sql.DataSource;
 
 import org.akaza.openclinica.bean.core.EntityBean;
 import org.akaza.openclinica.bean.login.UserAccountBean;
-import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.core.CRFLocker;
 import org.akaza.openclinica.dao.hibernate.AuditUserLoginDao;
 import org.akaza.openclinica.dao.hibernate.ConfigurationDao;
@@ -121,7 +120,7 @@ public class OpenClinicaUsernamePasswordAuthenticationFilter extends AbstractAut
         // check the user in the current session
         UserAccountBean currentSessionUser = null;
         if (session != null) {
-        	 currentSessionUser = (UserAccountBean) session.getAttribute(SecureController.USER_BEAN_NAME);
+        	 currentSessionUser = (UserAccountBean) session.getAttribute("userBean");
         }              
         
         if(currentSessionUser !=null && !(currentSessionUser.getName().isEmpty()) && !(currentSessionUser.getName().equals(username))) {

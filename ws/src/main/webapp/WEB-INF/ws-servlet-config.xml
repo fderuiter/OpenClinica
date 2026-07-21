@@ -214,18 +214,13 @@
         <property name="callbackHandlers" ref="springSecurityHandler"/>
     </bean>
 
-    <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
-      <property name="providers">
-          <bean class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
-              <property name="userDetailsService" ref="ocUserDetailsService"/>
-              <property name="passwordEncoder" ref="openClinicaPasswordEncoder"/>
-          </bean>
-      </property>
-    </bean>
-
     <bean id="springSecurityHandler"
       class="org.akaza.openclinica.ws.SpringPlainTextPasswordValidationCallbackHandler">
-    <property name="authenticationManager" ref="authenticationManager"/>
+      <property name="authenticationManager" ref="authenticationManager"/>
+      <property name="auditUserLoginDao" ref="auditUserLoginDao"/>
+      <property name="auditLogEventDao" ref="auditLogEventDao"/>
+      <property name="userAccountDao" ref="userAccountDao"/>
+      <property name="crfLocker" ref="crfLocker"/>
     </bean>
 </beans>
 

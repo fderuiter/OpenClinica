@@ -7,6 +7,7 @@ import org.akaza.openclinica.bean.login.UserAccountBean;
 import org.akaza.openclinica.bean.managestudy.StudyBean;
 import org.akaza.openclinica.dao.login.UserAccountDAO;
 import org.akaza.openclinica.dao.managestudy.StudyDAO;
+import org.akaza.openclinica.validator.StudyLockValidator;
 import org.springframework.validation.Errors;
 
 public class BaseVSValidatorImplementation implements BaseWSValidatorInterface{
@@ -28,6 +29,9 @@ public class BaseVSValidatorImplementation implements BaseWSValidatorInterface{
             		+ study_id +" has wrong status.");
         	return null;
         }
+        if (!StudyLockValidator.validateStudyLockStatus(study, dao, study_id, errors)) {
+            return null;
+        }
         return study;
 	}
 	
@@ -47,6 +51,9 @@ public class BaseVSValidatorImplementation implements BaseWSValidatorInterface{
        	    errors.reject("subjectTransferValidator.study_status_wrong", new Object[] { study_id }, "Study "
            		+ study_id +" has wrong status.");
        	    return null;
+        }
+        if (!StudyLockValidator.validateStudyLockStatus(study, dao, study_id, errors)) {
+            return null;
         }
         return study;
 	}
@@ -68,6 +75,9 @@ public class BaseVSValidatorImplementation implements BaseWSValidatorInterface{
          	errors.reject("subjectTransferValidator.site_status_wrong", new Object[] { site_id }, "Site "
             		+ site.getName() +" has wrong status. Subject can be added to a site with 'AVAILABLE' or 'PENDING' status.");
          	return null;
+        }
+        if (!StudyLockValidator.validateStudyLockStatus(site, dao, site_id, errors)) {
+            return null;
         }
         return site;
 	}
