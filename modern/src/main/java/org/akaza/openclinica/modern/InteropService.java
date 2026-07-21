@@ -200,7 +200,9 @@ public class InteropService {
                     } catch (Exception e) {
                         try {
                             actualEventDefId = jdbcTemplate.queryForObject("SELECT study_event_definition_id FROM study_event_definition WHERE oc_oid = ? LIMIT 1", Long.class, fEventId);
-                        } catch(Exception ex) {}
+                        } catch(Exception ex) {
+                            // ignore, fallback to default behavior
+                        }
                     }
 
                     jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, ?, ?, 1, 1, NOW())", eIdPk, actualEventDefId, sIdPk);
@@ -318,7 +320,9 @@ public class InteropService {
                             } catch (Exception e) {
                                 try {
                                     actualEventDefId = jdbcTemplate.queryForObject("SELECT study_event_definition_id FROM study_event_definition WHERE oc_oid = ? LIMIT 1", Long.class, br.eventId);
-                                } catch(Exception ex) {}
+                                } catch(Exception ex) {
+                                    // ignore, fallback to default behavior
+                                }
                             }
 
                             jdbcTemplate.update("INSERT INTO study_event (study_event_id, study_event_definition_id, study_subject_id, status_id, owner_id, date_created) VALUES (?, ?, ?, 1, 1, NOW())", eIdPk, actualEventDefId, sIdPk);

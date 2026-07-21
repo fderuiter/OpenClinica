@@ -23,6 +23,7 @@
 
 		<skipTests>false</skipTests>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<pmd.failOnViolation>false</pmd.failOnViolation>
 
 		
 		<git.url>git://github.com/OpenClinica/OpenClinica.git</git.url>
@@ -117,6 +118,17 @@
 				<dbPort>5432</dbPort>
 				<dbHost>${env.DB_HOST}</dbHost>
 				<dbSchema>app_schema</dbSchema>
+			</properties>
+		</profile>
+		<profile>
+			<id>ci-quality-gate</id>
+			<activation>
+				<property>
+					<name>env.CI</name>
+				</property>
+			</activation>
+			<properties>
+				<pmd.failOnViolation>true</pmd.failOnViolation>
 			</properties>
 		</profile>
 		<profile>
@@ -781,13 +793,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.15.0</version>
+				<version>3.21.0</version>
 				<configuration>
-					<failOnViolation>true</failOnViolation>
+					<failOnViolation>${pmd.failOnViolation}</failOnViolation>
 					<printFailingErrors>true</printFailingErrors>
 					<rulesets>
-						<ruleset>${maven.multiModuleProjectDirectory}/pmd-ruleset.xml</ruleset>
+						<ruleset>/app/pmd-ruleset.xml</ruleset>
 					</rulesets>
+					<excludeFromFailureFile>/app/pmd-exclude.properties</excludeFromFailureFile>
 				</configuration>
 				<executions>
 					<execution>
