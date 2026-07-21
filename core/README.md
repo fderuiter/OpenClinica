@@ -35,7 +35,7 @@ Some key features of OpenClinica include:
 * Data import/export tools for migration of clinical datasets in excel spreadsheets, local databases and legacy data formats.
 * Extensive interfaces for data query and retrieval, across subjects, time, and clinical parameters, with dataset export in common statistical analysis formats. 
 * Compliance with 21 CFR Part 11 and HIPAA privacy and security guidelines including use of study-specific user roles and privileges, SSL encryption, and auditing to monitor access and changes by users.
-* A robust and scalable technology infrastructure developed using the Java J2EE framework interoperable with relational databases including PostgreSQL (open source) and Oracle 10G, to support the needs of the clinical research enterprise. 
+* A robust and scalable technology infrastructure developed using the Java J2EE framework interoperable with relational databases including PostgreSQL (open source) and modern Oracle, to support the needs of the clinical research enterprise. 
 
 ## II. Issues Addressed and Known Issues
 
