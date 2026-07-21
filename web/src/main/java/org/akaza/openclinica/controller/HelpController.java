@@ -2,6 +2,7 @@ package org.akaza.openclinica.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +18,9 @@ public class HelpController {
 
     private static final Logger logger = LoggerFactory.getLogger(HelpController.class);
     private Properties helpMappings;
+
+    @Value("${help.base.url:https://docs.openclinica.com}")
+    private String helpBaseUrl;
 
     public HelpController() {
         helpMappings = new Properties();
@@ -38,10 +42,18 @@ public class HelpController {
         if (url != null) {
             String mappedUrl = helpMappings.getProperty(url);
             if (mappedUrl != null) {
-                // Return the resolved Diátaxis path, assuming the documentation is hosted at github or an internal endpoint
-                // Since documentation artifacts are stored in /docs/ of the repo, we can redirect to a github repo link or a local viewer.
-                // For this implementation, we will just redirect to the mapped path.
-                targetUrl = mappedUrl;
+                if (mappedUrl.endsWith(".md")) {
+                    mappedUrl = mappedUrl.substring(0, mappedUrl.length() - 3) + ".html";
+                }
+                
+                String baseUrl = helpBaseUrl != null ? helpBaseUrl.trim() : "";
+                if (baseUrl.endsWith("/") && mappedUrl.startsWith("/")) {
+                    targetUrl = baseUrl + mappedUrl.substring(1);
+                } else if (!baseUrl.endsWith("/") && !mappedUrl.startsWith("/") && !baseUrl.isEmpty()) {
+                    targetUrl = baseUrl + "/" + mappedUrl;
+                } else {
+                    targetUrl = baseUrl + mappedUrl;
+                }
             }
         }
         
