@@ -25,11 +25,12 @@
     <decorator:head />
 </head>
 <body>
-<div id="headerDiv">
+<a href="#bodyDiv" class="sr-only skip-link">Skip to main content</a>
+<div id="headerDiv" role="banner">
     <fmt:setBundle basename="org.akaza.openclinica.i18n.words" var="resword"/>
     <div id="logoDiv"><img src="../images/Logo.gif" alt="Akaza logo"/></div>
     <!-- the sub-menu, or alternative menu, displays if JavaScript is disabled-->
-    <div id="menuContainer">
+    <div id="menuContainer" role="navigation">
         <noscript>
             <span class="noscript">
                 <a href="MainMenu"><fmt:message key="nav_home" bundle="${resword}"/></a> | <a href="ListStudySubjectsSubmit"><fmt:message key="nav_submit_data" bundle="${resword}"/></a> | <a href="ExtractDatasetsMain"><fmt:message key="nav_extract_data" bundle="${resword}"/></a> | <a href="ManageStudy"><fmt:message key="manage_study" bundle="${resword}"/></a> | <a href="AdminSystem"><fmt:message key="bussines_admin" bundle="${resword}"/></a>
@@ -48,14 +49,14 @@
 <%-- this element must be designed to optionally include/exclude its internal DIVs --%>
 <view:sidebar />
 
-<div id="bodyDiv">
+<div id="bodyDiv" role="main" tabindex="-1">
     <decorator:body />
     <div id="workflowDiv">
         <view:workflow />
     </div>
 </div>
 
-<div id="footerDiv">
+<div id="footerDiv" role="contentinfo">
     <view:footer />
 </div>
 </body>

@@ -175,6 +175,7 @@ export default function CRFRenderer() {
                               )
                             }
                             aria-describedby={discrepancyId}
+                            aria-invalid={discrepancy ? 'true' : 'false'}
                           >
                             <option value="">--Select--</option>
                             {field.options.map((opt) => (
@@ -198,13 +199,14 @@ export default function CRFRenderer() {
                               )
                             }
                             aria-describedby={discrepancyId}
+                            aria-invalid={discrepancy ? 'true' : 'false'}
                           />
                         )}
 
                         {discrepancy && (
                           <div 
                             id={discrepancyId} 
-                            style={{ display: 'block', fontSize: '12px', color: 'red', marginLeft: '150px', marginTop: '5px' }}
+                            className="sr-only"
                           >
                             {discrepancy.text}
                           </div>

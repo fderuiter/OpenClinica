@@ -58,7 +58,22 @@ function mountReactApp() {
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', mountReactApp);
+  document.addEventListener('DOMContentLoaded', () => {
+    mountReactApp();
+    clearHardcodedTabIndex();
+  });
 } else {
   mountReactApp();
+  clearHardcodedTabIndex();
+}
+
+function clearHardcodedTabIndex() {
+  const formElements = document.querySelectorAll('input[tabindex], select[tabindex], textarea[tabindex], button[tabindex]');
+  formElements.forEach(el => {
+    const tabIndex = parseInt(el.getAttribute('tabindex'), 10);
+    // Only clear if it's explicitly set to break visual flow (positive tab index)
+    if (tabIndex > 0) {
+      el.removeAttribute('tabindex');
+    }
+  });
 }
