@@ -171,7 +171,7 @@ public abstract class SecureController extends HttpServlet {
     /**
      * local_df is set to the client locale in each request.
      */
-    protected SimpleDateFormat local_df = new SimpleDateFormat("MM/dd/yyyy");
+    protected SimpleDateFormat local_df = new org.akaza.openclinica.core.util.ThreadSafeProxySimpleDateFormat();
     public static ResourceBundle resadmin, resaudit, resexception, resformat, respage, resterm, restext, resword, resworkflow;
 
     protected StudyInfoPanel panel = new StudyInfoPanel();
@@ -408,7 +408,11 @@ public abstract class SecureController extends HttpServlet {
         respage = ResourceBundleProvider.getPageMessagesBundle(locale);
         resworkflow = ResourceBundleProvider.getWorkflowBundle(locale);
 
-        local_df = I18nFormatUtil.getDateFormat(locale);
+        if (local_df instanceof org.akaza.openclinica.core.util.ThreadSafeProxySimpleDateFormat) {
+            ((org.akaza.openclinica.core.util.ThreadSafeProxySimpleDateFormat) local_df).setFormat(I18nFormatUtil.getDateFormat(locale));
+        } else {
+            local_df = I18nFormatUtil.getDateFormat(locale);
+        }
 
         try {
             String userName = request.getRemoteUser();

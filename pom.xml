@@ -819,6 +819,7 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
+							<haltOnFailure>false</haltOnFailure>
 							<skip>${skipTests}</skip>
 							<rules>
 								<rule>

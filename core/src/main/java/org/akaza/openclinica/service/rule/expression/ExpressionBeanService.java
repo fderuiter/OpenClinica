@@ -135,12 +135,6 @@ public class ExpressionBeanService {
         return studyEvent;
     }
   
-    private boolean match(String input, Pattern pattern) {
-        Matcher matcher = pattern.matcher(input);
-        return matcher.matches();
-    }
-
-  
     public void setExpressionBeanWrapper(ExpressionBeanObjectWrapper expressionBeanWrapper) {
         this.expressionBeanWrapper = expressionBeanWrapper;
     }

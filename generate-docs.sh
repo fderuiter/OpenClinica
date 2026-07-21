@@ -53,6 +53,20 @@ if [ -f "README.md" ]; then
     fi
 fi
 
+# Check if docs/explanation/project-info.md exists and if it was modified manually
+if [ -f "docs/explanation/project-info.md" ]; then
+    STORED_CHECKSUM=$(tail -n 1 docs/explanation/project-info.md | grep -oP '(?<=<!-- CHECKSUM: )[a-f0-9]+(?= -->)' || echo "")
+    if [ ! -z "$STORED_CHECKSUM" ]; then
+        ACTUAL_CHECKSUM=$(head -n -1 docs/explanation/project-info.md | md5sum | awk '{print $1}')
+        if [ "$STORED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]; then
+            echo "Error: docs/explanation/project-info.md was modified manually! Please edit README.template.md instead."
+            exit 1
+        fi
+    else
+        echo "Warning: docs/explanation/project-info.md lacks a checksum. It may have been manually modified or created from an older version. Overwriting."
+    fi
+fi
+
 awk -v content="$GENERATED_CONTENT" '{
     gsub(/\{\{GENERATED_REQUIREMENTS\}\}/, content)
     print
@@ -123,12 +137,19 @@ if [ ! -z "$MALFORMED_CITATIONS" ]; then
 fi
 
 # Validate Diátaxis structural definition for tutorials
-VIOLATING_TUTORIALS=$(grep -ilE '\btasks?\b' docs/tutorials/*.md || true)
-if [ ! -z "$VIOLATING_TUTORIALS" ]; then
-    echo "Error: The following tutorial files violate Diátaxis structural standards by including task-oriented language:"
-    echo "$VIOLATING_TUTORIALS"
+if ! python3 validate_prose.py docs/tutorials/*.md; then
     exit 1
 fi
+
+# Validate navigation config for orphaned files
+if ! python3 validate_nav.py; then
+    if [ "$STRICT_MODE" = "true" ]; then
+        exit 1
+    else
+        exit 1 # We always want this to fail based on requirements
+    fi
+fi
+
 
 # Generate frontend API documentation
 if [ -d "web" ] && [ -f "web/package.json" ]; then
@@ -172,8 +193,8 @@ if ! python3 -m mkdocs build; then
     fi
 fi
 
-# Validate that no placeholders remain in documentation
-UNRESOLVED=$(find docs core ws web -type f -name "*.md" -not -path "*/node_modules/*" -exec grep -lE '\$\{[a-zA-Z0-9._]+\}' {} + || true)
+# Validate that no placeholders remain in documentation and final outputs
+UNRESOLVED=$(find docs core ws web site -type f \( -name "*.md" -o -name "*.html" \) -not -path "*/node_modules/*" -exec grep -lE '\$\{[a-zA-Z0-9._]+\}' {} + || true)
 if [ ! -z "$UNRESOLVED" ]; then
     echo "Error: Unreplaced placeholders found in the following files:"
     echo "$UNRESOLVED"

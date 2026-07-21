@@ -34,9 +34,11 @@ node_modules/
 site/
 docs/api/
 docs/frontend-api/
-docs/project-info.md
+docs/reference/frontend-api/
+docs/explanation/project-info.md
 docs/openapi.json
 docs/soap.md
+__pycache__/
 README.md
 data/
 dummy_template.xlsx
