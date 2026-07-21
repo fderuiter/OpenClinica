@@ -614,16 +614,6 @@
           "odm-controller"
         ],
         "operationId": "importOdm",
-        "requestBody": {
-          "content": {
-            "application/xml": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
             "description": "OK",
@@ -1209,5 +1199,10 @@
         "scheme": "basic"
       }
     }
-  }
+  },
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ]
 }
