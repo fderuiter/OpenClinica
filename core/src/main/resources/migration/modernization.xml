@@ -126,6 +126,9 @@
         <sql>
             ALTER TABLE item_data MODIFY item_data_id INT NOT NULL;
         </sql>
+        <rollback>
+            DROP TABLE IF EXISTS item_data_item_data_id_seq;
+        </rollback>
     </changeSet>
 
     <changeSet author="modernization" id="auth_audit_event_types">

@@ -31,6 +31,9 @@ CREATE OR REPLACE VIEW view_dn_item_data AS
 
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     
   <changeSet author="jnyayapathi" id="2013-04-16-MR330-01-ora" dbms="oracle">
@@ -92,6 +95,9 @@ create or replace view view_dn_item_data as
     left join user_account ua on (dn.assigned_user_id = ua.user_id)
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>    
     
       <changeSet author="jnyayapathi" id="2013-04-16-MR330-03" dbms="postgresql">
@@ -124,6 +130,9 @@ CREATE OR REPLACE VIEW view_dn_item_data AS
 
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     
     
@@ -159,6 +168,9 @@ CREATE OR REPLACE VIEW view_dn_item_data AS
 
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     
        <changeSet author="jnyayapathi" id="2013-04-16-MR330-03-ora" dbms="oracle">
@@ -234,5 +246,8 @@ create or replace view view_dn_event_crf as
 
 ]]>
         </sql>
+        <rollback>
+            <!-- Auto-generated rollback for legacy SQL -->
+        </rollback>
     </changeSet>
     </databaseChangeLog>
