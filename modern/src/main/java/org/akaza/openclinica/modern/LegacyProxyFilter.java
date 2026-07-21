@@ -43,7 +43,7 @@ public class LegacyProxyFilter implements Filter {
         String uri = req.getRequestURI();
 
         if (uri.startsWith("/DataEntry") || uri.startsWith("/CRF") || uri.startsWith("/interop") || uri.startsWith("/api") || 
-            uri.startsWith("/v3/api-docs") || uri.startsWith("/swagger-ui") ||
+            uri.startsWith("/v3/api-docs") || uri.startsWith("/swagger-ui") || uri.startsWith("/actuator") ||
             uri.startsWith("/ListUserAccounts") || uri.startsWith("/CreateUserAccount") || 
             uri.startsWith("/EditUserAccount") || uri.startsWith("/ViewUserAccount") || 
             uri.startsWith("/DeleteUser")) {
