@@ -574,7 +574,7 @@
 										</xsl:if>
 										<xsl:if test="$crfStatusExist">
 										<td class="table_cell">
-											<xsl:value-of select="$currentForm/@OpenClinica:Status"/>
+											<xsl:value-of select="$currentForm/@OpenClinica:Status"/><xsl:call-template name="signatureBadge"><xsl:with-param name="node" select="$currentForm"/></xsl:call-template>
 										</td>
 										</xsl:if>
 										<xsl:if test="$crfVersionExist">
@@ -633,7 +633,7 @@
 										</xsl:if>
 										<xsl:if test="$crfStatusExist">
 										<td class="table_cell">
-											<xsl:value-of select="$currentForm/@OpenClinica:Status"/>
+											<xsl:value-of select="$currentForm/@OpenClinica:Status"/><xsl:call-template name="signatureBadge"><xsl:with-param name="node" select="$currentForm"/></xsl:call-template>
 										</td>
 										</xsl:if>
 										<xsl:if test="$crfVersionExist">
@@ -716,7 +716,7 @@
 							</xsl:if>
 							<xsl:if test="$crfStatusExist">
 								<td class="table_cell">
-									<xsl:value-of select="$currentForm/@OpenClinica:Status"/>
+									<xsl:value-of select="$currentForm/@OpenClinica:Status"/><xsl:call-template name="signatureBadge"><xsl:with-param name="node" select="$currentForm"/></xsl:call-template>
 								</td>
 							</xsl:if>
 							<xsl:if test="$crfVersionExist">
@@ -809,7 +809,7 @@
 		</xsl:if>
 		<xsl:if test="$crfStatusExist">
 			<td class="table_cell">
-				<xsl:value-of select="@OpenClinica:Status"/>
+				<xsl:value-of select="@OpenClinica:Status"/><xsl:call-template name="signatureBadge"><xsl:with-param name="node" select="."/></xsl:call-template>
 			</td>
 		</xsl:if>
 		<xsl:if test="$crfVersionExist">
@@ -912,7 +912,7 @@
 		</xsl:if>
 		<xsl:if test="$eventStatusExist">
 			<td class="table_cell">
-				<xsl:value-of select="@OpenClinica:Status"/>
+				<xsl:value-of select="@OpenClinica:Status"/><xsl:call-template name="signatureBadge"><xsl:with-param name="node" select="."/></xsl:call-template>
 			</td>
 		</xsl:if>
 		<xsl:if test="$ageExist">
@@ -1138,7 +1138,7 @@
 							<xsl:choose>
 								<xsl:when test="$event/@OpenClinica:Status">
 									<td class="table_cell">
-										<xsl:value-of select="$event/@OpenClinica:Status"/>
+										<xsl:value-of select="$event/@OpenClinica:Status"/><xsl:call-template name="signatureBadge"><xsl:with-param name="node" select="$event"/></xsl:call-template>
 									</td>
 								</xsl:when>
 								<xsl:otherwise>
@@ -1244,7 +1244,7 @@
 												<xsl:choose>
 													<xsl:when test="@OpenClinica:Status">
 														<td class="table_cell">
-															<xsl:value-of select="@OpenClinica:Status"></xsl:value-of>
+															<xsl:value-of select="@OpenClinica:Status"></xsl:value-of><xsl:call-template name="signatureBadge"><xsl:with-param name="node" select="."/></xsl:call-template>
 														</td>
 													</xsl:when>
 													<xsl:otherwise>
@@ -1345,7 +1345,7 @@
 										<xsl:choose>
 											<xsl:when test="@OpenClinica:Status">
 												<td class="table_cell">
-													<xsl:value-of select="@OpenClinica:Status"></xsl:value-of>
+													<xsl:value-of select="@OpenClinica:Status"></xsl:value-of><xsl:call-template name="signatureBadge"><xsl:with-param name="node" select="."/></xsl:call-template>
 												</td>
 											</xsl:when>
 											<xsl:otherwise>
@@ -2190,7 +2190,7 @@
 											<xsl:choose>
 												<xsl:when test="$formData/@OpenClinica:Status">
 													<td class="table_cell">
-														<xsl:value-of select="$formData/@OpenClinica:Status"/>
+														<xsl:value-of select="$formData/@OpenClinica:Status"/><xsl:call-template name="signatureBadge"><xsl:with-param name="node" select="$formData"/></xsl:call-template>
 													</td>
 												</xsl:when>
 												<xsl:otherwise>
@@ -2250,7 +2250,7 @@
 											<xsl:choose>
 												<xsl:when test="$formData/@OpenClinica:Status">
 													<td class="table_cell">
-														<xsl:value-of select="$formData/@OpenClinica:Status"/>
+														<xsl:value-of select="$formData/@OpenClinica:Status"/><xsl:call-template name="signatureBadge"><xsl:with-param name="node" select="$formData"/></xsl:call-template>
 													</td>
 												</xsl:when>
 												<xsl:otherwise>
@@ -3028,6 +3028,42 @@
                                                     border-bottom-width: 0px;
                                                     border-left-color: #CCCCCC;
                                                     vertical-align: top;
+                                                    }
+
+                                                    .signature-badge {
+                                                        display: inline-block;
+                                                        background-color: #5cb85c;
+                                                        color: #fff;
+                                                        padding: 1px 4px;
+                                                        border-radius: 3px;
+                                                        font-size: 10px;
+                                                        font-weight: bold;
+                                                        margin-left: 4px;
+                                                        position: relative;
+                                                        cursor: default;
+                                                    }
+
+                                                    .signature-badge .tooltip-card {
+                                                        visibility: hidden;
+                                                        background-color: #fff;
+                                                        color: #4D4D4D;
+                                                        text-align: left;
+                                                        padding: 6px;
+                                                        border: 1px solid #CCCCCC;
+                                                        box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
+                                                        position: absolute;
+                                                        z-index: 10;
+                                                        bottom: 125%;
+                                                        left: 50%;
+                                                        margin-left: -100px;
+                                                        width: 200px;
+                                                        font-weight: normal;
+                                                        font-family: Tahoma, Arial, Helvetica, Sans-Serif;
+                                                        font-size: 11px;
+                                                    }
+
+                                                    .signature-badge:hover .tooltip-card {
+                                                        visibility: visible;
                                                     }
                                                 </style>
 			</div>
@@ -4532,4 +4568,44 @@
 	<!--generate-id(key('studyEvents', @StudyEventRepeatKey)[1])]"/> -->
 	<!--<xsl:value-of select="@StudyEventRepeatKey"/> -->
 	<!--</xsl:template> -->
+	<xsl:template name="signatureBadge">
+		<xsl:param name="node" select="."/>
+		<xsl:if test="$node/@OpenClinica:Signed = 'Yes' or $node/@OpenClinica:Signed = 'true'">
+			<div class="signature-badge">
+				<xsl:text>Signed</xsl:text>
+				<div class="tooltip-card">
+					<xsl:variable name="sigLog" select="$node/OpenClinica:AuditLogs/OpenClinica:AuditLog[contains(translate(@AuditType, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'sign')][last()]" />
+					<xsl:choose>
+						<xsl:when test="$sigLog">
+							<xsl:variable name="userID" select="$sigLog/@UserID" />
+							<xsl:variable name="user" select="//odm:AdminData/odm:User[@OID = $userID]" />
+							<div style="margin-bottom:4px;">
+								<strong>Signer: </strong>
+								<xsl:choose>
+									<xsl:when test="$user">
+										<xsl:value-of select="$user/odm:FirstName" />
+										<xsl:text> </xsl:text>
+										<xsl:value-of select="$user/odm:LastName" />
+										<xsl:text> (</xsl:text>
+										<xsl:value-of select="$user/odm:LoginName" />
+										<xsl:text>)</xsl:text>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="$userID" />
+									</xsl:otherwise>
+								</xsl:choose>
+							</div>
+							<div>
+								<strong>Time: </strong> <xsl:value-of select="$sigLog/@DateTimeStamp" />
+							</div>
+						</xsl:when>
+						<xsl:otherwise>
+							<div><strong>Signature metadata not available.</strong></div>
+						</xsl:otherwise>
+					</xsl:choose>
+				</div>
+			</div>
+		</xsl:if>
+	</xsl:template>
+
 </xsl:stylesheet>
