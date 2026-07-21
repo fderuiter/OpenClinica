@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { store } from '../store';
-import { THEME } from '../theme';
+import styles from './Navigation.module.css';
 
 export default function Navigation() {
   const [studyOID, setStudyOID] = useState(store.getState().studyOID);
@@ -12,49 +12,19 @@ export default function Navigation() {
   }, []);
 
   return (
-    <nav
-      className="modern-navigation"
-      style={{
-        padding: '10px',
-        background: '#f4f4f4',
-        borderBottom: `1px solid ${THEME.colors.border}`,
-      }}
-    >
-      <ul
-        style={{
-          listStyleType: 'none',
-          margin: 0,
-          padding: 0,
-          display: 'flex',
-          gap: '20px',
-          alignItems: 'center',
-        }}
-      >
+    <nav className={`modern-navigation ${styles.nav}`}>
+      <ul className={styles.list}>
         <li>
-          <a
-            href="/"
-            style={{
-              textDecoration: 'none',
-              color: '#333',
-              fontWeight: 'bold',
-            }}
-          >
+          <a href="/" className={styles.link}>
             Home
           </a>
         </li>
         <li>
-          <a
-            href="/manage"
-            style={{
-              textDecoration: 'none',
-              color: '#333',
-              fontWeight: 'bold',
-            }}
-          >
+          <a href="/manage" className={styles.link}>
             Manage Study
           </a>
         </li>
-        <li style={{ marginLeft: 'auto' }}>
+        <li className={styles.currentStudy}>
           <strong>Current Study OID:</strong> {studyOID || 'None Selected'}
         </li>
       </ul>

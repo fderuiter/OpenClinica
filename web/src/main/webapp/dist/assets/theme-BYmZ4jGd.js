@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BgaNhQyE.js";var t,n=e((()=>{t={colors:{border:`#767676`}}}));export{n,t};

@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState, useRef, useCallback } from 'react';
 import { store } from '../store';
-import { THEME } from '../theme';
 import { useAccessibility } from './AccessibilityProvider.jsx';
+import styles from './CRFRenderer.module.css';
 
 const schema = {
   formOID: 'F_TEST_1',
@@ -103,18 +103,17 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
   }, [discrepancy, announce, field.label]);
 
   return (
-    <div style={{ marginBottom: '10px' }}>
+    <div className={styles.field}>
       <label
         htmlFor={fieldId}
-        style={{ display: 'inline-block', width: '150px' }}
+        className={styles.label}
       >
         {field.label}:
       </label>
       
       {discrepancy && (
         <span 
-          className={`discrepancy-badge ${discrepancy.badgeClass}`} 
-          style={{ marginLeft: '5px', marginRight: '5px', fontWeight: 'bold', color: 'red' }}
+          className={`discrepancy-badge ${discrepancy.badgeClass} ${styles.discrepancyBadge}`} 
           title={`Severity: ${discrepancy.severityCode}`}
         >
           [{discrepancy.severityCode}]
@@ -125,6 +124,7 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
           id={fieldId}
           name={fieldId}
           value={localValue}
+          className={styles.input}
           onChange={handleChange}
           onBlur={handleBlur}
           aria-describedby={discrepancyId}
@@ -142,6 +142,7 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
           name={fieldId}
           type={field.type}
           value={localValue}
+          className={styles.input}
           onChange={handleChange}
           onBlur={handleBlur}
           aria-describedby={discrepancyId}
@@ -151,7 +152,7 @@ const FormField = React.memo(({ field, fieldId, value, groupOID, index }) => {
       {discrepancy && (
         <div 
           id={discrepancyId} 
-          style={{ display: 'block', fontSize: '12px', color: 'red', marginLeft: '150px', marginTop: '5px' }}
+          className={styles.discrepancyText}
         >
           {discrepancy.text}
         </div>
@@ -167,11 +168,7 @@ const FormRow = React.memo(({ group, row, index, totalRemaining, setRowRef, setF
   return (
     <div
       ref={setRowRef(group.groupOID, index)}
-      style={{
-        marginBottom: '15px',
-        padding: '10px',
-        backgroundColor: '#f9f9f9',
-      }}
+      className={styles.row}
     >
       {group.repeating && <h4>Row {index + 1}</h4>}
       {group.fields.map((field) => {
@@ -192,7 +189,7 @@ const FormRow = React.memo(({ group, row, index, totalRemaining, setRowRef, setF
       {group.repeating && (
         <button
           type="button"
-          className="remove-btn"
+          className={`remove-btn ${styles.button}`}
           onClick={() => {
             store.removeRow(group.groupOID, index);
             announce(`Row ${index + 1} removed from ${group.title}`);
@@ -216,13 +213,7 @@ const FormGroup = React.memo(({ group, rows, setRowRef, setAddBtnRef, setFocusAc
   const { announce } = useAccessibility();
 
   return (
-    <div
-      style={{
-        marginTop: '20px',
-        border: `1px solid ${THEME.colors.border}`,
-        padding: '10px',
-      }}
-    >
+    <div className={styles.group}>
       <h3>{group.title}</h3>
       {rows.map((row, index) => (
         <FormRow
@@ -238,6 +229,7 @@ const FormGroup = React.memo(({ group, rows, setRowRef, setAddBtnRef, setFocusAc
       {group.repeating && (
         <button
           type="button"
+          className={styles.button}
           ref={setAddBtnRef(group.groupOID)}
           onClick={() => {
             const newIndex = rows.length;
@@ -343,10 +335,7 @@ export default function CRFRenderer() {
   }
 
   return (
-    <div
-      className="crf-renderer"
-      style={{ padding: '20px', fontFamily: 'sans-serif' }}
-    >
+    <div className={`crf-renderer ${styles.container}`}>
       <h1>Printable CRF View</h1>
       <div className="crf-details">
         <h2>Study Details</h2>
@@ -373,14 +362,7 @@ export default function CRFRenderer() {
       </form>
 
       {/* Investigator Signature Block */}
-      <div
-        className="investigator-signature"
-        style={{
-          marginTop: '40px',
-          borderTop: '1px solid #000',
-          paddingTop: '10px',
-        }}
-      >
+      <div className={`investigator-signature ${styles.signatureBlock}`}>
         <p>
           <strong>{window.app_investigatorLabel || 'Investigator'}:</strong>{' '}
           _________________________
