@@ -25,7 +25,6 @@
 <%-- <link rel="stylesheet" href="includes/styles2.css" type="text/css">--%>
 <%-- <link rel="stylesheet" href="includes/NewNavStyles.css" type="text/css" />--%>
 <script type="text/JavaScript" language="JavaScript" src="includes/global_functions_javascript.js"></script>
-<%-- <script type="text/JavaScript" language="JavaScript" src="includes/global_functions_javascript2.js"></script> --%>
 <script type="text/JavaScript" language="JavaScript" src="includes/Tabs.js"></script>
 <script type="text/JavaScript" language="JavaScript" src="includes/CalendarPopup.js"></script>
   <script type="text/JavaScript" language="JavaScript" src="dist/assets/main-vAm2N4M6.js"></script>
@@ -82,11 +81,7 @@
 	var StatusBoxValue=1;
 	</script>
 
-<SCRIPT LANGUAGE="JavaScript">
-
-document.write('<table border="0" cellpadding="0" cellspacing="0" width="' + document.body.clientWidth + '" class="header">');
-
-</script>
+<table border="0" cellpadding="0" cellspacing="0" class="header">
             <tr>
                 <td valign="top">
 

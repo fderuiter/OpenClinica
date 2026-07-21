@@ -66,9 +66,6 @@
     </changeSet>
 
     <!-- Java-Managed Data Migrations: Process complex data migrations using DAO and preserve triggers -->
-    <changeSet author="modernization" id="java_managed_duplicate_cleanup">
-        <customChange class="org.akaza.openclinica.core.migration.DuplicateClinicalRecordsCleanupMigration"/>
-    </changeSet>
 
     <!-- Create CRF Lock Registry Table -->
     <changeSet author="modernization" id="create_crf_lock_registry">
