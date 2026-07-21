@@ -945,6 +945,7 @@ public class GenerateClinicalDataServiceImpl implements GenerateClinicalDataServ
     	    auditLogEvent.getAuditLogEventType().setName(auditEventTypeName);
    	  
     		auditBean.setType(auditLogEvent.getAuditLogEventType().getI18nName(locale));
+            auditBean.setAuditLogEventTypeId(auditLogEvent.getAuditLogEventType().getAuditLogEventTypeId());
 
 		auditBean.setValueType(auditLogEvent.getEntityName()==null?"":auditLogEvent.getEntityName());
 		

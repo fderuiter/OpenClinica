@@ -195,6 +195,33 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-legacy-openapi</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.akaza.openclinica</groupId>
+                                    <artifactId>OpenClinica-web</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>json</type>
+                                    <classifier>legacy-openapi</classifier>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/legacy-generated-docs</outputDirectory>
+                                    <destFileName>legacy-openapi.json</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
                 <configuration>
@@ -275,7 +302,7 @@
                                     import groovy.json.JsonBuilder
 
                                     def slurper = new JsonSlurper()
-                                    def legacyFile = new File(project.basedir, "../web/target/generated-docs/legacy-openapi.json")
+                                    def legacyFile = new File(project.basedir, "target/legacy-generated-docs/legacy-openapi.json")
                                     def modernFile = new File(project.basedir, "target/generated-docs/modern-openapi.json")
 
                                     if (!legacyFile.exists() || !modernFile.exists()) {
