@@ -2,6 +2,15 @@ import os
 import sys
 import yaml
 
+def env_constructor(loader, node):
+    if isinstance(node, yaml.ScalarNode):
+        return loader.construct_scalar(node)
+    elif isinstance(node, yaml.SequenceNode):
+        return [loader.construct_object(child) for child in node.value]
+    return None
+
+yaml.SafeLoader.add_constructor("!ENV", env_constructor)
+
 def extract_nav_paths(nav_item, paths):
     """Recursively extract file paths from the mkdocs nav structure."""
     if isinstance(nav_item, list):
@@ -15,6 +24,22 @@ def extract_nav_paths(nav_item, paths):
                 extract_nav_paths(value, paths)
     elif isinstance(nav_item, str):
         paths.add(nav_item)
+
+def is_restricted(filepath):
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            first_line = f.readline().strip()
+            if first_line != '---':
+                return False
+            fm_lines = []
+            for line in f:
+                if line.strip() == '---':
+                    break
+                fm_lines.append(line)
+            fm = yaml.safe_load(''.join(fm_lines)) or {}
+            return fm.get('visibility') == 'restricted'
+    except Exception:
+        return False
 
 def main():
     mkdocs_file = 'mkdocs.yml'
@@ -45,8 +70,11 @@ def main():
             continue
         for file in files:
             if file.endswith('.md'):
+                filepath = os.path.join(root, file)
+                if is_restricted(filepath):
+                    continue
                 # Get path relative to docs directory
-                rel_path = os.path.relpath(os.path.join(root, file), docs_dir)
+                rel_path = os.path.relpath(filepath, docs_dir)
                 physical_md_files.add(rel_path)
 
     orphaned_files = physical_md_files - nav_paths
