@@ -115,7 +115,7 @@ public class DataEndpoint {
                         try {
                             org.akaza.openclinica.logic.importdata.StreamingSubjectDataList sl = new org.akaza.openclinica.logic.importdata.StreamingSubjectDataList(xml);
                             studyOid = sl.getStudyOid();
-                        } catch (Exception ex) {
+                        } catch (Exception ignored) {
                             // ignore fallback parser errors
                         }
                         
