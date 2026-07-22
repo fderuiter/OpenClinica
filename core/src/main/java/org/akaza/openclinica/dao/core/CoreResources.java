@@ -578,6 +578,7 @@ public class CoreResources implements ResourceLoaderAware {
      *              {@link IOUtils#copy(java.io.InputStream, java.io.OutputStream)} instead.
      */
     @Deprecated
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private void copyFiles(ByteArrayInputStream fis, File dest) {
         FileOutputStream fos = null;
         byte[] buffer = new byte[512]; // Buffer 4K at a time (you can change this).
@@ -624,6 +625,7 @@ public class CoreResources implements ResourceLoaderAware {
         }
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private void copyODMMappingXMLtoResources(ResourceLoader resourceLoader) {
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(resourceLoader);
         String[] fileNames = { "cd_odm_mapping.xml" };
@@ -845,6 +847,7 @@ public class CoreResources implements ResourceLoaderAware {
      * @deprecated Use {@link #getFile(String,String)} instead
      */
     @Deprecated
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     public File getFile(String fileName) {
         return getFile(fileName, "filePath");
     }

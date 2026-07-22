@@ -210,10 +210,12 @@ public class ExtractController {
      * @deprecated Use {@link #setAllProps(ExtractPropertyBean,DatasetBean,SimpleDateFormat,ExtractUtils)} instead
      */
     @Deprecated
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private ExtractPropertyBean setAllProps(ExtractPropertyBean epBean,DatasetBean dsBean,SimpleDateFormat sdfDir) {
         return setAllProps(epBean, dsBean, sdfDir,new ExtractUtils());
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private ExtractPropertyBean setAllProps(ExtractPropertyBean epBean,DatasetBean dsBean,SimpleDateFormat sdfDir, ExtractUtils extractUtils) {
 
 
@@ -245,6 +247,7 @@ public class ExtractController {
      * @deprecated Use {@link #resolveVars(String,DatasetBean,SimpleDateFormat,String, ExtractUtils)} instead
      */
     @Deprecated
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private String resolveVars(String endFilePath,DatasetBean dsBean,SimpleDateFormat sdfDir){
         return resolveVars(endFilePath, dsBean, sdfDir, SQLInitServlet.getField("filePath"),new ExtractUtils());
     }
@@ -259,6 +262,7 @@ public class ExtractController {
      * @deprecated Use {@link #resolveVars(String,DatasetBean,SimpleDateFormat,String,ExtractUtils)} instead
      */
     @Deprecated
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private String resolveVars(String endFilePath,DatasetBean dsBean,SimpleDateFormat sdfDir, String filePath){
         return resolveVars(endFilePath, dsBean, sdfDir, filePath, new ExtractUtils());
     }
@@ -272,6 +276,7 @@ public class ExtractController {
      * @param extractUtils TODO
      * @return
      */
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private String resolveVars(String endFilePath,DatasetBean dsBean,SimpleDateFormat sdfDir, String filePath, ExtractUtils extractUtils){
         return extractUtils.resolveVars(endFilePath, dsBean, sdfDir, filePath);
 
@@ -301,6 +306,7 @@ public class ExtractController {
         this.sidebarInit = sidebarInit;
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private String resolveExportFilePath(String  epBeanFileName) {
         // String retMe = "";
         //String epBeanFileName = epBean.getExportFileName();

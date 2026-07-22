@@ -521,6 +521,7 @@ public class BatchCRFMigrationController implements Runnable {
         return new EventCRFDAO(dataSource);
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private StudyEventDAO sedao() {
         return new StudyEventDAO(dataSource);
     }
