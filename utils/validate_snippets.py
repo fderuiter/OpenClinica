@@ -3,6 +3,31 @@ import sys
 import json
 import xml.etree.ElementTree as ET
 
+def is_skipped_file(file_path):
+    if not os.path.exists(file_path):
+        return False
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            first_line = f.readline().strip()
+            if first_line != '---':
+                return False
+            fm_lines = []
+            for line in f:
+                if line.strip() == '---':
+                    break
+                fm_lines.append(line)
+            
+            for line in fm_lines:
+                if ':' in line:
+                    key, val = line.split(':', 1)
+                    if key.strip().lower() == 'visibility':
+                        clean_val = val.strip().strip("'\"").lower()
+                        if clean_val in ('restricted', 'draft'):
+                            return True
+    except Exception:
+        pass
+    return False
+
 def find_markdown_files(directory):
     md_files = []
     for root, dirs, files in os.walk(directory):
@@ -63,6 +88,8 @@ def main():
     all_errors = []
     
     for md_file in md_files:
+        if is_skipped_file(md_file):
+            continue
         errors = validate_snippets(md_file)
         all_errors.extend(errors)
         
