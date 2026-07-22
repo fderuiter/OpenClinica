@@ -23,11 +23,13 @@ nav:
     - Visual Testing Guide: how-to/visual_testing.md
     - Upgrade Guide: how-to/upgrade.md
   - Reference:
+    - Security Compliance and Audit Spec: reference/security_compliance.md
     - Rules XML Reference: reference/rules.md
     - React Components API: reference/frontend-api/modules.md
     - Interactive REST API: reference/api.md
     - SOAP API Documentation: reference/soap.md
   - Explanation:
+    - Feature Matrix: explanation/feature_matrix.md
     - Project Information: explanation/project-info.md
     - Lifecycle Management: explanation/lifecycle_management.md
     - Staged Batch Persistence: explanation/staged_batch_persistence.md

@@ -4,7 +4,7 @@
 
 ## 1. Context & Objectives
 
-- **Problem Statement:** Bulk data imports use a single database transaction that locks the data tables and holds a connection pool slot for the entire process duration [cite:source1, cite:source2]. This sequential persistence is slowed further by audit triggers, causing timeouts and blocking concurrent clinical users [cite:source4].
+- **Problem Statement:** Bulk data imports use a single database transaction that locks the data tables and holds a connection pool slot for the entire process duration [cite:source1, cite:source2]. This sequential persistence is slowed further by application-layer audit mechanisms (such as SQLAlchemy before-flush handlers), causing timeouts and blocking concurrent clinical users [cite:source4].
 - **Business Goal:** Minimize system downtime and maximize data ingestion throughput for large-scale clinical trials.
 - **Hypothesis:** Using a staging area and JDBC batching will reduce database round-trips and lock duration, lowering system-wide contention [cite:source3, cite:source5].
 - **Success Metrics:**
@@ -32,13 +32,13 @@
 - **Requirement 2:** Persistence logic must use JDBC batching for high-volume entity inserts to reduce network and database overhead [cite:source2, cite:source3].
 - **Requirement 3:** The system must pre-allocate or manage primary identifiers to allow batching while maintaining parent-child record relationships [cite:source3].
 - **Requirement 4:** A throttled execution queue must limit the number of concurrent batch operations to protect database resources [cite:source5].
-- **Requirement 5:** The solution must ensure all records persisted via batch are still processed by existing database audit triggers [cite:source4].
+- **Requirement 5:** The solution must ensure all records persisted via batch are still processed by existing application-layer audit mechanisms [cite:source4].
 
 ---
 
 ## 4. Constraints & Guardrails
 
-- Batch sizes must be tunable to balance throughput against the latency of individual audit triggers [cite:source4].
+- Batch sizes must be tunable to balance throughput against the latency of individual application-layer audit listeners [cite:source4].
 - The solution must not bypass existing application-level data validation during the staging phase.
 - Background processing must utilize the existing job monitoring infrastructure to allow for graceful cancellation [cite:source6].
 
