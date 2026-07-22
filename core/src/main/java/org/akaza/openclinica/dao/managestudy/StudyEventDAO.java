@@ -713,8 +713,7 @@ public class StudyEventDAO extends AuditableEntityDAO implements Listener {
                 HashMap hm = (HashMap) it.next();
                 Integer max = (Integer) hm.get("max_ord");
                 return max.intValue();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { e.getMessage(); }
         }
 
         return 0;

@@ -138,9 +138,7 @@ public class PdfProcessingFunction extends ProcessingFunction  {
                     
                     zipOut.closeEntry();
                     zipOut.finish();
-            		}catch(Exception e){
-            			e.printStackTrace();
-            		}finally{
+            		}catch (Exception e) { e.printStackTrace(); }finally{
             			if(zipOut!=null)zipOut.close();
                       	if(fis!=null)fis.close();
             		}

@@ -62,7 +62,7 @@ public class RuleDAO extends AuditableEntityDAO {
                 if (context != null) {
                     studyEventDefinitionDao = (StudyEventDefinitionDAO) context.getBean("studyEventDefinitionDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return studyEventDefinitionDao;
     }
@@ -74,7 +74,7 @@ public class RuleDAO extends AuditableEntityDAO {
                 if (context != null) {
                     ruleSetDao = (RuleSetDAO) context.getBean("ruleSetDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return ruleSetDao;
     }
@@ -86,7 +86,7 @@ public class RuleDAO extends AuditableEntityDAO {
                 if (context != null) {
                     eventCrfDao = (EventCRFDAO) context.getBean("eventCrfDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return eventCrfDao;
     }
@@ -98,7 +98,7 @@ public class RuleDAO extends AuditableEntityDAO {
                 if (context != null) {
                     crfVersionDao = (CRFVersionDAO) context.getBean("crfVersionDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return crfVersionDao;
     }
@@ -110,7 +110,7 @@ public class RuleDAO extends AuditableEntityDAO {
                 if (context != null) {
                     itemDataDao = (ItemDataDAO) context.getBean("itemDataDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return itemDataDao;
     }
@@ -122,7 +122,7 @@ public class RuleDAO extends AuditableEntityDAO {
                 if (context != null) {
                     expressionDao = (ExpressionDAO) context.getBean("expressionDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return expressionDao;
     }

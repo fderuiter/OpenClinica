@@ -66,7 +66,7 @@ public class RuleSetAuditDAO extends EntityDAO {
                 if (context != null) {
                     ruleSetDao = (RuleSetDAO) context.getBean("ruleSetDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return ruleSetDao;
     }
@@ -78,7 +78,7 @@ public class RuleSetAuditDAO extends EntityDAO {
                 if (context != null) {
                     userAccountDao = (UserAccountDAO) context.getBean("userAccountDao");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return userAccountDao;
     }

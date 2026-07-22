@@ -355,9 +355,9 @@ public class ClinicalDataReportBean extends OdmXmlReportBean {
     }
     
     private AuditLogBean findSignatureAudit(AuditLogsBean auditLogs) {
-        if (auditLogs == null) return null;
+        if (auditLogs == null) { return null; }
         ArrayList<AuditLogBean> audits = auditLogs.getAuditLogs();
-        if (audits == null) return null;
+        if (audits == null) { return null; }
         AuditLogBean sigAudit = null;
         for (AuditLogBean audit : audits) {
             Integer typeId = audit.getAuditLogEventTypeId();
@@ -372,7 +372,7 @@ public class ClinicalDataReportBean extends OdmXmlReportBean {
 
     private void writeSignature(AuditLogBean sigAudit, StringBuffer xml, String indent, String location) {
         String nls = System.getProperty("line.separator");
-        if (location == null || location.trim().length() == 0) location = "Unknown";
+        if (location == null || location.trim().length() == 0) { location = "Unknown"; }
         xml.append(indent + "<Signature>" + nls);
         xml.append(indent + "  <UserRef UserOID=\"" + StringEscapeUtils.escapeXml(sigAudit.getUserId()) + "\"/>" + nls);
         xml.append(indent + "  <LocationRef LocationOID=\"" + StringEscapeUtils.escapeXml(location) + "\"/>" + nls);

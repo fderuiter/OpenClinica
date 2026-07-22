@@ -168,14 +168,11 @@ public class ImportHelper {
                     if (customValidationString.startsWith("func:")) {
                         try {
                             customValidation = Validator.processCRFValidationFunction(customValidationString);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        } catch (Exception e) { e.printStackTrace(); }
                     } else if (customValidationString.startsWith("regexp:")) {
                         try {
                             customValidation = Validator.processCRFValidationRegex(customValidationString);
-                        } catch (Exception e) {
-                        }
+                        } catch (Exception e) { e.getMessage(); }
                     }
 
                     if (customValidation != null) {

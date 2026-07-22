@@ -111,8 +111,7 @@ public class StreamingSubjectDataList extends ArrayList<SubjectDataBean> {
                     }
                 }
                 reader.close();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { e.getMessage(); }
         }
         return size;
     }

@@ -193,7 +193,7 @@ public class RuleRunner {
                 if (context != null) {
                     expressionService = (ExpressionService) context.getBean("expressionService");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return expressionService;
     }
@@ -205,7 +205,7 @@ public class RuleRunner {
                 if (context != null) {
                     ruleSetDao = (RuleSetDAO) context.getBean("ruleSetDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return ruleSetDao;
     }
@@ -217,7 +217,7 @@ public class RuleRunner {
                 if (context != null) {
                     crfDao = (CRFDAO) context.getBean("crfDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return crfDao;
     }
@@ -229,7 +229,7 @@ public class RuleRunner {
                 if (context != null) {
                     ruleSetRuleDao = (RuleSetRuleDAO) context.getBean("ruleSetRuleDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return ruleSetRuleDao;
     }
@@ -243,7 +243,7 @@ public class RuleRunner {
                 if (context != null) {
                     studyEventDao = (StudyEventDAO) context.getBean("studyeventdaojdbc");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return studyEventDao;
     }
@@ -255,7 +255,7 @@ public class RuleRunner {
                 if (context != null) {
                     itemDataDao = (ItemDataDAO) context.getBean("itemDataDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return itemDataDao;
     }
@@ -267,7 +267,7 @@ public class RuleRunner {
                 if (context != null) {
                     eventCrfDao = (EventCRFDAO) context.getBean("eventCrfDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return eventCrfDao;
     }
@@ -279,7 +279,7 @@ public class RuleRunner {
                 if (context != null) {
                     crfVersionDao = (CRFVersionDAO) context.getBean("crfVersionDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return crfVersionDao;
     }
@@ -291,7 +291,7 @@ public class RuleRunner {
                 if (context != null) {
                     studySubjectDao = (StudySubjectDAO) context.getBean("studySubjectDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return studySubjectDao;
     }
@@ -303,7 +303,7 @@ public class RuleRunner {
                 if (context != null) {
                     itemFormMetadataDao = (ItemFormMetadataDAO) context.getBean("itemFormMetadataDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return itemFormMetadataDao;
     }
@@ -315,7 +315,7 @@ public class RuleRunner {
                 if (context != null) {
                     sectionDao = (SectionDAO) context.getBean("sectionDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return sectionDao;
     }
@@ -327,7 +327,7 @@ public class RuleRunner {
                 if (context != null) {
                     studyDao = (StudyDAO) context.getBean("studyDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return studyDao;
     }

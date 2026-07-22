@@ -937,8 +937,7 @@ public class ItemDataDAO extends AuditableEntityDAO {
                 HashMap hm = (HashMap) it.next();
                 Integer max = (Integer) hm.get("max_ord");
                 return max.intValue();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { e.getMessage(); }
         }
 
         return 0;
@@ -968,8 +967,7 @@ public class ItemDataDAO extends AuditableEntityDAO {
                 HashMap hm = (HashMap) it.next();
                 Integer max = (Integer) hm.get("max_ord");
                 return max.intValue();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { e.getMessage(); }
         }
 
         return 0;
@@ -991,8 +989,7 @@ public class ItemDataDAO extends AuditableEntityDAO {
                 HashMap hm = (HashMap) it.next();
                 Integer max = (Integer) hm.get("max_ord");
                 return max.intValue();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { e.getMessage(); }
         }
 
         return 0;

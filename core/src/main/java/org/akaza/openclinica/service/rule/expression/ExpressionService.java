@@ -1459,7 +1459,7 @@ public class ExpressionService {
             if (context != null) {
                 return (ItemDAO) context.getBean("itemDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new ItemDAO(ds);
     }
 
@@ -1471,7 +1471,7 @@ public class ExpressionService {
             if (context != null) {
                 return (ItemDataDAO) context.getBean("itemDataDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new ItemDataDAO(ds);
     }
 
@@ -1483,7 +1483,7 @@ public class ExpressionService {
             if (context != null) {
                 return (CRFVersionDAO) context.getBean("crfVersionDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new CRFVersionDAO(ds);
     }
 
@@ -1494,7 +1494,7 @@ public class ExpressionService {
             if (context != null) {
                 return (CRFDAO) context.getBean("crfDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new CRFDAO(ds);
     }
 
@@ -1506,7 +1506,7 @@ public class ExpressionService {
             if (context != null) {
                 return (ItemGroupDAO) context.getBean("itemGroupDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new ItemGroupDAO(ds);
     }
 
@@ -1519,7 +1519,7 @@ public class ExpressionService {
             if (context != null) {
                 return (ItemGroupMetadataDAO) context.getBean("itemGroupMetadataDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new ItemGroupMetadataDAO(ds);
     }
 
@@ -1532,7 +1532,7 @@ public class ExpressionService {
             if (context != null) {
                 return (EventDefinitionCRFDAO) context.getBean("eventDefinitionCrfDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new EventDefinitionCRFDAO(ds);
     }
 
@@ -1545,7 +1545,7 @@ public class ExpressionService {
             if (context != null) {
                 return (StudyEventDefinitionDAO) context.getBean("studyEventDefinitionDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new StudyEventDefinitionDAO(ds);
     }
 
@@ -1558,7 +1558,7 @@ public class ExpressionService {
             if (context != null) {
                 return (StudyEventDAO) context.getBean("studyeventdaojdbc");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new StudyEventDAO(ds);
     }
 
@@ -1568,7 +1568,7 @@ public class ExpressionService {
             if (context != null) {
                 return (StudySubjectDAO) context.getBean("studySubjectDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new StudySubjectDAO(ds);
     }
 
@@ -1581,7 +1581,7 @@ public class ExpressionService {
             if (context != null) {
                 return (EventCRFDAO) context.getBean("eventCrfDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new EventCRFDAO(ds);
     }
 
@@ -1595,7 +1595,7 @@ public class ExpressionService {
             if (context != null) {
                 return (ItemFormMetadataDAO) context.getBean("itemFormMetadataDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new ItemFormMetadataDAO(ds);
     }
 

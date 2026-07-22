@@ -65,7 +65,10 @@ test.describe('Printable CRF', () => {
     await page.route('**/dist/assets/*.js', async (route) => {
       const url = new URL(route.request().url());
       const fileName = path.basename(url.pathname);
-      const assetsDir = path.join(__dirname, '../../web/src/main/webapp/dist/assets');
+      const assetsDir = path.join(
+        __dirname,
+        '../../web/src/main/webapp/dist/assets'
+      );
 
       try {
         const bundle = fs.readFileSync(path.join(assetsDir, fileName), 'utf8');

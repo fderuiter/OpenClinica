@@ -1016,7 +1016,7 @@ public class RuleSetService implements RuleSetServiceInterface {
                 if (context != null) {
                     expressionService = (ExpressionService) context.getBean("expressionService");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return expressionService;
     }

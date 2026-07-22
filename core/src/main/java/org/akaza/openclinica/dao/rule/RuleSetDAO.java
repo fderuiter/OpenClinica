@@ -73,7 +73,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
                 if (context != null) {
                     studyEventDefinitionDAO = (StudyEventDefinitionDAO) context.getBean("studyEventDefinitionDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return studyEventDefinitionDAO;
     }
@@ -85,7 +85,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
                 if (context != null) {
                     crfDao = (CRFDAO) context.getBean("crfDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return crfDao;
     }
@@ -97,7 +97,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
                 if (context != null) {
                     crfVersionDao = (CRFVersionDAO) context.getBean("crfVersionDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return crfVersionDao;
     }
@@ -109,7 +109,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
                 if (context != null) {
                     eventCrfDao = (EventCRFDAO) context.getBean("eventCrfDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return eventCrfDao;
     }
@@ -121,7 +121,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
                 if (context != null) {
                     ruleDao = (RuleDAO) context.getBean("ruleDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return ruleDao;
     }
@@ -133,7 +133,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
                 if (context != null) {
                     ruleSetAuditDao = (RuleSetAuditDAO) context.getBean("ruleSetAuditDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return ruleSetAuditDao;
     }
@@ -145,7 +145,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
                 if (context != null) {
                     expressionDao = (ExpressionDAO) context.getBean("expressionDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return expressionDao;
     }
@@ -157,7 +157,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
                 if (context != null) {
                     expressionService = (ExpressionService) context.getBean("expressionService");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return expressionService;
     }
@@ -169,7 +169,7 @@ public class RuleSetDAO extends AuditableEntityDAO {
                 if (context != null) {
                     ruleSetRuleDao = (RuleSetRuleDAO) context.getBean("ruleSetRuleDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return ruleSetRuleDao;
     }
