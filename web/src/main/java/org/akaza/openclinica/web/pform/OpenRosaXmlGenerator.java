@@ -125,7 +125,7 @@ public class OpenRosaXmlGenerator {
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "rawtypes", "unchecked", "PMD.UnusedPrivateMethod" })
     private ArrayList<ItemGroupBean> getItemGroupBeans(SectionBean section) throws Exception {
         ArrayList<ItemGroupBean> itemGroupBeans = null;
 
@@ -152,6 +152,7 @@ public class OpenRosaXmlGenerator {
         return itemGroupBean.get(0);
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private SectionBean getSectionBean(Integer ID) {
         sdao = new SectionDAO(dataSource);
         SectionBean sBean = (SectionBean) sdao.findByPK(ID);
@@ -525,6 +526,7 @@ public class OpenRosaXmlGenerator {
      * @param question
      * @throws Exception
      */
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private void setDefaultElement(ItemBean item, CRFVersionBean crfVersion, Element question) throws Exception {
         Integer responseTypeId = getItemFormMetadata(item, crfVersion).getResponseSet().getResponseTypeId();
 

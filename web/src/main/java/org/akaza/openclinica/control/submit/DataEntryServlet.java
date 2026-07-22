@@ -5173,6 +5173,7 @@ String tempKey = idb.getItemId()+","+idb.getOrdinal();
      * @deprecated Use {@link #createAndInitializeRuleSet(StudyBean,StudyEventDefinitionBean,CRFVersionBean,StudyEventBean,EventCRFBean,Boolean,HttpServletRequest,HttpServletResponse,List)} instead
      */
     @Deprecated
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private List<RuleSetBean> createAndInitializeRuleSet(StudyBean currentStudy,
             StudyEventDefinitionBean studyEventDefinition,
             CRFVersionBean crfVersionBean,
@@ -5183,6 +5184,7 @@ String tempKey = idb.getItemId()+","+idb.getOrdinal();
                         response, null);
             }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private List<RuleSetBean> createAndInitializeRuleSet(StudyBean currentStudy,
             StudyEventDefinitionBean studyEventDefinition,
             CRFVersionBean crfVersionBean,
@@ -5260,6 +5262,7 @@ String tempKey = idb.getItemId()+","+idb.getOrdinal();
     }
 
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private RuleSetServiceInterface getRuleSetServicePerRequest(HttpServletRequest request) {
         //TODO:where is the ruleservice initialized? does not have any references. Check it
         RuleSetServiceInterface ruleSetService = null;

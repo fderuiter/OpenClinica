@@ -170,6 +170,7 @@ public class ImportDataRuleRunnerContainer {
         return ruleSets;
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Set<String> collectTargetItemOids(List<RuleSetBean> ruleSets) {
         Set<String> itemOids = new HashSet<String>();
         if(ruleSets != null) {

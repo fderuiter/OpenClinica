@@ -326,6 +326,7 @@ public class SubjectIdSDVFactory extends AbstractTableFactory {
 
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private int getNumberCompletedEventCRFs(List<EventCRFBean> eventCRFBeans) {
 
         StudyEventDAO studyEventDAO = new StudyEventDAO(dataSource);
@@ -345,6 +346,7 @@ public class SubjectIdSDVFactory extends AbstractTableFactory {
         return counter;
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private int getNumberSDVdEventCRFs(List<EventCRFBean> eventCRFBeans) {
 
         int counter = 0;

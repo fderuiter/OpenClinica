@@ -379,6 +379,7 @@ public class DynamicsMetadataService implements MetadataServiceInterface {
     }
 
     @Deprecated
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private void oneToManyOld(ItemDataBean itemDataBeanA, EventCRFBean eventCrfBeanA, ItemGroupMetadataBean itemGroupMetadataBeanA, ItemBean itemBeanB,
             ItemGroupBean itemGroupBeanB, ItemGroupMetadataBean itemGroupMetadataBeanB, EventCRFBean eventCrfBeanB, UserAccountBean ub, String value) {
 

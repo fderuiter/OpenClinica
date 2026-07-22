@@ -485,6 +485,7 @@ public class ExpressionService {
         return value;
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private String getValueFromDbOrForm(String fullExpression, Map<Integer, ItemBean> itemBeansI) {
         List<ItemDataBean> itemDatas = getItemDatas(fullExpression);
         fullExpression = fixGroupOrdinal(fullExpression, expressionWrapper.getRuleSet().getTarget().getValue(),
