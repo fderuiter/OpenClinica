@@ -356,7 +356,7 @@ public class InteropService {
             Study study = entityManager.find(Study.class, 1);
             ss.setStudy(study);
             ss.setSubject(subject);
-            Status stat = entityManager.find(Status.class, 1);
+            Status stat = Status.getByCode(1);
             ss.setStatus(stat);
             ss.setDateCreated(new java.util.Date());
             UserAccount owner = entityManager.find(UserAccount.class, 1);
@@ -400,7 +400,7 @@ public class InteropService {
         idata.setEventCrf(ec);
         Item item = entityManager.find(Item.class, 1);
         idata.setItem(item);
-        Status stat = entityManager.find(Status.class, 1);
+        Status stat = Status.getByCode(1);
         idata.setStatus(stat);
         idata.setValue(fValue);
         idata.setUserAccount(owner);
