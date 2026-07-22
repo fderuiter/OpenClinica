@@ -414,8 +414,8 @@ public class XmlClinicalDataStreamWriter implements ClinicalDataStreamWriter {
                 if (sComp != 0) return sComp;
                 Integer i1 = 0;
                 Integer i2 = 0;
-                try { i1 = Integer.valueOf(o1.getItemGroupRepeatKey()); } catch (Exception e) {}
-                try { i2 = Integer.valueOf(o2.getItemGroupRepeatKey()); } catch (Exception e) {}
+                try { i1 = Integer.valueOf(o1.getItemGroupRepeatKey()); } catch (Exception e) { e.getMessage(); }
+                try { i2 = Integer.valueOf(o2.getItemGroupRepeatKey()); } catch (Exception e) { e.getMessage(); }
                 return i1.compareTo(i2);
             }
         });

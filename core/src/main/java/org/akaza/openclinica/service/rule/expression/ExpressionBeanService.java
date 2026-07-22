@@ -152,7 +152,7 @@ public class ExpressionBeanService {
             if (context != null) {
                 return (StudySubjectDAO) context.getBean("studySubjectDaoJDBC");
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { e.getMessage(); }
         return new StudySubjectDAO(ds);
     }
 

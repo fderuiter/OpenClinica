@@ -1497,8 +1497,7 @@ public class ExtractBean {
                     return maxOrdinal.intValue();
                 }
             }
-        } catch (Exception e) {
-        }
+        } catch (Exception e) { e.getMessage(); }
 
         return 0;
     }

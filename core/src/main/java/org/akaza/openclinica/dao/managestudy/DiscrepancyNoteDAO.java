@@ -1872,8 +1872,7 @@ public class DiscrepancyNoteDAO extends AuditableEntityDAO {
                 AuditableEntityBean aeb = (AuditableEntityBean) aedao.findByPK(note.getEntityId());
                 return aeb;
             }
-        } catch (Exception e) {
-        }
+        } catch (Exception e) { e.getMessage(); }
 
         return null;
     }
@@ -1910,8 +1909,7 @@ public class DiscrepancyNoteDAO extends AuditableEntityDAO {
             try {
                 Integer i = (Integer) hm.get("num");
                 return i.intValue();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { e.getMessage(); }
         }
 
         return 0;
@@ -1932,8 +1930,7 @@ public class DiscrepancyNoteDAO extends AuditableEntityDAO {
             try {
                 Integer i = (Integer) hm.get("num");
                 return i.intValue();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { e.getMessage(); }
         }
 
         return 0;
@@ -2112,8 +2109,7 @@ public class DiscrepancyNoteDAO extends AuditableEntityDAO {
             HashMap hm = (HashMap) it.next();
             try {
                 id = ((Integer) hm.get("resolution_status_id")).intValue();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { e.getMessage(); }
         }
         return id;
     }

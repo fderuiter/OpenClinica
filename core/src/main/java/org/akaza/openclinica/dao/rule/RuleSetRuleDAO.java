@@ -59,7 +59,7 @@ public class RuleSetRuleDAO extends AuditableEntityDAO {
                 if (context != null) {
                     ruleDao = (RuleDAO) context.getBean("ruleDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return ruleDao;
     }
@@ -71,7 +71,7 @@ public class RuleSetRuleDAO extends AuditableEntityDAO {
                 if (context != null) {
                     ruleSetDao = (RuleSetDAO) context.getBean("ruleSetDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return ruleSetDao;
     }
@@ -89,7 +89,7 @@ public class RuleSetRuleDAO extends AuditableEntityDAO {
                 if (context != null) {
                     ruleSetRuleAuditDao = (RuleSetRuleAuditDAO) context.getBean("ruleSetRuleAuditDaoJDBC");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) { e.getMessage(); }
         }
         return ruleSetRuleAuditDao;
     }

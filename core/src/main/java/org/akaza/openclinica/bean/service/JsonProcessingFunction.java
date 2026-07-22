@@ -50,10 +50,10 @@ public class JsonProcessingFunction extends ProcessingFunction {
             e.printStackTrace();
             return ProcessingResultType.FAIL;
         } finally {
-            try { if (jg != null) jg.close(); } catch (Exception e) {}
-            try { if (reader != null) reader.close(); } catch (Exception e) {}
-            try { if (fileReader != null) fileReader.close(); } catch (Exception e) {}
-            try { if (fileWriter != null) fileWriter.close(); } catch (Exception e) {}
+            try { if (jg != null) jg.close(); } catch (Exception e) { e.getMessage(); }
+            try { if (reader != null) reader.close(); } catch (Exception e) { e.getMessage(); }
+            try { if (fileReader != null) fileReader.close(); } catch (Exception e) { e.getMessage(); }
+            try { if (fileWriter != null) fileWriter.close(); } catch (Exception e) { e.getMessage(); }
         }
     }
 
