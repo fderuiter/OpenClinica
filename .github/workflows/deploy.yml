@@ -1,18 +1,48 @@
 name: Continuous Deployment
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
     branches:
       - master
+      - main
+  workflow_dispatch:
+    inputs:
+      bypass_validation:
+        description: 'Bypass validation checks (emergency hotfix only)'
+        required: false
+        type: boolean
+        default: false
 
 permissions: read-all
+
+env:
+  DEPLOY_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
 
 concurrency:
   group: production-deployment
   cancel-in-progress: false
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check validation outcome and output link
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            echo "Validation Run: ${{ github.event.workflow_run.html_url }}" >> $GITHUB_STEP_SUMMARY
+            if [ "${{ github.event.workflow_run.conclusion }}" != "success" ]; then
+              echo "Validation workflow failed!"
+              exit 1
+            fi
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual execution triggered. Bypass validation: ${{ github.event.inputs.bypass_validation }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
   build-and-publish:
+    needs: gate
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -20,6 +50,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.DEPLOY_SHA }}
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -36,7 +68,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/app-web:latest
-            ghcr.io/${{ github.repository_owner }}/app-web:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/app-web:${{ env.DEPLOY_SHA }}
 
       - name: Build and Push Modern Image
         uses: docker/build-push-action@v5
@@ -46,7 +78,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/app-modern:latest
-            ghcr.io/${{ github.repository_owner }}/app-modern:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/app-modern:${{ env.DEPLOY_SHA }}
 
   validate:
     needs: build-and-publish
@@ -57,6 +89,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.DEPLOY_SHA }}
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -67,10 +101,10 @@ jobs:
 
       - name: Pull published images
         run: |
-          docker pull ghcr.io/${{ github.repository_owner }}/app-web:${{ github.sha }}
-          docker pull ghcr.io/${{ github.repository_owner }}/app-modern:${{ github.sha }}
-          docker tag ghcr.io/${{ github.repository_owner }}/app-web:${{ github.sha }} app-web:latest
-          docker tag ghcr.io/${{ github.repository_owner }}/app-modern:${{ github.sha }} app-modern:latest
+          docker pull ghcr.io/${{ github.repository_owner }}/app-web:${{ env.DEPLOY_SHA }}
+          docker pull ghcr.io/${{ github.repository_owner }}/app-modern:${{ env.DEPLOY_SHA }}
+          docker tag ghcr.io/${{ github.repository_owner }}/app-web:${{ env.DEPLOY_SHA }} app-web:latest
+          docker tag ghcr.io/${{ github.repository_owner }}/app-modern:${{ env.DEPLOY_SHA }} app-modern:latest
 
       - name: Setup environment
         run: |
@@ -159,12 +193,12 @@ jobs:
             echo "$GH_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             
             # Pull published images
-            docker pull ghcr.io/${{ github.repository_owner }}/app-web:${{ github.sha }}
-            docker pull ghcr.io/${{ github.repository_owner }}/app-modern:${{ github.sha }}
+            docker pull ghcr.io/${{ github.repository_owner }}/app-web:${{ env.DEPLOY_SHA }}
+            docker pull ghcr.io/${{ github.repository_owner }}/app-modern:${{ env.DEPLOY_SHA }}
             
             # Tag locally for docker-compose
-            docker tag ghcr.io/${{ github.repository_owner }}/app-web:${{ github.sha }} app-web:latest
-            docker tag ghcr.io/${{ github.repository_owner }}/app-modern:${{ github.sha }} app-modern:latest
+            docker tag ghcr.io/${{ github.repository_owner }}/app-web:${{ env.DEPLOY_SHA }} app-web:latest
+            docker tag ghcr.io/${{ github.repository_owner }}/app-modern:${{ env.DEPLOY_SHA }} app-modern:latest
             
             # Execute zero-downtime deployment script
             bash ./deploy.sh
