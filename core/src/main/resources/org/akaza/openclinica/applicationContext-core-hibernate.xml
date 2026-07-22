@@ -141,7 +141,7 @@
                 <prop key="hibernate.format_sql">true</prop>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.generate_statistics">true</prop>
-                <prop key="hibernate.cache.region.factory_class">org.redisson.hibernate.RedissonRegionFactory</prop>
+                <prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class:org.redisson.hibernate.RedissonRegionFactory}</prop>
                 <prop key="hibernate.cache.redisson.config">classpath:redisson.yaml</prop>
                 <prop key="hibernate.cache.use_query_cache">true</prop>
                 <prop key="hibernate.cache.use_second_level_cache">true</prop>
