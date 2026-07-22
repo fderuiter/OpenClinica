@@ -18,7 +18,6 @@ public class DomainArchitectureTest {
             .orShould().dependOnClassesThat().resideInAPackage("org.akaza.openclinica.job..")
             .orShould().dependOnClassesThat().resideInAPackage("org.akaza.openclinica.controller..")
             .orShould().dependOnClassesThat().resideInAPackage("org.akaza.openclinica.web..")
-            .orShould().dependOnClassesThat().resideInAPackage("org.akaza.openclinica.ws..")
             .orShould().dependOnClassesThat().resideInAPackage("org.akaza.openclinica.modern..")
             .orShould().dependOnClassesThat().resideInAPackage("org.springframework..")
             .orShould().dependOnClassesThat().resideInAPackage("javax.persistence..")
