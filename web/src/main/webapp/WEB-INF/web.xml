@@ -238,29 +238,6 @@
         <url-pattern>/oauth/*</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>ws</servlet-name>
-        <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
-        <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>/WEB-INF/ws-servlet-config.xml</param-value>
-        </init-param>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>ws</servlet-name>
-        <url-pattern>/ws/*</url-pattern>
-    </servlet-mapping>
-
-    <mime-mapping>
-        <extension>wsdl</extension>
-        <mime-type>text/xml</mime-type>
-    </mime-mapping>
-
-    <mime-mapping>
-        <extension>xsd</extension>
-        <mime-type>text/xml</mime-type>
-    </mime-mapping>
 
     <servlet>
         <servlet-name>SQLInitServlet</servlet-name>
