@@ -94,9 +94,6 @@
     <bean id="ruleSetRuleDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.rule.RuleSetRuleDAO">
         <constructor-arg ref="dataSource"/>
     </bean>
-    <bean id="ruleActionDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.rule.action.RuleActionDAO">
-        <constructor-arg ref="dataSource"/>
-    </bean>
     <bean id="itemDataDaoJDBC" lazy-init="true" class="org.akaza.openclinica.dao.submit.ItemDataDAO">
         <constructor-arg ref="dataSource"/>
     </bean>
