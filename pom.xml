@@ -788,9 +788,9 @@
 					<failOnViolation>${pmd.failOnViolation}</failOnViolation>
 					<printFailingErrors>true</printFailingErrors>
 					<rulesets>
-						<ruleset>/app/pmd-ruleset.xml</ruleset>
+						<ruleset>${session.executionRootDirectory}/pmd-ruleset.xml</ruleset>
 					</rulesets>
-					<excludeFromFailureFile>/app/pmd-exclude.properties</excludeFromFailureFile>
+					<excludeFromFailureFile>${session.executionRootDirectory}/pmd-exclude.properties</excludeFromFailureFile>
 				</configuration>
 				<executions>
 					<execution>
