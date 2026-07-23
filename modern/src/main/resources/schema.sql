@@ -66,3 +66,12 @@ CREATE TABLE IF NOT EXISTS audit_log_event (
     event_crf_version_id INT
 );
 
+CREATE TABLE IF NOT EXISTS reporting_clinical_records (
+    id VARCHAR(255) PRIMARY KEY,
+    study_oid VARCHAR(255),
+    subject_oid VARCHAR(255),
+    data TEXT,
+    synced_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
